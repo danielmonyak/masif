@@ -6,7 +6,7 @@ conda create -n venv_latest tensorflow
 conda create -n venv_sbi python=2.7
 
 ### venv_latest
-The following anaconda install commands were used to install third party dependencies:
+The following anaconda install commands were used to install some of the third party dependencies:
 ```
 conda activate venv_latest
 conda install -c schrodinger pdb2pqr
@@ -15,6 +15,13 @@ conda install -c conda-forge scikit-learn
 conda install -c conda-forge ipython
 conda install -c conda-forge networkx
 ```
+#### Reduce
+Clone from repository and follow build instructions while venv_latest is activated:
+```
+git clone https://github.com/rlabduke/reduce.git
+```
+
+
 #### PyMesh
 
 ### venv_sbi
