@@ -23,6 +23,18 @@ git clone https://github.com/rlabduke/reduce.git
 
 
 #### PyMesh
+Build from source: https://github.com/PyMesh/PyMesh, do not install with anaconda <br>
+Don't clone each third party repository separately, use their instructions:
+```
+git clone https://github.com/PyMesh/PyMesh.git
+cd PyMesh
+git submodule update --init
+```
+Follow build instructions in PyMesh Readme, including the **Install** section.
+
+#### APBS
+Download pre-built binaries: https://github.com/Electrostatics/apbs/releases <br>
+Look under **Assets**
 
 ### venv_sbi
 StrBioInfo must be installed with Pip, without installing the dependencies at the same time:
@@ -53,3 +65,10 @@ pip install lxml==4.4.1
 pip install numpy==1.16.5
 pip install scipy==1.2.1
 ```
+
+
+## Use of Masif
+
+### Data Preparation
+
+data_prepare_one.sh had to be run for each protein, so manual scheduling with a script was used, as Slurm is not available. Jobs were run such that a maximum of 8 were running at any one time.
