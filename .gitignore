@@ -22,3 +22,11 @@ data/masif_ppi_search_ub/descriptors/
 data/masif_site/output/
 tensorflow-1.9/
 tensorflow_on_gpu/
+data/masif_ligand/output_files
+data/masif_ligand/error_files
+data/masif_ligand/started_proteins.txt
+data/masif_ligand/finished_proteins.txt
+data/masif_ligand/make_tf.out
+data/masif_ligand/make_tf.err
+data/masif_ligand/make_tfrecord_pid.txt
+data/masif_ligand/schedule_data_prepare_pid.txt
