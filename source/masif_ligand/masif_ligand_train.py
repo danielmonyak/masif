@@ -36,9 +36,7 @@ output_model = out_dir + "model"
 if not os.path.exists(params["model_dir"]):
     os.makedirs(params["model_dir"])
 
-#with tf.Session() as sess:
-# Edited by Daniel Monyak
-with tf.compat.v1.Session() as sess:
+with tf.Session() as sess:
     # Build the neural network model
     learning_obj = MaSIF_ligand(
         sess,
@@ -302,4 +300,3 @@ with tf.compat.v1.Session() as sess:
             total_iterations += 1
             if total_iterations == 40000:
                 break
-
