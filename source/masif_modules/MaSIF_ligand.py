@@ -4,7 +4,7 @@ import numpy as np
 # Edited by Daniel Monyak
 tf.debugging.set_log_device_placement(True)
 gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
-gpus = [g.name for g in gpus]
+#gpus = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus)
 
 
