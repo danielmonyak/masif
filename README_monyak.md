@@ -71,4 +71,19 @@ pip install scipy==1.2.1
 
 ### Data Preparation
 
+Alter the "source/default_config/masif_opts.py" file to change the directory where the output files are generated. Up to 400 GB of disk space will be needed. In my version of the script, I have added a line at the top where you can change the value of "$basedir", which will alter the output directory just for masif_ligand. <br>
+
 data_prepare_one.sh had to be run for each protein, so manual scheduling with a script was used, as Slurm is not available. Jobs were run such that a maximum of 8 were running at any one time.
+```
+./run_data_prepare.sh
+```
+This runs the scheduling script in the background and stores the pid of the job in "schedule_data_prepare.txt". Examine the current jobs with "ps aux". <br>
+Proteins that have been started and then finished are listed in "started_proteins.txt" and "finished_proteins.txt". <br>
+Be aware that there are a few duplicates in "sequence_split_list.txt", so there will be less output folders than proteins in the list.
+
+#### Make TF Records
+
+```
+./run_make_tfrecord.sh
+```
+This runs the make_tfrecord.slurm script in the background (not as a slurm job) and stores the pid in "make_tfrecord_pid.txt".
