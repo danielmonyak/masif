@@ -1,13 +1,20 @@
 # Record of Masif Installation and Use
 
 ## Software Management/Installation:
-Three virtual environments are required.
+Three virtual environments are required, and should be created using anaconda/miniconda:
+```
 conda create -n venv_latest python=3.9
 conda create -n venv_sbi python=2.7
 conda create -n venv_tf19 python=3.6 tensorflow-gpu=1.9 anaconda
+```
+**venv_latest** was used for most of the data preparation, **venv_sbi** was used for running StrBioInfo, since it requires Python 2.7, and **venv_tf19** was used to train the TensorFlow model, since it requires TensorFlow 1.9.
 
 ### venv_latest
-The following anaconda install commands were used to install some of the third party dependencies:
+Activate environment:
+```
+conda activate venv_latest
+```
+Install third party dependencies:
 ```
 conda activate venv_latest
 conda install -c schrodinger pdb2pqr
@@ -16,13 +23,6 @@ conda install -c conda-forge scikit-learn
 conda install -c conda-forge ipython
 conda install -c conda-forge networkx
 ```
-
-#### Reduce
-Clone from repository and follow build instructions while venv_latest is activated:
-```
-git clone https://github.com/rlabduke/reduce.git
-```
-
 
 #### PyMesh
 Build from source: https://github.com/PyMesh/PyMesh, do not install with anaconda <br>
@@ -34,14 +34,23 @@ git submodule update --init
 ```
 Follow build instructions in PyMesh Readme, including the **Install** section.
 
+#### Reduce
+Clone from repository and follow build instructions while **venv_latest** is activated:
+```
+git clone https://github.com/rlabduke/reduce.git
+```
+
 #### APBS
 Download pre-built binaries: https://github.com/Electrostatics/apbs/releases <br>
 Look under **Assets**
 
 ### venv_sbi
-StrBioInfo must be installed with Pip, without installing the dependencies at the same time:
+Activate environment
 ```
 conda activate venv_sbi
+```
+StrBioInfo must be installed with Pip, WITHOUT installing the dependencies at the same time:
+```
 pip install StrBioInfo --no-deps
 ```
 Dependencies:
@@ -67,7 +76,6 @@ pip install lxml==4.4.1
 pip install numpy==1.16.5
 pip install scipy==1.2.1
 ```
-
 
 ## Use of Masif
 
