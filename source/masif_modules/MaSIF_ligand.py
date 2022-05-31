@@ -199,14 +199,14 @@ class MaSIF_ligand:
                         )
                     )  # 1, n_gauss
 
-                self.keep_prob = tf.placeholder(tf.float32)
-                self.rho_coords = tf.placeholder(
+                self.keep_prob = tf.compat.v1.placeholder(tf.float32)
+                self.rho_coords = tf.compat.v1.placeholder(
                     tf.float32
                 )  # batch_size, n_vertices, 1
                 self.theta_coords = tf.compat.v1.placeholder(
                     tf.float32
                 )  # batch_size, n_vertices, 1
-                self.input_feat = tf.placeholder(
+                self.input_feat = tf.compat.v1.placeholder(
                     tf.float32, shape=[None, None, self.n_feat]
                 )  # batch_size, n_vertices, n_feat
                 self.mask = tf.compat.v1.placeholder(tf.float32)  # batch_size, n_vertices, 1
