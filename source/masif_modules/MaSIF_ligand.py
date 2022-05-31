@@ -31,7 +31,7 @@ class MaSIF_ligand:
         return frobenius_norm
 
     def build_sparse_matrix_softmax(self, idx_non_zero_values, X, dense_shape_A):
-        A = tf.compat.v1.SparseTensorValue(idx_non_zero_values, tf.squeeze(X), dense_shape_A)
+        A = tf.SparseTensorValue(idx_non_zero_values, tf.squeeze(X), dense_shape_A)
         A = tf.sparse_reorder(A)  # n_edges x n_edges
         A = tf.sparse_softmax(A)
 
@@ -85,15 +85,11 @@ class MaSIF_ligand:
             thetas_coords_ = tf.reshape(theta_coords, [-1, 1])  # batch_size*n_vertices
 
             thetas_coords_ += k * 2 * np.pi / self.n_rotations
-            
-            #thetas_coords_ = tf.mod(thetas_coords_, 2 * np.pi)
-            # Edited by Daniel Monyak - be careful with this one
-            thetas_coords_ = tf.math.floormod(thetas_coords_, 2 * np.pi)
-            
-            rho_coords_ = tf.math.exp(
+            thetas_coords_ = tf.mod(thetas_coords_, 2 * np.pi)
+            rho_coords_ = tf.exp(
                 -tf.square(rho_coords_ - mu_rho) / (tf.square(sigma_rho) + eps)
             )
-            thetas_coords_ = tf.math.exp(
+            thetas_coords_ = tf.exp(
                 -tf.square(thetas_coords_ - mu_theta) / (tf.square(sigma_theta) + eps)
             )
 
@@ -108,7 +104,7 @@ class MaSIF_ligand:
                 mean_gauss_activation
             ):  # computes mean weights for the different gaussians
                 gauss_activations /= (
-                    tf.compat.v1.reduce_sum(gauss_activations, 1, keep_dims=True) + eps
+                    tf.reduce_sum(gauss_activations, 1, keep_dims=True) + eps
                 )  # batch_size, n_vertices, n_gauss
 
             gauss_activations = tf.expand_dims(
@@ -121,7 +117,7 @@ class MaSIF_ligand:
             gauss_desc = tf.multiply(
                 gauss_activations, input_feat_
             )  # batch_size, n_vertices, n_feat, n_gauss,
-            gauss_desc = tf.compat.v1.reduce_sum(gauss_desc, 1)  # batch_size, n_feat, n_gauss,
+            gauss_desc = tf.reduce_sum(gauss_desc, 1)  # batch_size, n_feat, n_gauss,
             gauss_desc = tf.reshape(
                 gauss_desc, [n_samples, self.n_thetas * self.n_rhos]
             )  # batch_size, 80
@@ -161,14 +157,9 @@ class MaSIF_ligand:
         self.n_feat = int(sum(feat_mask))
 
         # with tf.Graph().as_default() as g:
-        
-        #with tf.get_default_graph().as_default() as g:
-        # Edited by Daniel Monyak
-        with tf.compat.v1.get_default_graph().as_default() as g:
+        with tf.get_default_graph().as_default() as g:
             self.graph = g
-            #tf.set_random_seed(0)
-            # Edited by Daniel Monyak
-            tf.compat.v1.set_random_seed(0)
+            tf.set_random_seed(0)
             for pr in range(1):
 
                 initial_coords = self.compute_initial_coordinates()
@@ -203,18 +194,18 @@ class MaSIF_ligand:
                         )
                     )  # 1, n_gauss
 
-                self.keep_prob = tf.compat.v1.placeholder(tf.float32)
-                self.rho_coords = tf.compat.v1.placeholder(
+                self.keep_prob = tf.placeholder(tf.float32)
+                self.rho_coords = tf.placeholder(
                     tf.float32
                 )  # batch_size, n_vertices, 1
-                self.theta_coords = tf.compat.v1.placeholder(
+                self.theta_coords = tf.placeholder(
                     tf.float32
                 )  # batch_size, n_vertices, 1
-                self.input_feat = tf.compat.v1.placeholder(
+                self.input_feat = tf.placeholder(
                     tf.float32, shape=[None, None, self.n_feat]
                 )  # batch_size, n_vertices, n_feat
-                self.mask = tf.compat.v1.placeholder(tf.float32)  # batch_size, n_vertices, 1
-                self.labels = tf.compat.v1.placeholder(tf.float32)
+                self.mask = tf.placeholder(tf.float32)  # batch_size, n_vertices, 1
+                self.labels = tf.placeholder(tf.float32)
                 self.global_desc_1 = []
                 b_conv = []
                 for i in range(self.n_feat):
@@ -230,16 +221,13 @@ class MaSIF_ligand:
 
                     # self.flipped_theta_coords = 0*self.theta_coords;
 
-                    W_conv = tf.compat.v1.get_variable(
+                    W_conv = tf.get_variable(
                         "W_conv_{}".format(i),
                         shape=[
                             self.n_thetas * self.n_rhos,
                             self.n_thetas * self.n_rhos,
                         ],
-                        
-                        #initializer=tf.contrib.layers.xavier_initializer(),
-                        # Edited by Daniel Monyak
-                        initializer=tf.initializers.GlorotUniform()
+                        initializer=tf.contrib.layers.xavier_initializer(),
                     )
 
                     self.global_desc_1.append(
@@ -278,7 +266,7 @@ class MaSIF_ligand:
                 self.global_desc_1 = tf.contrib.layers.fully_connected(
                     self.global_desc_1, 64, activation_fn=tf.nn.relu
                 )
-                self.logits = tfcontrib.layers.fully_connected(
+                self.logits = tf.contrib.layers.fully_connected(
                     self.global_desc_1, self.n_ligands, activation_fn=tf.identity
                 )
                 # compute data loss
@@ -286,7 +274,7 @@ class MaSIF_ligand:
                 self.logits = tf.expand_dims(self.logits, axis=0)
                 self.logits_softmax = tf.nn.softmax(self.logits)
                 self.computed_loss = tf.reduce_mean(
-                    -tf.compat.v1.reduce_sum(self.labels * tf.log(self.logits_softmax), [1])
+                    -tf.reduce_sum(self.labels * tf.log(self.logits_softmax), [1])
                 )
 
                 self.data_loss = tf.nn.softmax_cross_entropy_with_logits(
@@ -306,13 +294,12 @@ class MaSIF_ligand:
                 )
 
                 # Create a session for running Ops on the Graph.
-                config = tf.compat.v1.ConfigProto(allow_soft_placement=True)
+                config = tf.ConfigProto(allow_soft_placement=True)
                 config.gpu_options.allow_growth = True
                 self.session = session
-                self.saver = tf.compat.v1.train.Saver()
+                self.saver = tf.train.Saver()
 
                 # Run the Op to initialize the variables.
-                init = tf.compat.v1.global_variables_initializer.global_variables_initializer()
+                init = tf.global_variables_initializer()
                 self.session.run(init)
                 self.count_number_parameters()
-
