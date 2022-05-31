@@ -77,7 +77,7 @@ data_prepare_one.sh had to be run for each protein, so manual scheduling with a 
 ```
 ./run_data_prepare.sh
 ```
-This runs the scheduling script in the background and stores the pid of the job in "schedule_data_prepare.txt". Examine the current jobs with "ps aux". <br>
+This runs the scheduling script in the background and stores the pid of the job in "schedule_data_prepare_pid.txt". Examine the current jobs with "ps aux". <br>
 Proteins that have been started and then finished are listed in "started_proteins.txt" and "finished_proteins.txt". <br>
 Be aware that there are a few duplicates in "sequence_split_list.txt", so there will be less output folders than proteins in the list.
 
