@@ -1,9 +1,10 @@
 # Record of Masif Installation and Use
 
 ## Software Management/Installation:
-Two virtual environments are required, as StrBioInfo needs to run on Python 2.7, and is only used for two scripts, but everything else needs to run on Python 3. The Python 3 environment was specifically set up to support tensorflow, as well. Both environments were created with anaconda:
-conda create -n venv_latest tensorflow
+Three virtual environments are required.
+conda create -n venv_latest python=3.9
 conda create -n venv_sbi python=2.7
+conda create -n venv_tf19 python=3.6 tensorflow-gpu=1.9 anaconda
 
 ### venv_latest
 The following anaconda install commands were used to install some of the third party dependencies:
@@ -14,10 +15,6 @@ conda install -c bioconda msms
 conda install -c conda-forge scikit-learn
 conda install -c conda-forge ipython
 conda install -c conda-forge networkx
-```
-Make sure to install Tensorflow-GPU if you intend to use a GPU, as recommended by the authors:
-```
-conda install -c anaconda tensorflow-gpu -n venv_latest
 ```
 
 #### Reduce
