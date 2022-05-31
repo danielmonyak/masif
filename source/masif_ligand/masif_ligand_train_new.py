@@ -46,14 +46,20 @@ with tf.Session() as sess:
         feat_mask=params["feat_mask"],
         costfun=params["costfun"],
     )
-    # Load pretrained network
+    
+    # Load saved network
     learning_obj.saver.restore(learning_obj.session, output_model)
     
     # Change before cancelling
-    best_validation_loss = 1000
+    '''best_validation_loss = 1000
     best_validation_accuracy = 0.0
     total_iterations = 0
-    last_epoch = 
+    last_epoch = 0
+    '''
+    best_validation_loss = 1.0318049192428589
+    best_validation_accuracy = 0.6363636363636364
+    total_iterations = 9068
+    last_epoch = 10
     
     num_epochs = 100
     
