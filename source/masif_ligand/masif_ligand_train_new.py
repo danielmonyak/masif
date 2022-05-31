@@ -36,7 +36,11 @@ output_model = out_dir + "model"
 if not os.path.exists(params["model_dir"]):
     os.makedirs(params["model_dir"])
 
-with tf.Session() as sess:
+# Edited by Daniel Monyak
+config = tf.ConfigProto(allow_soft_placement=True)
+config.gpu_options.allow_growth = True
+#with tf.Session() as sess:
+with tf.Session(config) as sess:
     # Build the neural network model
     learning_obj = MaSIF_ligand(
         sess,
