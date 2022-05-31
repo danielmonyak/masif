@@ -85,11 +85,15 @@ class MaSIF_ligand:
             thetas_coords_ = tf.reshape(theta_coords, [-1, 1])  # batch_size*n_vertices
 
             thetas_coords_ += k * 2 * np.pi / self.n_rotations
-            thetas_coords_ = tf.mod(thetas_coords_, 2 * np.pi)
-            rho_coords_ = tf.exp(
+            
+            #thetas_coords_ = tf.mod(thetas_coords_, 2 * np.pi)
+            # Edited by Daniel Monyak - be careful with this one
+            thetas_coords_ = tf.math.floormod(thetas_coords_, 2 * np.pi)
+            
+            rho_coords_ = tf.math.exp(
                 -tf.square(rho_coords_ - mu_rho) / (tf.square(sigma_rho) + eps)
             )
-            thetas_coords_ = tf.exp(
+            thetas_coords_ = tf.math.exp(
                 -tf.square(thetas_coords_ - mu_theta) / (tf.square(sigma_theta) + eps)
             )
 
