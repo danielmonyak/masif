@@ -5,7 +5,7 @@ import numpy as np
 tf.debugging.set_log_device_placement(True)
 gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
 #gpus = [g.name for g in gpus]
-strategy = tf.distribute.MirroredStrategy(gpus)
+#strategy = tf.distribute.MirroredStrategy(gpus)
 
 
 class MaSIF_ligand:
