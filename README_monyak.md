@@ -82,19 +82,17 @@ data_prepare_one.sh had to be run for each protein, so manual scheduling with a 
 ```
 ./run_data_prepare.sh
 ```
-This runs the scheduling script in the background and stores the pid of the job in "schedule_data_prepare_pid.txt". Examine the current jobs with "ps aux". <br>
-Proteins that have been started and then finished are listed in "started_proteins.txt" and "finished_proteins.txt". <br>
-Be aware that there are a few duplicates in "sequence_split_list.txt", so there will be less output folders than proteins in the list.
+Runs the scheduling script in the background and stores the pid of the job in "schedule_data_prepare_pid.txt". Examine the current jobs with "ps aux". Proteins that have been started and then finished are listed in "started_proteins.txt" and "finished_proteins.txt". Be aware that there are a few duplicates in "sequence_split_list.txt", so there will be less output folders than proteins in the list.
 
 #### Make TF Records
 
 ```
 ./run_make_tfrecord.sh
 ```
-This runs the make_tfrecord.slurm script in the background (not as a slurm job) and stores the pid in "make_tfrecord_pid.txt".
+Runs the make_tfrecord.slurm script in the background (not as a slurm job) and stores the pid in "make_tfrecord_pid.txt". It splits the data into training, test, and validation sets, generating output in "$basedir/data_preparation/tfrecords".
 
 ### Training Model
 ```
 ./run_train_model.sh
 ```
-This runs the train_model.slurm script in the backround and stores the pid in "train_model_pid.txt".
+Runs the train_model.slurm script in the backround and stores the pid in "train_model_pid.txt". It will automatically use the TF Records that were generated earlier.
