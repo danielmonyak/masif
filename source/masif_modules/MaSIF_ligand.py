@@ -31,7 +31,7 @@ class MaSIF_ligand:
         return frobenius_norm
 
     def build_sparse_matrix_softmax(self, idx_non_zero_values, X, dense_shape_A):
-        A = tf.SparseTensorValue(idx_non_zero_values, tf.squeeze(X), dense_shape_A)
+        A = tf.compat.v1.SparseTensorValue(idx_non_zero_values, tf.squeeze(X), dense_shape_A)
         A = tf.sparse_reorder(A)  # n_edges x n_edges
         A = tf.sparse_softmax(A)
 
@@ -203,14 +203,14 @@ class MaSIF_ligand:
                 self.rho_coords = tf.placeholder(
                     tf.float32
                 )  # batch_size, n_vertices, 1
-                self.theta_coords = tf.placeholder(
+                self.theta_coords = tf.compat.v1.placeholder(
                     tf.float32
                 )  # batch_size, n_vertices, 1
                 self.input_feat = tf.placeholder(
                     tf.float32, shape=[None, None, self.n_feat]
                 )  # batch_size, n_vertices, n_feat
-                self.mask = tf.placeholder(tf.float32)  # batch_size, n_vertices, 1
-                self.labels = tf.placeholder(tf.float32)
+                self.mask = tf.compat.v1.placeholder(tf.float32)  # batch_size, n_vertices, 1
+                self.labels = tf.compat.v1.placeholder(tf.float32)
                 self.global_desc_1 = []
                 b_conv = []
                 for i in range(self.n_feat):
@@ -226,7 +226,7 @@ class MaSIF_ligand:
 
                     # self.flipped_theta_coords = 0*self.theta_coords;
 
-                    W_conv = tf.get_variable(
+                    W_conv = tf.compat.v1.get_variable(
                         "W_conv_{}".format(i),
                         shape=[
                             self.n_thetas * self.n_rhos,
@@ -299,13 +299,13 @@ class MaSIF_ligand:
                 )
 
                 # Create a session for running Ops on the Graph.
-                config = tf.ConfigProto(allow_soft_placement=True)
+                config = tf.compat.v1.ConfigProto(allow_soft_placement=True)
                 config.gpu_options.allow_growth = True
                 self.session = session
-                self.saver = tf.train.Saver()
+                self.saver = tf.compat.v1.train.Saver()
 
                 # Run the Op to initialize the variables.
-                init = tf.global_variables_initializer()
+                init = tf.compat.v1.global_variables_initializer.global_variables_initializer()
                 self.session.run(init)
                 self.count_number_parameters()
 
