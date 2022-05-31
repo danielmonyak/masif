@@ -46,10 +46,7 @@ ligand_coord_dir = params["ligand_coords_dir"]
 tfrecords_dir = params["tfrecords_dir"]
 if not os.path.exists(tfrecords_dir):
     os.mkdir(tfrecords_dir)
-
-#with tf.python_io.TFRecordWriter(
-# Edited by Daniel Monyak
-with tf.io.TFRecordWriter(
+with tf.python_io.TFRecordWriter(
     os.path.join(tfrecords_dir, "training_data_sequenceSplit_30.tfrecord")
 ) as writer:
     for i, pdb in enumerate(train_pdbs):
@@ -136,9 +133,7 @@ with tf.io.TFRecordWriter(
 
 
 success = 0
-#with tf.python_io.TFRecordWriter(
-# Edited by Daniel Monyak
-with tf.io.TFRecordWriter (
+with tf.python_io.TFRecordWriter(
     os.path.join(tfrecords_dir, "validation_data_sequenceSplit_30.tfrecord")
 ) as writer:
     for i, pdb in enumerate(val_pdbs):
@@ -223,9 +218,7 @@ with tf.io.TFRecordWriter (
 
 
 success = 0
-#with tf.python_io.TFRecordWriter(
-# Edited by Daniel Monyak 
-with tf.io.TFRecordWriter(
+with tf.python_io.TFRecordWriter(
     os.path.join(tfrecords_dir, "testing_data_sequenceSplit_30.tfrecord")
 ) as writer:
     for i, pdb in enumerate(test_pdbs):
@@ -307,4 +300,3 @@ with tf.io.TFRecordWriter(
             print(success)
             print(pdb)
             print(float(i) / len(test_pdbs))
-
