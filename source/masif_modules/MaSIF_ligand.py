@@ -170,7 +170,8 @@ class MaSIF_ligand:
             # Edited by Daniel Monyak
             # Using the GPUs
             #with strategy.scope():
-            with tf.device(idx_gpu):
+            #with tf.device(idx_gpu):
+            with tf.device(gpus[0]):
                 for pr in range(1):
                     initial_coords = self.compute_initial_coordinates()
                     # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
