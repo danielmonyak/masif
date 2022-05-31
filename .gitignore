@@ -30,3 +30,6 @@ data/masif_ligand/make_tf.out
 data/masif_ligand/make_tf.err
 data/masif_ligand/make_tfrecord_pid.txt
 data/masif_ligand/schedule_data_prepare_pid.txt
+data/masif_ligand/train_model_pid.txt
+data/masif_ligand/train_model.out
+data/masif_ligand/train_model.err
