@@ -15,6 +15,11 @@ conda install -c conda-forge scikit-learn
 conda install -c conda-forge ipython
 conda install -c conda-forge networkx
 ```
+Make sure to install Tensorflow-GPU if you intend to use a GPU, as recommended by the authors:
+```
+conda install -c anaconda tensorflow-gpu -n venv_latest
+```
+
 #### Reduce
 Clone from repository and follow build instructions while venv_latest is activated:
 ```
@@ -87,3 +92,9 @@ Be aware that there are a few duplicates in "sequence_split_list.txt", so there 
 ./run_make_tfrecord.sh
 ```
 This runs the make_tfrecord.slurm script in the background (not as a slurm job) and stores the pid in "make_tfrecord_pid.txt".
+
+### Training Model
+```
+./run_train_model.sh
+```
+This runs the train_model.slurm script in the backround and stores the pid in "train_model_pid.txt".
