@@ -108,7 +108,7 @@ class MaSIF_ligand:
                 mean_gauss_activation
             ):  # computes mean weights for the different gaussians
                 gauss_activations /= (
-                    tf.reduce_sum(gauss_activations, 1, keep_dims=True) + eps
+                    tf.compat.v1.reduce_sum(gauss_activations, 1, keep_dims=True) + eps
                 )  # batch_size, n_vertices, n_gauss
 
             gauss_activations = tf.expand_dims(
@@ -121,7 +121,7 @@ class MaSIF_ligand:
             gauss_desc = tf.multiply(
                 gauss_activations, input_feat_
             )  # batch_size, n_vertices, n_feat, n_gauss,
-            gauss_desc = tf.reduce_sum(gauss_desc, 1)  # batch_size, n_feat, n_gauss,
+            gauss_desc = tf.compat.v1.reduce_sum(gauss_desc, 1)  # batch_size, n_feat, n_gauss,
             gauss_desc = tf.reshape(
                 gauss_desc, [n_samples, self.n_thetas * self.n_rhos]
             )  # batch_size, 80
@@ -286,7 +286,7 @@ class MaSIF_ligand:
                 self.logits = tf.expand_dims(self.logits, axis=0)
                 self.logits_softmax = tf.nn.softmax(self.logits)
                 self.computed_loss = tf.reduce_mean(
-                    -tf.reduce_sum(self.labels * tf.log(self.logits_softmax), [1])
+                    -tf.compat.v1.reduce_sum(self.labels * tf.log(self.logits_softmax), [1])
                 )
 
                 self.data_loss = tf.nn.softmax_cross_entropy_with_logits(
