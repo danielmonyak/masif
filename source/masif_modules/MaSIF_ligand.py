@@ -157,9 +157,14 @@ class MaSIF_ligand:
         self.n_feat = int(sum(feat_mask))
 
         # with tf.Graph().as_default() as g:
-        with tf.get_default_graph().as_default() as g:
+        
+        #with tf.get_default_graph().as_default() as g:
+        # Edited by Daniel Monyak
+        with tf.compat.v1.get_default_graph().as_default() as g:
             self.graph = g
-            tf.set_random_seed(0)
+            #tf.set_random_seed(0)
+            # Edited by Daniel Monyak
+            tf.compat.v1.set_random_seed(0)
             for pr in range(1):
 
                 initial_coords = self.compute_initial_coordinates()
