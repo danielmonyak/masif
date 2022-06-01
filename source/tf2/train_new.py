@@ -13,16 +13,22 @@ from masif_modules.read_ligand_tfrecords import _parse_function
 from sklearn.metrics import confusion_matrix
 import tensorflow as tf
 
-
 continue_training = True
 
 
 params = masif_opts["ligand"]
 
 learning_obj = MaSIF_ligand(
-params["max_distance"],
-params["n_classes"],
-idx_gpu="/gpu:0",
-feat_mask=params["feat_mask"],
-costfun=params["costfun"],
+  params["max_distance"],
+  params["n_classes"],
+  idx_gpu="/gpu:0",
+  feat_mask=params["feat_mask"],
+  costfun=params["costfun"],
+)
+
+opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
+model.compile(optimizer=opt,
+  loss=loss_fn,
+  metrics=['accuracy']
 )
