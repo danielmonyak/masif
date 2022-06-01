@@ -10,8 +10,12 @@ from masif_modules.read_ligand_tfrecords import _parse_function
 from sklearn.metrics import confusion_matrix
 import tensorflow as tf
 
+
 ####
 # Edited by Daniel Monyak
+
+continue_training = True
+
 tf.debugging.set_log_device_placement(True)
 gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
 gpus = [g.name for g in gpus]
