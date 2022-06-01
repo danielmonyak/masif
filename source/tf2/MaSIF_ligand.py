@@ -11,7 +11,6 @@ class MaSIF_ligand(Model):
     The neural network model.
     """
     
-    @tf.function
     def compute_initial_coordinates(self):
         range_rho = [0.0, self.max_rho]
         range_theta = [0, 2 * np.pi]
