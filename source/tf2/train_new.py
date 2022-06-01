@@ -1,0 +1,28 @@
+# Header variables and parameters.
+import os
+import numpy as np
+from IPython.core.debugger import set_trace
+import importlib
+import sys
+from default_config.masif_opts import masif_opts
+#####
+# Edited by Daniel Monyak
+from MaSIF_ligand import MaSIF_ligand
+#####
+from masif_modules.read_ligand_tfrecords import _parse_function
+from sklearn.metrics import confusion_matrix
+import tensorflow as tf
+
+
+continue_training = True
+
+
+params = masif_opts["ligand"]
+
+learning_obj = MaSIF_ligand(
+params["max_distance"],
+params["n_classes"],
+idx_gpu="/gpu:0",
+feat_mask=params["feat_mask"],
+costfun=params["costfun"],
+)
