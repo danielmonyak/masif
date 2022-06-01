@@ -4,9 +4,7 @@ import numpy as np
 
 
 #tf.debugging.set_log_device_placement(True)
-#gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
-#gpus = [g.name for g in gpus]
-#strategy = tf.distribute.MirroredStrategy(gpus)
+
 ####
 
 class MaSIF_ligand:
@@ -162,11 +160,18 @@ class MaSIF_ligand:
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
 
+        ###
+        gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
+        gpus_str = [g.name for g in gpus]
+        self.strategy = tf.distribute.MirroredStrategy(gpus_str)
+        ###
+        
         # with tf.Graph().as_default() as g:
         with tf.get_default_graph().as_default() as g:
             self.graph = g
             tf.set_random_seed(0)
-            with tf.device(idx_gpu):
+            #with tf.device(idx_gpu):
+            with self.strategy.scope():
                 for pr in range(1):
                     initial_coords = self.compute_initial_coordinates()
                     # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
