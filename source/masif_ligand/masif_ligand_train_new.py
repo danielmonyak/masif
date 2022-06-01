@@ -91,7 +91,8 @@ for num_epoch in range(last_epoch, num_epochs):
     # Compute accuracy on a subset of the training set
     for num_train_sample in range(int(num_training_samples / 10)):
         try:
-            data_element = learning_obj.session.run(training_next_element)
+            with self.strategy.scope():
+                data_element = learning_obj.session.run(training_next_element)
         except:
             continue
         labels = data_element[4]
@@ -119,10 +120,12 @@ for num_epoch in range(last_epoch, num_epochs):
             learning_obj.keep_prob: 1.0,
         }
 
-        training_loss, training_logits = learning_obj.session.run(
-            [learning_obj.data_loss, learning_obj.logits_softmax],
-            feed_dict=feed_dict,
-        )
+        with self.strategy.scope():
+            training_loss, training_logits = learning_obj.session.run(
+                [learning_obj.data_loss, learning_obj.logits_softmax],
+                feed_dict=feed_dict,
+            )
+        
         training_losses.append(training_loss)
         training_ytrue.append(label)
         training_ypred.append(np.argmax(training_logits))
@@ -148,7 +151,8 @@ for num_epoch in range(last_epoch, num_epochs):
     # Compute accuracy on the validation set
     for num_val_sample in range(num_validation_samples):
         try:
-            data_element = learning_obj.session.run(validation_next_element)
+            with self.strategy.scope():
+                data_element = learning_obj.session.run(validation_next_element)
         except:
             continue
         labels = data_element[4]
@@ -173,11 +177,13 @@ for num_epoch in range(last_epoch, num_epochs):
             learning_obj.labels: pocket_labels,
             learning_obj.keep_prob: 1.0,
         }
-
-        validation_loss, validation_logits = learning_obj.session.run(
-            [learning_obj.data_loss, learning_obj.logits_softmax],
-            feed_dict=feed_dict,
-        )
+        
+        with self.strategy.scope():
+            validation_loss, validation_logits = learning_obj.session.run(
+                [learning_obj.data_loss, learning_obj.logits_softmax],
+                feed_dict=feed_dict,
+            )
+            
         validation_losses.append(validation_loss)
         validation_ytrue.append(label)
         validation_ypred.append(np.argmax(validation_logits))
@@ -204,7 +210,8 @@ for num_epoch in range(last_epoch, num_epochs):
     print("Calulating testing loss")
     for num_test_sample in range(num_testing_samples):
         try:
-            data_element = learning_obj.session.run(testing_next_element)
+            with self.strategy.scope():
+                data_element = learning_obj.session.run(testing_next_element)
         except:
             continue
         labels = data_element[4]
@@ -229,11 +236,13 @@ for num_epoch in range(last_epoch, num_epochs):
             learning_obj.labels: pocket_labels,
             learning_obj.keep_prob: 1.0,
         }
+        
+        with self.strategy.scope():
+            testing_loss, testing_logits = learning_obj.session.run(
+                [learning_obj.data_loss, learning_obj.logits_softmax],
+                feed_dict=feed_dict,
+            )
 
-        testing_loss, testing_logits = learning_obj.session.run(
-            [learning_obj.data_loss, learning_obj.logits_softmax],
-            feed_dict=feed_dict,
-        )
         testing_losses.append(testing_loss)
         testing_ytrue.append(label)
         testing_ypred.append(np.argmax(testing_logits))
@@ -261,7 +270,8 @@ for num_epoch in range(last_epoch, num_epochs):
     training_next_element = training_iterator.get_next()
     for num_sample in range(num_training_samples):
         try:
-            data_element = learning_obj.session.run(training_next_element)
+            with self.strategy.scope():
+                data_element = learning_obj.session.run(training_next_element)
         except:
             continue
         labels = data_element[4]
@@ -289,17 +299,19 @@ for num_epoch in range(last_epoch, num_epochs):
             learning_obj.keep_prob: 1.0,
         }
 
-        _, training_loss, norm_grad, logits, logits_softmax, computed_loss = learning_obj.session.run(
-            [
-                learning_obj.optimizer,
-                learning_obj.data_loss,
-                learning_obj.norm_grad,
-                learning_obj.logits,
-                learning_obj.logits_softmax,
-                learning_obj.computed_loss,
-            ],
-            feed_dict=feed_dict,
-        )
+        with self.strategy.scope():
+            _, training_loss, norm_grad, logits, logits_softmax, computed_loss = learning_obj.session.run(
+                [
+                    learning_obj.optimizer,
+                    learning_obj.data_loss,
+                    learning_obj.norm_grad,
+                    learning_obj.logits,
+                    learning_obj.logits_softmax,
+                    learning_obj.computed_loss,
+                ],
+                feed_dict=feed_dict,
+            )
+
         training_losses.append(training_loss)
         # training_ytrue.append(label)
         # training_ypred.append(np.argmax(logits_softmax))
