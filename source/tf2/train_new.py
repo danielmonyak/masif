@@ -12,7 +12,7 @@ from default_config.masif_opts import masif_opts
 # Edited by Daniel Monyak
 from MaSIF_ligand import MaSIF_ligand
 #####
-from masif_modules.read_ligand_tfrecords import _parse_function
+from read_ligand_tfrecords import _parse_function
 from sklearn.metrics import confusion_matrix
 import tensorflow as tf
 
