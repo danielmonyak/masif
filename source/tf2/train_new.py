@@ -18,14 +18,14 @@ continue_training = True
 
 params = masif_opts["ligand"]
 
-learning_obj = MaSIF_ligand(
+model = MaSIF_ligand(
   params["max_distance"],
   params["n_classes"],
   idx_gpu="/gpu:0",
   feat_mask=params["feat_mask"],
   costfun=params["costfun"],
 )
-model.compile(optimizer = learning_obj.opt,
-  loss = learning_obj.loss_fn,
+model.compile(optimizer = model.opt,
+  loss = model.loss_fn,
   metrics=['accuracy']
 )
