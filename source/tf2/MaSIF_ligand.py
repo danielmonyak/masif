@@ -214,6 +214,9 @@ class MaSIF_ligand(Model):
                     name="sigma_theta_{}".format(i),
                 )
             )  # 1, n_gauss
+        
+        self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+        self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
  
 
     @tf.function
