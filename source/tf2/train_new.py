@@ -35,6 +35,13 @@ testing_data = tf.data.TFRecordDataset(
 training_data = training_data.map(_parse_function)
 validation_data = validation_data.map(_parse_function)
 testing_data = testing_data.map(_parse_function)
+
+training_data = iter(training_data)
+validation_data = iter(validation_data)
+testing_data = iter(testing_data)
+
+
+
 out_dir = params["model_dir"]
 output_model = out_dir + "model"
 if not os.path.exists(params["model_dir"]):
