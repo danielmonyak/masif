@@ -14,7 +14,7 @@ from sklearn.metrics import confusion_matrix
 import tensorflow as tf
 
 
-continue_training = False
+continue_training = True
 
 
 """
@@ -56,10 +56,10 @@ costfun=params["costfun"],
 num_epochs = 100
 
 if continue_training:
-    best_validation_loss = 1.0318049192428589
-    best_validation_accuracy = 0.6363636363636364
-    total_iterations = 9068
-    last_epoch = 10
+    best_validation_loss = 1.0501139163970947
+    best_validation_accuracy = 0.494949494949495
+    total_iterations = 3627
+    last_epoch = 4
     # Load saved network
     learning_obj.saver.restore(learning_obj.session, output_model)
     print("Loading the saved model...")
