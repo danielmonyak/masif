@@ -1,48 +1,23 @@
 import tensorflow as tf
 import tf_slim as slim
 import numpy as np
-
-
+from tensorflow.keras import layers
 
 #tf.debugging.set_log_device_placement(True)
-
-####
 
 class MaSIF_ligand:
 
     """
     The neural network model.
     """
-
-    def count_number_parameters(self):
-        total_parameters = 0
-        for variable in tf.compat.v1.trainable_variables():
-            # shape is an array of tf.Dimension
-            shape = variable.get_shape()
-            print(variable)
-            # print(shape)
-            # print(len(shape))
-            variable_parameters = 1
-            for dim in shape:
-                # print(dim)
-                variable_parameters *= dim.value
-            print(variable_parameters)
-            total_parameters += variable_parameters
-        print("Total number parameters: %d" % total_parameters)
-
+    @tf.function
     def frobenius_norm(self, tensor):
         square_tensor = tf.square(tensor)
         tensor_sum = tf.reduce_sum(input_tensor=square_tensor)
         frobenius_norm = tf.sqrt(tensor_sum)
         return frobenius_norm
-
-    def build_sparse_matrix_softmax(self, idx_non_zero_values, X, dense_shape_A):
-        A = tf.compat.v1.SparseTensorValue(idx_non_zero_values, tf.squeeze(X), dense_shape_A)
-        A = tf.sparse.reorder(A)  # n_edges x n_edges
-        A = tf.sparse.softmax(A)
-
-        return A
-
+    
+    @tf.function
     def compute_initial_coordinates(self):
         range_rho = [0.0, self.max_rho]
         range_theta = [0, 2 * np.pi]
@@ -66,7 +41,46 @@ class MaSIF_ligand:
         coords = coords.T  # every row contains the coordinates of a grid intersection
         print(coords.shape)
         return coords
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    def count_number_parameters(self):
+        total_parameters = 0
+        for variable in tf.compat.v1.trainable_variables():
+            # shape is an array of tf.Dimension
+            shape = variable.get_shape()
+            print(variable)
+            # print(shape)
+            # print(len(shape))
+            variable_parameters = 1
+            for dim in shape:
+                # print(dim)
+                variable_parameters *= dim.value
+            print(variable_parameters)
+            total_parameters += variable_parameters
+        print("Total number parameters: %d" % total_parameters)
 
+    
+
+    def build_sparse_matrix_softmax(self, idx_non_zero_values, X, dense_shape_A):
+        A = tf.compat.v1.SparseTensorValue(idx_non_zero_values, tf.squeeze(X), dense_shape_A)
+        A = tf.sparse.reorder(A)  # n_edges x n_edges
+        A = tf.sparse.softmax(A)
+
+        return A
+
+    
+    @tf.function
     def inference(
         self,
         input_feat,
@@ -162,7 +176,7 @@ class MaSIF_ligand:
         self.n_feat = int(sum(feat_mask))
 
         ###
-        gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
+        gpus = tf.config.list_logical_devices('GPU')
         gpus_str = [g.name for g in gpus]
         self.strategy = tf.distribute.MirroredStrategy(gpus_str)
         ###
@@ -170,7 +184,7 @@ class MaSIF_ligand:
         # with tf.Graph().as_default() as g:
         with tf.compat.v1.get_default_graph().as_default() as g:
             self.graph = g
-            tf.compat.v1.set_random_seed(0)
+            tensorflow.random.set_seed(0)
             with tf.device(idx_gpu):
                 for pr in range(1):
                     initial_coords = self.compute_initial_coordinates()
@@ -256,6 +270,24 @@ class MaSIF_ligand:
                             )
                         )  # batch_size, n_gauss*1
 
+                    def lambdaLayer(x):
+                        numer = tf.matmul(tf.transpose(x), x)
+                        denom = tf.cast(tf.shape(x)[0], tf.float32)
+                        return ret/denom
+                        
+                    model = keras.Sequential(
+                        [
+                            layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat]),
+                            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
+                            layers.Lambda(function, output_shape=None, mask=None, arguments=None, **kwargs),
+                            layers.Reshape([1, -1]),
+                            layers.Dropout(1 - (self.keep_prob)),
+                            layers.Dense(64, activation="relu"),
+                            layers.Dense(self.n_ligands, activation="relu"),
+                        ]
+                    )
+                        
+                        
                     # global_desc_1 and global_desc_2 are n_feat, batch_size, n_gauss*1
                     # They should be batch_size, n_feat*n_gauss
                     self.global_desc_1 = tf.stack(self.global_desc_1, axis=1)
