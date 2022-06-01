@@ -10,9 +10,9 @@ import sys
 from default_config.masif_opts import masif_opts
 #####
 # Edited by Daniel Monyak
-from MaSIF_ligand import MaSIF_ligand
+from .MaSIF_ligand import MaSIF_ligand
 #####
-from read_ligand_tfrecords import _parse_function
+from .read_ligand_tfrecords import _parse_function
 from sklearn.metrics import confusion_matrix
 import tensorflow as tf
 
@@ -21,6 +21,28 @@ continue_training = True
 
 params = masif_opts["ligand"]
 
+
+# Load dataset
+training_data = tf.data.TFRecordDataset(
+    os.path.join(params["tfrecords_dir"], "training_data_sequenceSplit_30.tfrecord")
+)
+validation_data = tf.data.TFRecordDataset(
+    os.path.join(params["tfrecords_dir"], "validation_data_sequenceSplit_30.tfrecord")
+)
+testing_data = tf.data.TFRecordDataset(
+    os.path.join(params["tfrecords_dir"], "testing_data_sequenceSplit_30.tfrecord")
+)
+training_data = training_data.map(_parse_function)
+validation_data = validation_data.map(_parse_function)
+testing_data = testing_data.map(_parse_function)
+out_dir = params["model_dir"]
+output_model = out_dir + "model"
+if not os.path.exists(params["model_dir"]):
+    os.makedirs(params["model_dir"])
+
+    
+
+# Create Model
 model = MaSIF_ligand(
   params["max_distance"],
   params["n_classes"],
