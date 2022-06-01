@@ -215,38 +215,18 @@ class MaSIF_ligand(Model):
                 )
             )  # 1, n_gauss
  
-        @tf.function
-        def lambdaLayer1(x):
-            return bigPrepData(x)
 
-        @tf.function
-        def lambdaLayer2(x):
-            numer = tf.matmul(tf.transpose(x), x)
-            denom = tf.cast(tf.shape(x)[0], tf.float32)
-            return ret/denom
+    @tf.function
+    def lambdaLayer(x):
+        numer = tf.matmul(tf.transpose(x), x)
+        denom = tf.cast(tf.shape(x)[0], tf.float32)
+        return ret/denom
 
-        model = Sequential(
-            [
-                layers.InputLayer(input_shape= FIGURETHISOUT),
-                layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat]),
-                layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
-                layers.Lambda(lambdaLayer2),
-                layers.Reshape([1, -1]),
-                layers.Dropout(1 - (self.keep_prob)),
-                layers.Dense(64, activation="relu"),
-                layers.Dense(self.n_ligands, activation="relu")
-            ]
-        )
-        opt = keras.optimizers.Adam(learning_rate=learning_rate)
-        loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
-        model.compile(optimizer=opt,
-                      loss=loss_fn,
-                      metrics=['accuracy'])
     def call(self, inputs):
         myLayers=[
             layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
-            layers.Lambda(lambdaLayer2),
+            layers.Lambda(lambdaLayer),
             layers.Reshape([1, -1]),
             layers.Dropout(1 - (self.keep_prob)),
             layers.Dense(64, activation="relu"),
