@@ -32,7 +32,6 @@ class MaSIF_ligand(Model):
 
         coords = np.concatenate((grid_rho_[None, :], grid_theta_[None, :]), axis=0)
         coords = coords.T  # every row contains the coordinates of a grid intersection
-        print(coords.shape)
         return coords
     
     @tf.function
