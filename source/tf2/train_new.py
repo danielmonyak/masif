@@ -18,8 +18,6 @@ continue_training = True
 
 params = masif_opts["ligand"]
 
-print('one')
-
 model = MaSIF_ligand(
   params["max_distance"],
   params["n_classes"],
@@ -28,11 +26,7 @@ model = MaSIF_ligand(
   costfun=params["costfun"],
 )
 
-print('two')
-
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
   metrics=['accuracy']
 )
-
-print('three')
