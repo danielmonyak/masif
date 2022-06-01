@@ -298,9 +298,11 @@ class MaSIF_ligand:
 
                 # Create a session for running Ops on the Graph.
                 # Edited by Daniel Monyak
-                config = tf.ConfigProto(allow_soft_placement=True)
+                config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)
                 config.gpu_options.allow_growth = True
-                self.session = session
+                self.session = tf.Session(config=config)
+
+                #self.session = session
 
                 self.saver = tf.train.Saver()
 
