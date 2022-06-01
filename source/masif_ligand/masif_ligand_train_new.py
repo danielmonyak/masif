@@ -40,7 +40,7 @@ if not os.path.exists(params["model_dir"]):
 config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)
 config.gpu_options.allow_growth = True
 #with tf.Session() as sess:
-with tf.Session(config) as sess:
+with tf.Session(config=config) as sess:
     # Build the neural network model
     learning_obj = MaSIF_ligand(
         sess,
