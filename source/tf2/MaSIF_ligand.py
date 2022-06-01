@@ -286,8 +286,17 @@ class MaSIF_ligand:
                             layers.Dense(self.n_ligands, activation="relu"),
                         ]
                     )
+                    opt = keras.optimizers.Adam(learning_rate=learning_rate)
+                    loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
+                    model.compile(optimizer=opt,
+                                  loss=loss_fn,
+                                  metrics=['accuracy'])
+                    
                         
-                        
+        
+        
+        
+        
                     # global_desc_1 and global_desc_2 are n_feat, batch_size, n_gauss*1
                     # They should be batch_size, n_feat*n_gauss
                     self.global_desc_1 = tf.stack(self.global_desc_1, axis=1)
@@ -337,17 +346,4 @@ class MaSIF_ligand:
                         tf.concat([tf.reshape(g, [-1]) for g in self.var_grad], 0)
                     )
 
-                    # Create a session for running Ops on the Graph.
-                    # Edited by Daniel Monyak
-                    config = tf.compat.v1.ConfigProto(allow_soft_placement=True, log_device_placement=True)
-                    config.gpu_options.allow_growth = True
-                    self.session = tf.compat.v1.Session(config=config)
-
-                    #self.session = session
-
-                    self.saver = tf.compat.v1.train.Saver()
-
-                    # Run the Op to initialize the variables.
-                    init = tf.compat.v1.global_variables_initializer()
-                    self.session.run(init)
                     self.count_number_parameters()
