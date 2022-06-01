@@ -30,3 +30,4 @@ model.compile(optimizer = model.opt,
   loss = model.loss_fn,
   metrics=['accuracy']
 )
+
