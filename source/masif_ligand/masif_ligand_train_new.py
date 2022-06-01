@@ -91,7 +91,7 @@ for num_epoch in range(last_epoch, num_epochs):
     # Compute accuracy on a subset of the training set
     for num_train_sample in range(int(num_training_samples / 10)):
         try:
-            with self.strategy.scope():
+            with learning_obj.strategy.scope():
                 data_element = learning_obj.session.run(training_next_element)
         except:
             continue
@@ -120,7 +120,7 @@ for num_epoch in range(last_epoch, num_epochs):
             learning_obj.keep_prob: 1.0,
         }
 
-        with self.strategy.scope():
+        with learning_obj.strategy.scope():
             training_loss, training_logits = learning_obj.session.run(
                 [learning_obj.data_loss, learning_obj.logits_softmax],
                 feed_dict=feed_dict,
@@ -151,7 +151,7 @@ for num_epoch in range(last_epoch, num_epochs):
     # Compute accuracy on the validation set
     for num_val_sample in range(num_validation_samples):
         try:
-            with self.strategy.scope():
+            with learning_obj.strategy.scope():
                 data_element = learning_obj.session.run(validation_next_element)
         except:
             continue
@@ -178,7 +178,7 @@ for num_epoch in range(last_epoch, num_epochs):
             learning_obj.keep_prob: 1.0,
         }
         
-        with self.strategy.scope():
+        with learning_obj.strategy.scope():
             validation_loss, validation_logits = learning_obj.session.run(
                 [learning_obj.data_loss, learning_obj.logits_softmax],
                 feed_dict=feed_dict,
@@ -210,7 +210,7 @@ for num_epoch in range(last_epoch, num_epochs):
     print("Calulating testing loss")
     for num_test_sample in range(num_testing_samples):
         try:
-            with self.strategy.scope():
+            with learning_obj.strategy.scope():
                 data_element = learning_obj.session.run(testing_next_element)
         except:
             continue
@@ -237,7 +237,7 @@ for num_epoch in range(last_epoch, num_epochs):
             learning_obj.keep_prob: 1.0,
         }
         
-        with self.strategy.scope():
+        with learning_obj.strategy.scope():
             testing_loss, testing_logits = learning_obj.session.run(
                 [learning_obj.data_loss, learning_obj.logits_softmax],
                 feed_dict=feed_dict,
@@ -270,7 +270,7 @@ for num_epoch in range(last_epoch, num_epochs):
     training_next_element = training_iterator.get_next()
     for num_sample in range(num_training_samples):
         try:
-            with self.strategy.scope():
+            with learning_obj.strategy.scope():
                 data_element = learning_obj.session.run(training_next_element)
         except:
             continue
@@ -299,7 +299,7 @@ for num_epoch in range(last_epoch, num_epochs):
             learning_obj.keep_prob: 1.0,
         }
 
-        with self.strategy.scope():
+        with learning_obj.strategy.scope():
             _, training_loss, norm_grad, logits, logits_softmax, computed_loss = learning_obj.session.run(
                 [
                     learning_obj.optimizer,
