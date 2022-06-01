@@ -14,7 +14,7 @@ from sklearn.metrics import confusion_matrix
 import tensorflow as tf
 
 
-continue_training = True
+continue_training = False
 
 
 """
