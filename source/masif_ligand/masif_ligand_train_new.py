@@ -53,36 +53,36 @@ config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)
 config.gpu_options.allow_growth = True
 #with tf.Session() as sess:
 with tf.Session(config=config) as sess:
+    # Build the neural network model
+    learning_obj = MaSIF_ligand(
+        sess,
+        params["max_distance"],
+        params["n_classes"],
+        idx_gpu="/gpu:0",
+        feat_mask=params["feat_mask"],
+        costfun=params["costfun"],
+    )
+
+    num_epochs = 100
+
+    if continue_training:
+        best_validation_loss = 1.0318049192428589
+        best_validation_accuracy = 0.6363636363636364
+        total_iterations = 9068
+        last_epoch = 10
+        # Load saved network
+        learning_obj.saver.restore(learning_obj.session, output_model)
+        print("Loading the saved model...")
+    else:
+        best_validation_loss = 1000
+        best_validation_accuracy = 0.0
+        total_iterations = 0
+        last_epoch = 0
+    
     # Edited by Daniel Monyak
     # Using the GPUs
     #with tf.device(idx_gpu):
     with strategy.scope():
-        # Build the neural network model
-        learning_obj = MaSIF_ligand(
-            sess,
-            params["max_distance"],
-            params["n_classes"],
-            idx_gpu="/gpu:0",
-            feat_mask=params["feat_mask"],
-            costfun=params["costfun"],
-        )
-        
-        num_epochs = 100
-        
-        if continue_training:
-            best_validation_loss = 1.0318049192428589
-            best_validation_accuracy = 0.6363636363636364
-            total_iterations = 9068
-            last_epoch = 10
-            # Load saved network
-            learning_obj.saver.restore(learning_obj.session, output_model)
-            print("Loading the saved model...")
-        else:
-            best_validation_loss = 1000
-            best_validation_accuracy = 0.0
-            total_iterations = 0
-            last_epoch = 0
-            
         for num_epoch in range(last_epoch, num_epochs):
             ## Changed
             num_training_samples = 1036
