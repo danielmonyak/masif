@@ -25,10 +25,7 @@ learning_obj = MaSIF_ligand(
   feat_mask=params["feat_mask"],
   costfun=params["costfun"],
 )
-
-opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
-model.compile(optimizer=opt,
-  loss=loss_fn,
+model.compile(optimizer = learning_obj.opt,
+  loss = learning_obj.loss_fn,
   metrics=['accuracy']
 )
