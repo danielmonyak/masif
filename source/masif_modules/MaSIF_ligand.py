@@ -1,11 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-# Edited by Daniel Monyak
-tf.debugging.set_log_device_placement(True)
-gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
-gpus = [g.name for g in gpus]
-strategy = tf.distribute.MirroredStrategy(gpus)
+
 
 
 class MaSIF_ligand:
@@ -167,151 +163,147 @@ class MaSIF_ligand:
             self.graph = g
             tf.set_random_seed(0)
             
-            # Edited by Daniel Monyak
-            # Using the GPUs
-            #with tf.device(idx_gpu):
-            with strategy.scope():
-                for pr in range(1):
-                    initial_coords = self.compute_initial_coordinates()
-                    # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
-                    mu_rho_initial = np.expand_dims(initial_coords[:, 0], 0).astype(
-                        "float32"
-                    )
-                    mu_theta_initial = np.expand_dims(initial_coords[:, 1], 0).astype(
-                        "float32"
-                    )
-                    self.mu_rho = []
-                    self.mu_theta = []
-                    self.sigma_rho = []
-                    self.sigma_theta = []
-                    for i in range(self.n_feat):
-                        self.mu_rho.append(
-                            tf.Variable(mu_rho_initial, name="mu_rho_{}".format(i))
-                        )  # 1, n_gauss
-                        self.mu_theta.append(
-                            tf.Variable(mu_theta_initial, name="mu_theta_{}".format(i))
-                        )  # 1, n_gauss
-                        self.sigma_rho.append(
-                            tf.Variable(
-                                np.ones_like(mu_rho_initial) * self.sigma_rho_init,
-                                name="sigma_rho_{}".format(i),
-                            )
-                        )  # 1, n_gauss
-                        self.sigma_theta.append(
-                            tf.Variable(
-                                (np.ones_like(mu_theta_initial) * self.sigma_theta_init),
-                                name="sigma_theta_{}".format(i),
-                            )
-                        )  # 1, n_gauss
-
-                    self.keep_prob = tf.placeholder(tf.float32)
-                    self.rho_coords = tf.placeholder(
-                        tf.float32
-                    )  # batch_size, n_vertices, 1
-                    self.theta_coords = tf.placeholder(
-                        tf.float32
-                    )  # batch_size, n_vertices, 1
-                    self.input_feat = tf.placeholder(
-                        tf.float32, shape=[None, None, self.n_feat]
-                    )  # batch_size, n_vertices, n_feat
-                    self.mask = tf.placeholder(tf.float32)  # batch_size, n_vertices, 1
-                    self.labels = tf.placeholder(tf.float32)
-                    self.global_desc_1 = []
-                    b_conv = []
-                    for i in range(self.n_feat):
-                        b_conv.append(
-                            tf.Variable(
-                                tf.zeros([self.n_thetas * self.n_rhos]),
-                                name="b_conv_{}".format(i),
-                            )
+            for pr in range(1):
+                initial_coords = self.compute_initial_coordinates()
+                # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
+                mu_rho_initial = np.expand_dims(initial_coords[:, 0], 0).astype(
+                    "float32"
+                )
+                mu_theta_initial = np.expand_dims(initial_coords[:, 1], 0).astype(
+                    "float32"
+                )
+                self.mu_rho = []
+                self.mu_theta = []
+                self.sigma_rho = []
+                self.sigma_theta = []
+                for i in range(self.n_feat):
+                    self.mu_rho.append(
+                        tf.Variable(mu_rho_initial, name="mu_rho_{}".format(i))
+                    )  # 1, n_gauss
+                    self.mu_theta.append(
+                        tf.Variable(mu_theta_initial, name="mu_theta_{}".format(i))
+                    )  # 1, n_gauss
+                    self.sigma_rho.append(
+                        tf.Variable(
+                            np.ones_like(mu_rho_initial) * self.sigma_rho_init,
+                            name="sigma_rho_{}".format(i),
                         )
-                    for i in range(self.n_feat):
-                        # self.flipped_input_feat = tf.concat([tf.expand_dims(-self.input_feat[:,:,0], 2), -self.input_feat[:,:,1:]], 2)
-                        my_input_feat = tf.expand_dims(self.input_feat[:, :, i], 2)
-
-                        # self.flipped_theta_coords = 0*self.theta_coords;
-
-                        W_conv = tf.get_variable(
-                            "W_conv_{}".format(i),
-                            shape=[
-                                self.n_thetas * self.n_rhos,
-                                self.n_thetas * self.n_rhos,
-                            ],
-                            initializer=tf.contrib.layers.xavier_initializer(),
+                    )  # 1, n_gauss
+                    self.sigma_theta.append(
+                        tf.Variable(
+                            (np.ones_like(mu_theta_initial) * self.sigma_theta_init),
+                            name="sigma_theta_{}".format(i),
                         )
+                    )  # 1, n_gauss
 
-                        self.global_desc_1.append(
-                            self.inference(
-                                my_input_feat,
-                                self.rho_coords,
-                                self.theta_coords,
-                                self.mask,
-                                W_conv,
-                                b_conv[i],
-                                self.mu_rho[i],
-                                self.sigma_rho[i],
-                                self.mu_theta[i],
-                                self.sigma_theta[i],
-                            )
-                        )  # batch_size, n_gauss*1
+                self.keep_prob = tf.placeholder(tf.float32)
+                self.rho_coords = tf.placeholder(
+                    tf.float32
+                )  # batch_size, n_vertices, 1
+                self.theta_coords = tf.placeholder(
+                    tf.float32
+                )  # batch_size, n_vertices, 1
+                self.input_feat = tf.placeholder(
+                    tf.float32, shape=[None, None, self.n_feat]
+                )  # batch_size, n_vertices, n_feat
+                self.mask = tf.placeholder(tf.float32)  # batch_size, n_vertices, 1
+                self.labels = tf.placeholder(tf.float32)
+                self.global_desc_1 = []
+                b_conv = []
+                for i in range(self.n_feat):
+                    b_conv.append(
+                        tf.Variable(
+                            tf.zeros([self.n_thetas * self.n_rhos]),
+                            name="b_conv_{}".format(i),
+                        )
+                    )
+                for i in range(self.n_feat):
+                    # self.flipped_input_feat = tf.concat([tf.expand_dims(-self.input_feat[:,:,0], 2), -self.input_feat[:,:,1:]], 2)
+                    my_input_feat = tf.expand_dims(self.input_feat[:, :, i], 2)
 
-                    # global_desc_1 and global_desc_2 are n_feat, batch_size, n_gauss*1
-                    # They should be batch_size, n_feat*n_gauss
-                    self.global_desc_1 = tf.stack(self.global_desc_1, axis=1)
-                    self.global_desc_1 = tf.reshape(
-                        self.global_desc_1, [-1, self.n_thetas * self.n_rhos * self.n_feat]
+                    # self.flipped_theta_coords = 0*self.theta_coords;
+
+                    W_conv = tf.get_variable(
+                        "W_conv_{}".format(i),
+                        shape=[
+                            self.n_thetas * self.n_rhos,
+                            self.n_thetas * self.n_rhos,
+                        ],
+                        initializer=tf.contrib.layers.xavier_initializer(),
                     )
 
-                    # refine global desc with MLP
-                    self.global_desc_1 = tf.contrib.layers.fully_connected(
-                        self.global_desc_1,
-                        self.n_thetas * self.n_rhos,
-                        activation_fn=tf.nn.relu,
-                    )
-                    self.global_desc_1 = tf.matmul(
-                        tf.transpose(self.global_desc_1), self.global_desc_1
-                    ) / tf.cast(tf.shape(self.global_desc_1)[0], tf.float32)
-                    self.global_desc_1 = tf.reshape(self.global_desc_1, [1, -1])
-                    self.global_desc_1 = tf.nn.dropout(self.global_desc_1, self.keep_prob)
-                    self.global_desc_1 = tf.contrib.layers.fully_connected(
-                        self.global_desc_1, 64, activation_fn=tf.nn.relu
-                    )
-                    self.logits = tf.contrib.layers.fully_connected(
-                        self.global_desc_1, self.n_ligands, activation_fn=tf.identity
-                    )
-                    # compute data loss
-                    self.labels = tf.expand_dims(self.labels, axis=0)
-                    self.logits = tf.expand_dims(self.logits, axis=0)
-                    self.logits_softmax = tf.nn.softmax(self.logits)
-                    self.computed_loss = tf.reduce_mean(
-                        -tf.reduce_sum(self.labels * tf.log(self.logits_softmax), [1])
-                    )
+                    self.global_desc_1.append(
+                        self.inference(
+                            my_input_feat,
+                            self.rho_coords,
+                            self.theta_coords,
+                            self.mask,
+                            W_conv,
+                            b_conv[i],
+                            self.mu_rho[i],
+                            self.sigma_rho[i],
+                            self.mu_theta[i],
+                            self.sigma_theta[i],
+                        )
+                    )  # batch_size, n_gauss*1
 
-                    self.data_loss = tf.nn.softmax_cross_entropy_with_logits(
-                        labels=self.labels, logits=self.logits
-                    )
-                    # definition of the solver
-                    self.optimizer = tf.train.AdamOptimizer(
-                        learning_rate=learning_rate
-                    ).minimize(self.data_loss)
+                # global_desc_1 and global_desc_2 are n_feat, batch_size, n_gauss*1
+                # They should be batch_size, n_feat*n_gauss
+                self.global_desc_1 = tf.stack(self.global_desc_1, axis=1)
+                self.global_desc_1 = tf.reshape(
+                    self.global_desc_1, [-1, self.n_thetas * self.n_rhos * self.n_feat]
+                )
 
-                    self.var_grad = tf.gradients(self.data_loss, tf.trainable_variables())
-                    for k in range(len(self.var_grad)):
-                        if self.var_grad[k] is None:
-                            print(tf.trainable_variables()[k])
-                    self.norm_grad = self.frobenius_norm(
-                        tf.concat([tf.reshape(g, [-1]) for g in self.var_grad], 0)
-                    )
+                # refine global desc with MLP
+                self.global_desc_1 = tf.contrib.layers.fully_connected(
+                    self.global_desc_1,
+                    self.n_thetas * self.n_rhos,
+                    activation_fn=tf.nn.relu,
+                )
+                self.global_desc_1 = tf.matmul(
+                    tf.transpose(self.global_desc_1), self.global_desc_1
+                ) / tf.cast(tf.shape(self.global_desc_1)[0], tf.float32)
+                self.global_desc_1 = tf.reshape(self.global_desc_1, [1, -1])
+                self.global_desc_1 = tf.nn.dropout(self.global_desc_1, self.keep_prob)
+                self.global_desc_1 = tf.contrib.layers.fully_connected(
+                    self.global_desc_1, 64, activation_fn=tf.nn.relu
+                )
+                self.logits = tf.contrib.layers.fully_connected(
+                    self.global_desc_1, self.n_ligands, activation_fn=tf.identity
+                )
+                # compute data loss
+                self.labels = tf.expand_dims(self.labels, axis=0)
+                self.logits = tf.expand_dims(self.logits, axis=0)
+                self.logits_softmax = tf.nn.softmax(self.logits)
+                self.computed_loss = tf.reduce_mean(
+                    -tf.reduce_sum(self.labels * tf.log(self.logits_softmax), [1])
+                )
 
-                    # Create a session for running Ops on the Graph.
-                    # Edited by Daniel Monyak
-                    #config = tf.ConfigProto(allow_soft_placement=True)
-                    #config.gpu_options.allow_growth = True
-                    self.session = session
-                    
-                    self.saver = tf.train.Saver()
+                self.data_loss = tf.nn.softmax_cross_entropy_with_logits(
+                    labels=self.labels, logits=self.logits
+                )
+                # definition of the solver
+                self.optimizer = tf.train.AdamOptimizer(
+                    learning_rate=learning_rate
+                ).minimize(self.data_loss)
 
-                    # Run the Op to initialize the variables.
-                    init = tf.global_variables_initializer()
-                    self.session.run(init)
-                    self.count_number_parameters()
+                self.var_grad = tf.gradients(self.data_loss, tf.trainable_variables())
+                for k in range(len(self.var_grad)):
+                    if self.var_grad[k] is None:
+                        print(tf.trainable_variables()[k])
+                self.norm_grad = self.frobenius_norm(
+                    tf.concat([tf.reshape(g, [-1]) for g in self.var_grad], 0)
+                )
+
+                # Create a session for running Ops on the Graph.
+                # Edited by Daniel Monyak
+                #config = tf.ConfigProto(allow_soft_placement=True)
+                #config.gpu_options.allow_growth = True
+                self.session = session
+
+                self.saver = tf.train.Saver()
+
+                # Run the Op to initialize the variables.
+                init = tf.global_variables_initializer()
+                self.session.run(init)
+                self.count_number_parameters()
