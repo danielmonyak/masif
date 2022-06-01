@@ -224,6 +224,7 @@ class MaSIF_ligand(Model):
         denom = tf.cast(tf.shape(x)[0], tf.float32)
         return ret/denom
 
+    @tf.function
     def call(self, inputs):
         myLayers=[
             layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat]),
