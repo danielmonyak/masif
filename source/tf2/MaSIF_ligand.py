@@ -1,7 +1,7 @@
 import tensorflow as tf
 import tf_slim as slim
 import numpy as np
-from tensorflow.keras import layers
+from tensorflow.keras import layers, Sequential, initializers
 
 #tf.debugging.set_log_device_placement(True)
 
@@ -42,6 +42,52 @@ class MaSIF_ligand:
         print(coords.shape)
         return coords
     
+    @tf.function
+    def bigPrepData(keep_prob, rho_coords, theta_coords, input_feat, mask, labels):
+        self.keep_prob = keep_prob
+        self.rho_coords = rho_coords
+        self.theta_coords = theta_coords
+        self.input_feat = input_feat
+        self.mask = mask
+        self.labels = labels
+
+        self.global_desc_1 = []
+        b_conv = []
+        for i in range(self.n_feat):
+            b_conv.append(
+                tf.Variable(
+                    tf.zeros([self.n_thetas * self.n_rhos]),
+                    name="b_conv_{}".format(i),
+                )
+            )
+        for i in range(self.n_feat):
+            my_input_feat = tf.expand_dims(self.input_feat[:, :, i], 2)
+
+            #W_conv = tf.compat.v1.get_variable("W_conv_{}".format(i), shape=[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos], initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"))
+            W_conv = tf.Variable(
+                initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=[
+                    self.n_thetas * self.n_rhos,
+                    self.n_thetas * self.n_rhos,
+                ]),
+                name = "W_conv_{}".format(i)
+            )
+
+            self.global_desc_1.append(
+                self.inference(
+                    my_input_feat,
+                    self.rho_coords,
+                    self.theta_coords,
+                    self.mask,
+                    W_conv,
+                    b_conv[i],
+                    self.mu_rho[i],
+                    self.sigma_rho[i],
+                    self.mu_theta[i],
+                    self.sigma_theta[i],
+                )
+            )  # batch_size, n_gauss*1
+
+            return tf.stack(self.global_desc_1, axis=1)
     
     
     
@@ -52,8 +98,7 @@ class MaSIF_ligand:
     
     
     
-    
-    
+    @tf.function
     def count_number_parameters(self):
         total_parameters = 0
         for variable in tf.compat.v1.trainable_variables():
@@ -71,7 +116,7 @@ class MaSIF_ligand:
         print("Total number parameters: %d" % total_parameters)
 
     
-
+    @tf.function
     def build_sparse_matrix_softmax(self, idx_non_zero_values, X, dense_shape_A):
         A = tf.compat.v1.SparseTensorValue(idx_non_zero_values, tf.squeeze(X), dense_shape_A)
         A = tf.sparse.reorder(A)  # n_edges x n_edges
@@ -175,175 +220,97 @@ class MaSIF_ligand:
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
 
-        ###
-        gpus = tf.config.list_logical_devices('GPU')
-        gpus_str = [g.name for g in gpus]
-        self.strategy = tf.distribute.MirroredStrategy(gpus_str)
-        ###
+        tensorflow.random.set_seed(0)
         
-        # with tf.Graph().as_default() as g:
-        with tf.compat.v1.get_default_graph().as_default() as g:
-            self.graph = g
-            tensorflow.random.set_seed(0)
-            with tf.device(idx_gpu):
-                for pr in range(1):
-                    initial_coords = self.compute_initial_coordinates()
-                    # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
-                    mu_rho_initial = np.expand_dims(initial_coords[:, 0], 0).astype(
-                        "float32"
-                    )
-                    mu_theta_initial = np.expand_dims(initial_coords[:, 1], 0).astype(
-                        "float32"
-                    )
-                    self.mu_rho = []
-                    self.mu_theta = []
-                    self.sigma_rho = []
-                    self.sigma_theta = []
-                    for i in range(self.n_feat):
-                        self.mu_rho.append(
-                            tf.Variable(mu_rho_initial, name="mu_rho_{}".format(i))
-                        )  # 1, n_gauss
-                        self.mu_theta.append(
-                            tf.Variable(mu_theta_initial, name="mu_theta_{}".format(i))
-                        )  # 1, n_gauss
-                        self.sigma_rho.append(
-                            tf.Variable(
-                                np.ones_like(mu_rho_initial) * self.sigma_rho_init,
-                                name="sigma_rho_{}".format(i),
-                            )
-                        )  # 1, n_gauss
-                        self.sigma_theta.append(
-                            tf.Variable(
-                                (np.ones_like(mu_theta_initial) * self.sigma_theta_init),
-                                name="sigma_theta_{}".format(i),
-                            )
-                        )  # 1, n_gauss
-
-                    self.keep_prob = tf.compat.v1.placeholder(tf.float32)
-                    self.rho_coords = tf.compat.v1.placeholder(
-                        tf.float32
-                    )  # batch_size, n_vertices, 1
-                    self.theta_coords = tf.compat.v1.placeholder(
-                        tf.float32
-                    )  # batch_size, n_vertices, 1
-                    self.input_feat = tf.compat.v1.placeholder(
-                        tf.float32, shape=[None, None, self.n_feat]
-                    )  # batch_size, n_vertices, n_feat
-                    self.mask = tf.compat.v1.placeholder(tf.float32)  # batch_size, n_vertices, 1
-                    self.labels = tf.compat.v1.placeholder(tf.float32)
-                    self.global_desc_1 = []
-                    b_conv = []
-                    for i in range(self.n_feat):
-                        b_conv.append(
-                            tf.Variable(
-                                tf.zeros([self.n_thetas * self.n_rhos]),
-                                name="b_conv_{}".format(i),
-                            )
-                        )
-                    for i in range(self.n_feat):
-                        # self.flipped_input_feat = tf.concat([tf.expand_dims(-self.input_feat[:,:,0], 2), -self.input_feat[:,:,1:]], 2)
-                        my_input_feat = tf.expand_dims(self.input_feat[:, :, i], 2)
-
-                        # self.flipped_theta_coords = 0*self.theta_coords;
-
-                        W_conv = tf.compat.v1.get_variable(
-                            "W_conv_{}".format(i),
-                            shape=[
-                                self.n_thetas * self.n_rhos,
-                                self.n_thetas * self.n_rhos,
-                            ],
-                            initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"),
-                        )
-
-                        self.global_desc_1.append(
-                            self.inference(
-                                my_input_feat,
-                                self.rho_coords,
-                                self.theta_coords,
-                                self.mask,
-                                W_conv,
-                                b_conv[i],
-                                self.mu_rho[i],
-                                self.sigma_rho[i],
-                                self.mu_theta[i],
-                                self.sigma_theta[i],
-                            )
-                        )  # batch_size, n_gauss*1
-
-                    def lambdaLayer(x):
-                        numer = tf.matmul(tf.transpose(x), x)
-                        denom = tf.cast(tf.shape(x)[0], tf.float32)
-                        return ret/denom
-                        
-                    model = keras.Sequential(
-                        [
-                            layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat]),
-                            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
-                            layers.Lambda(function, output_shape=None, mask=None, arguments=None, **kwargs),
-                            layers.Reshape([1, -1]),
-                            layers.Dropout(1 - (self.keep_prob)),
-                            layers.Dense(64, activation="relu"),
-                            layers.Dense(self.n_ligands, activation="relu"),
-                        ]
-                    )
-                    opt = keras.optimizers.Adam(learning_rate=learning_rate)
-                    loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
-                    model.compile(optimizer=opt,
-                                  loss=loss_fn,
-                                  metrics=['accuracy'])
-                    
-                        
+        
+        initial_coords = self.compute_initial_coordinates()
+        # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
+        mu_rho_initial = np.expand_dims(initial_coords[:, 0], 0).astype(
+            "float32"
+        )
+        mu_theta_initial = np.expand_dims(initial_coords[:, 1], 0).astype(
+            "float32"
+        )
+        self.mu_rho = []
+        self.mu_theta = []
+        self.sigma_rho = []
+        self.sigma_theta = []
+        for i in range(self.n_feat):
+            self.mu_rho.append(
+                tf.Variable(mu_rho_initial, name="mu_rho_{}".format(i))
+            )  # 1, n_gauss
+            self.mu_theta.append(
+                tf.Variable(mu_theta_initial, name="mu_theta_{}".format(i))
+            )  # 1, n_gauss
+            self.sigma_rho.append(
+                tf.Variable(
+                    np.ones_like(mu_rho_initial) * self.sigma_rho_init,
+                    name="sigma_rho_{}".format(i),
+                )
+            )  # 1, n_gauss
+            self.sigma_theta.append(
+                tf.Variable(
+                    (np.ones_like(mu_theta_initial) * self.sigma_theta_init),
+                    name="sigma_theta_{}".format(i),
+                )
+            )  # 1, n_gauss
+ 
         
         
         
-        
-                    # global_desc_1 and global_desc_2 are n_feat, batch_size, n_gauss*1
-                    # They should be batch_size, n_feat*n_gauss
-                    self.global_desc_1 = tf.stack(self.global_desc_1, axis=1)
-                    self.global_desc_1 = tf.reshape(
-                        self.global_desc_1, [-1, self.n_thetas * self.n_rhos * self.n_feat]
-                    )
+        @tf.function
+        def lambdaLayer1(x):
+            return bigPrepData(x)
 
-                    # refine global desc with MLP
-                    self.global_desc_1 = slim.fully_connected(
-                        self.global_desc_1,
-                        self.n_thetas * self.n_rhos,
-                        activation_fn=tf.nn.relu,
-                    )
-                    self.global_desc_1 = tf.matmul(
-                        tf.transpose(a=self.global_desc_1), self.global_desc_1
-                    ) / tf.cast(tf.shape(input=self.global_desc_1)[0], tf.float32)
-                    self.global_desc_1 = tf.reshape(self.global_desc_1, [1, -1])
-                    self.global_desc_1 = tf.nn.dropout(self.global_desc_1, 1 - (self.keep_prob))
-                    self.global_desc_1 = slim.fully_connected(
-                        self.global_desc_1, 64, activation_fn=tf.nn.relu
-                    )
-                    self.logits = slim.fully_connected(
-                        self.global_desc_1, self.n_ligands, activation_fn=tf.identity
-                    )
-                    # compute data loss
-                    self.labels = tf.expand_dims(self.labels, axis=0)
-                    self.logits = tf.expand_dims(self.logits, axis=0)
-                    self.logits_softmax = tf.nn.softmax(self.logits)
-                    self.computed_loss = tf.reduce_mean(
-                        input_tensor=-tf.reduce_sum(input_tensor=self.labels * tf.math.log(self.logits_softmax), axis=[1])
-                    )
+        @tf.function
+        def lambdaLayer2(x):
+            numer = tf.matmul(tf.transpose(x), x)
+            denom = tf.cast(tf.shape(x)[0], tf.float32)
+            return ret/denom
 
-                    self.data_loss = tf.nn.softmax_cross_entropy_with_logits(
-                        labels=tf.stop_gradient(self.labels), logits=self.logits
-                    )
-                    # definition of the solver
-                    # Edited by Daniel Monyak
-                    self.optimizer = tf.compat.v1.train.AdamOptimizer(
-                        learning_rate=learning_rate
-                    ).minimize(self.data_loss)
+        model = Sequential(
+            [
+                layers.InputLayer(input_shape= FIGURETHISOUT),
+                layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat]),
+                layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
+                layers.Lambda(lambdaLayer2),
+                layers.Reshape([1, -1]),
+                layers.Dropout(1 - (self.keep_prob)),
+                layers.Dense(64, activation="relu"),
+                layers.Dense(self.n_ligands, activation="relu"),
+            ]
+        )
+        opt = keras.optimizers.Adam(learning_rate=learning_rate)
+        loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
+        model.compile(optimizer=opt,
+                      loss=loss_fn,
+                      metrics=['accuracy'])
 
-                    self.var_grad = tf.gradients(ys=self.data_loss, xs=tf.compat.v1.trainable_variables())
-                    for k in range(len(self.var_grad)):
-                        if self.var_grad[k] is None:
-                            print(tf.compat.v1.trainable_variables()[k])
-                    self.norm_grad = self.frobenius_norm(
-                        tf.concat([tf.reshape(g, [-1]) for g in self.var_grad], 0)
-                    )
 
-                    self.count_number_parameters()
+
+        # compute data loss
+        self.labels = tf.expand_dims(self.labels, axis=0)
+        self.logits = tf.expand_dims(self.logits, axis=0)
+        self.logits_softmax = tf.nn.softmax(self.logits)
+        self.computed_loss = tf.reduce_mean(
+            input_tensor=-tf.reduce_sum(input_tensor=self.labels * tf.math.log(self.logits_softmax), axis=[1])
+        )
+
+        self.data_loss = tf.nn.softmax_cross_entropy_with_logits(
+            labels=tf.stop_gradient(self.labels), logits=self.logits
+        )
+        # definition of the solver
+        # Edited by Daniel Monyak
+        self.optimizer = tf.compat.v1.train.AdamOptimizer(
+            learning_rate=learning_rate
+        ).minimize(self.data_loss)
+
+        self.var_grad = tf.gradients(ys=self.data_loss, xs=tf.compat.v1.trainable_variables())
+        for k in range(len(self.var_grad)):
+            if self.var_grad[k] is None:
+                print(tf.compat.v1.trainable_variables()[k])
+        self.norm_grad = self.frobenius_norm(
+            tf.concat([tf.reshape(g, [-1]) for g in self.var_grad], 0)
+        )
+
+        self.count_number_parameters()
