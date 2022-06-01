@@ -283,7 +283,8 @@ class MaSIF_ligand:
                     labels=self.labels, logits=self.logits
                 )
                 # definition of the solver
-                self.optimizer = tf.train.AdamOptimizer(
+                # Edited by Daniel Monyak
+                self.optimizer = tf.compat.v1.train.AdamOptimizer(
                     learning_rate=learning_rate
                 ).minimize(self.data_loss)
 
