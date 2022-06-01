@@ -180,7 +180,7 @@ class MaSIF_ligand(Model):
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
 
-        tensorflow.random.set_seed(0)
+        tf.random.set_seed(0)
         
         
         initial_coords = self.compute_initial_coordinates()
