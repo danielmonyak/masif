@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-
+@tf.function
 def _parse_function(example_proto):
     keys_to_features = {
         "input_feat_shape": tf.io.FixedLenFeature([3], dtype=tf.int64),
