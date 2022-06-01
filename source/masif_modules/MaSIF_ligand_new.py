@@ -170,8 +170,7 @@ class MaSIF_ligand:
         with tf.get_default_graph().as_default() as g:
             self.graph = g
             tf.set_random_seed(0)
-            #with tf.device(idx_gpu):
-            with self.strategy.scope():
+            with tf.device(idx_gpu):
                 for pr in range(1):
                     initial_coords = self.compute_initial_coordinates()
                     # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
