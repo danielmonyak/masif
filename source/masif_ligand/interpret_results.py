@@ -14,14 +14,13 @@ import tensorflow as tf
 params = masif_opts["ligand"]
 test_set_out_dir = params["test_set_out_dir"]
 
+saved_pdbs = np.loadtxt('saved_pdbs.txt', dtype='str')
 '''
 # Load testing data
 testing_data = tf.data.TFRecordDataset(
     os.path.join(params["tfrecords_dir"], "testing_data_sequenceSplit_30.tfrecord")
 )
 testing_data = testing_data.map(_parse_function)
-
-saved_pdbs = np.loadtxt('saved_pdbs.txt', dtype='str')
 
 testing_iterator = testing_data.make_one_shot_iterator()
 testing_next_element = testing_iterator.get_next()
