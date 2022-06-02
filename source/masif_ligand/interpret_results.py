@@ -21,7 +21,7 @@ testing_data = tf.data.TFRecordDataset(
 testing_data = testing_data.map(_parse_function)
 
 n_ligands = params["n_classes"]
-saved_pdbs = np.loadtxt('saved_pdbs.txt')
+saved_pdbs = np.loadtxt('saved_pdbs.txt', dtype='str')
 
 '''num_test_samples = 290
 with tf.Session() as sess:
