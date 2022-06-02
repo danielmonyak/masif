@@ -34,84 +34,83 @@ if not os.path.exists(test_set_out_dir):
     os.makedirs(test_set_out_dir)
 
 
-with tf.Session() as sess:
-    # Build network
-    learning_obj = MaSIF_ligand(
-        params["max_distance"],
-        params["n_classes"],
-        idx_gpu="/gpu:0",
-        feat_mask=params["feat_mask"],
-        costfun=params["costfun"],
-    )
-    # Load pretrained network
-    learning_obj.saver.restore(learning_obj.session, output_model)
+# Build network
+learning_obj = MaSIF_ligand(
+    params["max_distance"],
+    params["n_classes"],
+    idx_gpu="/gpu:0",
+    feat_mask=params["feat_mask"],
+    costfun=params["costfun"],
+)
+# Load pretrained network
+learning_obj.saver.restore(learning_obj.session, output_model)
 
-    print('Loaded model')
-    
-    num_test_samples = 290
-    testing_iterator = testing_data.make_one_shot_iterator()
-    testing_next_element = testing_iterator.get_next()
+print('Loaded model')
 
-    all_logits_softmax = []
-    all_labels = []
-    all_pdbs = []
-    all_data_loss = []
-    
-    print('Starting the loop')
-    for num_test_sample in range(num_test_samples):
-        print('\nnum_test_sample: ', num_test_sample)
-        try:
-            data_element = sess.run(testing_next_element)
-        except:
+num_test_samples = 290
+testing_iterator = testing_data.make_one_shot_iterator()
+testing_next_element = testing_iterator.get_next()
+
+all_logits_softmax = []
+all_labels = []
+all_pdbs = []
+all_data_loss = []
+
+print('Starting the loop')
+for num_test_sample in range(num_test_samples):
+    print('\nnum_test_sample: ', num_test_sample)
+    try:
+        data_element = learning_obj.session.run(testing_next_element)
+    except:
+        continue
+
+    print(num_test_sample)
+
+    labels = data_element[4]
+    n_ligands = labels.shape[1]
+    pdb_logits_softmax = []
+    pdb_labels = []
+    for ligand in range(n_ligands):
+        print('ligand: ', ligand)
+
+        # Rows indicate point number and columns ligand type
+        pocket_points = np.where(labels[:, ligand] != 0.0)[0]
+        label = np.max(labels[:, ligand]) - 1
+        pocket_labels = np.zeros(7, dtype=np.float32)
+        pocket_labels[label] = 1.0
+        npoints = pocket_points.shape[0]
+        if npoints < 32:
             continue
+        pdb_labels.append(label)
+        pdb = data_element[5]
+        # all_pdbs.append(pdb)
 
-        print(num_test_sample)
+        samples_logits_softmax = []
+        samples_data_loss = []
+        # Make 100 predictions
+        for i in range(100):
+            # Sample pocket randomly
+            sample = np.random.choice(pocket_points, 32, replace=False)
+            feed_dict = {
+                learning_obj.input_feat: data_element[0][sample, :, :],
+                learning_obj.rho_coords: np.expand_dims(data_element[1], -1)[
+                    sample, :, :
+                ],
+                learning_obj.theta_coords: np.expand_dims(data_element[2], -1)[
+                    sample, :, :
+                ],
+                learning_obj.mask: data_element[3][sample, :, :],
+                learning_obj.labels: pocket_labels,
+                learning_obj.keep_prob: 1.0,
+            }
 
-        labels = data_element[4]
-        n_ligands = labels.shape[1]
-        pdb_logits_softmax = []
-        pdb_labels = []
-        for ligand in range(n_ligands):
-            print('ligand: ', ligand)
-            
-            # Rows indicate point number and columns ligand type
-            pocket_points = np.where(labels[:, ligand] != 0.0)[0]
-            label = np.max(labels[:, ligand]) - 1
-            pocket_labels = np.zeros(7, dtype=np.float32)
-            pocket_labels[label] = 1.0
-            npoints = pocket_points.shape[0]
-            if npoints < 32:
-                continue
-            pdb_labels.append(label)
-            pdb = data_element[5]
-            # all_pdbs.append(pdb)
+            logits_softmax, data_loss = learning_obj.session.run(
+                [learning_obj.logits_softmax, learning_obj.data_loss],
+                feed_dict=feed_dict,
+            )
+            samples_logits_softmax.append(logits_softmax)
+            samples_data_loss.append(data_loss)
 
-            samples_logits_softmax = []
-            samples_data_loss = []
-            # Make 100 predictions
-            for i in range(100):
-                # Sample pocket randomly
-                sample = np.random.choice(pocket_points, 32, replace=False)
-                feed_dict = {
-                    learning_obj.input_feat: data_element[0][sample, :, :],
-                    learning_obj.rho_coords: np.expand_dims(data_element[1], -1)[
-                        sample, :, :
-                    ],
-                    learning_obj.theta_coords: np.expand_dims(data_element[2], -1)[
-                        sample, :, :
-                    ],
-                    learning_obj.mask: data_element[3][sample, :, :],
-                    learning_obj.labels: pocket_labels,
-                    learning_obj.keep_prob: 1.0,
-                }
-
-                logits_softmax, data_loss = learning_obj.session.run(
-                    [learning_obj.logits_softmax, learning_obj.data_loss],
-                    feed_dict=feed_dict,
-                )
-                samples_logits_softmax.append(logits_softmax)
-                samples_data_loss.append(data_loss)
-
-            pdb_logits_softmax.append(samples_logits_softmax)
-        np.save(test_set_out_dir + "{}_labels.npy".format(pdb), pdb_labels)
-        np.save(test_set_out_dir + "{}_logits.npy".format(pdb), pdb_logits_softmax)
+        pdb_logits_softmax.append(samples_logits_softmax)
+    np.save(test_set_out_dir + "{}_labels.npy".format(pdb), pdb_labels)
+    np.save(test_set_out_dir + "{}_logits.npy".format(pdb), pdb_logits_softmax)
