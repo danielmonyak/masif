@@ -34,6 +34,8 @@ n_ligands = labels.shape[1]
 pdb_logits_softmax = []
 pdb_labels = []
 
+print('pdb: ', data_element[5])
+
 print('labels: ', labels)
 print('n_ligands: ', n_ligands)
 
@@ -48,7 +50,7 @@ print('label: ', label)
 pocket_labels = np.zeros(7, dtype=np.float32)
 pocket_labels[label] = 1.0
 npoints = pocket_points.shape[0]
-print(npoints)
+print('npoints', npoints)
 
 pdb_labels.append(label)
 pdb = data_element[5]
