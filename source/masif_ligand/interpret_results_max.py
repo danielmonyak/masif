@@ -8,9 +8,10 @@ import sys
 from default_config.masif_opts import masif_opts
 from masif_modules.MaSIF_ligand_new import MaSIF_ligand
 from masif_modules.read_ligand_tfrecords import _parse_function
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import tensorflow as tf
 import pandas as pd
+import matplotlib.pyplot as plt
 
 params = masif_opts["ligand"]
 test_set_out_dir = params["test_set_out_dir"]
@@ -100,6 +101,8 @@ for pdb in saved_pdbs:
 
 #.reshape([-1, n_ligands])
 conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
-
+disp = ConfusionMatrixDisplay(conf_mat)
+disp.plot()
+plt.show()
 #sess.close()
 
