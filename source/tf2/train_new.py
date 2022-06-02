@@ -55,7 +55,7 @@ model = MaSIF_ligand(
   params["n_classes"],
   idx_gpu="/gpu:0",
   feat_mask=params["feat_mask"],
-  costfun=params["costfun"],
+  costfun=params["costfun"]
 )
 
 model.compile(optimizer = model.opt,
@@ -63,3 +63,39 @@ model.compile(optimizer = model.opt,
   metrics=['accuracy']
 )
 
+'''
+i = 0
+for data_element in training_data:
+    labels = data_element[4]
+    n_ligands = labels.shape[1]
+    random_ligand = np.random.choice(n_ligands, 1)
+    pocket_points = np.where(labels[:, random_ligand] != 0.0)[0]
+    label = np.max(labels[:, random_ligand]) - 1
+    pocket_labels = np.zeros(7, dtype=np.float32)
+    pocket_labels[label] = 1.0
+    npoints = pocket_points.shape[0]
+    if npoints < 32:
+        continue
+    # Sample 32 points randomly
+    sample = np.random.choice(pocket_points, 32, replace=False)
+    feed_dict = {
+        'input_feat' : data_element[0][sample, :, :],
+        'rho_coords' : np.expand_dims(data_element[1], -1)[
+            sample, :, :
+        ],
+        'theta_coords' : np.expand_dims(data_element[2], -1)[
+            sample, :, :
+        ],
+        'mask' : data_element[3][pocket_points[:32], :, :],
+        'labels' : pocket_labels,
+        'keep_prob' : 1.0,
+    }
+'''
+
+
+num_epochs = 100
+#num_batches = 32
+model.fit(x = train_X_formatted, y = train_y_formatted,
+          epochs = num_epochs,
+          validation_data = (val_X_formatted, val_y_formatted)
+         )
