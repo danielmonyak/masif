@@ -20,14 +20,12 @@ testing_data = tf.data.TFRecordDataset(
 )
 testing_data = testing_data.map(_parse_function)
 
-n_ligands = params["n_classes"]
 saved_pdbs = np.loadtxt('saved_pdbs.txt', dtype='str')
 
-num_test_samples = 290
 testing_iterator = testing_data.make_one_shot_iterator()
 testing_next_element = testing_iterator.get_next()
 sess = tf.Session()
-
+'''
 data_element = sess.run(testing_next_element)
 
 labels = data_element[4]
@@ -55,8 +53,8 @@ print('npoints', npoints)
 
 pdb_labels.append(label)
 pdb = data_element[5]
-        
 '''
+
 for num_test_sample in range(num_test_samples):
     print('\nnum_test_sample: ', num_test_sample)
     try:
@@ -65,7 +63,12 @@ for num_test_sample in range(num_test_samples):
         continue
 
     pdb = data_element[5]
-'''
+    labels = data_element[4]
+    all_ligands = np.unique(labels.max(axis = 0))
+    if len(all_ligands) != 1:
+        print('pdb: ', pdb)
+        print(all_ligands)
+sess.close()
 '''
 for pdb in saved_pdbs:
     labels = np.load(test_set_out_dir + "{}_labels.npy".format(pdb)).astype(float)
@@ -77,3 +80,5 @@ for pdb in saved_pdbs:
 #conf_mat = confusion_matrix(y_true, y_pred)
 
 #sess.close()
+#n_ligands = params["n_classes"]
+#num_test_samples = 290
