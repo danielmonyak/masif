@@ -10,11 +10,14 @@ from masif_modules.MaSIF_ligand_new import MaSIF_ligand
 from masif_modules.read_ligand_tfrecords import _parse_function
 from sklearn.metrics import confusion_matrix
 import tensorflow as tf
+from statistics import mode
 
 params = masif_opts["ligand"]
 test_set_out_dir = params["test_set_out_dir"]
+n_ligands = params["n_classes"]
 
 saved_pdbs = np.loadtxt('saved_pdbs.txt', dtype='str')
+
 '''
 # Load testing data
 testing_data = tf.data.TFRecordDataset(
@@ -71,15 +74,22 @@ for num_test_sample in range(num_test_samples):
         print(all_ligands)
 sess.close()
 '''
-'''
+
+y_true = []
+y_pred = []
 for pdb in saved_pdbs:
     labels = np.load(test_set_out_dir + "{}_labels.npy".format(pdb)).astype(float)
     logits_softmax = np.load(test_set_out_dir + "{}_logits.npy".format(pdb)).astype(float)
-    print(pdb)
-    print(labels)
-'''
+    y_true.append(labels[0])
+    all_modes = []
+    for i in range(logits_softmax.shape[0]):
+        temp = logits_softmax[i].reshape([-1, n_ligands])
+        all_modes.append(statistics.mode(temp.argmax(axis = 1)))
+    y_pred.append(mode(all_modes))
+    
+
 #.reshape([-1, n_ligands])
 #conf_mat = confusion_matrix(y_true, y_pred)
 
 #sess.close()
-#n_ligands = params["n_classes"]
+
