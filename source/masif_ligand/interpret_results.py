@@ -39,6 +39,7 @@ for num_test_sample in range(num_test_samples):
 '''
 for pdb in saved_pdbs:
     labels = np.load(test_set_out_dir + "{}_labels.npy".format(pdb)).astype(float)
+    print(pdb)
     print(labels)
 '''
 pdb = '4D86_A'
