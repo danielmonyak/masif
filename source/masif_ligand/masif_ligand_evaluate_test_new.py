@@ -51,14 +51,10 @@ num_test_samples = 290
 testing_iterator = testing_data.make_one_shot_iterator()
 testing_next_element = testing_iterator.get_next()
 
-all_logits_softmax = []
-all_labels = []
-all_pdbs = []
-all_data_loss = []
 
-print('Starting the loop')
+saved_pdbs = []
+
 for num_test_sample in range(num_test_samples):
-    print('\nnum_test_sample: ', num_test_sample)
     try:
         data_element = learning_obj.session.run(testing_next_element)
     except:
@@ -71,8 +67,6 @@ for num_test_sample in range(num_test_samples):
     pdb_logits_softmax = []
     pdb_labels = []
     for ligand in range(n_ligands):
-        print('ligand: ', ligand)
-
         # Rows indicate point number and columns ligand type
         pocket_points = np.where(labels[:, ligand] != 0.0)[0]
         label = np.max(labels[:, ligand]) - 1
@@ -112,5 +106,8 @@ for num_test_sample in range(num_test_samples):
             samples_data_loss.append(data_loss)
 
         pdb_logits_softmax.append(samples_logits_softmax)
+    saved_pdbs.append(pdb)
     np.save(test_set_out_dir + "{}_labels.npy".format(pdb), pdb_labels)
     np.save(test_set_out_dir + "{}_logits.npy".format(pdb), pdb_logits_softmax)
+
+np.savetxt('saved_pdbs.txt', saved_pdbs, fmt='%s')
