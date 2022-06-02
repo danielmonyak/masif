@@ -11,6 +11,7 @@ from masif_modules.read_ligand_tfrecords import _parse_function
 from sklearn.metrics import confusion_matrix
 import tensorflow as tf
 from statistics import mode
+import pandas as pd
 
 params = masif_opts["ligand"]
 test_set_out_dir = params["test_set_out_dir"]
@@ -81,11 +82,16 @@ for pdb in saved_pdbs:
     labels = np.load(test_set_out_dir + "{}_labels.npy".format(pdb)).astype(float)
     logits_softmax = np.load(test_set_out_dir + "{}_logits.npy".format(pdb)).astype(float)
     y_true.append(labels[0])
-    all_modes = []
+    freq_list = []
     for i in range(logits_softmax.shape[0]):
         temp = logits_softmax[i].reshape([-1, n_ligands])
-        all_modes.append(mode(temp.argmax(axis = 1)))
-    y_pred.append(mode(all_modes))
+        (unique, counts) = np.unique(temp.argmax(axis = 1), return_counts=True)
+        freqs = np.asarray((unique, counts)).T
+        freq_list.append(freqs)
+
+    df_list = list(map(lambda freqs : pd.DataFrame(freqs), freq_list))
+    total_freqs = pd.concat(df_list).groupby(0).sum()[1]
+    y_pred.append(total_freqs.idxmax())
     
 
 #.reshape([-1, n_ligands])
