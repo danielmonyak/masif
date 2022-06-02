@@ -35,12 +35,15 @@ pdb_logits_softmax = []
 pdb_labels = []
 
 print('labels: ', labels)
+print('n_ligands: ', n_ligands)
+
+ligand = 0
+print('ligand: ', ligand)
 
 pocket_points = np.where(labels[:, ligand] != 0.0)[0]
 label = np.max(labels[:, ligand]) - 1
 
 print('label: ', label)
-print('n_ligands: ', n_ligands)
 
 pocket_labels = np.zeros(7, dtype=np.float32)
 pocket_labels[label] = 1.0
