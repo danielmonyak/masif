@@ -123,7 +123,7 @@ for num_epoch in range(last_epoch, num_epochs):
                 [learning_obj.data_loss, learning_obj.logits_softmax],
                 feed_dict=feed_dict,
             )
-        
+
         training_losses.append(training_loss)
         training_ytrue.append(label)
         training_ypred.append(np.argmax(training_logits))
@@ -175,13 +175,13 @@ for num_epoch in range(last_epoch, num_epochs):
             learning_obj.labels: pocket_labels,
             learning_obj.keep_prob: 1.0,
         }
-        
+
         with learning_obj.strategy.scope():
             validation_loss, validation_logits = learning_obj.session.run(
                 [learning_obj.data_loss, learning_obj.logits_softmax],
                 feed_dict=feed_dict,
             )
-            
+
         validation_losses.append(validation_loss)
         validation_ytrue.append(label)
         validation_ypred.append(np.argmax(validation_logits))
@@ -201,7 +201,8 @@ for num_epoch in range(last_epoch, num_epochs):
         print("Saving model")
         learning_obj.saver.save(learning_obj.session, output_model)
         best_validation_accuracy = validation_accuracy
-        np.savetxt(out_dir + '/best_validation_accuracy.txt', best_validation_accuracy)
+	with open(out_dir + '/best_validation_accuracy.txt', 'w') as f:
+        	f.write(str(best_validation_accuracy))
 
     testing_losses = []
     testing_ytrue = []
