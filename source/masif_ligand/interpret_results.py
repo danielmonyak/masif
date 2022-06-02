@@ -21,9 +21,10 @@ testing_data = tf.data.TFRecordDataset(
 testing_data = testing_data.map(_parse_function)
 
 n_ligands = params["n_classes"]
-saved_pdbs = np.loadtxt('saved_pdbs.txt')
-num_test_samples = 290
-'''with tf.Session() as sess:
+saved_pdbs = np.loadtxt('saved_pdbs.txt').unique()
+
+'''num_test_samples = 290
+with tf.Session() as sess:
     testing_iterator = testing_data.make_one_shot_iterator()
     testing_next_element = testing_iterator.get_next()
 
