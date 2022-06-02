@@ -33,7 +33,6 @@ if not os.path.exists(test_set_out_dir):
 with tf.Session() as sess:
     # Build network
     learning_obj = MaSIF_ligand(
-        sess,
         params["max_distance"],
         params["n_classes"],
         idx_gpu="/gpu:0",
