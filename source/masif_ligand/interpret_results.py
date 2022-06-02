@@ -77,8 +77,13 @@ sess.close()
 
 y_true = []
 y_pred = []
+zero_dim = 0
 for pdb in saved_pdbs:
     labels = np.load(test_set_out_dir + "{}_labels.npy".format(pdb)).astype(float)
+    if len(labels.shape) == 1:
+        zero_dim += 1
+        continue
+    
     logits_softmax = np.load(test_set_out_dir + "{}_logits.npy".format(pdb)).astype(float)
     y_true.append(labels[0])
     freq_list = []
