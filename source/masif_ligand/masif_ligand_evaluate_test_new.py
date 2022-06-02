@@ -62,6 +62,7 @@ for num_test_sample in range(num_test_samples):
     try:
         data_element = learning_obj.session.run(testing_next_element)
     except:
+        print('here')
         continue
 
     print(num_test_sample)
