@@ -23,11 +23,34 @@ testing_data = testing_data.map(_parse_function)
 n_ligands = params["n_classes"]
 saved_pdbs = np.loadtxt('saved_pdbs.txt', dtype='str')
 
-'''num_test_samples = 290
+num_test_samples = 290
 with tf.Session() as sess:
     testing_iterator = testing_data.make_one_shot_iterator()
     testing_next_element = testing_iterator.get_next()
+    data_element = sess.run(testing_next_element)
 
+labels = data_element[4]
+n_ligands = labels.shape[1]
+pdb_logits_softmax = []
+pdb_labels = []
+
+print('labels: ', labels)
+
+pocket_points = np.where(labels[:, ligand] != 0.0)[0]
+label = np.max(labels[:, ligand]) - 1
+
+print('label: ', label)
+print('n_ligands: ', n_ligands)
+
+pocket_labels = np.zeros(7, dtype=np.float32)
+pocket_labels[label] = 1.0
+npoints = pocket_points.shape[0]
+print(npoints)
+
+pdb_labels.append(label)
+pdb = data_element[5]
+        
+'''
 for num_test_sample in range(num_test_samples):
     print('\nnum_test_sample: ', num_test_sample)
     try:
@@ -37,17 +60,12 @@ for num_test_sample in range(num_test_samples):
 
     pdb = data_element[5]
 '''
+'''
 for pdb in saved_pdbs:
     labels = np.load(test_set_out_dir + "{}_labels.npy".format(pdb)).astype(float)
     print(pdb)
     print(labels)
 '''
-pdb = '4D86_A'
-labels = np.load(test_set_out_dir + "b'{}'_labels.npy".format(pdb)).astype(float)
-logits_softmax = np.load(test_set_out_dir + "b'{}'_logits.npy".format(prot)).astype(float)
-.reshape([-1, n_ligands])
 
-print(labels)
-print(logis_softmax)
-'''
+#.reshape([-1, n_ligands])
 #conf_mat = confusion_matrix(y_true, y_pred)
