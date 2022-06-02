@@ -56,7 +56,7 @@ costfun=params["costfun"],
 num_epochs = 100
 
 if continue_training:
-    best_validation_accuracy = 0.494949494949495
+    best_validation_accuracy = 0.7070707070707071
     total_iterations = 40000
     last_epoch = 45
     # Load saved network
