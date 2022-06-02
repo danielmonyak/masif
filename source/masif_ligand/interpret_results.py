@@ -10,7 +10,6 @@ from masif_modules.MaSIF_ligand_new import MaSIF_ligand
 from masif_modules.read_ligand_tfrecords import _parse_function
 from sklearn.metrics import confusion_matrix
 import tensorflow as tf
-from statistics import mode
 import pandas as pd
 
 params = masif_opts["ligand"]
