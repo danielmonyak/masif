@@ -38,7 +38,7 @@ with tf.Session() as sess:
             continue
 
         pdb = data_element[5]
-        labels = np.load(test_set_out_dir + "b'{}'_labels.npy".format(pdb)).astype(float)
+        labels = np.load(test_set_out_dir + "{}_labels.npy".format(pdb)).astype(float)
         print(labels)
     '''
     pdb = '4D86_A'
