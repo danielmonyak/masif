@@ -103,6 +103,6 @@ for pdb in saved_pdbs:
 conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
 disp = ConfusionMatrixDisplay(conf_mat)
 disp.plot()
-plt.show()
+plt.savefig('confusion_matrix.png')
 #sess.close()
 
