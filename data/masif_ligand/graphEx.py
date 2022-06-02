@@ -1,20 +1,19 @@
 import tensorflow as tf
 
-c = []
-for i, d in enumerate(['/gpu:0', '/gpu:1', '/gpu:2']):
-    with tf.device(d):
-        a = tf.get_variable(f"a_{i}", [2, 3], initializer=tf.random_uniform_initializer(-1, 1))
-        b = tf.get_variable(f"b_{i}", [3, 2], initializer=tf.random_uniform_initializer(-1, 1))
-        c.append(tf.matmul(a, b))
+tf.debugging.set_log_device_placement(True)
 
-with tf.device('/cpu:0'):
-    sum = tf.add_n(c)
+gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
+if gpus:
+  # Replicate your computation on multiple GPUs
+  c = []
+  for gpu in gpus:
+    with tf.device(gpu.name):
+      a = tf.constant([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+      b = tf.constant([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+      c.append(tf.matmul(a, b))
 
-sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+  with tf.device('/CPU:0'):
+    matmul_sum = tf.add_n(c)
 
-init = tf.global_variables_initializer()
-sess.run(init)
-
-print(sess.run(sum))
-# [[-0.36499196 -0.07454088]
-# [-0.33966339  0.30250686]]
+  print(matmul_sum)
+  print ("finished")
