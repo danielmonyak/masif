@@ -84,7 +84,7 @@ for pdb in saved_pdbs:
     all_modes = []
     for i in range(logits_softmax.shape[0]):
         temp = logits_softmax[i].reshape([-1, n_ligands])
-        all_modes.append(statistics.mode(temp.argmax(axis = 1)))
+        all_modes.append(mode(temp.argmax(axis = 1)))
     y_pred.append(mode(all_modes))
     
 
