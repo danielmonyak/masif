@@ -99,7 +99,7 @@ for pdb in saved_pdbs:
     
 
 #.reshape([-1, n_ligands])
-#conf_mat = confusion_matrix(y_true, y_pred)
+#conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
 
 #sess.close()
 
