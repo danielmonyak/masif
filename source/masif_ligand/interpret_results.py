@@ -14,6 +14,7 @@ import tensorflow as tf
 params = masif_opts["ligand"]
 test_set_out_dir = params["test_set_out_dir"]
 
+'''
 # Load testing data
 testing_data = tf.data.TFRecordDataset(
     os.path.join(params["tfrecords_dir"], "testing_data_sequenceSplit_30.tfrecord")
@@ -25,6 +26,7 @@ saved_pdbs = np.loadtxt('saved_pdbs.txt', dtype='str')
 testing_iterator = testing_data.make_one_shot_iterator()
 testing_next_element = testing_iterator.get_next()
 sess = tf.Session()
+'''
 '''
 data_element = sess.run(testing_next_element)
 
@@ -54,6 +56,7 @@ print('npoints', npoints)
 pdb_labels.append(label)
 pdb = data_element[5]
 '''
+'''
 num_test_samples = 290
 for num_test_sample in range(num_test_samples):
     try:
@@ -69,12 +72,13 @@ for num_test_sample in range(num_test_samples):
         print(all_ligands)
 sess.close()
 '''
+'''
 for pdb in saved_pdbs:
     labels = np.load(test_set_out_dir + "{}_labels.npy".format(pdb)).astype(float)
+    logits_softmax = np.load(test_set_out_dir + "{}_logits.npy".format(pdb)).astype(float)
     print(pdb)
     print(labels)
 '''
-
 #.reshape([-1, n_ligands])
 #conf_mat = confusion_matrix(y_true, y_pred)
 
