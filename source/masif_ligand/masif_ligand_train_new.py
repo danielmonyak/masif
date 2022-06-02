@@ -56,15 +56,13 @@ costfun=params["costfun"],
 num_epochs = 100
 
 if continue_training:
-    best_validation_loss = 1.0501139163970947
     best_validation_accuracy = 0.494949494949495
-    total_iterations = 3627
-    last_epoch = 4
+    total_iterations = 40000
+    last_epoch = 45
     # Load saved network
     learning_obj.saver.restore(learning_obj.session, output_model)
     print("Loading the saved model...")
 else:
-    best_validation_loss = 1000
     best_validation_accuracy = 0.0
     total_iterations = 0
     last_epoch = 0
@@ -203,6 +201,7 @@ for num_epoch in range(last_epoch, num_epochs):
         print("Saving model")
         learning_obj.saver.save(learning_obj.session, output_model)
         best_validation_accuracy = validation_accuracy
+        np.savetxt(out_dir + '/best_validation_accuracy.txt', best_validation_accuracy)
 
     testing_losses = []
     testing_ytrue = []
@@ -259,8 +258,8 @@ for num_epoch in range(last_epoch, num_epochs):
     print(testing_conf_mat)
     print("Testing accuracy:", testing_accuracy)
     # Stop training if number of iterations has reached 40000
-    if total_iterations == 40000:
-        break
+    #if total_iterations == 40000:
+    #    break
 
     # Train the network
     training_losses = []
@@ -331,5 +330,5 @@ for num_epoch in range(last_epoch, num_epochs):
                 )
             )
         total_iterations += 1
-        if total_iterations == 40000:
-            break
+        #if total_iterations == 40000:
+        #    break
