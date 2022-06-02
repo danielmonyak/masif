@@ -104,12 +104,12 @@ class MaSIF_ligand(Model):
         return conv_feat
 
     @tf.function
-    def bigPrepData(rho_coords, theta_coords, input_feat, mask, labels):
-        self.rho_coords = rho_coords
-        self.theta_coords = theta_coords
-        self.input_feat = input_feat
-        self.mask = mask
-        self.labels = labels
+    def bigPrepData(x):
+        rho_coords = x['rho_coords']
+        theta_coords = x['theta_coords']
+        input_feat = x['input_feat']
+        mask = x['mask']
+        labels = x['labels']
 
         self.global_desc_1 = []
         b_conv = []
@@ -121,7 +121,7 @@ class MaSIF_ligand(Model):
                 )
             )
         for i in range(self.n_feat):
-            my_input_feat = tf.expand_dims(self.input_feat[:, :, i], 2)
+            my_input_feat = tf.expand_dims(input_feat[:, :, i], 2)
 
             #W_conv = tf.compat.v1.get_variable("W_conv_{}".format(i), shape=[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos], initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"))
             W_conv = tf.Variable(
@@ -135,9 +135,9 @@ class MaSIF_ligand(Model):
             self.global_desc_1.append(
                 self.inference(
                     my_input_feat,
-                    self.rho_coords,
-                    self.theta_coords,
-                    self.mask,
+                    rho_coords,
+                    theta_coords,
+                    mask,
                     W_conv,
                     b_conv[i],
                     self.mu_rho[i],
