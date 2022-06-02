@@ -54,9 +54,8 @@ print('npoints', npoints)
 pdb_labels.append(label)
 pdb = data_element[5]
 '''
-
+num_test_samples = 290
 for num_test_sample in range(num_test_samples):
-    print('\nnum_test_sample: ', num_test_sample)
     try:
         data_element = sess.run(testing_next_element)
     except:
@@ -81,4 +80,3 @@ for pdb in saved_pdbs:
 
 #sess.close()
 #n_ligands = params["n_classes"]
-#num_test_samples = 290
