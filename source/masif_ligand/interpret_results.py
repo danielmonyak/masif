@@ -8,7 +8,7 @@ import tensorflow as tf
 params = masif_opts["ligand"]
 test_set_out_dir = params["test_set_out_dir"]
 
-n_ligands = 7
+n_ligands = params["n_classes"]
 
 for ligand in range(n_ligands):
   labels = np.loadtxt(test_set_out_dir + "{}_labels.npy".format(something))
