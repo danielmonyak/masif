@@ -201,8 +201,8 @@ for num_epoch in range(last_epoch, num_epochs):
         print("Saving model")
         learning_obj.saver.save(learning_obj.session, output_model)
         best_validation_accuracy = validation_accuracy
-	with open(out_dir + '/best_validation_accuracy.txt', 'w') as f:
-        	f.write(str(best_validation_accuracy))
+        with open(out_dir + '/best_validation_accuracy.txt', 'w') as f:
+            f.write(str(best_validation_accuracy) + "\n")
 
     testing_losses = []
     testing_ytrue = []
