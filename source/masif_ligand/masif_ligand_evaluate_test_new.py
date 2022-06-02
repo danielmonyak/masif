@@ -1,4 +1,6 @@
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+
 import numpy as np
 from IPython.core.debugger import set_trace
 import importlib
