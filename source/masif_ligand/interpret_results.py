@@ -26,8 +26,9 @@ saved_pdbs = np.loadtxt('saved_pdbs.txt', dtype='str')
 num_test_samples = 290
 testing_iterator = testing_data.make_one_shot_iterator()
 testing_next_element = testing_iterator.get_next()
-with tf.Session() as sess:
-    data_element = sess.run(testing_next_element)
+sess = tf.Session()
+
+data_element = sess.run(testing_next_element)
 
 labels = data_element[4]
 n_ligands = labels.shape[1]
@@ -74,3 +75,5 @@ for pdb in saved_pdbs:
 
 #.reshape([-1, n_ligands])
 #conf_mat = confusion_matrix(y_true, y_pred)
+
+#sess.close()
