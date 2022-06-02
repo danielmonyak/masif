@@ -24,6 +24,8 @@ testing_data = tf.data.TFRecordDataset(
 )
 testing_data = testing_data.map(_parse_function)
 
+print('Imported test data')
+
 model_dir = params["model_dir"]
 output_model = model_dir + "model"
 
@@ -44,6 +46,8 @@ with tf.Session() as sess:
     # Load pretrained network
     learning_obj.saver.restore(learning_obj.session, output_model)
 
+    print('Loaded model')
+    
     num_test_samples = 290
     testing_iterator = testing_data.make_one_shot_iterator()
     testing_next_element = testing_iterator.get_next()
@@ -52,7 +56,10 @@ with tf.Session() as sess:
     all_labels = []
     all_pdbs = []
     all_data_loss = []
+    
+    print('Starting the loop')
     for num_test_sample in range(num_test_samples):
+        print('\nnum_test_sample: ', num_test_sample)
         try:
             data_element = sess.run(testing_next_element)
         except:
@@ -65,6 +72,8 @@ with tf.Session() as sess:
         pdb_logits_softmax = []
         pdb_labels = []
         for ligand in range(n_ligands):
+            print('ligand: ', ligand)
+            
             # Rows indicate point number and columns ligand type
             pocket_points = np.where(labels[:, ligand] != 0.0)[0]
             label = np.max(labels[:, ligand]) - 1
