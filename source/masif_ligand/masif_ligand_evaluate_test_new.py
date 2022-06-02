@@ -110,4 +110,4 @@ for num_test_sample in range(num_test_samples):
     np.save(test_set_out_dir + "{}_labels.npy".format(pdb), pdb_labels)
     np.save(test_set_out_dir + "{}_logits.npy".format(pdb), pdb_logits_softmax)
 
-np.savetxt('saved_pdbs.txt', saved_pdbs, fmt='%s')
+np.savetxt('saved_pdbs.txt', np.unique(saved_pdbs), fmt='%s')
