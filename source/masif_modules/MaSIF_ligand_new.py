@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 
 
-
+#
 #tf.debugging.set_log_device_placement(True)
 
 ####
