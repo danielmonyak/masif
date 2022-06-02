@@ -104,8 +104,7 @@ class MaSIF_ligand(Model):
         return conv_feat
 
     @tf.function
-    def bigPrepData(keep_prob, rho_coords, theta_coords, input_feat, mask, labels):
-        self.keep_prob = keep_prob
+    def bigPrepData(rho_coords, theta_coords, input_feat, mask, labels):
         self.rho_coords = rho_coords
         self.theta_coords = theta_coords
         self.input_feat = input_feat
@@ -162,10 +161,13 @@ class MaSIF_ligand(Model):
         idx_gpu="/gpu:0",
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         costfun="dprime",
+        keep_prob = 1.0
     ):
         ## Call super - model initializer
         super().__init__()
 
+        self.keep_prob = keep_prob
+        
         # order of the spectral filters
         self.max_rho = max_rho
         self.n_thetas = n_thetas
@@ -230,7 +232,7 @@ class MaSIF_ligand(Model):
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Lambda(lambdaLayer),
             layers.Reshape([1, -1]),
-            layers.Dropout(1 - (self.keep_prob)),
+            layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
             layers.Dense(self.n_ligands, activation="relu")
         ]
