@@ -33,7 +33,7 @@ train_pdbs = all_pdbs[:train]
 val_pdbs = all_pdbs[train : train + val]
 test_pdbs = all_pdbs[train + val : train + val + test]
 
-
+#
 # Edited by Daniel Monyak
 # Uncommented these save statements so that the lists would be redone
 np.save('lists/train_pdbs_sequence.npy',train_pdbs)
