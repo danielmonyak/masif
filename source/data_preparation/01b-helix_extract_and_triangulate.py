@@ -122,9 +122,19 @@ for chain_id in list(chain_ids1):
         save_ply(out_filename1+".ply", regular_mesh.vertices,\
                                 regular_mesh.faces, normals=vertex_normal, charges=vertex_charges,\
                                 normalize_charges=True, hbond=vertex_hbond, hphob=vertex_hphobicity, iface=iface)
+        
+        # Edited by Daniel Monyak
+        # Added try-except blocks in the "makedir" if statements so that there aren't multi-processing bugs
+        
         if not os.path.exists(masif_opts['ply_chain_dir']):
-            os.makedirs(masif_opts['ply_chain_dir'])
+            try:
+                os.makedirs(masif_opts['ply_chain_dir'])
+            except:
+                pass
         if not os.path.exists(masif_opts['pdb_chain_dir']):
-            os.makedirs(masif_opts['pdb_chain_dir'])
+            try:
+                os.makedirs(masif_opts['pdb_chain_dir'])
+            except:
+                pass
         shutil.copy(out_filename1+'.ply', masif_opts['ply_chain_dir']) 
         shutil.copy(out_filename1+'.pdb', masif_opts['pdb_chain_dir']) 

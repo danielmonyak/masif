@@ -46,9 +46,16 @@ for ppi_pair_id in ppi_pair_list:
     all_list_names = []
     idx_positives = []
 
+    
+    # Edited by Daniel Monyak
+    # Added try-except blocks in the "makedir" if statements so that there aren't multi-processing bugs
+    
     my_precomp_dir = params['masif_precomputation_dir']+ppi_pair_id+'/'
     if not os.path.exists(my_precomp_dir):
-        os.makedirs(my_precomp_dir)
+        try:
+            os.makedirs(my_precomp_dir)
+        except:
+            pass
     
     # Read directly from the ply file.
     fields = ppi_pair_id.split('_')
