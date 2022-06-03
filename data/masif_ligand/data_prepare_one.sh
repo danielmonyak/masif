@@ -1,4 +1,4 @@
-echo "$1 started" >> started_proteins.txt
+echo $1 >> started_proteins.txt
 
 tf_env=venv_latest
 env_path=/apps01/anaconda3/envs/$tf_env
