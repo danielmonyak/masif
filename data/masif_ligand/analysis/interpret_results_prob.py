@@ -39,7 +39,8 @@ for pdb in saved_pdbs:
 
 #y_true = np.array(y_true_list).reshape([-1, 1]) 
 y_true = np.array(y_true_list)
-y_pred = np.vstack(y_pred_list)
+y_pred_probs = np.vstack(y_pred_list)
+y_pred = y_pred_probs.argmax(axis = 1)
 
 '''
 enc = OneHotEncoder(categories = [np.arange(n_ligands)])
@@ -50,7 +51,6 @@ y_true_one_hot = enc.fit_transform(y_true).toarray()
 disp.plot()
 plt.savefig('confusion_matrix.png')'''
 
-#conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
-#print(balanced_accuracy_score(y_true, y_pred))
-
-print(roc_auc_score(y_true, y_pred, multi_class = 'ovr', labels = np.arange(7)))
+conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
+print(balanced_accuracy_score(y_true, y_pred))
+print(roc_auc_score(y_true_probs, y_pred, multi_class = 'ovr', labels = np.arange(7)))
