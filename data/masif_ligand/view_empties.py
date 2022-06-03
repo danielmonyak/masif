@@ -46,7 +46,6 @@ with strategy.scope():
         data_element = sess.run(testing_next_element)
     except:
         continue
-
     pdb = data_element[5]
     if pdb in bad_pdbs:
       bad_data_elements.append(data_elements)
