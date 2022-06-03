@@ -2,16 +2,10 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
 import numpy as np
-from IPython.core.debugger import set_trace
-import importlib
-import sys
 from default_config.masif_opts import masif_opts
-from masif_modules.MaSIF_ligand_new import MaSIF_ligand
-from masif_modules.read_ligand_tfrecords import _parse_function
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, balanced_accuracy_score, roc_auc_score
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow as tf
-import pandas as pd
 import matplotlib.pyplot as plt
 
 params = masif_opts["ligand"]
@@ -47,10 +41,11 @@ enc = OneHotEncoder(categories = [np.arange(n_ligands)])
 y_true_one_hot = enc.fit_transform(y_true).toarray()
 '''
 
-'''disp = ConfusionMatrixDisplay(conf_mat)
-disp.plot()
-plt.savefig('confusion_matrix.png')'''
-
 conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
+disp = ConfusionMatrixDisplay(conf_mat)
+disp.plot()
+plt.savefig('confusion_matrix.png')
+
+roc_curve(y_t
 print(balanced_accuracy_score(y_true, y_pred))
 print(roc_auc_score(y_true, y_pred_probs, multi_class = 'ovr', labels = np.arange(7)))
