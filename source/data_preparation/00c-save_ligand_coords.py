@@ -8,8 +8,14 @@ from default_config.masif_opts import masif_opts
 in_fields = sys.argv[1].split("_")
 pdb_id = in_fields[0]
 
+# Edited by Daniel Monyak
+# Added try-except blocks in the "makedir" if statements so that there aren't multi-processing bugs
+
 if not os.path.exists(masif_opts["ligand"]["ligand_coords_dir"]):
-    os.mkdir(masif_opts["ligand"]["ligand_coords_dir"])
+    try:
+        os.mkdir(masif_opts["ligand"]["ligand_coords_dir"])
+    except:
+        pass
 
 # Ligands of interest
 ligands = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
