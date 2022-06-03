@@ -31,12 +31,12 @@ for pdb in saved_pdbs:
     avg_softmax = logits_softmax.mean(axis = 1).mean(axis = 0)
     y_pred_list.append(avg_softmax)
 
-#y_true = np.array(y_true_list).reshape([-1, 1]) 
 y_true = np.array(y_true_list)
 y_pred_probs = np.vstack(y_pred_list)
 y_pred = y_pred_probs.argmax(axis = 1)
 
 '''
+y_true = np.array(y_true_list).reshape([-1, 1]) 
 enc = OneHotEncoder(categories = [np.arange(n_ligands)])
 y_true_one_hot = enc.fit_transform(y_true).toarray()
 '''
@@ -46,6 +46,9 @@ disp = ConfusionMatrixDisplay(conf_mat)
 disp.plot()
 plt.savefig('confusion_matrix.png')
 
-roc_curve(y_t
-print(balanced_accuracy_score(y_true, y_pred))
-print(roc_auc_score(y_true, y_pred_probs, multi_class = 'ovr', labels = np.arange(7)))
+#roc_curve(y_t
+balanced_acc = balanced_accuracy_score(y_true, y_pred)
+roc_auc = roc_auc_score(y_true, y_pred_probs, multi_class = 'ovr', labels = np.arange(7))
+
+print('Balanced accuracy: ', balanced_acc)
+print('ROC AUC score: ', roc_auc)
