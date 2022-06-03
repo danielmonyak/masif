@@ -1,5 +1,8 @@
+mkdir output_files error_files
+rm started_proteins.txt finished_proteins.txt 
+
 i=0
-batchSize=8
+batchSize=10
 unset running
 while read p; do
 	if [ $(( i % $batchSize )) -eq 0 ]; then
@@ -18,4 +21,4 @@ while read p; do
 	disown -h $!
 	running+=($!)
 	i=$((i+1))
-done < lists/sequence_split_list.txt
+done < lists/sequence_split_list_UNIQUE.txt

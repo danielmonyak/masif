@@ -5,10 +5,9 @@ masif_root=$(git rev-parse --show-toplevel)
 masif_source=$masif_root/source
 export PYTHONPATH=$PYTHONPATH:$masif_source
 
-script=masif_ligand_evaluate_test_new.py 
+job_name=interpret_results
 
-job_name=evaluate_test
+script=${job_name}_max.py 
 
-python -u $masif_source/masif_ligand/$script > $job_name.out 2>$job_name.err &
-disown -h $!
-echo $! > ${job_name}_pid.txt
+#python -u $masif_source/masif_ligand/$script > $job_name.out 2>$job_name.err
+python -i $masif_source/masif_ligand/$script
