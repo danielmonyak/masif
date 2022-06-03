@@ -41,12 +41,11 @@ for pdb in saved_pdbs:
     df_list = list(map(lambda freqs : pd.DataFrame(freqs), freq_list))
     total_freqs = pd.concat(df_list).groupby(0).sum()[1]
     y_pred.append(total_freqs.idxmax())
-    
-'''
-#.reshape([-1, n_ligands])
-'''conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
+
+
+conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
 disp = ConfusionMatrixDisplay(conf_mat)
 disp.plot()
 plt.savefig('confusion_matrix.png')
 print(balanced_accuracy_score(y_true, y_pred))
-#
+'''
