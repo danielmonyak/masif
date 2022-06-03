@@ -58,18 +58,22 @@ pdb = data_element[5]
 '''
 bad_pdbs = ["b'4ZNL_A'", "b'3D36_ACB'", "b'2REQ_AB'", "b'4H6Q_A'", "b'4BLV_A'", "b'1X7P_AB'", "b'5L8J_AB'", "b'5HMN_CE'", "b'3UQD_ACBD'", "b'1XX6_AB'", "b'2OWM_AC'"]
 num_test_samples = 290
-with tf.device('/GPU:0'):
-    for num_test_sample in range(num_test_samples):
-        print(num_test_sample)
-        try:
-            data_element = sess.run(testing_next_element)
-        except:
-            continue
+splits = [0, int(num_test_samples/4), int(num_test_samples/2), int(3 * num_test_samples/4), num_test_samples]
+devices = ['/GPU:0', '/GPU:1', '/GPU:2', '/GPU:3']
+bad_data_elements = []
+for i in range(len(devices)):
+    with tf.device(devices[i]):
+        print("Using ", devices[i])
+        for num_test_sample in range(splits[i], splits[i+1]):
+            print(num_test_sample)
+            try:
+                data_element = sess.run(testing_next_element)
+            except:
+                continue
 
-        pdb = data_element[5]
-        print(pdb)
-        if pdb in bad_pdbs:
-          break
+            pdb = data_element[5]
+            if pdb in bad_pdbs:
+              bad_data_elements.append(data_elements)
 '''
     labels = data_element[4]
     all_ligands = np.unique(labels.max(axis = 0))
