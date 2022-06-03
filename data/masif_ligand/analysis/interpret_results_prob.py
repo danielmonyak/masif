@@ -22,30 +22,23 @@ saved_pdbs = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/sa
 y_true = []
 y_pred = []
 zero_dim = 0
-'''
+
 for pdb in saved_pdbs:
     labels = np.load(test_set_out_dir + "{}_labels.npy".format(pdb)).astype(float)
     if labels.shape[0] == 0:
         zero_dim += 1
         continue
     
-    logits_softmax = np.load(test_set_out_dir + "{}_logits.npy".format(pdb)).astype(float)
     y_true.append(labels[0])
-    freq_list = []
-    for i in range(logits_softmax.shape[0]):
-        temp = logits_softmax[i].reshape([-1, n_ligands])
-        (unique, counts) = np.unique(temp.argmax(axis = 1), return_counts=True)
-        freqs = np.asarray((unique, counts)).T
-        freq_list.append(freqs)
-
-    df_list = list(map(lambda freqs : pd.DataFrame(freqs), freq_list))
-    total_freqs = pd.concat(df_list).groupby(0).sum()[1]
-    y_pred.append(total_freqs.idxmax())
-
+    
+    logits_softmax = np.load(test_set_out_dir + "{}_logits.npy".format(pdb)).astype(float)
+    logits_softmax = logits_softmax.reshape([logits_softmax.shape[0], logits_softmax.shape[1], n_ligands])
+    avg_softmax = logits_softmax.mean(axis = 1).mean(axis = 0)
+    y_pred.append(avg_softmax)
 
 conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
-disp = ConfusionMatrixDisplay(conf_mat)
+'''disp = ConfusionMatrixDisplay(conf_mat)
 disp.plot()
-plt.savefig('confusion_matrix.png')
+plt.savefig('confusion_matrix.png')'''
 print(balanced_accuracy_score(y_true, y_pred))
-'''
+
