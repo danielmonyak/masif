@@ -21,7 +21,10 @@ testing_data = testing_data.map(_parse_function)
 
 testing_iterator = testing_data.make_one_shot_iterator()
 testing_next_element = testing_iterator.get_next()
-sess = tf.Session()
+
+config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)
+config.gpu_options.allow_growth = True
+sess = tf.Session(config=config)
 
 data_element = sess.run(testing_next_element)
 
