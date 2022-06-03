@@ -5,6 +5,9 @@ import sys
 import importlib
 import os
 
+# Edited by Daniel Monyak
+# Added try-except blocks in the "makedir" if statements so that there aren't multi-processing bugs
+
 from default_config.masif_opts import masif_opts
 # Local includes
 from input_output.protonate import protonate
@@ -15,10 +18,16 @@ if len(sys.argv) <= 1:
     sys.exit(1)
 
 if not os.path.exists(masif_opts['raw_pdb_dir']):
-    os.makedirs(masif_opts['raw_pdb_dir'])
+    try:
+        os.makedirs(masif_opts['raw_pdb_dir'])
+    except:
+        pass
 
 if not os.path.exists(masif_opts['tmp_dir']):
-    os.mkdir(masif_opts['tmp_dir'])
+    try:
+        os.mkdir(masif_opts['tmp_dir'])
+    except:
+        pass
 
 in_fields = sys.argv[1].split('_')
 pdb_id = in_fields[0]
