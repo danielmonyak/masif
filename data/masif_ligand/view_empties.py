@@ -41,14 +41,15 @@ strategy = tf.distribute.MirroredStrategy(gpus_str)
 #print("Using ", devices[i])
 with strategy.scope():
     #for num_test_sample in range(splits[i], splits[i+1]):
-    print(num_test_sample)
-    try:
-        data_element = sess.run(testing_next_element)
-    except:
-        continue
-    pdb = data_element[5]
-    if pdb in bad_pdbs:
-      bad_data_elements.append(data_elements)
+    for num_test_sample in range(num_test_samples):
+        print(num_test_sample)
+        try:
+            data_element = sess.run(testing_next_element)
+        except:
+            continue
+        pdb = data_element[5]
+        if pdb in bad_pdbs:
+          bad_data_elements.append(data_elements)
 '''
     labels = data_element[4]
     all_ligands = np.unique(labels.max(axis = 0))
