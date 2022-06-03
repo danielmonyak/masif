@@ -59,6 +59,7 @@ pdb = data_element[5]
 bad_pdbs = ["b'4ZNL_A'", "b'3D36_ACB'", "b'2REQ_AB'", "b'4H6Q_A'", "b'4BLV_A'", "b'1X7P_AB'", "b'5L8J_AB'", "b'5HMN_CE'", "b'3UQD_ACBD'", "b'1XX6_AB'", "b'2OWM_AC'"]
 num_test_samples = 290
 for num_test_sample in range(num_test_samples):
+    print(num_test_sample)
     try:
         data_element = sess.run(testing_next_element)
     except:
