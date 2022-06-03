@@ -17,7 +17,7 @@ params = masif_opts["ligand"]
 test_set_out_dir = params["test_set_out_dir"]
 n_ligands = params["n_classes"]
 
-saved_pdbs = np.loadtxt('saved_pdbs.txt', dtype='str')
+saved_pdbs = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/saved_pdbs.txt', dtype='str')
 
 y_true = []
 y_pred = []

@@ -9,5 +9,5 @@ job_name=interpret_results
 
 script=${job_name}_max.py 
 
-python -u $masif_source/masif_ligand/$script > ${job_name}_max.out 2>${job_name}_max.err
-#python -i $masif_source/masif_ligand/$script
+python -u $script > ${job_name}_max.out 2>${job_name}_max.err
+#python -i $script
