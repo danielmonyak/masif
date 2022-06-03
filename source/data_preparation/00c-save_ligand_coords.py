@@ -26,8 +26,9 @@ for chain in structure.chains:
     for het in chain.heteroatoms:
         # Check all ligands in structure and save coordinates if they are of interest
         if het.type in ligands:
-            structure_ligands_type.append(het.type)
-            structure_ligands_coords.append(het.all_coordinates)
+            if het.type not in structure_ligands_type:
+                structure_ligands_type.append(het.type)
+                structure_ligands_coords.append(het.all_coordinates)
 
 np.save(
     os.path.join(
