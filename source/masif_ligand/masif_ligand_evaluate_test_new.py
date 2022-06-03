@@ -106,8 +106,12 @@ for num_test_sample in range(num_test_samples):
             samples_data_loss.append(data_loss)
 
         pdb_logits_softmax.append(samples_logits_softmax)
+    if len(pdb_labels) == 0:
+        bad_pdbs.append(pdbP
+        continue
     saved_pdbs.append(pdb)
     np.save(test_set_out_dir + "{}_labels.npy".format(pdb), pdb_labels)
     np.save(test_set_out_dir + "{}_logits.npy".format(pdb), pdb_logits_softmax)
 
 np.savetxt('saved_pdbs.txt', np.unique(saved_pdbs), fmt='%s')
+np.savetxt('bad_pdbs.txt', bad_pdbs, fmt='%s')
