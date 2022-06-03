@@ -41,7 +41,10 @@ enc = OneHotEncoder(categories = [np.arange(n_ligands)])
 y_true_one_hot = enc.fit_transform(y_true).toarray()
 '''
 
-conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
+ligands = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
+conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true', labels = ligands)
+print(conf_mat)
+quit()
 disp = ConfusionMatrixDisplay(conf_mat)
 disp.plot()
 plt.savefig('confusion_matrix.png')
