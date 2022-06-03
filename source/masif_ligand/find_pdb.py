@@ -28,9 +28,10 @@ sess = tf.Session(config=config)
 
 data_element = sess.run(testing_next_element)
 
-target_pdb = "b'1U5U_A'"
+#target_pdb = "b'1U5U_A'"
 
 num_test_samples = 290
+'''
 gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str)
@@ -43,9 +44,9 @@ with strategy.scope():
             continue
 
         pdb = data_element[5]
-        if pdb != target_pdb:
-            continue
         labels = data_element[4]
+        print(pdb)
         print(labels)
         break
 sess.close()
+'''
