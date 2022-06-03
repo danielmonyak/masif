@@ -41,9 +41,10 @@ for pdb in saved_pdbs:
 y_true = np.array(y_true_list)
 y_pred = np.vstack(y_pred_list)
 
+'''
 enc = OneHotEncoder(categories = [np.arange(n_ligands)])
 y_true_one_hot = enc.fit_transform(y_true).toarray()
-
+'''
 
 conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
 '''disp = ConfusionMatrixDisplay(conf_mat)
