@@ -220,6 +220,9 @@ for num_epoch in range(last_epoch, num_epochs):
         pocket_points = np.where(labels[:, random_ligand] != 0.0)[0]
         label = np.max(labels[:, random_ligand]) - 1
         pocket_labels = np.zeros(7, dtype=np.float32)
+        
+        
+        
         pocket_labels[label] = 1.0
         npoints = pocket_points.shape[0]
         if npoints < 32:
@@ -276,16 +279,21 @@ for num_epoch in range(last_epoch, num_epochs):
             continue
         labels = data_element[4]
         n_ligands = labels.shape[1]
-        random_ligand = np.random.choice(n_ligands, 1)
-        pocket_points = np.where(labels[:, random_ligand] != 0.0)[0]
-        label = np.max(labels[:, random_ligand]) - 1
-        pocket_labels = np.zeros(7, dtype=np.float32)
-        pocket_labels[label] = 1.0
-        npoints = pocket_points.shape[0]
-        if npoints < 32:
-            continue
-        # Sample 32 points randomly
-        sample = np.random.choice(pocket_points, 32, replace=False)
+        
+        if n_ligands == 0:
+            pocket_labels = np.zeros(7, dtype=np.float32)
+            
+        else:
+            random_ligand = np.random.choice(n_ligands, 1)
+            pocket_points = np.where(labels[:, random_ligand] != 0.0)[0]
+            label = np.max(labels[:, random_ligand]) - 1
+            pocket_labels = np.zeros(7, dtype=np.float32)
+            pocket_labels[label] = 1.0
+            npoints = pocket_points.shape[0]
+            if npoints < 32:
+                continue
+            # Sample 32 points randomly
+            sample = np.random.choice(pocket_points, 32, replace=False)
         feed_dict = {
             learning_obj.input_feat: data_element[0][sample, :, :],
             learning_obj.rho_coords: np.expand_dims(data_element[1], -1)[
