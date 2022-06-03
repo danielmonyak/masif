@@ -46,10 +46,11 @@ enc = OneHotEncoder(categories = [np.arange(n_ligands)])
 y_true_one_hot = enc.fit_transform(y_true).toarray()
 '''
 
-conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
 '''disp = ConfusionMatrixDisplay(conf_mat)
 disp.plot()
 plt.savefig('confusion_matrix.png')'''
-print(balanced_accuracy_score(y_true, y_pred))
-#print(roc_auc_score(y_true_one_hot, y_pred, multi_class = 'ovr'))
+
+#conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
+#print(balanced_accuracy_score(y_true, y_pred))
+
 print(roc_auc_score(y_true, y_pred, multi_class = 'ovr', labels = np.arange(7)))
