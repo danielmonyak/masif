@@ -49,7 +49,8 @@ with strategy.scope():
             continue
         pdb = data_element[5]
         if pdb in bad_pdbs:
-          bad_data_elements.append(data_elements)
+            bad_data_elements.append(data_elements)
+            break
 '''
     labels = data_element[4]
     all_ligands = np.unique(labels.max(axis = 0))
