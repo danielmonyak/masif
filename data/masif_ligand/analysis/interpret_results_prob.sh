@@ -9,5 +9,5 @@ job_name=interpret_results
 
 script=${job_name}_prob.py 
 
-#python -u $script > ${job_name}_prob.out 2>${job_name}_prob.err
-python -i $script
+python -u $script > ${job_name}_prob.out 2>&1
+#python -i $script
