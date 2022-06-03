@@ -8,7 +8,8 @@ import sys
 from default_config.masif_opts import masif_opts
 from masif_modules.MaSIF_ligand_new import MaSIF_ligand
 from masif_modules.read_ligand_tfrecords import _parse_function
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, balanced_accuracy_score
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, balanced_accuracy_score, roc_auc_score
+from sklearn.preprocessing import OneHotEncoder
 import tensorflow as tf
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -19,8 +20,8 @@ n_ligands = params["n_classes"]
 
 saved_pdbs = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/saved_pdbs.txt', dtype='str')
 
-y_true = []
-y_pred = []
+y_true_list = []
+y_pred_list = []
 zero_dim = 0
 
 for pdb in saved_pdbs:
@@ -29,16 +30,25 @@ for pdb in saved_pdbs:
         zero_dim += 1
         continue
     
-    y_true.append(labels[0])
+    y_true_list.append(labels[0])
     
     logits_softmax = np.load(test_set_out_dir + "{}_logits.npy".format(pdb)).astype(float)
     logits_softmax = logits_softmax.reshape([logits_softmax.shape[0], logits_softmax.shape[1], n_ligands])
     avg_softmax = logits_softmax.mean(axis = 1).mean(axis = 0)
-    y_pred.append(avg_softmax)
+    y_pred_list.append(avg_softmax)
+
+#y_true = np.array(y_true_list).reshape([-1, 1]) 
+y_true = np.array(y_true_list)
+y_pred = np.vstack(y_pred_list)
+
+enc = OneHotEncoder(categories = [np.arange(n_ligands)])
+y_true_one_hot = enc.fit_transform(y_true).toarray()
+
 
 conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
 '''disp = ConfusionMatrixDisplay(conf_mat)
 disp.plot()
 plt.savefig('confusion_matrix.png')'''
 print(balanced_accuracy_score(y_true, y_pred))
-
+#print(roc_auc_score(y_true_one_hot, y_pred, multi_class = 'ovr'))
+print(roc_auc_score(y_true, y_pred, multi_class = 'ovr', labels = np.arange(7)))
