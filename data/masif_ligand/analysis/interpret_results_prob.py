@@ -43,9 +43,7 @@ y_true_one_hot = enc.fit_transform(y_true).toarray()
 
 ligands = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
 conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
-print(conf_mat)
-quit()
-disp = ConfusionMatrixDisplay(conf_mat)
+disp = ConfusionMatrixDisplay(conf_mat, display_labels = ligands)
 disp.plot()
 plt.savefig('confusion_matrix.png')
 
