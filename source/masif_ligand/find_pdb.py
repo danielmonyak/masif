@@ -29,6 +29,7 @@ target_pdb = "b'1U5U_A'"
 
 num_test_samples = 290
 for num_test_sample in range(num_test_samples):
+    print(num_test_sample)
     try:
         data_element = sess.run(testing_next_element)
     except:
