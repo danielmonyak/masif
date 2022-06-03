@@ -9,5 +9,5 @@ job_name=interpret_results
 
 script=${job_name}_max.py 
 
-python -u $script > ${job_name}_max.out 2>${job_name}_max.err
+python -u $script > ${job_name}_max.out 2>&1
 #python -i $script
