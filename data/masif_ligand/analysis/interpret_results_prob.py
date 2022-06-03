@@ -53,4 +53,4 @@ plt.savefig('confusion_matrix.png')'''
 
 conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
 print(balanced_accuracy_score(y_true, y_pred))
-print(roc_auc_score(y_true_probs, y_pred, multi_class = 'ovr', labels = np.arange(7)))
+print(roc_auc_score(y_true, y_pred_probs, multi_class = 'ovr', labels = np.arange(7)))
