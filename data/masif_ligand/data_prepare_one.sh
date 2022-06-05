@@ -1,5 +1,3 @@
-echo $1 >> started_proteins.txt
-
 tf_env=venv_latest
 env_path=/apps01/anaconda3/envs/$tf_env
 
@@ -38,4 +36,3 @@ python $masif_source/data_preparation/04-masif_precompute.py masif_ligand $1
 conda deactivate
 
 echo Finished
-echo $1 >> finished_proteins.txt

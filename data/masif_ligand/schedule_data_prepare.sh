@@ -1,8 +1,11 @@
-mkdir output_files error_files
-rm started_proteins.txt finished_proteins.txt 
+out=output_files
+err=error_files
+if [ ! -d $out ]; then mkdir $out; fi
+if [ ! -d $err ]; then mkdir $err; fi
 
 i=0
-batchSize=10
+batchSize=8
+
 unset running
 while read p; do
 	if [ $(( i % $batchSize )) -eq 0 ]; then
