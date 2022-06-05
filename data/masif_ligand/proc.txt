@@ -1,0 +1,1018 @@
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.0 172000 14120 ?        Ss   May17  25:09 /sbin/init
+root           2  0.0  0.0      0     0 ?        S    May17   0:00 [kthreadd]
+root           3  0.0  0.0      0     0 ?        I<   May17   0:00 [rcu_gp]
+root           4  0.0  0.0      0     0 ?        I<   May17   0:00 [rcu_par_gp]
+root           6  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/0:0H-events_highpri]
+root          10  0.0  0.0      0     0 ?        I<   May17   0:00 [mm_percpu_wq]
+root          11  0.0  0.0      0     0 ?        S    May17   0:00 [rcu_tasks_rude_]
+root          12  0.0  0.0      0     0 ?        S    May17   0:00 [rcu_tasks_trace]
+root          13  0.0  0.0      0     0 ?        S    May17   0:24 [ksoftirqd/0]
+root          14  0.0  0.0      0     0 ?        I    May17  10:23 [rcu_sched]
+root          15  0.0  0.0      0     0 ?        S    May17   0:06 [migration/0]
+root          16  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/0]
+root          17  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/1]
+root          18  0.0  0.0      0     0 ?        S    May17   0:08 [migration/1]
+root          19  0.0  0.0      0     0 ?        S    May17   0:23 [ksoftirqd/1]
+root          21  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/1:0H-events_highpri]
+root          22  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/2]
+root          23  0.0  0.0      0     0 ?        S    May17   0:08 [migration/2]
+root          24  0.0  0.0      0     0 ?        S    May17   0:20 [ksoftirqd/2]
+root          26  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/2:0H-kblockd]
+root          27  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/3]
+root          28  0.0  0.0      0     0 ?        S    May17   0:08 [migration/3]
+root          29  0.0  0.0      0     0 ?        S    May17   0:20 [ksoftirqd/3]
+root          31  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/3:0H-events_highpri]
+root          32  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/4]
+root          33  0.0  0.0      0     0 ?        S    May17   0:08 [migration/4]
+root          34  0.0  0.0      0     0 ?        S    May17   0:17 [ksoftirqd/4]
+root          36  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/4:0H-events_highpri]
+root          37  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/5]
+root          38  0.0  0.0      0     0 ?        S    May17   0:08 [migration/5]
+root          39  0.0  0.0      0     0 ?        S    May17   0:16 [ksoftirqd/5]
+root          41  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/5:0H-events_highpri]
+root          42  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/6]
+root          43  0.0  0.0      0     0 ?        S    May17   0:08 [migration/6]
+root          44  0.0  0.0      0     0 ?        S    May17   0:14 [ksoftirqd/6]
+root          46  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/6:0H-kblockd]
+root          47  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/7]
+root          48  0.0  0.0      0     0 ?        S    May17   0:08 [migration/7]
+root          49  0.0  0.0      0     0 ?        S    May17   0:15 [ksoftirqd/7]
+root          51  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/7:0H-events_highpri]
+root          52  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/8]
+root          53  0.0  0.0      0     0 ?        S    May17   0:08 [migration/8]
+root          54  0.0  0.0      0     0 ?        S    May17   0:13 [ksoftirqd/8]
+root          56  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/8:0H-kblockd]
+root          57  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/9]
+root          58  0.0  0.0      0     0 ?        S    May17   0:08 [migration/9]
+root          59  0.0  0.0      0     0 ?        S    May17   0:13 [ksoftirqd/9]
+root          61  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/9:0H-events_highpri]
+root          62  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/10]
+root          63  0.0  0.0      0     0 ?        S    May17   0:08 [migration/10]
+root          64  0.0  0.0      0     0 ?        S    May17   0:12 [ksoftirqd/10]
+root          66  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/10:0H-events_highpri]
+root          67  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/11]
+root          68  0.0  0.0      0     0 ?        S    May17   0:08 [migration/11]
+root          69  0.0  0.0      0     0 ?        S    May17   0:12 [ksoftirqd/11]
+root          71  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/11:0H-events_highpri]
+root          72  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/12]
+root          73  0.0  0.0      0     0 ?        S    May17   0:09 [migration/12]
+root          74  0.0  0.0      0     0 ?        S    May17   0:12 [ksoftirqd/12]
+root          76  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/12:0H-events_highpri]
+root          78  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/13]
+root          79  0.0  0.0      0     0 ?        S    May17   0:08 [migration/13]
+root          80  0.0  0.0      0     0 ?        S    May17   0:10 [ksoftirqd/13]
+root          82  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/13:0H-kblockd]
+root          83  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/14]
+root          84  0.0  0.0      0     0 ?        S    May17   0:08 [migration/14]
+root          85  0.0  0.0      0     0 ?        S    May17   0:09 [ksoftirqd/14]
+root          87  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/14:0H-events_highpri]
+root          88  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/15]
+root          89  0.0  0.0      0     0 ?        S    May17   0:08 [migration/15]
+root          90  0.0  0.0      0     0 ?        S    May17   0:12 [ksoftirqd/15]
+root          92  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/15:0H-events_highpri]
+root          93  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/16]
+root          94  0.0  0.0      0     0 ?        S    May17   0:08 [migration/16]
+root          95  0.0  0.0      0     0 ?        S    May17   0:12 [ksoftirqd/16]
+root          97  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/16:0H-events_highpri]
+root          98  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/17]
+root          99  0.0  0.0      0     0 ?        S    May17   0:08 [migration/17]
+root         100  0.0  0.0      0     0 ?        S    May17   0:12 [ksoftirqd/17]
+root         102  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/17:0H-events_highpri]
+root         103  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/18]
+root         104  0.0  0.0      0     0 ?        S    May17   0:09 [migration/18]
+root         105  0.0  0.0      0     0 ?        S    May17   0:12 [ksoftirqd/18]
+root         107  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/18:0H-events_highpri]
+root         108  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/19]
+root         109  0.0  0.0      0     0 ?        S    May17   0:08 [migration/19]
+root         110  0.0  0.0      0     0 ?        S    May17   0:14 [ksoftirqd/19]
+root         112  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/19:0H-events_highpri]
+root         113  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/20]
+root         114  0.0  0.0      0     0 ?        S    May17   0:08 [migration/20]
+root         115  0.0  0.0      0     0 ?        S    May17   0:11 [ksoftirqd/20]
+root         117  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/20:0H-events_highpri]
+root         118  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/21]
+root         119  0.0  0.0      0     0 ?        S    May17   0:08 [migration/21]
+root         120  0.0  0.0      0     0 ?        S    May17   0:10 [ksoftirqd/21]
+root         122  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/21:0H-events_highpri]
+root         123  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/22]
+root         124  0.0  0.0      0     0 ?        S    May17   0:08 [migration/22]
+root         125  0.0  0.0      0     0 ?        S    May17   0:10 [ksoftirqd/22]
+root         127  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/22:0H-events_highpri]
+root         128  0.0  0.0      0     0 ?        S    May17   0:00 [cpuhp/23]
+root         129  0.0  0.0      0     0 ?        S    May17   0:08 [migration/23]
+root         130  0.0  0.0      0     0 ?        S    May17   0:09 [ksoftirqd/23]
+root         132  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/23:0H-events_highpri]
+root         133  0.0  0.0      0     0 ?        S    May17   0:00 [kdevtmpfs]
+root         134  0.0  0.0      0     0 ?        I<   May17   0:00 [netns]
+root         135  0.0  0.0      0     0 ?        I<   May17   0:00 [inet_frag_wq]
+root         136  0.0  0.0      0     0 ?        S    May17   0:01 [kauditd]
+root         140  0.0  0.0      0     0 ?        S    May17   0:04 [khungtaskd]
+root         141  0.0  0.0      0     0 ?        S    May17   0:03 [oom_reaper]
+root         142  0.0  0.0      0     0 ?        I<   May17   0:00 [writeback]
+root         143  0.0  0.0      0     0 ?        S    May17  13:51 [kcompactd0]
+root         144  0.0  0.0      0     0 ?        S    May17  22:58 [kcompactd1]
+root         145  0.0  0.0      0     0 ?        SN   May17   0:00 [ksmd]
+root         146  0.0  0.0      0     0 ?        SN   May17   0:38 [khugepaged]
+root         193  0.0  0.0      0     0 ?        I<   May17   0:00 [kintegrityd]
+root         194  0.0  0.0      0     0 ?        I<   May17   0:00 [kblockd]
+root         195  0.0  0.0      0     0 ?        I<   May17   0:00 [blkcg_punt_bio]
+root         196  0.0  0.0      0     0 ?        I<   May17   0:00 [tpm_dev_wq]
+root         197  0.0  0.0      0     0 ?        I<   May17   0:00 [ata_sff]
+root         198  0.0  0.0      0     0 ?        I<   May17   0:00 [md]
+root         199  0.0  0.0      0     0 ?        I<   May17   0:00 [edac-poller]
+root         200  0.0  0.0      0     0 ?        I<   May17   0:00 [hv_vmbus_con]
+root         201  0.0  0.0      0     0 ?        I<   May17   0:00 [hv_pri_chan]
+root         202  0.0  0.0      0     0 ?        I<   May17   0:00 [hv_sub_chan]
+root         203  0.0  0.0      0     0 ?        I<   May17   0:00 [devfreq_wq]
+root         204  0.0  0.0      0     0 ?        S    May17   0:00 [watchdogd]
+root         207  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/1:1H-kblockd]
+root         209  0.4  0.0      0     0 ?        S    May17 108:49 [kswapd0]
+root         210  0.3  0.0      0     0 ?        S    May17  89:08 [kswapd1]
+root         211  0.0  0.0      0     0 ?        S    May17   0:00 [ecryptfs-kthrea]
+root         213  0.0  0.0      0     0 ?        I<   May17   0:00 [kthrotld]
+root         235  0.0  0.0      0     0 ?        I<   May17   0:00 [nfit]
+root         244  0.0  0.0      0     0 ?        S    May17   0:00 [scsi_eh_0]
+root         246  0.0  0.0      0     0 ?        I<   May17   0:00 [nvme-wq]
+root         247  0.0  0.0      0     0 ?        I<   May17   0:00 [scsi_tmf_0]
+root         248  0.0  0.0      0     0 ?        S    May17   0:00 [scsi_eh_1]
+root         249  0.0  0.0      0     0 ?        I<   May17   0:00 [nvme-reset-wq]
+root         250  0.0  0.0      0     0 ?        I<   May17   0:00 [scsi_tmf_1]
+root         251  0.0  0.0      0     0 ?        I<   May17   0:00 [nvme-delete-wq]
+root         252  0.0  0.0      0     0 ?        I<   May17   0:00 [storvsc_error_w]
+root         253  0.0  0.0      0     0 ?        I<   May17   0:00 [storvsc_error_w]
+root         254  0.0  0.0      0     0 ?        I<   May17   0:00 [vfio-irqfd-clea]
+root         259  0.0  0.0      0     0 ?        I<   May17   0:07 [kworker/12:1H-kblockd]
+root         260  0.0  0.0      0     0 ?        I<   May17   0:00 [ipv6_addrconf]
+root         270  0.0  0.0      0     0 ?        I<   May17   0:00 [kstrp]
+root         271  0.0  0.0      0     0 ?        I<   May17   0:05 [kworker/7:1H-kblockd]
+root         274  0.0  0.0      0     0 ?        I<   May17   0:00 [zswap-shrink]
+root         275  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/u51:0]
+root         276  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/u52:0-xprtiod]
+root         277  0.0  0.0      0     0 ?        I<   May17   0:00 [kworker/u53:0]
+root         284  0.0  0.0      0     0 ?        S    May17   0:50 [jbd2/sdd1-8]
+root         285  0.0  0.0      0     0 ?        I<   May17   0:00 [ext4-rsv-conver]
+root         289  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/14:1H-kblockd]
+root         320  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/6:1H-kblockd]
+root         331  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/20:1H-kblockd]
+root         337  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/15:1H-kblockd]
+root         339  0.0  0.0      0     0 ?        I<   May17   0:07 [kworker/17:1H-kblockd]
+root         341  0.0  0.0      0     0 ?        I<   May17   0:07 [kworker/16:1H-kblockd]
+root         343  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/21:1H-kblockd]
+root         344  0.0  0.0 286768 139620 ?       S<s  May17   3:53 /lib/systemd/systemd-journald
+root         345  0.0  0.0      0     0 ?        I<   May17   0:07 [kworker/23:1H-kblockd]
+root         347  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/18:1H-kblockd]
+root         363  0.0  0.0      0     0 ?        I<   May17   0:07 [kworker/22:1H-kblockd]
+root         366  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/19:1H-kblockd]
+root         368  0.0  0.0      0     0 ?        I<   May17   0:07 [kworker/13:1H-kblockd]
+root         381  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/2:1H-kblockd]
+root         393  0.0  0.0  21616  6420 ?        Ss   May17   0:03 /lib/systemd/systemd-udevd
+root         397  0.0  0.0   2496   504 ?        S    May17   0:11 bpfilter_umh
+root         454  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/0:1H-kblockd]
+root         455  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/10:1H-kblockd]
+root         470  0.0  0.0      0     0 ?        I<   May17   0:05 [kworker/4:1H-kblockd]
+root         471  0.0  0.0      0     0 ?        I<   May17   0:00 [cryptd]
+root         472  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/3:1H-kblockd]
+root         473  0.0  0.0      0     0 ?        I<   May17   0:05 [kworker/5:1H-kblockd]
+root         475  0.0  0.0      0     0 ?        S    May17   0:31 [hv_balloon]
+root         476  0.0  0.0      0     0 ?        I<   May17   0:06 [kworker/9:1H-kblockd]
+root         496  0.0  0.0      0     0 ?        I<   May17   0:05 [kworker/11:1H-kblockd]
+root         598  0.1  0.0   4652  3480 ?        Ss   May17  47:50 /usr/lib/linux-tools/5.11.0-1022-azure/hv_kvp_daemon -n
+root         619  0.0  0.0      0     0 ?        S    May17   0:00 [nv_queue]
+root         620  0.0  0.0      0     0 ?        S    May17   0:00 [nv_queue]
+root         729  0.0  0.0      0     0 ?        I<   May17   0:00 [kdmflush]
+root         730  0.0  0.0      0     0 ?        I<   May17   0:00 [kdmflush]
+root         733  0.0  0.0      0     0 ?        I<   May17   0:00 [kdmflush]
+root         778  0.0  0.0      0     0 ?        S    May17   0:00 [nvidia-modeset/]
+root         779  0.0  0.0      0     0 ?        S    May17   0:00 [nvidia-modeset/]
+root         799  0.0  0.0      0     0 ?        S    May17   0:00 [UVM global queu]
+root         800  0.0  0.0      0     0 ?        S    May17   0:00 [UVM deferred re]
+root         801  0.0  0.0      0     0 ?        S    May17   0:00 [UVM Tools Event]
+root         844  0.0  0.0      0     0 ?        I<   May17   0:00 [kaluad]
+root         845  0.0  0.0      0     0 ?        I<   May17   0:00 [kmpath_rdacd]
+root         846  0.0  0.0      0     0 ?        I<   May17   0:00 [kmpathd]
+root         847  0.0  0.0      0     0 ?        I<   May17   0:00 [kmpath_handlerd]
+root         848  0.0  0.0 280332 18140 ?        SLsl May17   1:46 /sbin/multipathd -d -s
+root         849  0.0  0.0      0     0 ?        I<   May17   0:00 [mlx4]
+root         850  0.0  0.0      0     0 ?        I<   May17   0:00 [mlx4_health]
+root         860  0.0  0.0      0     0 ?        S    May17   0:01 [jbd2/dm-0-8]
+root         861  0.0  0.0      0     0 ?        I<   May17   0:00 [ext4-rsv-conver]
+root         864  0.0  0.0      0     0 ?        S<   May17   0:00 [loop0]
+root         877  0.0  0.0      0     0 ?        S    May17   0:01 [jbd2/dm-1-8]
+root         878  0.0  0.0      0     0 ?        I<   May17   0:00 [ext4-rsv-conver]
+root         891  0.0  0.0      0     0 ?        S<   May17   1:00 [loop2]
+root         892  0.0  0.0      0     0 ?        I<   May17   0:00 [ib-comp-wq]
+root         893  0.0  0.0      0     0 ?        I<   May17   0:00 [ib-comp-unb-wq]
+root         894  0.0  0.0      0     0 ?        I<   May17   0:00 [ib_mcast]
+root         895  0.0  0.0      0     0 ?        I<   May17   0:00 [ib_nl_sa_wq]
+root         897  0.0  0.0      0     0 ?        S<   May17   0:00 [loop4]
+root         899  0.0  0.0      0     0 ?        I<   May17   0:00 [mlx4_ib]
+root         900  0.0  0.0      0     0 ?        I<   May17   0:00 [mlx4_ib_mcg]
+root         901  0.0  0.0      0     0 ?        I<   May17   0:00 [ib_mad1]
+root         902  0.0  0.0      0     0 ?        S<   May17   0:00 [loop5]
+root         903  0.0  0.0      0     0 ?        S<   May17   0:00 [loop6]
+root         904  0.0  0.0      0     0 ?        S<   May17   0:00 [loop7]
+root         907  0.0  0.0      0     0 ?        S    May17   0:01 [jbd2/dm-2-8]
+root         908  0.0  0.0      0     0 ?        I<   May17   0:00 [ext4-rsv-conver]
+root         996  0.0  0.0      0     0 ?        I<   May17   0:05 [kworker/8:1H-kblockd]
+systemd+    1091  0.0  0.0  26712  4088 ?        Ss   May17   0:04 /lib/systemd/systemd-networkd
+systemd+    1141  0.0  0.0  24924  9540 ?        Ss   May17   2:49 /lib/systemd/systemd-resolved
+root        1327  0.0  0.0      0     0 ?        S    May17   0:00 [jbd2/sde1-8]
+root        1328  0.0  0.0      0     0 ?        I<   May17   0:00 [ext4-rsv-conver]
+root        1369  0.0  0.0   2548   664 ?        Ss   May17   0:00 /usr/sbin/acpid
+root        1370  0.0  0.0 2709500 27980 ?       Ssl  May17   8:43 /var/arcticwolfnetworks/agent/bin/scout-client
+avahi       1371  0.0  0.0  37680  4976 ?        Ss   May17   0:08 avahi-daemon: running [ARVAZAPP13.local]
+message+    1373  0.0  0.0  48376  9616 ?        Ss   May17   2:00 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+root        1374  0.0  0.0 270144 10368 ?        Ssl  May17   1:23 /usr/sbin/NetworkManager --no-daemon
+root        1379  0.0  0.0  81928  3324 ?        Ssl  May17   2:45 /usr/sbin/irqbalance --foreground
+root        1383  0.0  0.0  37024 11660 ?        Ss   May17   0:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+root        1386  0.1  0.0 284020 15856 ?        Ssl  May17  28:01 /usr/lib/policykit-1/polkitd --no-debug
+root        1392  0.0  0.0   5128  2064 ?        Ss   May17   1:53 /usr/bin/nvidia-persistenced --verbose
+syslog      1398  0.0  0.0 253328  6692 ?        Ssl  May17   0:39 /usr/sbin/rsyslogd -n -iNONE
+root        1403  0.0  0.0      0     0 ?        S    May17   7:46 [irq/49-nvidia]
+root        1404  0.0  0.0      0     0 ?        S    May17   0:00 [nvidia]
+root        1405  0.0  0.0      0     0 ?        S    May17   4:37 [nv_queue]
+root        1408  0.0  0.0 111084 16060 ?        Ss   May17   0:04 /usr/sbin/sssd -i --logger=files
+root        1409  0.0  0.0 234736  2092 ?        Ssl  May17   0:00 /usr/libexec/switcheroo-control
+root        1411  0.0  0.0 393136 11140 ?        Ssl  May17   0:02 /usr/lib/udisks2/udisksd
+root        1421  0.0  0.0  13684  2552 ?        Ss   May17   0:08 /sbin/wpa_supplicant -u -s -O /run/wpa_supplicant
+avahi       1438  0.0  0.0  37396  1524 ?        S    May17   0:00 avahi-daemon: chroot helper
+root        1456  0.0  0.0 240728  3248 ?        Ssl  May17   0:01 /usr/sbin/ModemManager
+root        1467  0.0  0.0 374056 47648 ?        Ss   May17   0:00 /usr/bin/python3 /usr/bin/glances -s -B 127.0.0.1
+root        1485  0.0  0.0   8408  1944 ?        Ss   May17   0:00 /usr/bin/vncserver-x11-serviced -fg
+_chrony     1513  0.0  0.0   4828  2308 ?        S    May17   5:27 /usr/sbin/chronyd -F -1
+_chrony     1540  0.0  0.0   4696   196 ?        S    May17   0:00 /usr/sbin/chronyd -F -1
+root        1555  0.0  0.0  19820  2032 ?        Sl   May17   0:00 /var/arcticwolfnetworks/agent/bin/ossec-execd
+root        1561  0.0  0.0 119304 26080 ?        Sl   May17   7:15 /usr/bin/vncserver-x11-core -service
+ossec       1563  0.1  0.0 241636  3996 ?        Sl   May17  43:51 /var/arcticwolfnetworks/agent/bin/ossec-agentd
+root        1567  5.9  0.0  93908  5836 ?        Sl   May17 1574:34 /var/arcticwolfnetworks/agent/bin/ossec-syscheckd
+root        1572  0.4  0.0 388588  4148 ?        Sl   May17 111:51 /var/arcticwolfnetworks/agent/bin/ossec-logcollector
+root        1576  0.0  0.0 249236  3512 ?        Sl   May17   3:13 /var/arcticwolfnetworks/agent/bin/wazuh-modulesd
+root        1580  0.0  0.0   7560  2744 ?        S    May17   2:25 /opt/omi/bin/omiserver -d
+omi         1608  0.0  0.0   7668  2816 ?        S    May17   4:05 /opt/omi/bin/omiengine -d --logfilefd 3 --socketpair 9
+root        1659  0.0  0.0  55284  1936 ?        Ss   May17   0:00 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+www-data    1660  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1661  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1662  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1663  0.0  0.0  79660  4216 ?        S    May17   0:00 nginx: worker process
+www-data    1664  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1665  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1666  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1667  0.0  0.0  79660  3872 ?        S    May17   0:00 nginx: worker process
+www-data    1668  0.0  0.0  79660  4208 ?        S    May17   0:00 nginx: worker process
+www-data    1669  0.0  0.0  79796  5600 ?        S    May17   0:00 nginx: worker process
+www-data    1670  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1671  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1672  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1673  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1674  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1675  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1676  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1677  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1678  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1679  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1680  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1681  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1682  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+www-data    1683  0.0  0.0  79660  4172 ?        S    May17   0:00 nginx: worker process
+root        1700  0.0  0.0  28760 14880 ?        Ss   May17   0:00 /usr/bin/python3 -u /usr/sbin/waagent -daemon
+whoopsie    1701  0.0  0.0 175260  1724 ?        Ssl  May17   0:00 /usr/bin/whoopsie -f
+root        1712  0.0  0.0  53024  7876 ?        S    May17   0:03 /usr/sbin/xrdp-sesman
+kernoops    1716  0.0  0.0  11260  2208 ?        Ss   May17   0:01 /usr/sbin/kerneloops --test
+kernoops    1726  0.0  0.0  11260  1548 ?        Ss   May17   0:02 /usr/sbin/kerneloops
+root        1728  0.0  0.0  12180  4896 ?        Ss   May17   0:05 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+postgres    1729  0.0  0.0 217440 17076 ?        Ss   May17   1:05 /usr/lib/postgresql/12/bin/postgres -D /var/lib/postgresql/12/main -c config_file=/etc/postgresql/12/main/postgresql.conf
+xrdp        1730  0.0  0.0  10464  2280 ?        S    May17   0:13 /usr/sbin/xrdp
+postgres    1787  0.0  0.0 217564  3700 ?        Ss   May17   0:00 postgres: 12/main: checkpointer   
+postgres    1788  0.0  0.0 217440  5420 ?        Ss   May17   0:31 postgres: 12/main: background writer   
+postgres    1789  0.0  0.0 217440  7880 ?        Ss   May17   0:32 postgres: 12/main: walwriter   
+postgres    1790  0.0  0.0 218112  6616 ?        Ss   May17   1:01 postgres: 12/main: autovacuum launcher   
+postgres    1791  0.0  0.0  71936  4436 ?        Ss   May17   1:13 postgres: 12/main: stats collector   
+postgres    1792  0.0  0.0 217868  3892 ?        Ss   May17   0:02 postgres: 12/main: logical replication launcher   
+root        1837  0.0  0.0 115420 14232 ?        S    May17   1:20 /usr/libexec/sssd/sssd_nss --uid 0 --gid 0 --logger=files
+root        1838  0.0  0.0  90896 11148 ?        S    May17   0:21 /usr/libexec/sssd/sssd_pam --uid 0 --gid 0 --logger=files
+omsagent    1844  0.2  0.0 390468 84004 ?        Sl   May17  63:18 /opt/microsoft/omsagent/ruby/bin/ruby /opt/microsoft/omsagent/bin/omsagent -d /var/opt/microsoft/omsagent/2bc9c00e-4fac-4e5e-8cc9-79cebd654462/run/omsagent.pid -o /var/opt/microsoft/omsagent/2bc9c00e-4fac-4e5e-8cc9-79cebd654462/log/omsagent.log -c /etc/opt/microsoft/omsagent/2bc9c00e-4fac-4e5e-8cc9-79cebd654462/conf/omsagent.conf --no-supervisor
+root        1849  0.0  0.0 246960 10152 ?        Ssl  May17   1:09 /usr/lib/accountsservice/accounts-daemon
+root        1851  0.0  0.0   8544  2400 ?        Ss   May17   0:06 /usr/sbin/cron -f
+root        1854  0.0  0.0  27636  9136 ?        Ss   May17   0:15 /lib/systemd/systemd-logind
+daemon      1856  0.0  0.0   3800  1976 ?        Ss   May17   0:00 /usr/sbin/atd -f
+root        1858  0.0  0.0   7360  1892 ttyS0    Ss+  May17   0:00 /sbin/agetty -o -p -- \u --keep-baud 115200,38400,9600 ttyS0 vt220
+root        1865  0.2  0.0 422868 63348 ?        Sl   May17  56:36 python3 -u bin/WALinuxAgent-2.7.1.0-py2.7.egg -run-exthandlers
+root        1871  0.0  0.0   5836  1372 tty1     Ss+  May17   0:00 /sbin/agetty -o -p -- \u --noclear tty1 linux
+omsagent    1951  0.0  0.0 155700  5472 ?        Sl   May17   2:07 /opt/omi/bin/omiagent 9 10 --destdir / --providerdir /opt/omi/lib --loglevel WARNING
+root        2117  1.3  0.0 287424 15720 ?        Sl   May17 349:45 /opt/omi/bin/omiagent 9 10 --destdir / --providerdir /opt/omi/lib --loglevel WARNING
+root        2177  0.0  0.0 232244  7516 ?        Ssl  May17   0:06 /usr/sbin/lightdm
+root        2182  0.0  0.0 25514276 103000 tty7  Ssl+ May17  13:07 /usr/lib/xorg/Xorg -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+root        2295  0.0  0.0      0     0 ?        S    May17   7:06 [irq/50-nvidia]
+root        2296  0.0  0.0      0     0 ?        S    May17   0:00 [nvidia]
+root        2297  0.0  0.0      0     0 ?        S    May17   5:51 [nv_queue]
+root        2300  0.0  0.0  15060  2772 ?        S    May17   0:00 /usr/bin/vncagent service 0
+root        2302  0.0  0.0      0     0 ?        S    May17   7:19 [irq/51-nvidia]
+root        2303  0.0  0.0      0     0 ?        S    May17   0:00 [nvidia]
+root        2304  0.0  0.0      0     0 ?        S    May17   6:48 [nv_queue]
+root        2351  0.0  0.0      0     0 ?        S    May17   7:11 [irq/52-nvidia]
+root        2352  0.0  0.0      0     0 ?        S    May17   0:00 [nvidia]
+root        2353  0.0  0.0      0     0 ?        S    May17   6:20 [nv_queue]
+root        2394  0.0  0.0   2616  1700 ?        S<s  May17   0:00 /bin/sh /opt/microsoft/dependency-agent/bin/microsoft-dependency-agent-manager
+root        2413  0.0  0.0 188880  9688 ?        Sl   May17   0:00 lightdm --session-child 17 20
+lightdm     2461  0.0  0.0  19052  8224 ?        Ss   May17   0:04 /lib/systemd/systemd --user
+lightdm     2468  0.0  0.0 195472  6644 ?        S    May17   0:00 (sd-pam)
+lightdm     2560  0.0  0.0 279480  4580 ?        S<sl May17   0:00 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+lightdm     2564  0.0  0.0 510904 11924 ?        SNsl May17   0:00 /usr/libexec/tracker-miner-fs
+lightdm     2579  0.0  0.0   2616   416 ?        Ss   May17   0:00 /bin/sh /usr/lib/lightdm/lightdm-greeter-session /usr/sbin/slick-greeter
+lightdm     2580  0.1  0.0 667220 56476 ?        Sl   May17  31:38 /usr/sbin/slick-greeter
+rtkit       2606  0.0  0.0 152936  2880 ?        SNsl May17   0:16 /usr/libexec/rtkit-daemon
+lightdm     2609  0.0  0.0  36428  3780 ?        Ss   May17   0:00 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+lightdm     2647  0.0  0.0 156128  2216 ?        Sl   May17   0:00 /usr/libexec/dconf-service
+lightdm     2649  0.0  0.0 238868  3548 ?        Ssl  May17   0:00 /usr/libexec/gvfsd
+lightdm     2666  0.0  0.0 305572  4576 ?        Sl   May17   0:00 /usr/libexec/at-spi-bus-launcher --launch-immediately
+lightdm     2674  0.0  0.0  36160  4388 ?        S    May17   0:00 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
+lightdm     2681  0.0  0.0 312808  1520 ?        Sl   May17   0:00 /usr/libexec/gvfsd-fuse /run/user/129/gvfs -f -o big_writes
+lightdm     2682  0.0  0.0 313400  9488 ?        Ssl  May17   0:09 /usr/libexec/gvfs-udisks2-volume-monitor
+lightdm     2696  0.0  0.0 235028  4180 ?        Ssl  May17   0:00 /usr/libexec/gvfs-goa-volume-monitor
+lightdm     2703  0.0  0.0 548676 12484 ?        Sl   May17   0:00 /usr/libexec/goa-daemon
+root        2739  0.0  0.0 242956  4672 ?        Ssl  May17   0:01 /usr/lib/upower/upowerd
+lightdm     2761  0.0  0.0 313908  3964 ?        Sl   May17   4:02 /usr/libexec/goa-identity-service
+lightdm     2763  0.0  0.0 237080  4568 ?        Ssl  May17   0:00 /usr/libexec/gvfs-gphoto2-volume-monitor
+lightdm     2778  0.0  0.0 234804  2140 ?        Ssl  May17   0:00 /usr/libexec/gvfs-mtp-volume-monitor
+lightdm     2788  0.0  0.0 315876  3220 ?        Ssl  May17   0:41 /usr/libexec/gvfs-afc-volume-monitor
+root        3128  0.0  0.0  49536  4544 ?        S    May17   0:00 lightdm --session-child 13 20
+lightdm     3130  0.0  0.0 162900  1836 ?        Sl   May17   0:00 /usr/libexec/at-spi2-registryd --use-gnome-session
+root        4035  0.3  0.0  39344  7740 ?        S<   May17  79:48 /opt/microsoft/dependency-agent/bin/microsoft-dependency-agent
+root       67731  0.0  0.0      0     0 ?        I    05:08   0:02 [kworker/21:2-mm_percpu_wq]
+root       95759  0.0  0.0      0     0 ?        I    07:08   0:02 [kworker/14:2-events]
+root      111371  0.0  0.0      0     0 ?        I    08:08   0:01 [kworker/7:0-cgroup_destroy]
+root      111728  0.0  0.0      0     0 ?        S    May18   0:00 [UVM GPU1 BH]
+root      111729  0.0  0.0      0     0 ?        S    May18   0:00 [UVM GPU2 BH]
+root      111730  0.0  0.0      0     0 ?        S    May18   0:00 [UVM GPU3 BH]
+root      111731  0.0  0.0      0     0 ?        S    May18   0:00 [UVM GPU4 BH]
+root      118873  0.0  0.0  52868  2780 ?        S    May18   0:00 /usr/sbin/xrdp-sesman
+nichola+  118875  0.0  0.0  19088  8412 ?        Ss   May18   0:04 /lib/systemd/systemd --user
+nichola+  118876  0.0  0.0 209944  6668 ?        S    May18   0:00 (sd-pam)
+nichola+  118882  0.0  0.0 1331100 7264 ?        Ssl  May18   0:00 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+nichola+  118884  0.0  0.0 789528 21580 ?        SNsl May18   0:56 /usr/libexec/tracker-miner-fs
+nichola+  118885  0.0  0.0 471140 23160 ?        Sl   May18   0:11 x-session-manager
+nichola+  118886  0.2  0.0 769584 279492 ?       Sl   May18  55:21 /usr/lib/xorg/Xorg :10 -auth .Xauthority -config xrdp/xorg.conf -noreset -nolisten tcp -logfile .xorgxrdp.%s.log
+nichola+  118890  0.0  0.0  45408  6336 ?        Ss   May18   0:05 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+nichola+  118906  0.0  0.0 238964  3264 ?        Ssl  May18   0:00 /usr/libexec/gvfsd
+nichola+  118911  0.0  0.0 378344  3868 ?        Sl   May18   0:00 /usr/libexec/gvfsd-fuse /run/user/1301005848/gvfs -f -o big_writes
+nichola+  118913  0.0  0.0 395732 10688 ?        Ssl  May18   0:09 /usr/libexec/gvfs-udisks2-volume-monitor
+nichola+  118927  0.0  0.0 235028  2992 ?        Ssl  May18   0:00 /usr/libexec/gvfs-goa-volume-monitor
+nichola+  118933  0.0  0.0 548688 11728 ?        Sl   May18   0:00 /usr/libexec/goa-daemon
+nichola+  118940  0.0  0.0 313908  5872 ?        Sl   May18   3:53 /usr/libexec/goa-identity-service
+nichola+  118945  0.0  0.0 237080  4372 ?        Ssl  May18   0:00 /usr/libexec/gvfs-gphoto2-volume-monitor
+nichola+  118950  0.0  0.0 234804  4108 ?        Ssl  May18   0:00 /usr/libexec/gvfs-mtp-volume-monitor
+nichola+  118956  0.0  0.0 315876  5520 ?        Ssl  May18   0:40 /usr/libexec/gvfs-afc-volume-monitor
+nichola+  118968  0.0  0.0  89224  5280 ?        Sl   May18   0:00 /usr/sbin/xrdp-chansrv
+nichola+  119031  0.0  0.0   6040   452 ?        Ss   May18   0:05 /usr/bin/ssh-agent /usr/bin/im-launch x-session-manager
+nichola+  119047  0.0  0.0 305616  4548 ?        Ssl  May18   0:00 /usr/libexec/at-spi-bus-launcher
+nichola+  119052  0.0  0.0  44696  4792 ?        S    May18   0:00 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
+nichola+  119137  0.0  0.0 156348  2836 ?        Sl   May18   0:00 /usr/libexec/dconf-service
+nichola+  119141  0.0  0.0 313080  5648 ?        SLl  May18   0:00 gnome-keyring-daemon --start
+nichola+  119145  0.0  0.0 873352 25416 ?        Sl   May18   3:46 /usr/bin/mate-settings-daemon
+nichola+  119147  0.0  0.0 162908  3500 ?        Sl   May18   0:00 /usr/libexec/at-spi2-registryd --use-gnome-session
+nichola+  119166  0.0  0.0 672052 42164 ?        Sl   May18   5:12 marco
+nichola+  119176  0.0  0.0 397016 15132 ?        Sl   May18   0:00 mate-panel
+nichola+  119184 14.6  1.1 7947280 5326800 ?     Rl   May18 3659:37 /usr/bin/caja
+nichola+  119189  0.0  0.0 412104 13912 ?        Sl   May18   0:29 update-notifier
+nichola+  119192  0.0  0.0 1217532 18564 ?       Sl   May18   0:26 /usr/lib/x86_64-linux-gnu/indicator-datetime/indicator-datetime-service
+nichola+  119194  0.0  0.0 422380 32440 ?        Sl   May18   0:00 /usr/lib/mate-panel/wnck-applet
+nichola+  119196  0.0  0.0 458968 15104 ?        Sl   May18   0:00 /usr/lib/mate-applets/trashapplet
+nichola+  119197  0.0  0.0 342104 16452 ?        Sl   May18   0:00 mate-maximus
+nichola+  119199  0.0  0.0 469968 38700 ?        Sl   May18   0:00 /usr/lib/x86_64-linux-gnu/brisk-menu//brisk-menu
+nichola+  119201  0.0  0.0 387780 26756 ?        Sl   May18   0:59 /usr/lib/mate-indicator-applet/mate-indicator-applet-complete
+nichola+  119204  0.0  0.0 255064  4300 ?        Sl   May18   0:00 /usr/lib/x86_64-linux-gnu/indicator-application/indicator-application-service
+nichola+  119205  0.0  0.0 341896 10872 ?        Sl   May18   0:00 /usr/lib/mate-panel/notification-area-applet
+nichola+  119208  0.0  0.0 236044  4804 ?        Sl   May18   0:00 /usr/libexec/geoclue-2.0/demos/agent
+nichola+  119214  0.0  0.0 386336  5292 ?        Sl   May18   0:00 /usr/lib/x86_64-linux-gnu/indicator-power/indicator-power-service
+nichola+  119234  0.0  0.0 1198972 18752 ?       Ssl  May18   0:00 /usr/libexec/evolution-source-registry
+nichola+  119267  0.0  0.0 320972  3484 ?        Sl   May18   0:00 /usr/lib/x86_64-linux-gnu/indicator-messages/indicator-messages-service
+nichola+  119271  0.0  0.0 434236 27332 ?        Sl   May18   0:00 /usr/bin/python3 /bin/blueman-applet
+nichola+  119286  0.0  0.0 337564 10600 ?        Sl   May18   0:01 /usr/lib/x86_64-linux-gnu/polkit-mate/polkit-mate-authentication-agent-1
+nichola+  119289  0.0  0.0 855152  3524 ?        Sl   May18   0:00 /usr/lib/x86_64-linux-gnu/indicator-sound/indicator-sound-service
+nichola+  119304  0.0  0.0 925840  9044 ?        Sl   May18   0:05 /usr/lib/x86_64-linux-gnu/indicator-session/indicator-session-service
+nichola+  119311  0.0  0.0  71932 26048 ?        S    May18   0:08 /usr/bin/python3 /usr/share/system-config-printer/applet.py
+nichola+  119313  0.0  0.0 421936 10652 ?        Sl   May18   0:01 nm-applet
+nichola+  119333  0.0  0.0 669276 21400 ?        Sl   May18   0:02 /usr/libexec/evolution-data-server/evolution-alarm-notify
+nichola+  119359  0.0  0.0 527792 82000 ?        Sl   May18   1:12 mate-screensaver
+nichola+  119361  0.0  0.0 161504  2844 ?        Ssl  May18   0:00 /usr/libexec/gvfsd-metadata
+nichola+  119364  0.0  0.0 313108  5048 ?        Sl   May18   0:00 /usr/libexec/gvfsd-trash --spawner :1.3 /org/gtk/gvfs/exec_spaw/0
+nichola+  119369  0.0  0.0 464732  6748 ?        Ssl  May18   0:27 /usr/libexec/xdg-desktop-portal
+nichola+  119395  0.0  0.0 530536  2668 ?        Ssl  May18   0:00 /usr/libexec/xdg-document-portal
+nichola+  119406  0.0  0.0 234748  1064 ?        Ssl  May18   0:00 /usr/libexec/xdg-permission-store
+nichola+  119421  0.0  0.0 413544 12300 ?        Ssl  May18   0:21 /usr/libexec/xdg-desktop-portal-gtk
+nichola+  119423  0.0  0.0 961064  9460 ?        Ssl  May18   0:00 /usr/libexec/evolution-calendar-factory
+nichola+  119428  0.0  0.0 429132 20596 ?        Sl   May18   0:00 /usr/bin/python3 /usr/bin/blueman-tray
+nichola+  119450  0.0  0.0 813208 10428 ?        Ssl  May18   0:00 /usr/libexec/evolution-addressbook-factory
+nichola+  119472  0.0  0.0  43992  2276 ?        Ss   May18   0:00 /usr/lib/bluetooth/obexd
+nichola+  119564  0.0  0.0 487308 39020 ?        Sl   May18   0:32 mate-terminal
+nichola+  119570  0.0  0.0  18884  3924 pts/0    Ss   May18   0:00 -bash
+nichola+  119705  0.0  0.0  29688 17568 pts/0    S+   May18   5:33 /apps01/anaconda3/envs/ml-env/bin/python /apps01/anaconda3/envs/ml-env/bin/gunicorn -c config/gunicorn/prod.py ml_portal.wsgi
+nichola+  119712  0.0  0.0  18752  3852 pts/2    Ss   May18   0:00 -bash
+nichola+  119732  0.0  0.0   7272  1360 pts/2    S+   May18   0:00 tail -f /var/log/gunicorn/prod2.log
+nichola+  119997  1.1  0.4 29803880 1989628 pts/0 Sl+ May18 294:26 /apps01/anaconda3/envs/ml-env/bin/python /apps01/anaconda3/envs/ml-env/bin/gunicorn -c config/gunicorn/prod.py ml_portal.wsgi
+nichola+  119998  1.1  0.4 28100012 1977956 pts/0 Sl+ May18 290:46 /apps01/anaconda3/envs/ml-env/bin/python /apps01/anaconda3/envs/ml-env/bin/gunicorn -c config/gunicorn/prod.py ml_portal.wsgi
+nichola+  134570  0.0  0.0   6040  1432 ?        S    May18   0:00 /usr/bin/ssh-agent -D -a /run/user/1301005848/keyring/.ssh
+root      138049  0.0  0.0      0     0 ?        I    09:55   0:01 [kworker/22:0-mm_percpu_wq]
+root      174088  0.0  0.0      0     0 ?        I    12:20   0:01 [kworker/9:0-mm_percpu_wq]
+root      179608  0.1  0.0      0     0 ?        S<   May18  28:47 [loop10]
+lightdm   179750  0.0  0.0 161412  2736 ?        Ssl  May18   0:00 /usr/libexec/gvfsd-metadata
+root      199132  0.0  0.0      0     0 ?        I    14:04   0:00 [kworker/8:2-mm_percpu_wq]
+root      204094  0.0  0.0      0     0 ?        I    14:23   0:01 [kworker/23:1-mm_percpu_wq]
+root      206761  0.0  0.0      0     0 ?        I    14:34   0:00 [kworker/6:1-cgroup_destroy]
+root      207875  0.0  0.0      0     0 ?        I    14:38   0:01 [kworker/3:0-events]
+root      207876  0.0  0.0      0     0 ?        I    14:38   0:00 [kworker/4:2-cgroup_destroy]
+root      207877  0.0  0.0      0     0 ?        I    14:38   0:01 [kworker/5:0-events]
+root      219380  0.0  0.0      0     0 ?        I    15:25   0:00 [kworker/3:2-cgroup_destroy]
+root      234307  0.0  0.0      0     0 ?        I    16:27   0:00 [kworker/11:2-events]
+root      236065  0.0  0.0      0     0 ?        I    16:34   0:01 [kworker/15:0-events]
+root      241257  0.0  0.0      0     0 ?        I    16:55   0:00 [kworker/18:2-events]
+root      244926  0.0  0.0      0     0 ?        I    17:11   0:01 [kworker/17:1-mm_percpu_wq]
+root      250577  0.0  0.0      0     0 ?        I    17:34   0:01 [kworker/12:2-mm_percpu_wq]
+brett.b+  251256  0.0  0.0  19060  8388 ?        Ss   May19   0:04 /lib/systemd/systemd --user
+brett.b+  251257  0.0  0.0 210276  6680 ?        S    May19   0:00 (sd-pam)
+brett.b+  251269  0.0  0.0 279504  4976 ?        Ssl  May19   0:00 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+brett.b+  251271  0.0  0.0 584608 10248 ?        SNsl May19   0:00 /usr/libexec/tracker-miner-fs
+brett.b+  251286  0.0  0.0  44700  4880 ?        Ss   May19   0:00 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+brett.b+  251304  0.0  0.0 238868  5372 ?        Ssl  May19   0:00 /usr/libexec/gvfsd
+brett.b+  251309  0.0  0.0 378344  6584 ?        Sl   May19   0:00 /usr/libexec/gvfsd-fuse /run/user/1301005595/gvfs -f -o big_writes
+brett.b+  251311  0.0  0.0 321904  9540 ?        Ssl  May19   0:08 /usr/libexec/gvfs-udisks2-volume-monitor
+brett.b+  251323  0.0  0.0 235028  2136 ?        Ssl  May19   0:00 /usr/libexec/gvfs-goa-volume-monitor
+brett.b+  251327  0.0  0.0 548688 12556 ?        Sl   May19   0:00 /usr/libexec/goa-daemon
+brett.b+  251335  0.0  0.0 313908  3776 ?        Sl   May19   3:08 /usr/libexec/goa-identity-service
+brett.b+  251340  0.0  0.0 237080  4680 ?        Ssl  May19   0:00 /usr/libexec/gvfs-gphoto2-volume-monitor
+brett.b+  251345  0.0  0.0 234804  2072 ?        Ssl  May19   0:00 /usr/libexec/gvfs-mtp-volume-monitor
+brett.b+  251349  0.0  0.0 315876  3296 ?        Ssl  May19   0:38 /usr/libexec/gvfs-afc-volume-monitor
+root      254070  0.0  0.0      0     0 ?        I    17:49   0:00 [kworker/15:2]
+root      258736  0.0  0.0      0     0 ?        I    18:08   0:00 [kworker/2:1-mm_percpu_wq]
+root      266167  0.0  0.0      0     0 ?        I    18:38   0:00 [kworker/16:0-events]
+root      266197  0.0  0.0      0     0 ?        I    18:38   0:00 [kworker/1:3-events]
+root      268736  0.0  0.0  53028  2740 ?        S    May19   0:00 /usr/sbin/xrdp-sesman
+michael+  268738  0.0  0.0  19084  8060 ?        Ss   May19   0:04 /lib/systemd/systemd --user
+michael+  268739  0.0  0.0 210276  8664 ?        S    May19   0:00 (sd-pam)
+michael+  268745  0.0  0.0 1331196 9260 ?        Ssl  May19   0:00 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+michael+  268747  0.0  0.0 658452 15020 ?        SNsl May19   0:00 /usr/libexec/tracker-miner-fs
+michael+  268748  0.0  0.0 471156 25320 ?        Sl   May19   0:08 x-session-manager
+michael+  268749 14.5  0.0 968468 278932 ?       Sl   May19 3419:03 /usr/lib/xorg/Xorg :11 -auth .Xauthority -config xrdp/xorg.conf -noreset -nolisten tcp -logfile .xorgxrdp.%s.log
+michael+  268754  0.0  0.0  45456  6336 ?        Ss   May19   0:08 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+michael+  268759  0.0  0.0 238976  2884 ?        Ssl  May19   0:01 /usr/libexec/gvfsd
+michael+  268774  0.0  0.0 378344  4512 ?        Sl   May19   0:00 /usr/libexec/gvfsd-fuse /run/user/1301004454/gvfs -f -o big_writes
+michael+  268776  0.0  0.0 395792  8396 ?        Ssl  May19   0:08 /usr/libexec/gvfs-udisks2-volume-monitor
+michael+  268794  0.0  0.0 235028  1984 ?        Ssl  May19   0:00 /usr/libexec/gvfs-goa-volume-monitor
+michael+  268798  0.0  0.0 548684  9276 ?        Sl   May19   0:00 /usr/libexec/goa-daemon
+michael+  268805  0.0  0.0 313908  4012 ?        Sl   May19   3:43 /usr/libexec/goa-identity-service
+michael+  268813  0.0  0.0 237080  2368 ?        Ssl  May19   0:00 /usr/libexec/gvfs-gphoto2-volume-monitor
+michael+  268817  0.0  0.0 234804  1908 ?        Ssl  May19   0:00 /usr/libexec/gvfs-mtp-volume-monitor
+michael+  268821  0.0  0.0 315876  3368 ?        Ssl  May19   0:38 /usr/libexec/gvfs-afc-volume-monitor
+michael+  268827  0.0  0.0  89224  4212 ?        Sl   May19   0:00 /usr/sbin/xrdp-chansrv
+michael+  268878  0.0  0.0   6040   620 ?        Ss   May19   0:05 /usr/bin/ssh-agent /usr/bin/im-launch x-session-manager
+michael+  268900  0.0  0.0 305612  2752 ?        Ssl  May19   0:00 /usr/libexec/at-spi-bus-launcher
+michael+  268905  0.0  0.0  44696  5584 ?        S    May19   0:03 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
+michael+  268991  0.0  0.0 156352  2952 ?        Sl   May19   0:00 /usr/libexec/dconf-service
+michael+  268995  0.0  0.0 313048  3708 ?        SLl  May19   0:01 gnome-keyring-daemon --start
+michael+  268999  0.0  0.0 1340304 20728 ?       Sl   May19   2:38 /usr/bin/mate-settings-daemon
+michael+  269001  0.0  0.0 162908  4552 ?        Sl   May19   0:02 /usr/libexec/at-spi2-registryd --use-gnome-session
+michael+  269008  0.7  0.0 673760 30660 ?        Sl   May19 177:46 marco
+michael+  269025  0.0  0.0 471888 17568 ?        Sl   May19   0:00 mate-panel
+michael+  269033  0.0  0.0 2522128 93080 ?       Sl   May19   0:02 /usr/bin/caja
+michael+  269036  0.0  0.0 390076 22076 ?        Sl   May19   0:12 /usr/lib/mate-panel/wnck-applet
+michael+  269038  0.0  0.0 384428 11108 ?        Sl   May19   0:00 /usr/lib/mate-applets/trashapplet
+michael+  269041  0.0  0.0 389696 18176 ?        Sl   May19   0:01 /usr/lib/x86_64-linux-gnu/brisk-menu//brisk-menu
+michael+  269042  0.0  0.0 461316 28292 ?        Sl   May19   1:09 /usr/lib/mate-indicator-applet/mate-indicator-applet-complete
+michael+  269044  0.0  0.0 341916  7916 ?        Sl   May19   0:00 /usr/lib/mate-panel/notification-area-applet
+michael+  269065  0.0  0.0 412048 12288 ?        Sl   May19   0:28 update-notifier
+michael+  269068  0.0  0.0 1217520 19624 ?       Sl   May19   0:20 /usr/lib/x86_64-linux-gnu/indicator-datetime/indicator-datetime-service
+michael+  269070  0.0  0.0 343208  8800 ?        Sl   May19   0:00 mate-maximus
+michael+  269072  0.0  0.0 255064  3648 ?        Sl   May19   0:00 /usr/lib/x86_64-linux-gnu/indicator-application/indicator-application-service
+michael+  269077  0.0  0.0 236044  4860 ?        Sl   May19   0:00 /usr/libexec/geoclue-2.0/demos/agent
+michael+  269080  0.0  0.0 386332  3008 ?        Sl   May19   0:00 /usr/lib/x86_64-linux-gnu/indicator-power/indicator-power-service
+michael+  269096  0.0  0.0 313100  4424 ?        Sl   May19   0:00 /usr/libexec/gvfsd-trash --spawner :1.3 /org/gtk/gvfs/exec_spaw/0
+michael+  269112  0.0  0.0 1199120 14196 ?       Ssl  May19   0:00 /usr/libexec/evolution-source-registry
+michael+  269121  0.0  0.0 320944  2272 ?        Sl   May19   0:00 /usr/lib/x86_64-linux-gnu/indicator-messages/indicator-messages-service
+michael+  269126  0.0  0.0 434280 22836 ?        Sl   May19   0:00 /usr/bin/python3 /bin/blueman-applet
+michael+  269137  0.0  0.0 161456  4760 ?        Ssl  May19   0:00 /usr/libexec/gvfsd-metadata
+michael+  269140  0.0  0.0 337540 10236 ?        Sl   May19   0:01 /usr/lib/x86_64-linux-gnu/polkit-mate/polkit-mate-authentication-agent-1
+michael+  269143  0.0  0.0 1002748 6308 ?        Sl   May19   0:00 /usr/lib/x86_64-linux-gnu/indicator-sound/indicator-sound-service
+michael+  269163  0.0  0.0 925964  9192 ?        Sl   May19   0:06 /usr/lib/x86_64-linux-gnu/indicator-session/indicator-session-service
+michael+  269166  0.0  0.0  71932 25756 ?        S    May19   0:18 /usr/bin/python3 /usr/share/system-config-printer/applet.py
+michael+  269174  0.0  0.0 421956 15060 ?        Sl   May19   0:01 nm-applet
+michael+  269185  0.0  0.0 743020 21784 ?        Sl   May19   0:02 /usr/libexec/evolution-data-server/evolution-alarm-notify
+michael+  269198  0.0  0.0 613768 38600 ?        Sl   May19   0:55 mate-screensaver
+michael+  269211  0.0  0.0 538728  6864 ?        Ssl  May19   0:28 /usr/libexec/xdg-desktop-portal
+michael+  269219  0.0  0.0 456672  1540 ?        Ssl  May19   0:01 /usr/libexec/xdg-document-portal
+michael+  269229  0.0  0.0 234748   980 ?        Ssl  May19   0:00 /usr/libexec/xdg-permission-store
+michael+  269253  0.0  0.0 487260 11888 ?        Ssl  May19   0:00 /usr/libexec/xdg-desktop-portal-gtk
+michael+  269273  0.0  0.0 1034792 15384 ?       Ssl  May19   0:00 /usr/libexec/evolution-calendar-factory
+michael+  269305  0.0  0.0 813208 12468 ?        Ssl  May19   0:00 /usr/libexec/evolution-addressbook-factory
+michael+  269333  0.0  0.0 429124 20488 ?        Sl   May19   0:00 /usr/bin/python3 /usr/bin/blueman-tray
+michael+  269336  0.0  0.0  43992  2248 ?        Ss   May19   0:00 /usr/lib/bluetooth/obexd
+michael+  269631  0.0  0.0 481856 28608 ?        Sl   May19  13:01 mate-terminal
+michael+  269637  0.0  0.0  19388  4268 pts/4    Ss+  May19   0:00 bash
+root      270387  0.0  0.0      0     0 ?        I    18:56   0:00 [kworker/9:2]
+root      272270  0.0  0.0      0     0 ?        I    19:04   0:00 [kworker/21:1-cgroup_destroy]
+brett.b+  273057  0.0  0.0 161408  2696 ?        Ssl  May19   0:00 /usr/libexec/gvfsd-metadata
+michael+  274398  0.0  0.0 312700 71368 pts/4    Tl   May19   0:02 /apps01/anaconda3/bin/python3.9 /apps01/anaconda3/bin/jupyter-lab
+michael+  274432  0.0  0.0      0     0 ?        Zs   May19   0:09 [firefox] <defunct>
+michael+  274823  0.0  0.0 745676 50320 ?        Ssl  May19   2:42 /apps01/anaconda3/bin/python -m ipykernel_launcher -f /home/michael.mccarthy/.local/share/jupyter/runtime/kernel-99d623ab-9447-4c45-83d3-100c8a7d3e3b.json
+root      277493  0.0  0.0      0     0 ?        I    19:26   0:00 [kworker/22:1-cgroup_destroy]
+root      281722  0.0  0.0      0     0 ?        I    19:43   0:00 [kworker/19:0-cgroup_pidlist_destroy]
+michael+  283445  0.0  0.0  18956  3896 pts/6    Ss+  May19   0:00 bash
+root      292851  0.0  0.0      0     0 ?        I    20:26   0:00 [kworker/16:2-cgroup_destroy]
+michael+  293233  0.0  0.0 387184  5008 ?        Sl   May19   0:00 /usr/libexec/gvfsd-network --spawner :1.3 /org/gtk/gvfs/exec_spaw/1
+michael+  293250  0.0  0.0 314136  4252 ?        Sl   May19   0:03 /usr/libexec/gvfsd-dnssd --spawner :1.3 /org/gtk/gvfs/exec_spaw/3
+root      293848  0.0  0.0      0     0 ?        I    20:30   0:00 [kworker/u48:2-ext4-rsv-conversion]
+root      294763  0.0  0.0      0     0 ?        I    20:34   0:00 [kworker/13:0-events]
+root      294830  0.0  0.0      0     0 ?        I    20:34   0:00 [kworker/20:1-events]
+root      294911  0.0  0.0      0     0 ?        I    20:34   0:00 [kworker/8:1-events]
+root      296035  0.0  0.0      0     0 ?        I    20:38   0:00 [kworker/10:0-cgroup_destroy]
+root      297195  0.0  0.0      0     0 ?        I    20:43   0:00 [kworker/1:1-mm_percpu_wq]
+root      299990  0.0  0.0      0     0 ?        I    20:56   0:00 [kworker/18:0-events]
+root      300957  0.0  0.0      0     0 ?        I    21:00   0:00 [kworker/6:3-mm_percpu_wq]
+root      302910  0.0  0.0      0     0 ?        I    21:09   0:00 [kworker/7:1-mm_percpu_wq]
+root      303499  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/23:2-cgroup_destroy]
+root      307009  0.0  0.0      0     0 ?        I    21:26   0:00 [kworker/5:2-events]
+root      308787  0.0  0.0      0     0 ?        I    21:34   0:01 [kworker/0:1-events]
+root      309322  0.0  0.0      0     0 ?        I    21:36   0:00 [kworker/19:3-mm_percpu_wq]
+root      310020  0.0  0.0      0     0 ?        I    21:38   0:00 [kworker/13:2-rcu_par_gp]
+root      310047  0.0  0.0      0     0 ?        I    21:38   0:00 [kworker/14:0-cgroup_destroy]
+root      310629  0.0  0.0      0     0 ?        I    21:41   0:00 [kworker/20:0-cgroup_destroy]
+root      311208  0.0  0.0      0     0 ?        I    21:43   0:00 [kworker/0:2-events]
+root      314015  0.0  0.0      0     0 ?        I    21:56   0:00 [kworker/4:0-events]
+root      315751  0.0  0.0      0     0 ?        I    22:03   0:00 [kworker/u49:2-events_unbound]
+root      315917  0.0  0.0      0     0 ?        I    22:04   0:00 [kworker/2:2-cgroup_destroy]
+root      316511  0.0  0.0      0     0 ?        I    22:06   0:00 [kworker/u50:2-events_unbound]
+root      317119  0.0  0.0      0     0 ?        I    22:08   0:00 [kworker/17:2-cgroup_destroy]
+root      317736  0.0  0.0      0     0 ?        I    22:11   0:00 [kworker/10:2-mm_percpu_wq]
+root      318381  0.0  0.0      0     0 ?        I    22:14   0:00 [kworker/11:1-events]
+daniel.+  318566  0.0  0.0  19992  4896 pts/9    S    22:14   0:00 -bash
+root      320468  0.0  0.0      0     0 ?        I    22:16   0:00 [kworker/u49:1-events_unbound]
+root      323544  0.0  0.0      0     0 ?        I    22:22   0:00 [kworker/u49:0-events_unbound]
+root      324476  0.0  0.0      0     0 ?        I    22:23   0:00 [kworker/u50:0-events_unbound]
+root      326332  0.0  0.0      0     0 ?        I    22:26   0:00 [kworker/12:1-cgroup_destroy]
+song.ya+  326706  1.2  0.0 239752 36488 ?        Sl   22:27   0:05 /usr/lib/mate-screensaver/mate-screensaver/floaters /usr/share/pixmaps/mate-logo-white.svg
+jordan.+  327515  1.2  0.0 239740 36560 ?        Sl   22:27   0:05 /usr/lib/mate-screensaver/mate-screensaver/floaters /usr/share/pixmaps/mate-logo-white.svg
+root      328583  0.0  0.0      0     0 ?        I    22:29   0:00 [kworker/u48:1-ext4-rsv-conversion]
+root      329006  0.0  0.0      0     0 ?        I    22:30   0:00 [kworker/u49:3-events_unbound]
+darin.l+  329159  1.1  0.0 239536 36700 ?        Sl   22:30   0:03 /usr/lib/mate-screensaver/mate-screensaver/floaters /usr/share/pixmaps/mate-logo-white.svg
+daniel.+  329382  0.0  0.0  19992  4896 pts/9    S    22:31   0:00 -bash
+daniel.+  329418  0.0  0.0  19992  4896 pts/9    S    22:31   0:00 -bash
+daniel.+  329472  0.0  0.0  19992  4896 pts/9    S    22:31   0:00 -bash
+daniel.+  331210  100  0.4 2175248 1927152 pts/9 R    22:33   2:28 python /home/daniel.monyak/software/masif/source/data_preparation/04-masif_precompute.py masif_ligand 3IHL_ACBD_
+michael+  331230  1.3  0.0 239668 36604 ?        Sl   22:33   0:01 /usr/lib/mate-screensaver/mate-screensaver/floaters /usr/share/pixmaps/mate-logo-white.svg
+daniel.+  331270  100  0.4 2209076 1960548 pts/9 R    22:33   2:18 python /home/daniel.monyak/software/masif/source/data_preparation/04-masif_precompute.py masif_ligand 3ICS_AB_
+root      331335  0.0  0.0      0     0 ?        I    22:33   0:00 [kworker/14:1-mm_percpu_wq]
+root      331471  0.0  0.0      0     0 ?        I    22:34   0:00 [kworker/u50:1]
+root      331566  0.0  0.0  88884 23012 ?        Ss   22:34   0:00 /usr/libexec/sssd/sssd_sudo --socket-activated
+root      331584  0.0  0.0      0     0 ?        I    22:34   0:00 [kworker/21:0-events]
+daniel.+  331594 98.9  0.2 1406476 1157564 pts/9 R    22:34   1:28 python /home/daniel.monyak/software/masif/source/data_preparation/04-masif_precompute.py masif_ligand 3IN1_ACBD_
+daniel.+  331722  0.0  0.0   7236   584 pts/9    S    22:34   0:00 sleep 60
+daniel.+  331866  0.0  0.0   7236   580 ?        S    22:35   0:00 sleep 60
+root      331918  4.5  0.0 3094820 57460 ?       Sl   22:35   0:00 /var/lib/waagent/Microsoft.GuestConfiguration.ConfigurationforLinux-1.26.24/GCAgent/GC/../GC/gc_worker -a PasswordPolicy_msid232 -c NonCompliant -s inguest -g https://eastus2-gas.guestconfiguration.azure.com/virtualMachines/67efbf24-fecb-4460-a5fd-da8d2c03a986
+daniel.+  331965  0.0  0.0  19256  3628 pts/9    R+   22:35   0:00 ps aux
+brett.b+  358125  0.4  7.0 80884280 32415608 ?   Sl   May20 106:37 python3 /apps01/openeye/toolkits/OpenEye-toolkits-python3-linux-x64-2021.2.0/openeye/examples/fastrocs/ShapeDatabaseServer.py -hostname ARVAZAPP13 -dbase /data02/databases/fastrocs/vendor/Q1_2022/prepped/vendor_Q122_prepped_fastrocs.oeb
+root      535663  0.0  0.0  52780  5320 ?        Ss   May21   0:00 sshd: brett.beno [priv]
+brett.b+  535835  0.0  0.0  52920  2816 ?        S    May21   0:02 sshd: brett.beno@pts/5
+brett.b+  535836  0.0  0.0  18880  3888 pts/5    Ss+  May21   0:00 -bash
+michael+  794389  0.0  0.0   6040  1724 ?        S    May23   0:00 /usr/bin/ssh-agent -D -a /run/user/1301004454/keyring/.ssh
+root      808050  0.0  0.0  53028  3896 ?        S    May23   0:00 /usr/sbin/xrdp-sesman
+song.ya+  808052  0.0  0.0  19056  8324 ?        Ss   May23   0:03 /lib/systemd/systemd --user
+song.ya+  808053  0.0  0.0 210276  6684 ?        S    May23   0:00 (sd-pam)
+song.ya+  808059  0.0  0.0 1593324 7344 ?        Ssl  May23   0:00 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+song.ya+  808061  0.0  0.0 658348 14212 ?        SNsl May23   0:00 /usr/libexec/tracker-miner-fs
+song.ya+  808062  0.0  0.0 470860 25192 ?        Sl   May23   0:07 x-session-manager
+song.ya+  808063  5.2  0.0 530708 153216 ?       Sl   May23 918:24 /usr/lib/xorg/Xorg :12 -auth .Xauthority -config xrdp/xorg.conf -noreset -nolisten tcp -logfile .xorgxrdp.%s.log
+song.ya+  808067  0.0  0.0  45516  6360 ?        Ss   May23   0:06 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+song.ya+  808083  0.0  0.0 238868  3496 ?        Ssl  May23   0:00 /usr/libexec/gvfsd
+song.ya+  808088  0.0  0.0 378344  4524 ?        Sl   May23   0:00 /usr/libexec/gvfsd-fuse /run/user/1301004550/gvfs -f -o big_writes
+song.ya+  808092  0.0  0.0 395648  8368 ?        Ssl  May23   0:07 /usr/libexec/gvfs-udisks2-volume-monitor
+song.ya+  808108  0.0  0.0 235028  2104 ?        Ssl  May23   0:00 /usr/libexec/gvfs-goa-volume-monitor
+song.ya+  808112  0.0  0.0 548688  9932 ?        Sl   May23   0:00 /usr/libexec/goa-daemon
+song.ya+  808119  0.0  0.0 313908  6000 ?        Sl   May23   3:34 /usr/libexec/goa-identity-service
+song.ya+  808126  0.0  0.0 237080  2448 ?        Ssl  May23   0:00 /usr/libexec/gvfs-gphoto2-volume-monitor
+song.ya+  808131  0.0  0.0 234804  1908 ?        Ssl  May23   0:00 /usr/libexec/gvfs-mtp-volume-monitor
+song.ya+  808135  0.0  0.0 315876  3356 ?        Ssl  May23   0:30 /usr/libexec/gvfs-afc-volume-monitor
+song.ya+  808141  0.0  0.0  89224  4116 ?        Sl   May23   0:00 /usr/sbin/xrdp-chansrv
+song.ya+  808195  0.0  0.0   6040   448 ?        Ss   May23   0:03 /usr/bin/ssh-agent /usr/bin/im-launch x-session-manager
+song.ya+  808217  0.0  0.0 305616  2756 ?        Ssl  May23   0:00 /usr/libexec/at-spi-bus-launcher
+song.ya+  808222  0.0  0.0  44696  5204 ?        S    May23   0:02 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
+song.ya+  808316  0.0  0.0 156232  2784 ?        Sl   May23   0:00 /usr/libexec/dconf-service
+song.ya+  808320  0.0  0.0 239348  5508 ?        SLl  May23   0:00 gnome-keyring-daemon --start
+song.ya+  808324  0.0  0.0 1341356 28328 ?       Sl   May23   2:04 /usr/bin/mate-settings-daemon
+song.ya+  808326  0.0  0.0 162908  4732 ?        Sl   May23   0:01 /usr/libexec/at-spi2-registryd --use-gnome-session
+song.ya+  808333  0.8  0.0 667900 22856 ?        Sl   May23 153:21 marco
+song.ya+  808349  0.0  0.0 471932 19848 ?        Sl   May23   0:01 mate-panel
+song.ya+  808363  0.0  0.0 2324304 68104 ?       Sl   May23   0:04 /usr/bin/caja
+song.ya+  808366  0.0  0.0 463032 50776 ?        Sl   May23   0:08 /usr/lib/mate-panel/wnck-applet
+song.ya+  808368  0.0  0.0 385360 14888 ?        Sl   May23   0:00 /usr/lib/mate-applets/trashapplet
+song.ya+  808370  0.0  0.0 469656 24636 ?        Sl   May23   0:01 /usr/lib/x86_64-linux-gnu/brisk-menu//brisk-menu
+song.ya+  808372  0.0  0.0 460788 26836 ?        Sl   May23   0:54 /usr/lib/mate-indicator-applet/mate-indicator-applet-complete
+song.ya+  808374  0.0  0.0 341884 10944 ?        Sl   May23   0:00 /usr/lib/mate-panel/notification-area-applet
+song.ya+  808395  0.0  0.0 412096 14112 ?        Sl   May23   0:25 update-notifier
+song.ya+  808397  0.0  0.0 1217524 15700 ?       Sl   May23   0:15 /usr/lib/x86_64-linux-gnu/indicator-datetime/indicator-datetime-service
+song.ya+  808399  0.0  0.0 343200 10408 ?        Sl   May23   0:00 mate-maximus
+song.ya+  808401  0.0  0.0 255064  5020 ?        Sl   May23   0:00 /usr/lib/x86_64-linux-gnu/indicator-application/indicator-application-service
+song.ya+  808407  0.0  0.0 236044  2836 ?        Sl   May23   0:00 /usr/libexec/geoclue-2.0/demos/agent
+song.ya+  808415  0.0  0.0 386336  5260 ?        Sl   May23   0:00 /usr/lib/x86_64-linux-gnu/indicator-power/indicator-power-service
+song.ya+  808435  0.0  0.0 313116  5392 ?        Sl   May23   0:00 /usr/libexec/gvfsd-trash --spawner :1.3 /org/gtk/gvfs/exec_spaw/0
+song.ya+  808442  0.0  0.0 320956  1472 ?        Sl   May23   0:00 /usr/lib/x86_64-linux-gnu/indicator-messages/indicator-messages-service
+song.ya+  808451  0.0  0.0 434312 21052 ?        Sl   May23   0:00 /usr/bin/python3 /bin/blueman-applet
+song.ya+  808466  0.0  0.0 1198980 14512 ?       Ssl  May23   0:00 /usr/libexec/evolution-source-registry
+song.ya+  808469  0.0  0.0 337520  7872 ?        Sl   May23   0:00 /usr/lib/x86_64-linux-gnu/polkit-mate/polkit-mate-authentication-agent-1
+song.ya+  808470  0.0  0.0 161456  4748 ?        Ssl  May23   0:00 /usr/libexec/gvfsd-metadata
+song.ya+  808474  0.0  0.0 855152  6744 ?        Sl   May23   0:00 /usr/lib/x86_64-linux-gnu/indicator-sound/indicator-sound-service
+song.ya+  808490  0.0  0.0 925840  9152 ?        Sl   May23   0:04 /usr/lib/x86_64-linux-gnu/indicator-session/indicator-session-service
+song.ya+  808502  0.0  0.0  71928 25868 ?        S    May23   0:14 /usr/bin/python3 /usr/share/system-config-printer/applet.py
+song.ya+  808509  0.0  0.0 421944 11136 ?        Sl   May23   0:01 nm-applet
+song.ya+  808527  0.0  0.0 669260 21568 ?        Sl   May23   0:03 /usr/libexec/evolution-data-server/evolution-alarm-notify
+song.ya+  808540  0.0  0.0 451952 62440 ?        Sl   May23   0:37 mate-screensaver
+song.ya+  808551  0.0  0.0 612324  6828 ?        Ssl  May23   0:23 /usr/libexec/xdg-desktop-portal
+song.ya+  808565  0.0  0.0 530540  3344 ?        Ssl  May23   0:01 /usr/libexec/xdg-document-portal
+song.ya+  808570  0.0  0.0 234748  1316 ?        Ssl  May23   0:00 /usr/libexec/xdg-permission-store
+song.ya+  808591  0.0  0.0 487276  6904 ?        Ssl  May23   0:00 /usr/libexec/xdg-desktop-portal-gtk
+song.ya+  808608  0.0  0.0 969260 11280 ?        Ssl  May23   0:00 /usr/libexec/evolution-calendar-factory
+song.ya+  808627  0.0  0.0 813212 12236 ?        Ssl  May23   0:00 /usr/libexec/evolution-addressbook-factory
+song.ya+  808658  0.0  0.0 429124 18044 ?        Sl   May23   0:00 /usr/bin/python3 /usr/bin/blueman-tray
+song.ya+  808660  0.0  0.0  43992  2196 ?        Ss   May23   0:00 /usr/lib/bluetooth/obexd
+root      809275  0.0  0.0  53028  3916 ?        S    May23   0:00 /usr/sbin/xrdp-sesman
+jordan.+  809277  0.0  0.0  19084  8208 ?        Ss   May23   0:03 /lib/systemd/systemd --user
+jordan.+  809278  0.0  0.0 210276  6684 ?        S    May23   0:00 (sd-pam)
+jordan.+  809284  0.0  0.0 1331064 7008 ?        Ssl  May23   0:00 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+jordan.+  809286  0.0  0.0 584732 19284 ?        SNsl May23   0:00 /usr/libexec/tracker-miner-fs
+jordan.+  809287  0.0  0.0 470800 23660 ?        Sl   May23   0:07 x-session-manager
+jordan.+  809288 11.0  0.0 844988 219052 ?       Rl   May23 1936:16 /usr/lib/xorg/Xorg :13 -auth .Xauthority -config xrdp/xorg.conf -noreset -nolisten tcp -logfile .xorgxrdp.%s.log
+jordan.+  809293  0.0  0.0  45384  6284 ?        Ss   May23   0:06 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+jordan.+  809308  0.0  0.0 238868  2504 ?        Ssl  May23   0:00 /usr/libexec/gvfsd
+jordan.+  809313  0.0  0.0 378344  2544 ?        Sl   May23   0:00 /usr/libexec/gvfsd-fuse /run/user/1301005280/gvfs -f -o big_writes
+jordan.+  809315  0.0  0.0 395784 10872 ?        Ssl  May23   0:07 /usr/libexec/gvfs-udisks2-volume-monitor
+jordan.+  809331  0.0  0.0 235028  4240 ?        Ssl  May23   0:00 /usr/libexec/gvfs-goa-volume-monitor
+jordan.+  809335  0.0  0.0 548688  9892 ?        Sl   May23   0:00 /usr/libexec/goa-daemon
+jordan.+  809343  0.0  0.0 313908  3936 ?        Sl   May23   3:31 /usr/libexec/goa-identity-service
+jordan.+  809349  0.0  0.0 237080  2488 ?        Ssl  May23   0:00 /usr/libexec/gvfs-gphoto2-volume-monitor
+jordan.+  809353  0.0  0.0 234804  1912 ?        Ssl  May23   0:00 /usr/libexec/gvfs-mtp-volume-monitor
+jordan.+  809357  0.0  0.0 315876  5280 ?        Ssl  May23   0:30 /usr/libexec/gvfs-afc-volume-monitor
+jordan.+  809363  0.0  0.0  89224  3796 ?        Sl   May23   0:00 /usr/sbin/xrdp-chansrv
+jordan.+  809425  0.0  0.0   6040  1380 ?        Ss   May23   0:04 /usr/bin/ssh-agent /usr/bin/im-launch x-session-manager
+jordan.+  809444  0.0  0.0 305616  2424 ?        Ssl  May23   0:00 /usr/libexec/at-spi-bus-launcher
+jordan.+  809449  0.0  0.0  44696  5380 ?        S    May23   0:02 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
+jordan.+  809528  0.0  0.0 156352  2876 ?        Sl   May23   0:00 /usr/libexec/dconf-service
+jordan.+  809532  0.0  0.0 239344  2456 ?        SLl  May23   0:00 gnome-keyring-daemon --start
+jordan.+  809536  0.0  0.0 1340284 25644 ?       Sl   May23   1:44 /usr/bin/mate-settings-daemon
+jordan.+  809538  0.0  0.0 162908  3044 ?        Sl   May23   0:00 /usr/libexec/at-spi2-registryd --use-gnome-session
+jordan.+  809545  0.9  0.0 625852 28204 ?        Sl   May23 168:11 marco
+jordan.+  809562  0.0  0.0 471940 21068 ?        Sl   May23   0:00 mate-panel
+jordan.+  809570  0.0  0.0 2390172 80764 ?       Sl   May23   0:04 /usr/bin/caja
+jordan.+  809573  0.0  0.0 569320 38008 ?        Sl   May23   0:00 /usr/lib/mate-panel/wnck-applet
+jordan.+  809575  0.0  0.0 384480 13376 ?        Sl   May23   0:00 /usr/lib/mate-applets/trashapplet
+jordan.+  809577  0.0  0.0 389704 21344 ?        Sl   May23   0:00 /usr/lib/x86_64-linux-gnu/brisk-menu//brisk-menu
+jordan.+  809579  0.0  0.0 460820 26040 ?        Sl   May23   0:57 /usr/lib/mate-indicator-applet/mate-indicator-applet-complete
+jordan.+  809581  0.0  0.0 341900 12652 ?        Sl   May23   0:00 /usr/lib/mate-panel/notification-area-applet
+jordan.+  809606  0.0  0.0 412120 15540 ?        Sl   May23   0:24 update-notifier
+jordan.+  809608  0.0  0.0 1217520 17644 ?       Sl   May23   0:14 /usr/lib/x86_64-linux-gnu/indicator-datetime/indicator-datetime-service
+jordan.+  809609  0.0  0.0 342996  9640 ?        Sl   May23   0:00 mate-maximus
+jordan.+  809610  0.0  0.0 255064  3536 ?        Sl   May23   0:00 /usr/lib/x86_64-linux-gnu/indicator-application/indicator-application-service
+jordan.+  809614  0.0  0.0 236044  2912 ?        Sl   May23   0:00 /usr/libexec/geoclue-2.0/demos/agent
+jordan.+  809616  0.0  0.0 460068  9320 ?        Sl   May23   0:00 /usr/lib/x86_64-linux-gnu/indicator-power/indicator-power-service
+jordan.+  809620  0.0  0.0 313108  2904 ?        Sl   May23   0:00 /usr/libexec/gvfsd-trash --spawner :1.3 /org/gtk/gvfs/exec_spaw/0
+jordan.+  809641  0.0  0.0 161452  2704 ?        Ssl  May23   0:00 /usr/libexec/gvfsd-metadata
+jordan.+  809659  0.0  0.0 320960  4092 ?        Sl   May23   0:00 /usr/lib/x86_64-linux-gnu/indicator-messages/indicator-messages-service
+jordan.+  809666  0.0  0.0 1199156 14448 ?       Ssl  May23   0:00 /usr/libexec/evolution-source-registry
+jordan.+  809671  0.0  0.0 434292 24432 ?        Sl   May23   0:00 /usr/bin/python3 /bin/blueman-applet
+jordan.+  809681  0.0  0.0 337528 10404 ?        Sl   May23   0:00 /usr/lib/x86_64-linux-gnu/polkit-mate/polkit-mate-authentication-agent-1
+jordan.+  809688  0.0  0.0 1002620 5228 ?        Sl   May23   0:00 /usr/lib/x86_64-linux-gnu/indicator-sound/indicator-sound-service
+jordan.+  809703  0.0  0.0 925964  9352 ?        Sl   May23   0:05 /usr/lib/x86_64-linux-gnu/indicator-session/indicator-session-service
+jordan.+  809725  0.0  0.0  71928 25888 ?        S    May23   0:16 /usr/bin/python3 /usr/share/system-config-printer/applet.py
+jordan.+  809732  0.0  0.0 421896 10204 ?        Sl   May23   0:01 nm-applet
+jordan.+  809738  0.0  0.0 669260 22196 ?        Sl   May23   0:03 /usr/libexec/evolution-data-server/evolution-alarm-notify
+jordan.+  809746  0.0  0.0 525360 78988 ?        Sl   May23   0:40 mate-screensaver
+jordan.+  809755  0.0  0.0 612464  8796 ?        Ssl  May23   0:24 /usr/libexec/xdg-desktop-portal
+jordan.+  809763  0.0  0.0 530540  2924 ?        Ssl  May23   0:01 /usr/libexec/xdg-document-portal
+jordan.+  809776  0.0  0.0 234748  3268 ?        Ssl  May23   0:00 /usr/libexec/xdg-permission-store
+jordan.+  809793  0.0  0.0 487272 11816 ?        Ssl  May23   0:00 /usr/libexec/xdg-desktop-portal-gtk
+jordan.+  809815  0.0  0.0 961064 15104 ?        Ssl  May23   0:00 /usr/libexec/evolution-calendar-factory
+jordan.+  809844  0.0  0.0 813208 10252 ?        Ssl  May23   0:00 /usr/libexec/evolution-addressbook-factory
+jordan.+  809907  0.0  0.0 429120 23064 ?        Sl   May23   0:00 /usr/bin/python3 /usr/bin/blueman-tray
+jordan.+  809910  0.0  0.0  43992  2232 ?        Ss   May23   0:00 /usr/lib/bluetooth/obexd
+song.ya+  810420  0.0  0.0 486128 30244 ?        Sl   May23   4:07 mate-terminal
+song.ya+  810427  0.0  0.0  18960  4264 pts/3    Ss   May23   0:00 bash
+jordan.+  810883  0.1  0.0 3145520 336036 ?      Sl   May23  34:26 /usr/lib/firefox/firefox
+jordan.+  811002  0.0  0.0 201116 10572 ?        Sl   May23   0:00 /usr/lib/firefox/firefox -contentproc -parentBuildID 20220428192727 -prefsLen 1 -prefMapSize 248492 -appDir /usr/lib/firefox/browser 810883 true socket
+jordan.+  811030  0.0  0.0 2467460 76828 ?       Sl   May23   0:33 /usr/lib/firefox/firefox -contentproc -childID 1 -isForBrowser -prefsLen 191 -prefMapSize 248492 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 810883 true tab
+jordan.+  811058  0.0  0.0 2429940 35336 ?       Sl   May23   0:01 /usr/lib/firefox/firefox -contentproc -childID 2 -isForBrowser -prefsLen 4743 -prefMapSize 248492 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 810883 true tab
+jordan.+  811117  0.0  0.0 2422708 39300 ?       Sl   May23   0:01 /usr/lib/firefox/firefox -contentproc -childID 3 -isForBrowser -prefsLen 5378 -prefMapSize 248492 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 810883 true tab
+jordan.+  811122  0.0  0.0 2396120 19332 ?       Sl   May23   0:01 /usr/lib/firefox/firefox -contentproc -childID 4 -isForBrowser -prefsLen 5378 -prefMapSize 248492 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 810883 true tab
+jordan.+  811128  0.0  0.0 2396120 23512 ?       Sl   May23   0:00 /usr/lib/firefox/firefox -contentproc -childID 5 -isForBrowser -prefsLen 5378 -prefMapSize 248492 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 810883 true tab
+jordan.+  811532  0.0  0.0 2396120 20432 ?       Sl   May23   0:01 /usr/lib/firefox/firefox -contentproc -childID 6 -isForBrowser -prefsLen 5865 -prefMapSize 248492 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 810883 true tab
+michael+  822425  0.0  0.0 198832 184676 pts/7   Ss   May23   1:37 bash
+michael+  826527  0.0  0.0   7256  1776 pts/6    T    May23   1:01 csplit -f fastrocs_client_results_ -b %02u.sdf fastrocs_client_results.sdf /$$$$/ {*}
+song.ya+  948249  0.0  0.0 305700 76536 pts/3    Sl+  May24   0:16 /data01/song.yang/anaconda3/bin/python /data01/song.yang/anaconda3/bin/jupyter-notebook
+song.ya+  948286  0.2  0.0 3438908 314644 ?      Ssl  May24  34:11 /usr/lib/firefox/firefox -new-tab file:///home/song.yang/.local/share/jupyter/runtime/nbserver-948249-open.html
+song.ya+  948440  0.0  0.0 201120 12984 ?        Sl   May24   0:03 /usr/lib/firefox/firefox -contentproc -parentBuildID 20220428192727 -prefsLen 1 -prefMapSize 247732 -appDir /usr/lib/firefox/browser 948286 true socket
+song.ya+  948485  0.0  0.0 2431784 35620 ?       Sl   May24   0:03 /usr/lib/firefox/firefox -contentproc -childID 1 -isForBrowser -prefsLen 471 -prefMapSize 247732 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 948286 true tab
+song.ya+  948584  0.0  0.0 2457508 70284 ?       Sl   May24   1:01 /usr/lib/firefox/firefox -contentproc -childID 3 -isForBrowser -prefsLen 5928 -prefMapSize 247732 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 948286 true tab
+song.ya+  948604  0.0  0.0 2496440 61984 ?       Sl   May24   0:38 /usr/lib/firefox/firefox -contentproc -childID 4 -isForBrowser -prefsLen 5928 -prefMapSize 247732 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 948286 true tab
+song.ya+  951295  0.0  0.0  19224  4900 pts/10   Ss+  May24   0:00 bash
+root      957956  0.0  0.0  53028  3992 ?        S    May24   0:00 /usr/sbin/xrdp-sesman
+daniel.+  957958  0.0  0.0  19184  8236 ?        Ss   May24   0:06 /lib/systemd/systemd --user
+daniel.+  957959  0.0  0.0 210276  6696 ?        S    May24   0:00 (sd-pam)
+daniel.+  957972  0.0  0.0 1068680 6000 ?        Ssl  May24   0:00 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+daniel.+  957974  0.0  0.0 1116848 16760 ?       SNsl May24   0:05 /usr/libexec/tracker-miner-fs
+daniel.+  957979  0.0  0.0  45544  6388 ?        Ss   May24   0:08 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+daniel.+  957984  0.0  0.0 471140 23108 ?        Sl   May24   0:08 x-session-manager
+daniel.+  957985  0.0  0.0 414560 96804 ?        Sl   May24  15:20 /usr/lib/xorg/Xorg :14 -auth .Xauthority -config xrdp/xorg.conf -noreset -nolisten tcp -logfile .xorgxrdp.%s.log
+daniel.+  957999  0.0  0.0 238980  5576 ?        Ssl  May24   0:01 /usr/libexec/gvfsd
+daniel.+  958004  0.0  0.0 378344  4560 ?        Sl   May24   0:00 /usr/libexec/gvfsd-fuse /run/user/1301006001/gvfs -f -o big_writes
+daniel.+  958006  0.0  0.0 395772 10132 ?        Ssl  May24   0:07 /usr/libexec/gvfs-udisks2-volume-monitor
+daniel.+  958021  0.0  0.0 235028  4040 ?        Ssl  May24   0:00 /usr/libexec/gvfs-goa-volume-monitor
+daniel.+  958025  0.0  0.0 548676 12452 ?        Sl   May24   0:00 /usr/libexec/goa-daemon
+daniel.+  958035  0.0  0.0 313908  5924 ?        Sl   May24   3:19 /usr/libexec/goa-identity-service
+daniel.+  958041  0.0  0.0 237080  2496 ?        Ssl  May24   0:00 /usr/libexec/gvfs-gphoto2-volume-monitor
+daniel.+  958046  0.0  0.0 234804  3956 ?        Ssl  May24   0:00 /usr/libexec/gvfs-mtp-volume-monitor
+daniel.+  958050  0.0  0.0 315876  5284 ?        Ssl  May24   0:28 /usr/libexec/gvfs-afc-volume-monitor
+daniel.+  958063  0.0  0.0  89224  4200 ?        Sl   May24   0:00 /usr/sbin/xrdp-chansrv
+daniel.+  958113  0.0  0.0   6040   888 ?        Ss   May24   0:03 /usr/bin/ssh-agent /usr/bin/im-launch x-session-manager
+daniel.+  958127  0.0  0.0 305604  2344 ?        Ssl  May24   0:00 /usr/libexec/at-spi-bus-launcher
+daniel.+  958133  0.0  0.0  44696  3620 ?        S    May24   0:00 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
+daniel.+  958238  0.0  0.0 156388  3768 ?        Sl   May24   0:00 /usr/libexec/dconf-service
+daniel.+  958242  0.0  0.0 313044  8192 ?        SLl  May24   0:01 gnome-keyring-daemon --start
+daniel.+  958246  0.0  0.0 1340272 20692 ?       Sl   May24   2:02 /usr/bin/mate-settings-daemon
+daniel.+  958248  0.0  0.0 162908  4548 ?        Sl   May24   0:03 /usr/libexec/at-spi2-registryd --use-gnome-session
+daniel.+  958255  0.0  0.0 401832 22488 ?        Sl   May24   7:35 marco
+daniel.+  958272  0.0  0.0 471952 17528 ?        Sl   May24   0:11 mate-panel
+daniel.+  958280  0.0  0.0 2308452 62760 ?       Sl   May24   0:39 /usr/bin/caja
+daniel.+  958283  0.0  0.0 411644 28956 ?        Sl   May24   0:20 /usr/lib/mate-panel/wnck-applet
+daniel.+  958285  0.0  0.0 385424 15480 ?        Sl   May24   0:00 /usr/lib/mate-applets/trashapplet
+daniel.+  958287  0.0  0.0 469240 26560 ?        Sl   May24   0:02 /usr/lib/x86_64-linux-gnu/brisk-menu//brisk-menu
+daniel.+  958289  0.0  0.0 388668 26376 ?        Sl   May24   1:04 /usr/lib/mate-indicator-applet/mate-indicator-applet-complete
+daniel.+  958291  0.0  0.0 341892  8124 ?        Sl   May24   0:00 /usr/lib/mate-panel/notification-area-applet
+daniel.+  958312  0.0  0.0 412092 13872 ?        Sl   May24   0:23 update-notifier
+daniel.+  958316  0.0  0.0 1151972 15512 ?       Sl   May24   0:10 /usr/lib/x86_64-linux-gnu/indicator-datetime/indicator-datetime-service
+daniel.+  958318  0.0  0.0 343208 13368 ?        Sl   May24   0:04 mate-maximus
+daniel.+  958320  0.0  0.0 255064  3208 ?        Sl   May24   0:00 /usr/lib/x86_64-linux-gnu/indicator-application/indicator-application-service
+daniel.+  958324  0.0  0.0 236044  2816 ?        Sl   May24   0:00 /usr/libexec/geoclue-2.0/demos/agent
+daniel.+  958326  0.0  0.0 533796  5272 ?        Sl   May24   0:00 /usr/lib/x86_64-linux-gnu/indicator-power/indicator-power-service
+daniel.+  958332  0.0  0.0 313108  1704 ?        Sl   May24   0:00 /usr/libexec/gvfsd-trash --spawner :1.3 /org/gtk/gvfs/exec_spaw/0
+daniel.+  958362  0.0  0.0 321096  5660 ?        Sl   May24   0:00 /usr/lib/x86_64-linux-gnu/indicator-messages/indicator-messages-service
+daniel.+  958369  0.0  0.0 434280 25388 ?        Sl   May24   0:00 /usr/bin/python3 /bin/blueman-applet
+daniel.+  958381  0.0  0.0 394476 15424 ?        Sl   May24   0:01 /usr/lib/x86_64-linux-gnu/polkit-mate/polkit-mate-authentication-agent-1
+daniel.+  958382  0.0  0.0 855280  3144 ?        Sl   May24   0:00 /usr/lib/x86_64-linux-gnu/indicator-sound/indicator-sound-service
+daniel.+  958392  0.0  0.0 925836 11008 ?        Sl   May24   0:05 /usr/lib/x86_64-linux-gnu/indicator-session/indicator-session-service
+daniel.+  958401  0.0  0.0  72128 23680 ?        S    May24   0:12 /usr/bin/python3 /usr/share/system-config-printer/applet.py
+daniel.+  958404  0.0  0.0 421940 13152 ?        Sl   May24   0:01 nm-applet
+daniel.+  958424  0.0  0.0 669232 21764 ?        Sl   May24   0:03 /usr/libexec/evolution-data-server/evolution-alarm-notify
+daniel.+  958427  0.0  0.0 1199164 16784 ?       Ssl  May24   0:00 /usr/libexec/evolution-source-registry
+daniel.+  958434  0.0  0.0 411092 49168 ?        Sl   May24   0:18 mate-screensaver
+daniel.+  958452  0.0  0.0 612452  8968 ?        Ssl  May24   0:22 /usr/libexec/xdg-desktop-portal
+daniel.+  958466  0.0  0.0 612604  6464 ?        Ssl  May24   0:01 /usr/libexec/xdg-document-portal
+daniel.+  958491  0.0  0.0 234748  1116 ?        Ssl  May24   0:00 /usr/libexec/xdg-permission-store
+daniel.+  958528  0.0  0.0 487220 10716 ?        Ssl  May24   0:01 /usr/libexec/xdg-desktop-portal-gtk
+daniel.+  958550  0.0  0.0 961060 15596 ?        Ssl  May24   0:00 /usr/libexec/evolution-calendar-factory
+daniel.+  958583  0.0  0.0 886936 14384 ?        Ssl  May24   0:00 /usr/libexec/evolution-addressbook-factory
+daniel.+  958588  0.0  0.0 161600  2948 ?        Ssl  May24   0:00 /usr/libexec/gvfsd-metadata
+daniel.+  958647  0.0  0.0 429116 21664 ?        Sl   May24   0:00 /usr/bin/python3 /usr/bin/blueman-tray
+daniel.+  958649  0.0  0.0  43992  2204 ?        Ss   May24   0:00 /usr/lib/bluetooth/obexd
+daniel.+  959285  0.0  0.0 17143316 7780 ?       S    May24   0:00 /snap/code/97/usr/share/code/code --type=zygote --no-zygote-sandbox --no-sandbox --enable-crashpad --enable-crashpad
+daniel.+  959286  0.0  0.0 17143316 7776 ?       S    May24   0:00 /snap/code/97/usr/share/code/code --type=zygote --no-sandbox --enable-crashpad --enable-crashpad
+daniel.+  959322  0.0  0.0 17213232 14204 ?      Sl   May24   6:43 /snap/code/97/usr/share/code/code --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --no-sandbox --enable-crashpad --enable-crash-reporter=3fd0708e-5e40-4513-8e6a-13ff5bd95060,no_channel --user-data-dir=/home/daniel.monyak/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --bypasscsp-schemes --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --streaming-schemes --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,12790725384108439527,1643698934186428951,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess --enable-crashpad
+daniel.+  959344  0.0  0.0 17350768 52828 ?      Sl   May24   8:26 /snap/code/97/usr/share/code/code --type=gpu-process --disable-color-correct-rendering --no-sandbox --enable-crashpad --enable-crash-reporter=3fd0708e-5e40-4513-8e6a-13ff5bd95060,no_channel --user-data-dir=/home/daniel.monyak/.config/Code --gpu-preferences=UAAAAAAAAAAgAAAIAAAAAAAAAAAAAAAAAABgAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAABgAAAAAAAAAGAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --use-gl=angle --use-angle=swiftshader-webgl --shared-files --field-trial-handle=0,12790725384108439527,1643698934186428951,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess
+daniel.+  959374  0.0  0.0 36196636 120760 ?     Sl   May24  14:05 /snap/code/97/usr/share/code/code --type=renderer --enable-crashpad --enable-crash-reporter=3fd0708e-5e40-4513-8e6a-13ff5bd95060,no_channel --user-data-dir=/home/daniel.monyak/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --bypasscsp-schemes --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --streaming-schemes --app-path=/snap/code/97/usr/share/code/resources/app --no-sandbox --no-zygote --enable-blink-features=HighlightAPI --disable-color-correct-rendering --no-sandbox --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=7 --launch-time-ticks=599746684253 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,12790725384108439527,1643698934186428951,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess --vscode-window-config=vscode:36808783-9611-459b-8125-71d95647ff66 --enable-crashpad
+daniel.+  959422  0.0  0.0 29911788 68960 ?      Sl   May24  11:57 /snap/code/97/usr/share/code/code --type=renderer --enable-crashpad --enable-crash-reporter=3fd0708e-5e40-4513-8e6a-13ff5bd95060,no_channel --user-data-dir=/home/daniel.monyak/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --bypasscsp-schemes --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --streaming-schemes --app-path=/snap/code/97/usr/share/code/resources/app --no-sandbox --no-zygote --node-integration-in-worker --disable-color-correct-rendering --no-sandbox --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=8 --launch-time-ticks=599748458654 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,12790725384108439527,1643698934186428951,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess --vscode-window-config=vscode:783c8658-eb7d-4435-a8d5-efe3bc04fbf2 --vscode-window-kind=shared-process --enable-crashpad
+daniel.+  959454  0.0  0.0 21422976 56088 ?      Sl   May24  16:11 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node --inspect-port=0 /snap/code/97/usr/share/code/resources/app/out/bootstrap-fork --type=extensionHost --skipWorkspaceStorageLock
+daniel.+  959478  0.0  0.0 21409920 22560 ?      Sl   May24   9:12 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node /snap/code/97/usr/share/code/resources/app/out/bootstrap-fork --type=ptyHost
+daniel.+  959516  0.0  0.0 21410432 24828 ?      Sl   May24   6:47 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node /snap/code/97/usr/share/code/resources/app/out/bootstrap-fork --type=fileWatcher
+daniel.+  959542  0.0  0.0 21377136 25316 ?      Sl   May24   7:53 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node /snap/code/97/usr/share/code/resources/app/extensions/json-language-features/server/dist/node/jsonServerMain --node-ipc --clientProcessId=959454
+daniel.+  959719  0.1  0.0 21662344 93948 ?      SLsl May24  29:14 /snap/code/97/usr/share/code/code --no-sandbox --force-user-env --unity-launch --enable-crashpad
+daniel.+  959721  0.0  0.0 17143316 7776 ?       S    May24   0:00 /snap/code/97/usr/share/code/code --type=zygote --no-zygote-sandbox --no-sandbox --enable-crashpad --enable-crashpad
+daniel.+  959722  0.0  0.0 17143316 7708 ?       S    May24   0:00 /snap/code/97/usr/share/code/code --type=zygote --no-sandbox --enable-crashpad --enable-crashpad
+daniel.+  959735  0.0  0.0 16808484 180 ?        Sl   May24   0:22 /snap/code/97/usr/share/code/chrome_crashpad_handler --monitor-self-annotation=ptype=crashpad-handler --no-rate-limit --database=/home/daniel.monyak/.config/Code/Crashpad --url=appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=c5322820-3986-46ae-84d5-d36a35522107&iid=c5322820-3986-46ae-84d5-d36a35522107&sid=c5322820-3986-46ae-84d5-d36a35522107 --annotation=_companyName=Microsoft --annotation=_productName=VSCode --annotation=_version=1.67.2 --annotation=prod=Electron --annotation=ver=17.4.1 --initial-client-fd=43 --shared-client-connection
+daniel.+  959776  0.0  0.0 17213248 17480 ?      Sl   May24  10:03 /snap/code/97/usr/share/code/code --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --no-sandbox --enable-crashpad --crashpad-handler-pid=959735 --enable-crash-reporter=3fd0708e-5e40-4513-8e6a-13ff5bd95060,no_channel --user-data-dir=/home/daniel.monyak/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --bypasscsp-schemes --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --streaming-schemes --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,14489761149029697590,12233221232689174832,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess --enable-crashpad
+daniel.+  959795  1.1  0.0 40421788 301772 ?     Sl   May24 191:44 /snap/code/97/usr/share/code/code --type=renderer --enable-crashpad --crashpad-handler-pid=959735 --enable-crash-reporter=3fd0708e-5e40-4513-8e6a-13ff5bd95060,no_channel --user-data-dir=/home/daniel.monyak/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --bypasscsp-schemes --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --streaming-schemes --app-path=/snap/code/97/usr/share/code/resources/app --no-sandbox --no-zygote --enable-blink-features=HighlightAPI --disable-color-correct-rendering --no-sandbox --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=7 --launch-time-ticks=599803980139 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,14489761149029697590,12233221232689174832,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess --vscode-window-config=vscode:3a932575-ba59-427c-8b40-26839b375521 --enable-crashpad
+daniel.+  959826  2.1  0.0 17373328 113196 ?     Sl   May24 349:06 /snap/code/97/usr/share/code/code --type=gpu-process --disable-color-correct-rendering --no-sandbox --enable-crashpad --crashpad-handler-pid=959735 --enable-crash-reporter=3fd0708e-5e40-4513-8e6a-13ff5bd95060,no_channel --user-data-dir=/home/daniel.monyak/.config/Code --gpu-preferences=UAAAAAAAAAAgAAAIAAAAAAAAAAAAAAAAAABgAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAABgAAAAAAAAAGAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --use-gl=angle --use-angle=swiftshader-webgl --shared-files --field-trial-handle=0,14489761149029697590,12233221232689174832,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess
+daniel.+  959867  0.0  0.0 29912060 91336 ?      Sl   May24  13:50 /snap/code/97/usr/share/code/code --type=renderer --enable-crashpad --crashpad-handler-pid=959735 --enable-crash-reporter=3fd0708e-5e40-4513-8e6a-13ff5bd95060,no_channel --user-data-dir=/home/daniel.monyak/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --bypasscsp-schemes --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --streaming-schemes --app-path=/snap/code/97/usr/share/code/resources/app --no-sandbox --no-zygote --node-integration-in-worker --disable-color-correct-rendering --no-sandbox --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=10 --launch-time-ticks=599804942736 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,14489761149029697590,12233221232689174832,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess --vscode-window-config=vscode:08b511e4-a427-4b23-b6b2-cd547b16639a --vscode-window-kind=shared-process --enable-crashpad
+daniel.+  959897  0.1  0.0 21496120 41256 ?      Sl   May24  29:13 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node /snap/code/97/usr/share/code/resources/app/out/bootstrap-fork --type=ptyHost
+daniel.+  961268  0.0  0.0 460912  3088 ?        Sl   May24   0:00 /usr/libexec/gvfsd-network --spawner :1.3 /org/gtk/gvfs/exec_spaw/1
+daniel.+  961318  0.0  0.0 314136  4252 ?        Sl   May24   0:04 /usr/libexec/gvfsd-dnssd --spawner :1.3 /org/gtk/gvfs/exec_spaw/3
+root     1019214  0.0  0.0      0     0 ?        S<   May24   0:30 [loop1]
+darin.l+ 1131217  0.0  0.0  19108  8108 ?        Ss   May25   0:03 /lib/systemd/systemd --user
+darin.l+ 1131218  0.0  0.0 210468  6732 ?        S    May25   0:00 (sd-pam)
+darin.l+ 1131552  0.0  0.0 236044  4716 ?        Sl   May25   0:00 /usr/libexec/geoclue-2.0/demos/agent
+darin.l+ 1132377  0.0  0.0  45452  6348 ?        Ss   May25   0:01 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+daniel.+ 1352976  0.1  0.0 21422980 71600 ?      Sl   May25  18:53 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node --inspect-port=0 /snap/code/97/usr/share/code/resources/app/out/bootstrap-fork --type=extensionHost --skipWorkspaceStorageLock
+daniel.+ 1363628  0.0  0.0 21377140 25328 ?      Sl   May25   8:08 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node /snap/code/97/usr/share/code/resources/app/extensions/json-language-features/server/dist/node/jsonServerMain --node-ipc --clientProcessId=1352976
+daniel.+ 1379147  0.0  0.0  18832  3928 pts/8    Ss   May25   0:00 /bin/bash
+daniel.+ 1379330  0.0  0.0  18836  3860 pts/8    S    May25   0:00 bash
+daniel.+ 1384955  0.0  0.0  18704  3748 pts/8    S    May25   0:00 bash
+daniel.+ 1385187  0.0  0.0  18704  2224 pts/8    S    May25   0:00 bash
+daniel.+ 1385188  0.0  0.0  18836  4084 pts/8    S    May25   0:00 bash
+daniel.+ 1387451  0.0  0.0  18836  2868 pts/8    S    May25   0:00 bash
+daniel.+ 1387452  0.0  0.0  18836  4164 pts/8    S    May25   0:00 bash
+daniel.+ 1388718  0.0  0.0  11464  1828 pts/8    T    May25   0:00 /usr/bin/at -qb now
+daniel.+ 1390617  0.0  0.0  18836  2752 pts/8    S    May25   0:00 bash
+daniel.+ 1390618  0.0  0.0  18704  3864 pts/8    S    May25   0:00 bash
+daniel.+ 1391217  0.0  0.0  18704  2316 pts/8    S    May25   0:00 bash
+daniel.+ 1391218  0.0  0.0  18704  3756 pts/8    S    May25   0:00 bash
+daniel.+ 1391385  0.0  0.0  18704  2308 pts/8    S    May25   0:00 bash
+daniel.+ 1391386  0.0  0.0  18704  3800 pts/8    S    May25   0:00 bash
+daniel.+ 1391632  0.0  0.0  18704  2288 pts/8    S    May25   0:00 bash
+daniel.+ 1391633  0.0  0.0  18704  3804 pts/8    S    May25   0:00 bash
+daniel.+ 1391823  0.0  0.0  18704  2304 pts/8    S    May25   0:00 bash
+daniel.+ 1391824  0.0  0.0  18836  4120 pts/8    S    May25   0:00 bash
+daniel.+ 1392501  0.0  0.0  18836  2708 pts/8    S    May25   0:00 bash
+daniel.+ 1392502  0.0  0.0  18704  3804 pts/8    S    May25   0:00 bash
+daniel.+ 1392692  0.0  0.0  18704  2220 pts/8    S    May25   0:00 bash
+daniel.+ 1392693  0.0  0.0  18836  3868 pts/8    S    May25   0:00 bash
+daniel.+ 1394536  0.0  0.0  18836  2988 pts/8    S    May25   0:00 bash
+daniel.+ 1394545  0.0  0.0  20468  6028 pts/8    S    May25   0:01 bash
+daniel.+ 1401280  0.0  0.0  18836  3056 pts/8    T    May25   0:00 bash
+daniel.+ 1401485  0.0  0.0      0     0 pts/8    Z    May25   0:00 [python] <defunct>
+daniel.+ 1408975  0.0  0.0  19788  4012 pts/8    T    May25   0:00 bash
+daniel.+ 1409729  0.0  0.0  19788  3712 pts/8    T    May25   0:00 bash
+daniel.+ 1409730  0.0  0.0  19788  3880 pts/8    T    May25   0:00 bash
+daniel.+ 1409733  0.0  0.0  19188  9752 pts/8    T    May25   0:00 /apps01/anaconda3/bin/python /apps01/anaconda3/bin/conda shell.posix deactivate
+root     1467583  0.0  0.0      0     0 ?        S<   May25   1:30 [loop3]
+root     1467618  0.0  0.0 2796500 52812 ?       Ssl  May25  10:20 /usr/lib/snapd/snapd
+root     1468141  0.0  0.0      0     0 ?        S<   May25   0:00 [loop9]
+root     1510217  0.0  0.0      0     0 ?        I<   May25   0:00 [xfsalloc]
+root     1510218  0.0  0.0      0     0 ?        I<   May25   0:00 [xfs_mru_cache]
+_rpc     1542159  0.0  0.0   7108  2712 ?        Ss   May25   0:01 /sbin/rpcbind -f -w
+daniel.+ 1662740  0.0  0.0   6040  1688 ?        S    May26   0:00 /usr/bin/ssh-agent -D -a /run/user/1301006001/keyring/.ssh
+priya_ad 1672999  0.0  0.0  19092  8320 ?        Ss   May26   0:02 /lib/systemd/systemd --user
+priya_ad 1673000  0.0  0.0 210632  6748 ?        S    May26   0:00 (sd-pam)
+priya_ad 1673006  0.0  0.0 1079000 11128 ?       Ssl  May26   0:01 /usr/bin/scout-desktop
+priya_ad 1673007  0.0  0.0 1068680 6100 ?        Ssl  May26   0:00 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+priya_ad 1673014  0.0  0.0 724020 15120 ?        SNsl May26   0:00 /usr/libexec/tracker-miner-fs
+priya_ad 1673030  0.0  0.0  45476  6312 ?        Ss   May26   0:03 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+priya_ad 1673047  0.0  0.0 238868  5440 ?        Ssl  May26   0:00 /usr/libexec/gvfsd
+priya_ad 1673052  0.0  0.0 378344  4568 ?        Sl   May26   0:00 /usr/libexec/gvfsd-fuse /run/user/1301004539/gvfs -f -o big_writes
+priya_ad 1673054  0.0  0.0 395636 10332 ?        Ssl  May26   0:05 /usr/libexec/gvfs-udisks2-volume-monitor
+priya_ad 1673075  0.0  0.0 235028  4236 ?        Ssl  May26   0:00 /usr/libexec/gvfs-goa-volume-monitor
+priya_ad 1673080  0.0  0.0 548676 10420 ?        Sl   May26   0:00 /usr/libexec/goa-daemon
+priya_ad 1673087  0.0  0.0 313908  4064 ?        Sl   May26   3:03 /usr/libexec/goa-identity-service
+priya_ad 1673092  0.0  0.0 237080  2372 ?        Ssl  May26   0:00 /usr/libexec/gvfs-gphoto2-volume-monitor
+priya_ad 1673097  0.0  0.0 234804  2104 ?        Ssl  May26   0:00 /usr/libexec/gvfs-mtp-volume-monitor
+priya_ad 1673101  0.0  0.0 315876  4492 ?        Ssl  May26   0:26 /usr/libexec/gvfs-afc-volume-monitor
+root     1673528  0.0  0.0  53028  4040 ?        S    May26   0:00 /usr/sbin/xrdp-sesman
+priya_ad 1673529  0.0  0.0 471144 25620 ?        Sl   May26   0:06 x-session-manager
+priya_ad 1673530  0.0  0.0 297876 51040 ?        Sl   May26   1:03 /usr/lib/xorg/Xorg :15 -auth .Xauthority -config xrdp/xorg.conf -noreset -nolisten tcp -logfile .xorgxrdp.%s.log
+priya_ad 1673544  0.0  0.0  89224  3744 ?        Sl   May26   0:00 /usr/sbin/xrdp-chansrv
+priya_ad 1673593  0.0  0.0   6040  1396 ?        Ss   May26   0:03 /usr/bin/ssh-agent /usr/bin/im-launch x-session-manager
+priya_ad 1673613  0.0  0.0 305604  4772 ?        Ssl  May26   0:00 /usr/libexec/at-spi-bus-launcher
+priya_ad 1673618  0.0  0.0  44604  4792 ?        S    May26   0:00 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
+priya_ad 1673698  0.0  0.0 156260  4844 ?        Sl   May26   0:00 /usr/libexec/dconf-service
+priya_ad 1673702  0.0  0.0 239312  4124 ?        SLl  May26   0:00 gnome-keyring-daemon --start
+priya_ad 1673706  0.0  0.0 1340152 28536 ?       Sl   May26   1:37 /usr/bin/mate-settings-daemon
+priya_ad 1673708  0.0  0.0 162908  3884 ?        Sl   May26   0:00 /usr/libexec/at-spi2-registryd --use-gnome-session
+priya_ad 1673715  0.0  0.0 357236 24332 ?        Sl   May26   0:10 marco
+priya_ad 1673733  0.0  0.0 396908 19524 ?        Sl   May26   0:00 mate-panel
+priya_ad 1673741  0.0  0.0 2201424 65164 ?       Sl   May26   0:08 /usr/bin/caja
+priya_ad 1673744  0.0  0.0 388480 27280 ?        Sl   May26   0:00 /usr/lib/mate-panel/wnck-applet
+priya_ad 1673746  0.0  0.0 384468 14272 ?        Sl   May26   0:00 /usr/lib/mate-applets/trashapplet
+priya_ad 1673748  0.0  0.0 465404 33392 ?        Sl   May26   0:01 /usr/lib/x86_64-linux-gnu/brisk-menu//brisk-menu
+priya_ad 1673750  0.0  0.0 460108 27072 ?        Sl   May26   0:50 /usr/lib/mate-indicator-applet/mate-indicator-applet-complete
+priya_ad 1673752  0.0  0.0 341904 13040 ?        Sl   May26   0:00 /usr/lib/mate-panel/notification-area-applet
+priya_ad 1673773  0.0  0.0 412108 15180 ?        Sl   May26   0:20 update-notifier
+priya_ad 1673775  0.0  0.0 1217516 21520 ?       Sl   May26   0:12 /usr/lib/x86_64-linux-gnu/indicator-datetime/indicator-datetime-service
+priya_ad 1673776  0.0  0.0 342992 14276 ?        Sl   May26   0:00 mate-maximus
+priya_ad 1673777  0.0  0.0 255064  4304 ?        Sl   May26   0:00 /usr/lib/x86_64-linux-gnu/indicator-application/indicator-application-service
+priya_ad 1673784  0.0  0.0 236044  2672 ?        Sl   May26   0:00 /usr/libexec/geoclue-2.0/demos/agent
+priya_ad 1673787  0.0  0.0 533796  5340 ?        Sl   May26   0:00 /usr/lib/x86_64-linux-gnu/indicator-power/indicator-power-service
+priya_ad 1673819  0.0  0.0 313108  5480 ?        Sl   May26   0:00 /usr/libexec/gvfsd-trash --spawner :1.3 /org/gtk/gvfs/exec_spaw/0
+priya_ad 1673823  0.0  0.0 321100  4496 ?        Sl   May26   0:00 /usr/lib/x86_64-linux-gnu/indicator-messages/indicator-messages-service
+priya_ad 1673828  0.0  0.0 434276 27956 ?        Sl   May26   0:00 /usr/bin/python3 /bin/blueman-applet
+priya_ad 1673842  0.0  0.0 337572 13708 ?        Sl   May26   0:00 /usr/lib/x86_64-linux-gnu/polkit-mate/polkit-mate-authentication-agent-1
+priya_ad 1673847  0.0  0.0 1002616 7824 ?        Sl   May26   0:00 /usr/lib/x86_64-linux-gnu/indicator-sound/indicator-sound-service
+priya_ad 1673856  0.0  0.0 794764  9456 ?        Sl   May26   0:05 /usr/lib/x86_64-linux-gnu/indicator-session/indicator-session-service
+priya_ad 1673870  0.0  0.0  71928 25848 ?        S    May26   0:12 /usr/bin/python3 /usr/share/system-config-printer/applet.py
+priya_ad 1673887  0.0  0.0 421924 11560 ?        Sl   May26   0:00 nm-applet
+priya_ad 1673912  0.0  0.0 1199180 16872 ?       Ssl  May26   0:00 /usr/libexec/evolution-source-registry
+priya_ad 1673918  0.0  0.0 669244 20444 ?        Sl   May26   0:03 /usr/libexec/evolution-data-server/evolution-alarm-notify
+priya_ad 1673931  0.0  0.0 393928 49040 ?        Sl   May26   0:14 mate-screensaver
+priya_ad 1673952  0.0  0.0 874336  6408 ?        Ssl  May26   0:18 /usr/libexec/xdg-desktop-portal
+priya_ad 1673962  0.0  0.0 604276  4612 ?        Ssl  May26   0:00 /usr/libexec/xdg-document-portal
+priya_ad 1673971  0.0  0.0 234748  3164 ?        Ssl  May26   0:00 /usr/libexec/xdg-permission-store
+priya_ad 1674006  0.0  0.0 487224 10388 ?        Ssl  May26   0:00 /usr/libexec/xdg-desktop-portal-gtk
+priya_ad 1674027  0.0  0.0 1034828 11276 ?       Ssl  May26   0:00 /usr/libexec/evolution-calendar-factory
+priya_ad 1674046  0.0  0.0 886936 11764 ?        Ssl  May26   0:00 /usr/libexec/evolution-addressbook-factory
+priya_ad 1674050  0.0  0.0 161332  2620 ?        Ssl  May26   0:00 /usr/libexec/gvfsd-metadata
+priya_ad 1674092  0.0  0.0 429116 21784 ?        Sl   May26   0:00 /usr/bin/python3 /usr/bin/blueman-tray
+priya_ad 1674098  0.0  0.0  43992  2160 ?        Ss   May26   0:00 /usr/lib/bluetooth/obexd
+song.ya+ 1679975  0.0  0.0  18828  3936 pts/12   Ss+  May26   0:00 bash
+root     1685059  0.5  0.0  76588 12408 ?        S    May26  74:17 s1-orchestrator
+sentine+ 1685060  0.0  0.0 2175424 37508 ?       Sl   May26   3:27 s1-network
+root     1685062  1.1  0.0 465256 236124 ?       Sl   May26 156:02 s1-scanner
+root     1685064  1.1  0.1 6883916 682544 ?      Sl   May26 155:01 s1-agent
+root     1685066  0.0  0.0 155520  9212 ?        Sl   May26   1:19 s1-firewall
+root     1685069  0.2  0.0 450548 13116 ?        Sl   May26  36:37 s1-fanotify
+root     1685071  6.7  0.2 1519756 935240 ?      Sl   May26 900:55 s1-perf
+daniel.+ 1694592  0.0  0.0   7860  1996 ?        Ss   May26   0:01 tmux -u -2 -f /usr/share/byobu/profiles/tmuxrc new-session -n - /usr/bin/byobu-shell
+daniel.+ 1694599  0.0  0.0  18724  4112 pts/15   Ss+  May26   0:00 /bin/bash
+nichola+ 1696146  1.1  0.4 28107208 1994556 pts/0 Sl+ May26 155:22 /apps01/anaconda3/envs/ml-env/bin/python /apps01/anaconda3/envs/ml-env/bin/gunicorn -c config/gunicorn/prod.py ml_portal.wsgi
+nichola+ 1696147  1.1  0.4 28106952 1994436 pts/0 Sl+ May26 157:57 /apps01/anaconda3/envs/ml-env/bin/python /apps01/anaconda3/envs/ml-env/bin/gunicorn -c config/gunicorn/prod.py ml_portal.wsgi
+priya_ad 1821703  0.0  0.0 387176 10012 ?        Sl   May27   0:00 /usr/libexec/gvfsd-network --spawner :1.3 /org/gtk/gvfs/exec_spaw/1
+priya_ad 1821727  0.0  0.0 314136  8252 ?        Sl   May27   0:03 /usr/libexec/gvfsd-dnssd --spawner :1.3 /org/gtk/gvfs/exec_spaw/3
+daniel.+ 1883479  0.0  0.0   6040   452 ?        Ss   May27   0:00 ssh-agent -s
+nichola+ 1961845  0.0  0.0  19020  5488 pts/14   Ss+  May27   0:00 -bash
+root     2789996  0.0  0.0      0     0 ?        I<   May31   0:00 [rpciod]
+root     2789997  0.0  0.0      0     0 ?        I<   May31   0:00 [xprtiod]
+root     2789999  0.0  0.0      0     0 ?        I<   May31   0:00 [nfsiod]
+root     2790003  0.0  0.0      0     0 ?        I<   May31   0:00 [kworker/u52:1]
+root     2790004  0.0  0.0      0     0 ?        S    May31   0:00 [NFSv4 callback]
+daniel.+ 2807772  0.0  0.0   6040   452 ?        Ss   May31   0:00 ssh-agent -s
+nichola+ 2831155  0.0  0.0  18888  5456 pts/11   Ss+  May31   0:00 -bash
+jordan.+ 2833443  0.0  0.0 482516 43692 ?        Sl   May31   0:00 mate-terminal
+jordan.+ 2833449  0.0  0.0  18824  5380 pts/13   Ss+  May31   0:00 bash
+michael+ 2839997  0.0  0.0   8488  3540 pts/7    S+   May31   5:27 watch nvidia-smi
+nichola+ 2873124  0.0  0.0  18756  5152 pts/16   Ss+  May31   0:00 -bash
+nichola+ 2874362  0.0  0.0  18756  3236 pts/16   T    May31   0:00 -bash
+nichola+ 2874365  0.0  0.0 17702936 123976 pts/16 Tl  May31   0:04 /apps01/anaconda3/bin/python /apps01/anaconda3/bin/conda install nb_conda
+nichola+ 2876530  0.0  0.0 21663956 83768 ?      SLsl May31   1:02 /snap/code/97/usr/share/code/code --no-sandbox --force-user-env --unity-launch --enable-crashpad
+nichola+ 2876532  0.0  0.0 17143320 13524 ?      S    May31   0:00 /snap/code/97/usr/share/code/code --type=zygote --no-zygote-sandbox --no-sandbox --enable-crashpad --enable-crashpad
+nichola+ 2876534  0.0  0.0 17143320 13464 ?      S    May31   0:00 /snap/code/97/usr/share/code/code --type=zygote --no-sandbox --enable-crashpad --enable-crashpad
+nichola+ 2876547  0.0  0.0 16808484 180 ?        Sl   May31   0:00 /snap/code/97/usr/share/code/chrome_crashpad_handler --monitor-self-annotation=ptype=crashpad-handler --no-rate-limit --database=/home/nicholas.cockroft/.config/Code/Crashpad --url=appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=2382f366-2077-43ef-80f0-d78c65006a68&iid=2382f366-2077-43ef-80f0-d78c65006a68&sid=2382f366-2077-43ef-80f0-d78c65006a68 --annotation=_companyName=Microsoft --annotation=_productName=VSCode --annotation=_version=1.67.2 --annotation=prod=Electron --annotation=ver=17.4.1 --initial-client-fd=43 --shared-client-connection
+nichola+ 2876575  0.0  0.0 17205140 20592 ?      Sl   May31   0:18 /snap/code/97/usr/share/code/code --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --no-sandbox --enable-crashpad --crashpad-handler-pid=2876547 --enable-crash-reporter=eb514962-f20e-4310-8dc2-c81c98469a04,no_channel --user-data-dir=/home/nicholas.cockroft/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --bypasscsp-schemes --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --streaming-schemes --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,12619524989400255967,11599608314271279573,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess --enable-crashpad
+nichola+ 2876576  0.0  0.0 17438172 129424 ?     Sl   May31   0:18 /snap/code/97/usr/share/code/code --type=gpu-process --disable-color-correct-rendering --no-sandbox --enable-crashpad --crashpad-handler-pid=2876547 --enable-crash-reporter=eb514962-f20e-4310-8dc2-c81c98469a04,no_channel --user-data-dir=/home/nicholas.cockroft/.config/Code --gpu-preferences=UAAAAAAAAAAgAAAIAAAAAAAAAAAAAAAAAABgAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAABgAAAAAAAAAGAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --use-gl=angle --use-angle=swiftshader-webgl --shared-files --field-trial-handle=0,12619524989400255967,11599608314271279573,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess
+nichola+ 2876613  0.0  0.0 36241460 226924 ?     Sl   May31   0:57 /snap/code/97/usr/share/code/code --type=renderer --enable-crashpad --crashpad-handler-pid=2876547 --enable-crash-reporter=eb514962-f20e-4310-8dc2-c81c98469a04,no_channel --user-data-dir=/home/nicholas.cockroft/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --bypasscsp-schemes --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --streaming-schemes --app-path=/snap/code/97/usr/share/code/resources/app --no-sandbox --no-zygote --enable-blink-features=HighlightAPI --disable-color-correct-rendering --no-sandbox --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=5 --launch-time-ticks=1225989608961 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,12619524989400255967,11599608314271279573,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess --vscode-window-config=vscode:d9a93885-2f78-425c-adcc-73348bfe5421 --enable-crashpad
+nichola+ 2876671  0.0  0.0 29912128 86520 ?      Sl   May31   2:04 /snap/code/97/usr/share/code/code --type=renderer --enable-crashpad --crashpad-handler-pid=2876547 --enable-crash-reporter=eb514962-f20e-4310-8dc2-c81c98469a04,no_channel --user-data-dir=/home/nicholas.cockroft/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --bypasscsp-schemes --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --streaming-schemes --app-path=/snap/code/97/usr/share/code/resources/app --no-sandbox --no-zygote --node-integration-in-worker --disable-color-correct-rendering --no-sandbox --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=6 --launch-time-ticks=1225991502469 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,12619524989400255967,11599608314271279573,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess --vscode-window-config=vscode:8411406f-2fc4-4c0f-b571-d202fedefe09 --vscode-window-kind=shared-process --enable-crashpad
+nichola+ 2876708  0.0  0.0 21409924 31996 ?      Sl   May31   0:19 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node /snap/code/97/usr/share/code/resources/app/out/bootstrap-fork --type=ptyHost
+nichola+ 2877005  0.0  0.0 21422980 418020 ?     Sl   May31   1:34 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node --inspect-port=0 /snap/code/97/usr/share/code/resources/app/out/bootstrap-fork --type=extensionHost --skipWorkspaceStorageLock
+nichola+ 2877006  0.0  0.0 21426828 59664 ?      Sl   May31   0:38 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node /snap/code/97/usr/share/code/resources/app/out/bootstrap-fork --type=fileWatcher
+nichola+ 2877125  0.0  0.0 25670036 67428 ?      Sl   May31   0:06 /snap/code/97/usr/share/code/code --type=renderer --enable-crashpad --crashpad-handler-pid=2876547 --enable-crash-reporter=eb514962-f20e-4310-8dc2-c81c98469a04,no_channel --user-data-dir=/home/nicholas.cockroft/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --bypasscsp-schemes --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --streaming-schemes --app-path=/snap/code/97/usr/share/code/resources/app --enable-sandbox --enable-blink-features=HighlightAPI --disable-color-correct-rendering --no-sandbox --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=8 --launch-time-ticks=1226036425949 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,12619524989400255967,11599608314271279573,131072 --disable-features=PlzServiceWorker,SpareRendererForSitePerProcess --vscode-window-config=vscode:d9a93885-2f78-425c-adcc-73348bfe5421
+nichola+ 2877151  0.0  0.0 21381248 121164 ?     Sl   May31   0:24 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node /home/nicholas.cockroft/.vscode/extensions/ms-python.vscode-pylance-2022.5.3/dist/server.bundle.js --cancellationReceive=file:062bd25211941228b54e5c83f36a836a8c7f03a7a8 --node-ipc --clientProcessId=2877005
+nichola+ 2877160  0.0  0.0 21385348 147812 ?     Sl   May31   0:36 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node /home/nicholas.cockroft/.vscode/extensions/ms-python.vscode-pylance-2022.5.3/dist/server.bundle.js --cancellationReceive=file:350098d0892976c9c995706bcdaed21e59d019cb7d --node-ipc --clientProcessId=2877005
+nichola+ 2877235  0.0  0.0 21381248 138404 ?     Sl   May31   0:26 /snap/code/97/usr/share/code/code --ms-enable-electron-run-as-node /home/nicholas.cockroft/.vscode/extensions/ms-python.vscode-pylance-2022.5.3/dist/server.bundle.js --cancellationReceive=file:e6ec332a621c29607013ff896b730a0b81ab6344d7 --node-ipc --clientProcessId=2877005
+uuidd    2894100  0.0  0.0   9752  1004 ?        Ss   May31   0:00 /usr/sbin/uuidd --socket-activation
+root     3410031  0.0  0.0 145996 41664 ?        S    Jun02   0:19 /usr/libexec/sssd/sssd_be --domain corp.arvinas.com --uid 0 --gid 0 --logger=files
+root     3646803  0.0  0.0  53028  6196 ?        S    Jun02   0:00 /usr/sbin/xrdp-sesman
+darin.l+ 3646804  0.0  0.0 471240 63088 ?        Sl   Jun02   0:01 x-session-manager
+darin.l+ 3646805  5.4  0.0 419288 146512 ?       Sl   Jun02 160:18 /usr/lib/xorg/Xorg :16 -auth .Xauthority -config xrdp/xorg.conf -noreset -nolisten tcp -logfile .xorgxrdp.%s.log
+darin.l+ 3646813  0.0  0.0  89224  5504 ?        Sl   Jun02   0:00 /usr/sbin/xrdp-chansrv
+darin.l+ 3646864  0.0  0.0   6040   456 ?        Ss   Jun02   0:00 /usr/bin/ssh-agent /usr/bin/im-launch x-session-manager
+darin.l+ 3646876  0.0  0.0 238868  9664 ?        Ssl  Jun02   0:00 /usr/libexec/gvfsd
+darin.l+ 3646881  0.0  0.0 378344  8188 ?        Sl   Jun02   0:00 /usr/libexec/gvfsd-fuse /run/user/1301005643/gvfs -f -o big_writes
+darin.l+ 3646889  0.0  0.0 305616  8716 ?        Ssl  Jun02   0:00 /usr/libexec/at-spi-bus-launcher
+darin.l+ 3646894  0.0  0.0  44604 13708 ?        S    Jun02   0:00 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
+darin.l+ 3646973  0.0  0.0 156348  5696 ?        Sl   Jun02   0:00 /usr/libexec/dconf-service
+darin.l+ 3646977  0.0  0.0 239344  6968 ?        SLl  Jun02   0:00 gnome-keyring-daemon --start
+darin.l+ 3646981  0.0  0.0 1340288 38212 ?       Sl   Jun02   0:19 /usr/bin/mate-settings-daemon
+darin.l+ 3646983  0.0  0.0 162908  6480 ?        Sl   Jun02   0:00 /usr/libexec/at-spi2-registryd --use-gnome-session
+darin.l+ 3646990  0.7  0.0 623160 36020 ?        Sl   Jun02  22:52 marco
+darin.l+ 3646995  0.0  0.0 1211328 8892 ?        Ssl  Jun02   0:04 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+darin.l+ 3647011  0.0  0.0 471900 40468 ?        Sl   Jun02   0:00 mate-panel
+darin.l+ 3647023  0.0  0.0 2291108 99332 ?       Sl   Jun02   0:04 /usr/bin/caja
+darin.l+ 3647026  0.0  0.0 388456 41952 ?        Sl   Jun02   0:00 /usr/lib/mate-panel/wnck-applet
+darin.l+ 3647028  0.0  0.0 384472 39516 ?        Sl   Jun02   0:00 /usr/lib/mate-applets/trashapplet
+darin.l+ 3647030  0.0  0.0 389644 43412 ?        Sl   Jun02   0:00 /usr/lib/x86_64-linux-gnu/brisk-menu//brisk-menu
+darin.l+ 3647032  0.0  0.0 459492 41872 ?        Sl   Jun02   0:04 /usr/lib/mate-indicator-applet/mate-indicator-applet-complete
+darin.l+ 3647034  0.0  0.0 341896 31720 ?        Sl   Jun02   0:00 /usr/lib/mate-panel/notification-area-applet
+darin.l+ 3647035  0.0  0.0 395648 10280 ?        Ssl  Jun02   0:01 /usr/libexec/gvfs-udisks2-volume-monitor
+darin.l+ 3647059  0.0  0.0 412052 22528 ?        Sl   Jun02   0:03 update-notifier
+darin.l+ 3647061  0.0  0.0 1217528 55740 ?       Sl   Jun02   0:01 /usr/lib/x86_64-linux-gnu/indicator-datetime/indicator-datetime-service
+darin.l+ 3647062  0.0  0.0 342956 22508 ?        Sl   Jun02   0:00 mate-maximus
+darin.l+ 3647071  0.0  0.0 255064 11864 ?        Sl   Jun02   0:00 /usr/lib/x86_64-linux-gnu/indicator-application/indicator-application-service
+darin.l+ 3647075  0.0  0.0 236044  6312 ?        Sl   Jun02   0:00 /usr/libexec/geoclue-2.0/demos/agent
+darin.l+ 3647080  0.0  0.0 460072  9180 ?        Sl   Jun02   0:00 /usr/lib/x86_64-linux-gnu/indicator-power/indicator-power-service
+darin.l+ 3647085  0.0  0.0 235028  5800 ?        Ssl  Jun02   0:00 /usr/libexec/gvfs-goa-volume-monitor
+darin.l+ 3647110  0.0  0.0 1198972 48924 ?       Ssl  Jun02   0:00 /usr/libexec/evolution-source-registry
+darin.l+ 3647115  0.0  0.0 548688 35056 ?        Sl   Jun02   0:00 /usr/libexec/goa-daemon
+darin.l+ 3647119  0.0  0.0 320964  8760 ?        Sl   Jun02   0:00 /usr/lib/x86_64-linux-gnu/indicator-messages/indicator-messages-service
+darin.l+ 3647120  0.0  0.0 161428  6268 ?        Ssl  Jun02   0:00 /usr/libexec/gvfsd-metadata
+darin.l+ 3647124  0.0  0.0 313112  7884 ?        Sl   Jun02   0:00 /usr/libexec/gvfsd-trash --spawner :1.6 /org/gtk/gvfs/exec_spaw/0
+darin.l+ 3647134  0.0  0.0 434280 45388 ?        Sl   Jun02   0:00 /usr/bin/python3 /bin/blueman-applet
+darin.l+ 3647138  0.0  0.0 337560 21012 ?        Sl   Jun02   0:00 /usr/lib/x86_64-linux-gnu/polkit-mate/polkit-mate-authentication-agent-1
+darin.l+ 3647150  0.0  0.0 928892 14000 ?        Sl   Jun02   0:00 /usr/lib/x86_64-linux-gnu/indicator-sound/indicator-sound-service
+darin.l+ 3647180  0.0  0.0 794768 10924 ?        Sl   Jun02   0:00 /usr/lib/x86_64-linux-gnu/indicator-session/indicator-session-service
+darin.l+ 3647187  0.0  0.0 314068 10572 ?        Sl   Jun02   0:58 /usr/libexec/goa-identity-service
+darin.l+ 3647189  0.0  0.0  71928 39648 ?        S    Jun02   0:01 /usr/bin/python3 /usr/share/system-config-printer/applet.py
+darin.l+ 3647202  0.0  0.0 421940 28612 ?        Sl   Jun02   0:00 nm-applet
+darin.l+ 3647209  0.0  0.0 669224 59580 ?        Sl   Jun02   0:00 /usr/libexec/evolution-data-server/evolution-alarm-notify
+darin.l+ 3647223  0.0  0.0 448452 68048 ?        Sl   Jun02   0:06 mate-screensaver
+darin.l+ 3647229  0.0  0.0 237076  8240 ?        Ssl  Jun02   0:00 /usr/libexec/gvfs-gphoto2-volume-monitor
+darin.l+ 3647231  0.0  0.0 612196 11668 ?        Ssl  Jun02   0:03 /usr/libexec/xdg-desktop-portal
+darin.l+ 3647246  0.0  0.0 604272  8816 ?        Ssl  Jun02   0:00 /usr/libexec/xdg-document-portal
+darin.l+ 3647253  0.0  0.0 234800  5484 ?        Ssl  Jun02   0:00 /usr/libexec/gvfs-mtp-volume-monitor
+darin.l+ 3647255  0.0  0.0 234748  6548 ?        Ssl  Jun02   0:00 /usr/libexec/xdg-permission-store
+darin.l+ 3647266  0.0  0.0 315876 10868 ?        Ssl  Jun02   0:04 /usr/libexec/gvfs-afc-volume-monitor
+darin.l+ 3647284  0.0  0.0 487276 25392 ?        Ssl  Jun02   0:00 /usr/libexec/xdg-desktop-portal-gtk
+darin.l+ 3647301  0.0  0.0 1034796 51232 ?       Ssl  Jun02   0:00 /usr/libexec/evolution-calendar-factory
+darin.l+ 3647325  0.0  0.0 813212 55764 ?        Ssl  Jun02   0:00 /usr/libexec/evolution-addressbook-factory
+darin.l+ 3647364  0.0  0.0 429128 39648 ?        Sl   Jun02   0:00 /usr/bin/python3 /usr/bin/blueman-tray
+darin.l+ 3647368  0.0  0.0  43992  6552 ?        Ss   Jun02   0:00 /usr/lib/bluetooth/obexd
+root     3705508  0.0  0.0   8704  3388 ?        Ss   Jun03   0:00 /bin/bash /var/lib/waagent/Microsoft.GuestConfiguration.ConfigurationforLinux-1.26.24/GCAgent/GC/run_service.sh
+root     3705509  0.0  0.0 2252308 23968 ?       Sl   Jun03   0:18 /var/lib/waagent/Microsoft.GuestConfiguration.ConfigurationforLinux-1.26.24/GCAgent/GC/gc_linux_service
+daniel.+ 3927296  0.0  0.0  19176  4220 ?        S    Jun03   0:05 -bash
+darin.l+ 3940294  0.3  0.1 3184196 507172 ?      Sl   Jun03   6:05 /usr/lib/firefox/firefox
+darin.l+ 3940386  0.0  0.0 201116 44700 ?        Sl   Jun03   0:00 /usr/lib/firefox/firefox -contentproc -parentBuildID 20220428192727 -prefsLen 1 -prefMapSize 248923 -appDir /usr/lib/firefox/browser 3940294 true socket
+darin.l+ 3940415  0.0  0.0 2523432 217668 ?      Sl   Jun03   0:07 /usr/lib/firefox/firefox -contentproc -childID 1 -isForBrowser -prefsLen 191 -prefMapSize 248923 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 3940294 true tab
+darin.l+ 3940459  0.0  0.0 2430356 101396 ?      Sl   Jun03   0:00 /usr/lib/firefox/firefox -contentproc -childID 2 -isForBrowser -prefsLen 4743 -prefMapSize 248923 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 3940294 true tab
+darin.l+ 3940572  0.0  0.0 2444088 121184 ?      Sl   Jun03   0:27 /usr/lib/firefox/firefox -contentproc -childID 5 -isForBrowser -prefsLen 5444 -prefMapSize 248923 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 3940294 true tab
+darin.l+ 3940579  0.0  0.0 2569808 131920 ?      Sl   Jun03   0:15 /usr/lib/firefox/firefox -contentproc -childID 6 -isForBrowser -prefsLen 5444 -prefMapSize 248923 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 3940294 true tab
+darin.l+ 4073705  0.0  0.0 2428748 117316 ?      Sl   Jun03   0:44 /usr/lib/firefox/firefox -contentproc -childID 7 -isForBrowser -prefsLen 9097 -prefMapSize 248923 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 3940294 true tab
+darin.l+ 4078092  0.0  0.0 374848 77996 ?        Sl   Jun03   0:35 /usr/lib/firefox/firefox -contentproc -parentBuildID 20220428192727 -prefsLen 9097 -prefMapSize 248923 -appDir /usr/lib/firefox/browser 3940294 true rdd
+darin.l+ 4078289  0.0  0.0 2481380 137420 ?      Sl   Jun03   0:01 /usr/lib/firefox/firefox -contentproc -childID 11 -isForBrowser -prefsLen 9097 -prefMapSize 248923 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 3940294 true tab
+darin.l+ 4078292  0.0  0.0 2397560 74392 ?       Sl   Jun03   0:00 /usr/lib/firefox/firefox -contentproc -childID 12 -isForBrowser -prefsLen 9097 -prefMapSize 248923 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 3940294 true tab
+darin.l+ 4078357  0.0  0.0 2397560 74404 ?       Sl   Jun03   0:00 /usr/lib/firefox/firefox -contentproc -childID 13 -isForBrowser -prefsLen 9097 -prefMapSize 248923 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 3940294 true tab
+darin.l+ 4078518  0.0  0.0 2398100 76184 ?       Sl   Jun03   0:00 /usr/lib/firefox/firefox -contentproc -childID 14 -isForBrowser -prefsLen 9094 -prefMapSize 248923 -jsInitLen 277212 -parentBuildID 20220428192727 -appDir /usr/lib/firefox/browser 3940294 true tab
+root     4094730  0.0  0.0  52760 16136 ?        Ss   Jun03   0:00 sshd: daniel.monyak [priv]
+daniel.+ 4094806  0.0  0.0  53204  8492 ?        S    Jun03   0:01 sshd: daniel.monyak@pts/9
+daniel.+ 4094807  0.0  0.0  19992  7024 pts/9    Ss   Jun03   0:01 -bash
+root     4173181  0.0  0.0  25900  8424 ?        Ss   Jun03   0:00 /usr/sbin/cupsd -l
+root     4173182  0.0  0.0 178392 12788 ?        Ssl  Jun03   0:00 /usr/sbin/cups-browsed

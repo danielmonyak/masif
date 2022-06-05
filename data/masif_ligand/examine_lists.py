@@ -9,3 +9,10 @@ print("train: ", train.size)
 print("val: ", val.size)
 
 print("\ntotal: ", test.size + train.size + val.size)
+
+#pdb='1GSA_ACBD'
+pdb='1U5U_A'
+print(pdb in test)
+print(pdb in train)
+print(pdb in val)
+#np.savetxt('test.txt', test, delimiter=" ", fmt="%s")
