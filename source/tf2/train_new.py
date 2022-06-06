@@ -11,6 +11,7 @@ from default_config.masif_opts import masif_opts
 #####
 # Edited by Daniel Monyak
 from MaSIF_ligand import MaSIF_ligand
+from prep_data import model
 #####
 from read_ligand_tfrecords import _parse_function
 from sklearn.metrics import confusion_matrix
@@ -48,7 +49,7 @@ if not os.path.exists(params["model_dir"]):
     os.makedirs(params["model_dir"])
 
     
-
+'''
 # Create Model
 model = MaSIF_ligand(
   params["max_distance"],
@@ -62,36 +63,7 @@ model.compile(optimizer = model.opt,
   loss = model.loss_fn,
   metrics=['accuracy']
 )
-
 '''
-i = 0
-for data_element in training_data:
-    labels = data_element[4]
-    n_ligands = labels.shape[1]
-    random_ligand = np.random.choice(n_ligands, 1)
-    pocket_points = np.where(labels[:, random_ligand] != 0.0)[0]
-    label = np.max(labels[:, random_ligand]) - 1
-    pocket_labels = np.zeros(7, dtype=np.float32)
-    pocket_labels[label] = 1.0
-    npoints = pocket_points.shape[0]
-    if npoints < 32:
-        continue
-    # Sample 32 points randomly
-    sample = np.random.choice(pocket_points, 32, replace=False)
-    feed_dict = {
-        'input_feat' : data_element[0][sample, :, :],
-        'rho_coords' : np.expand_dims(data_element[1], -1)[
-            sample, :, :
-        ],
-        'theta_coords' : np.expand_dims(data_element[2], -1)[
-            sample, :, :
-        ],
-        'mask' : data_element[3][pocket_points[:32], :, :],
-        'labels' : pocket_labels,
-        'keep_prob' : 1.0,
-    }
-'''
-
 
 num_epochs = 100
 #num_batches = 32
