@@ -165,8 +165,11 @@ class MaSIF_ligand(Model):
     ):
         ## Call super - model initializer
         super().__init__()
-
+        
+        ##
         self.keep_prob = keep_prob
+        self.minPockets = minPockets
+        ##
         
         # order of the spectral filters
         self.max_rho = max_rho
