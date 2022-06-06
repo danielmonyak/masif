@@ -14,7 +14,7 @@ y_pred = np.loadtxt('y_pred.txt')
 
 # Binarize the output
 y_true_bin = label_binarize(y_true, classes=list(range(7)))
-n_classes = y.shape[1]
+n_classes = y_true_bin.shape[1]
 
 # Compute ROC curve and ROC area for each class
 fpr = dict()
