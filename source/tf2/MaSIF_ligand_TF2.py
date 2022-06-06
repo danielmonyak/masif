@@ -178,9 +178,6 @@ class MaSIF_ligand(Model):
         self.sigma_theta_init = 1.0  # 0.25
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
-
-        tf.random.set_seed(0)
-        
         
         initial_coords = self.compute_initial_coordinates()
         # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
