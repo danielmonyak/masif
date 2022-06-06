@@ -19,6 +19,8 @@ val_y = np.load(datadir + 'val_X.npy')
 test_X = np.load(datadir + 'test_X.npy')
 test_y = np.load(datadir + 'test_y.npy')
 
+modelDir = 'kerasModel'
+# model = tf.keras.models.load_model(modelDir)
 model = MaSIF_ligand(
   params["max_distance"],
   params["n_classes"],
@@ -33,13 +35,14 @@ strategy = tf.distribute.MirroredStrategy(gpus_str)
 
 num_epochs = 100
 with strategy.scope():
-  model.fit(x = train_X, y = train_y,
+  history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs,
     validation_data = (val_X, val_y),
-    verbose = 2
+    verbose = 2,
+    use_multiprocessing = True
   )
   model.evaluate(x_test,  y_test_encoded, verbose=2)
 
-model.save(folderDir)
-# to load
-# model = tf.keras.models.load_model(folderDir)
+model.save(modelDir)
+with open(modelDir + '/train_history', 'wb') as file_pi:
+  pickle.dump(history.history, file_pi)
