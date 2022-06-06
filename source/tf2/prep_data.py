@@ -62,7 +62,7 @@ X_list = []
 y_list = []
 
 i = 0
-dataset_list = {'train' : training_data, 'val' : validation_data, 'test' : testing_data]
+dataset_list = {'train' : training_data, 'val' : validation_data, 'test' : testing_data}
 print('start')
 for dataset in dataset_list.keys():
     print('\n' + dataset)
