@@ -82,7 +82,7 @@ plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
 plt.xlabel("False Positive Rate")
 plt.ylabel("True Positive Rate")
-plt.title("Some extension of Receiver operating characteristic to multiclass")
+plt.title("ROC Curves")
 plt.legend(loc="lower right")
 
 plt.savefig('roc_curve.png')
