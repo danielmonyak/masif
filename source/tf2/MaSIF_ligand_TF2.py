@@ -234,7 +234,7 @@ class MaSIF_ligand(Model):
         x = tf.squeeze(x)
         numer = tf.matmul(tf.transpose(x), x)
         denom = tf.cast(tf.shape(x)[0], tf.float32)
-        return ret/denom
+        return numer/denom
 
     
     def call(self, inputs):
