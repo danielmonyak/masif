@@ -231,6 +231,7 @@ class MaSIF_ligand(Model):
 
     
     def lambdaLayer(self, x):
+        x = tf.squeeze(x)
         numer = tf.matmul(tf.transpose(x), x)
         denom = tf.cast(tf.shape(x)[0], tf.float32)
         return ret/denom
