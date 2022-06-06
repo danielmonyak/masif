@@ -32,6 +32,12 @@ y_true = np.array(y_true_list)
 y_pred_probs = np.vstack(y_pred_list)
 y_pred = y_pred_probs.argmax(axis = 1)
 
+
+ np.loadtxt('y_true.txt', y_true)
+ np.loadtxt('y_pred_probs.txt', y_pred_probs)
+ np.loadtxt('y_pred.txt', y_pred)
+
+
 '''
 y_true = np.array(y_true_list).reshape([-1, 1]) 
 enc = OneHotEncoder(categories = [np.arange(n_ligands)])
