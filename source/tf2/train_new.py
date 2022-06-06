@@ -26,8 +26,7 @@ model = MaSIF_ligand(
 )
 
 num_epochs = 100
-#num_batches = 32
 model.fit(x = train_X, y = train_y,
-          epochs = num_epochs,
-          validation_data = (val_X, val_y)
-         )
+  epochs = num_epochs,
+  validation_data = (val_X, val_y)
+)
