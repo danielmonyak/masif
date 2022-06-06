@@ -219,15 +219,7 @@ class MaSIF_ligand(Model):
         self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
  
 
-    
-    def lambdaLayer(self, x):
-        numer = tf.matmul(tf.transpose(x), x)
-        denom = tf.cast(tf.shape(x)[0], tf.float32)
-        return ret/denom
-
-    
-    def call(self, inputs):
-        myLayers=[
+        self.myLayers=[
             layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Lambda(self.lambdaLayer),
@@ -236,8 +228,18 @@ class MaSIF_ligand(Model):
             layers.Dense(64, activation="relu"),
             layers.Dense(self.n_ligands, activation="relu")
         ]
+
+    
+    def lambdaLayer(self, x):
+        numer = tf.matmul(tf.transpose(x), x)
+        denom = tf.cast(tf.shape(x)[0], tf.float32)
+        return ret/denom
+
+    
+    def call(self, inputs):
         ret = inputs
-        for l in myLayers:
+        for l in self.myLayers:
+            print(l)
             ret = l(ret)
         return ret
     
