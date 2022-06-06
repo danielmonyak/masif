@@ -1,5 +1,4 @@
 import tensorflow as tf
-import tf_slim as slim
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 
