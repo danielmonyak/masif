@@ -110,7 +110,6 @@ class MaSIF_ligand(Model):
         theta_coords = x['theta_coords']
         input_feat = x['input_feat']
         mask = x['mask']
-        labels = x['labels']
 
         self.global_desc_1 = []
         b_conv = []
