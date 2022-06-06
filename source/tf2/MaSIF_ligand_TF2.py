@@ -220,7 +220,7 @@ class MaSIF_ligand(Model):
  
 
     
-    def lambdaLayer(x):
+    def lambdaLayer(self, x):
         numer = tf.matmul(tf.transpose(x), x)
         denom = tf.cast(tf.shape(x)[0], tf.float32)
         return ret/denom
@@ -230,7 +230,7 @@ class MaSIF_ligand(Model):
         myLayers=[
             layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
-            layers.Lambda(lambdaLayer),
+            layers.Lambda(self.lambdaLayer),
             layers.Reshape([1, -1]),
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
