@@ -225,7 +225,8 @@ class MaSIF_ligand(Model):
             layers.Lambda(lambda x : tf.reshape(x, [npockets, self.n_thetas * self.n_rhos * self.n_feat]), input_shape = [32, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Lambda(self.lambdaLayer),
-            layers.Reshape([1, -1]),
+            #layers.Reshape([1, -1]),
+            layers.Flatten(),
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
             layers.Dense(self.n_ligands, activation="relu")
