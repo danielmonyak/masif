@@ -104,7 +104,7 @@ class MaSIF_ligand(Model):
         return conv_feat
 
     @tf.function
-    def bigPrepData(x):
+    def bigPrepData(self, x):
         rho_coords = x['rho_coords']
         theta_coords = x['theta_coords']
         input_feat = x['input_feat']
