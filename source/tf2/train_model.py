@@ -49,9 +49,9 @@ history = model.fit(x = train_X, y = train_y,
   epochs = num_epochs,
   validation_data = (val_X, val_y),
   callbacks = [saveCheckpoints],
-  verbose = 2,
-  use_multiprocessing = True
-)
+  verbose = 2)
+#  use_multiprocessing = True
+#)
 model.evaluate(x_test,  y_test_encoded, verbose=2)
 
 #model.save(modelDir)
