@@ -16,6 +16,8 @@ train_X = np.load(datadir + 'train_X.npy')
 train_y = np.load(datadir + 'train_y.npy')
 val_X = np.load(datadir + 'val_X.npy')
 val_y = np.load(datadir + 'val_X.npy')
+test_X = np.load(datadir + 'test_X.npy')
+test_y = np.load(datadir + 'test_y.npy')
 
 model = MaSIF_ligand(
   params["max_distance"],
@@ -33,5 +35,11 @@ num_epochs = 100
 with strategy.scope():
   model.fit(x = train_X, y = train_y,
     epochs = num_epochs,
-    validation_data = (val_X, val_y)
+    validation_data = (val_X, val_y),
+    verbose = 2
   )
+  model.evaluate(x_test,  y_test_encoded, verbose=2)
+
+model.save(folderDir)
+# to load
+# model = tf.keras.models.load_model(folderDir)
