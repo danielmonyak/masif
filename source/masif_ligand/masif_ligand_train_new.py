@@ -14,7 +14,7 @@ from sklearn.metrics import confusion_matrix
 import tensorflow as tf
 
 
-continue_training = True
+continue_training = False
 
 
 """
@@ -69,9 +69,9 @@ else:
 
 for num_epoch in range(last_epoch, num_epochs):
     ## Changed
-    num_training_samples = 1036
-    num_validation_samples = 115
-    num_testing_samples = 287
+    num_training_samples = 
+    num_validation_samples =  
+    num_testing_samples = 
     ###
 
     training_iterator = training_data.make_one_shot_iterator()
