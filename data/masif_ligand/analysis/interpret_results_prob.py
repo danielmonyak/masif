@@ -33,9 +33,9 @@ y_pred_probs = np.vstack(y_pred_list)
 y_pred = y_pred_probs.argmax(axis = 1)
 
 
-np.loadtxt('y_true.txt', y_true)
-np.loadtxt('y_pred_probs.txt', y_pred_probs)
-np.loadtxt('y_pred.txt', y_pred)
+np.savetxt('y_true.txt', y_true)
+np.savetxt('y_pred_probs.txt', y_pred_probs)
+np.savetxt('y_pred.txt', y_pred)
 
 
 '''
