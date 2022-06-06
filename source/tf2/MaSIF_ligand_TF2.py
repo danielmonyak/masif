@@ -160,7 +160,8 @@ class MaSIF_ligand(Model):
         idx_gpu="/gpu:0",
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         costfun="dprime",
-        keep_prob = 1.0
+        keep_prob = 1.0,
+        minPockets = 32
     ):
         ## Call super - model initializer
         super().__init__()
@@ -216,8 +217,8 @@ class MaSIF_ligand(Model):
  
 
         self.myLayers=[
-            layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat], input_shape = [32, self.n_feat, self.n_thetas * self.n_rhos]),
-            #layers.Lambda(lambda x : tf.reshape(x, [npockets, self.n_thetas * self.n_rhos * self.n_feat]), input_shape = [32, self.n_feat, self.n_thetas * self.n_rhos]),
+            layers.Reshape([self.minPockets, self.n_thetas * self.n_rhos * self.n_feat], input_shape = [self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
+            #layers.Lambda(lambda x : tf.reshape(x, [npockets, self.n_thetas * self.n_rhos * self.n_feat]), input_shape = [self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             CovarLayer(),
             #layers.Lambda(self.lambdaLayer),
