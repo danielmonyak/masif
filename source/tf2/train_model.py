@@ -11,6 +11,8 @@ from MaSIF_ligand_TF2 import MaSIF_ligand
 from sklearn.metrics import confusion_matrix
 import tensorflow as tf
 
+params = masif_opts["ligand"]
+
 datadir = 'datasets/'
 train_X = np.load(datadir + 'train_X.npy')
 train_y = np.load(datadir + 'train_y.npy')
