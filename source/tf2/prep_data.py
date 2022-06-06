@@ -61,7 +61,7 @@ print('start')
 i = 0
 for data_element in training_data:
     print(i)
-    if i == 50:
+    if i == 1:
         break
         
     random_ligand = 0
