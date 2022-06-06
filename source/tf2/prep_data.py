@@ -58,7 +58,10 @@ model.compile(optimizer = model.opt,
 '''
 i = 0
 for data_element in training_data:
-        random_ligand = 0
+    if i == 5:
+        break
+        
+    random_ligand = 0
     labels = data_element[4]
     n_ligands = labels.shape[1]
     pocket_points = tf.reshape(tf.where(labels[:, random_ligand] != 0), [-1, ])
@@ -83,5 +86,7 @@ for data_element in training_data:
         'labels' : pocket_labels,
         'keep_prob' : 1.0,
     }
-    output = 
+    ret = model.bigPrepData(feed_dict)
+    
+    i += 1
 '''
