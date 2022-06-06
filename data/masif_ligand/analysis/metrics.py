@@ -2,7 +2,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
 import numpy as np
-from sklearn.metrics balanced_accuracy_score, roc_auc_score
+from sklearn.metrics import balanced_accuracy_score, roc_auc_score
 from sklearn.preprocessing import OneHotEncoder
 
 y_true = np.loadtxt('y_true.txt')
