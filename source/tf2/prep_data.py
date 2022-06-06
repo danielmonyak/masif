@@ -64,7 +64,8 @@ y_list = []
 i = 0
 for data_element in training_data:
     print(i)
-        
+    if i == 10:
+        break
     random_ligand = 0
     labels = data_element[4]
     n_ligands = labels.shape[1]
