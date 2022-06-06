@@ -240,7 +240,6 @@ class MaSIF_ligand(Model):
     def call(self, inputs):
         ret = inputs
         for l in self.myLayers:
-            print(l)
             ret = l(ret)
         return ret
     
