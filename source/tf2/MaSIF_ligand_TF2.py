@@ -4,6 +4,7 @@ import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 
 #tf.debugging.set_log_device_placement(True)
+npockets = 32
 
 class MaSIF_ligand(Model):
 
@@ -220,7 +221,8 @@ class MaSIF_ligand(Model):
  
 
         self.myLayers=[
-            layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat]),
+            #layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat]),
+            layers.Reshape([npockets, self.n_thetas * self.n_rhos * self.n_feat]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Lambda(self.lambdaLayer),
             layers.Reshape([1, -1]),
