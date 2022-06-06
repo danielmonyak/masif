@@ -256,8 +256,8 @@ class CovarLayer(layers.Layer):
     def __init__(self):
         super(CovarLayer, self).__init__()
     def call(self, x):
-        #x = tf.squeeze(x)
+        x = tf.squeeze(x)
         numer = tf.matmul(tf.transpose(x), x)
         denom = tf.cast(tf.shape(x)[0], tf.float32)
-        #return tf.expand_dims(numer/denom, axis=0)
-        return numer/denom
+        return tf.expand_dims(numer/denom, axis=0)
+        #return numer/denom
