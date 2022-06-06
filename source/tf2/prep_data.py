@@ -62,6 +62,7 @@ i = 0
 for data_element in training_data:
     print(i)
     if i < 5:
+        i += 1
         continue
     if i == 10:
         break
