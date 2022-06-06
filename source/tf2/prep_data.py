@@ -58,11 +58,12 @@ model.compile(optimizer = model.opt,
 
 print('start')
 
+X_list = []
+y_list = []
+
 i = 0
 for data_element in training_data:
     print(i)
-    if i == 1:
-        break
         
     random_ligand = 0
     labels = data_element[4]
@@ -86,10 +87,15 @@ for data_element in training_data:
             sample, :, :
         ],
         'mask' : tf.gather(data_element[3], pocket_points[:32], axis = 0),
-        'labels' : pocket_labels,
         'keep_prob' : 1.0,
     }
     ret = model.bigPrepData(feed_dict)
-    
+    X_list.append(ret)
+    y_list.append(pocket_labels)
     i += 1
 
+X = tf.stack(X_list, axis = 0)
+y = tf.stack(y_list, axis = 0)
+
+np.save('X.npy', X)
+np.save('y.npy', y)
