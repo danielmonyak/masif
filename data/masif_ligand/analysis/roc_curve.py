@@ -65,7 +65,7 @@ plt.plot(
     linestyle=":",
     linewidth=4,
 )
-
+'''
 lw = 2
 colors = cycle(["aqua", "darkorange", "cornflowerblue"])
 for i, color in zip(range(n_classes), colors):
@@ -76,7 +76,7 @@ for i, color in zip(range(n_classes), colors):
         lw=lw,
         label="ROC curve of class {0} (area = {1:0.2f})".format(i, roc_auc[i]),
     )
-
+'''
 plt.plot([0, 1], [0, 1], "k--", lw=lw)
 plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
