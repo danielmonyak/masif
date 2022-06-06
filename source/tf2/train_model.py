@@ -33,16 +33,25 @@ gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str)
 
+
+saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
+  modelDir,
+  monitor = 'val_accuracy',
+  save_best_only = True,
+  verbose = 1
+)
+
 num_epochs = 100
 with strategy.scope():
   history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs,
     validation_data = (val_X, val_y),
+    callbacks = [saveCheckpoints],
     verbose = 2,
     use_multiprocessing = True
   )
   model.evaluate(x_test,  y_test_encoded, verbose=2)
 
-model.save(modelDir)
+#model.save(modelDir)
 with open(modelDir + '/train_history', 'wb') as file_pi:
   pickle.dump(history.history, file_pi)
