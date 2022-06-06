@@ -44,6 +44,7 @@ validation_data = make_iter(validation_data)
 testing_data = make_iter(testing_data)
 '''
 
+modelDir = 'kerasModel'
 
 # Create Model
 model = MaSIF_ligand(
@@ -53,12 +54,13 @@ model = MaSIF_ligand(
   feat_mask=params["feat_mask"],
   costfun=params["costfun"]
 )
-
+model.save(modelDir)
+'''
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
   metrics=['accuracy']
 )
-
+'''
 outdir = 'datasets/'
 
 X_list = []
