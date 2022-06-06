@@ -3,10 +3,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
 import numpy as np
 from default_config.masif_opts import masif_opts
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, balanced_accuracy_score, roc_auc_score
-from sklearn.preprocessing import OneHotEncoder
 import tensorflow as tf
-import matplotlib.pyplot as plt
 
 params = masif_opts["ligand"]
 test_set_out_dir = "/home/daniel.monyak/software/masif/data/masif_ligand/" + params["test_set_out_dir"]
@@ -40,16 +37,3 @@ y_true = np.array(y_true_list).reshape([-1, 1])
 enc = OneHotEncoder(categories = [np.arange(n_ligands)])
 y_true_one_hot = enc.fit_transform(y_true).toarray()
 '''
-
-ligands = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
-conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
-disp = ConfusionMatrixDisplay(conf_mat, display_labels = ligands)
-disp.plot()
-plt.savefig('confusion_matrix.png')
-
-#roc_curve(y_t
-balanced_acc = balanced_accuracy_score(y_true, y_pred)
-roc_auc = roc_auc_score(y_true, y_pred_probs, multi_class = 'ovr', labels = np.arange(7))
-
-print('Balanced accuracy: ', round(balanced_acc, 2))
-print('ROC AUC score: ', round(roc_auc, 2))
