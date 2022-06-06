@@ -147,7 +147,7 @@ class MaSIF_ligand(Model):
                 )
             )  # batch_size, n_gauss*1
 
-            return tf.stack(self.global_desc_1, axis=1)
+        return tf.stack(self.global_desc_1, axis=1)
         
     def __init__(
         self,
