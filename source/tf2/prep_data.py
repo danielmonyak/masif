@@ -61,7 +61,8 @@ for data_element in training_data:
     random_ligand = 0
     labels = data_element[4]
     n_ligands = labels.shape[1]
-    pocket_points = np.where(labels[:, random_ligand] != 0.0)[0]
+    #pocket_points = np.where(labels[:, random_ligand] != 0)[0]
+    pocket_points = tf.reshape(tf.where(labels[:, random_ligand] != 0), [-1, ])
     label = np.max(labels[:, random_ligand]) - 1
     pocket_labels = np.zeros(7, dtype=np.float32)
     pocket_labels[label] = 1.0
