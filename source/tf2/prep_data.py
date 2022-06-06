@@ -60,7 +60,9 @@ print('start')
 
 i = 0
 for data_element in training_data:
-    if i == 5:
+    if i < 5:
+        continue
+    if i == 10:
         break
         
     random_ligand = 0
