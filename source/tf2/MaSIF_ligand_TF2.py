@@ -219,7 +219,8 @@ class MaSIF_ligand(Model):
             layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat], input_shape = [32, self.n_feat, self.n_thetas * self.n_rhos]),
             #layers.Lambda(lambda x : tf.reshape(x, [npockets, self.n_thetas * self.n_rhos * self.n_feat]), input_shape = [32, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
-            layers.Lambda(self.lambdaLayer),
+            CovarLayer(),
+            #layers.Lambda(self.lambdaLayer),
             #layers.Reshape([1, -1]),
             layers.Flatten(),
             layers.Dropout(1 - self.keep_prob),
@@ -227,8 +228,8 @@ class MaSIF_ligand(Model):
             layers.Dense(self.n_ligands, activation="relu")
         ]
     
-        self.compile(optimizer = model.opt,
-          loss = model.loss_fn,
+        self.compile(optimizer = self.opt,
+          loss = self.loss_fn,
           metrics=['accuracy']
         )
 
@@ -247,3 +248,12 @@ class MaSIF_ligand(Model):
         return ret
     
     
+class CovarLayer(layers.Layer):
+    def __init__(self):
+        super().__init__()
+    def call(self, x):
+        #x = tf.squeeze(x)
+        numer = tf.matmul(tf.transpose(x), x)
+        denom = tf.cast(tf.shape(x)[0], tf.float32)
+        #return tf.expand_dims(numer/denom, axis=0)
+        return numer/denom
