@@ -7,7 +7,7 @@ from IPython.core.debugger import set_trace
 import importlib
 import sys
 from default_config.masif_opts import masif_opts
-from MaSIF_ligand_TF2 import MaSIf_ligand
+from MaSIF_ligand_TF2 import MaSIF_ligand
 from sklearn.metrics import confusion_matrix
 import tensorflow as tf
 
