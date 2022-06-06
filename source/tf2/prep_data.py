@@ -79,11 +79,11 @@ for dataset in dataset_list.keys():
         pocket_labels = np.zeros(7, dtype=np.float32)
         pocket_labels[label] = 1.0
         npoints = pocket_points.shape[0]
-        if npoints < 32:
+        if npoints < model.minPockets:
             continue
-        # Sample 32 points randomly
+        # Sample model.minPockets (32) points randomly
         # Fix later - otherwise it's same random points every epoch
-        sample = np.random.choice(pocket_points, 32, replace=False)
+        sample = np.random.choice(pocket_points, model.minPockets, replace=False)
         feed_dict = {
             'input_feat' : tf.gather(data_element[0], sample, axis = 0),
             'rho_coords' : np.expand_dims(data_element[1], -1)[
@@ -92,7 +92,7 @@ for dataset in dataset_list.keys():
             'theta_coords' : np.expand_dims(data_element[2], -1)[
                 sample, :, :
             ],
-            'mask' : tf.gather(data_element[3], pocket_points[:32], axis = 0),
+            'mask' : tf.gather(data_element[3], pocket_points[:model.minPockets], axis = 0),
             'keep_prob' : 1.0,
         }
         ret = model.bigPrepData(feed_dict)
