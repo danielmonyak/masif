@@ -257,5 +257,5 @@ class CovarLayer(layers.Layer):
         super(CovarLayer, self).__init__()
     def call(self, x):
         ret = tf.matmul(tf.transpose(x, perm=[0, 2, 1]), x)
-        scale = tf.cast(tf.shape(x)[0], tf.float32)
+        scale = tf.cast(tf.shape(x)[1], tf.float32)
         return ret/scale
