@@ -58,10 +58,9 @@ model.compile(optimizer = model.opt,
 '''
 i = 0
 for data_element in training_data:
-    random_ligand = 0
+        random_ligand = 0
     labels = data_element[4]
     n_ligands = labels.shape[1]
-    #pocket_points = np.where(labels[:, random_ligand] != 0)[0]
     pocket_points = tf.reshape(tf.where(labels[:, random_ligand] != 0), [-1, ])
     label = np.max(labels[:, random_ligand]) - 1
     pocket_labels = np.zeros(7, dtype=np.float32)
@@ -73,14 +72,14 @@ for data_element in training_data:
     # Fix later - otherwise it's same random points every epoch
     sample = np.random.choice(pocket_points, 32, replace=False)
     feed_dict = {
-        'input_feat' : data_element[0][sample, :, :],
+        'input_feat' : tf.gather(data_element[0], sample, axis = 0),
         'rho_coords' : np.expand_dims(data_element[1], -1)[
             sample, :, :
         ],
         'theta_coords' : np.expand_dims(data_element[2], -1)[
             sample, :, :
         ],
-        'mask' : data_element[3][pocket_points[:32], :, :],
+        'mask' : tf.gather(data_element[3], pocket_points[:32], axis = 0),
         'labels' : pocket_labels,
         'keep_prob' : 1.0,
     }
