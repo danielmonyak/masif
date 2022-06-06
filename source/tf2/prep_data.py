@@ -55,7 +55,9 @@ model.compile(optimizer = model.opt,
   loss = model.loss_fn,
   metrics=['accuracy']
 )
-'''
+
+print('start')
+
 i = 0
 for data_element in training_data:
     if i == 5:
@@ -89,4 +91,4 @@ for data_element in training_data:
     ret = model.bigPrepData(feed_dict)
     
     i += 1
-'''
+
