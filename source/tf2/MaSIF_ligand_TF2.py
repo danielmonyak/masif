@@ -226,6 +226,11 @@ class MaSIF_ligand(Model):
             layers.Dense(64, activation="relu"),
             layers.Dense(self.n_ligands, activation="relu")
         ]
+    
+        self.compile(optimizer = model.opt,
+          loss = model.loss_fn,
+          metrics=['accuracy']
+        )
 
     
     def lambdaLayer(self, x):
