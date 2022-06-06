@@ -21,11 +21,11 @@ fpr = dict()
 tpr = dict()
 roc_auc = dict()
 for i in range(n_classes):
-    fpr[i], tpr[i], _ = roc_curve(y_true[:, i], y_pred_probs[:, i])
+    fpr[i], tpr[i], _ = roc_curve(y_true_bin[:, i], y_pred_probs[:, i])
     roc_auc[i] = auc(fpr[i], tpr[i])
 
 # Compute micro-average ROC curve and ROC area
-fpr["micro"], tpr["micro"], _ = roc_curve(y_true.ravel(), y_pred_probs.ravel())
+fpr["micro"], tpr["micro"], _ = roc_curve(y_true_bin.ravel(), y_pred_probs.ravel())
 roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
 
 
