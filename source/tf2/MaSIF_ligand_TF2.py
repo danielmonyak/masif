@@ -34,7 +34,7 @@ class MaSIF_ligand(Model):
         coords = coords.T  # every row contains the coordinates of a grid intersection
         return coords
     
-    @tf.function
+    @tf.autograph.experimental.do_not_convert
     def inference(
         self,
         input_feat,
@@ -103,7 +103,7 @@ class MaSIF_ligand(Model):
         conv_feat = tf.nn.relu(conv_feat)
         return conv_feat
 
-    @tf.function
+    @tf.autograph.experimental.do_not_convert
     def bigPrepData(self, x):
         rho_coords = x['rho_coords']
         theta_coords = x['theta_coords']
@@ -219,13 +219,13 @@ class MaSIF_ligand(Model):
         self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
  
 
-    @tf.function
+    
     def lambdaLayer(x):
         numer = tf.matmul(tf.transpose(x), x)
         denom = tf.cast(tf.shape(x)[0], tf.float32)
         return ret/denom
 
-    @tf.function
+    
     def call(self, inputs):
         myLayers=[
             layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat]),
