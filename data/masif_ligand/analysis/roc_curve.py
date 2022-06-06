@@ -65,8 +65,9 @@ plt.plot(
     linestyle=":",
     linewidth=4,
 )
-'''
+
 lw = 2
+'''
 colors = cycle(["aqua", "darkorange", "cornflowerblue"])
 for i, color in zip(range(n_classes), colors):
     plt.plot(
