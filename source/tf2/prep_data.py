@@ -41,6 +41,21 @@ validation_data = iter(validation_data)
 testing_data = iter(testing_data)
 
 
+
+# Create Model
+model = MaSIF_ligand(
+  params["max_distance"],
+  params["n_classes"],
+  idx_gpu="/gpu:0",
+  feat_mask=params["feat_mask"],
+  costfun=params["costfun"]
+)
+
+model.compile(optimizer = model.opt,
+  loss = model.loss_fn,
+  metrics=['accuracy']
+)
+'''
 i = 0
 for data_element in training_data:
     random_ligand = 0
@@ -69,3 +84,4 @@ for data_element in training_data:
         'keep_prob' : 1.0,
     }
     output = 
+'''
