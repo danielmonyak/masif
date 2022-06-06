@@ -56,47 +56,49 @@ model.compile(optimizer = model.opt,
   metrics=['accuracy']
 )
 
-print('start')
+outdir = 'datasets/'
 
 X_list = []
 y_list = []
 
 i = 0
-for data_element in training_data:
-    print(i)
-    if i == 10:
-        break
-    random_ligand = 0
-    labels = data_element[4]
-    n_ligands = labels.shape[1]
-    pocket_points = tf.reshape(tf.where(labels[:, random_ligand] != 0), [-1, ])
-    label = np.max(labels[:, random_ligand]) - 1
-    pocket_labels = np.zeros(7, dtype=np.float32)
-    pocket_labels[label] = 1.0
-    npoints = pocket_points.shape[0]
-    if npoints < 32:
-        continue
-    # Sample 32 points randomly
-    # Fix later - otherwise it's same random points every epoch
-    sample = np.random.choice(pocket_points, 32, replace=False)
-    feed_dict = {
-        'input_feat' : tf.gather(data_element[0], sample, axis = 0),
-        'rho_coords' : np.expand_dims(data_element[1], -1)[
-            sample, :, :
-        ],
-        'theta_coords' : np.expand_dims(data_element[2], -1)[
-            sample, :, :
-        ],
-        'mask' : tf.gather(data_element[3], pocket_points[:32], axis = 0),
-        'keep_prob' : 1.0,
-    }
-    ret = model.bigPrepData(feed_dict)
-    X_list.append(ret)
-    y_list.append(pocket_labels)
-    i += 1
+dataset_list = {'train' : training_data, 'val' : validation_data, 'test' : testing_data]
+print('start')
+for dataset in dataset_list.keys():
+    print('\n' + dataset)
+    for data_element in dataset_list[dataset]:
+        print(i)
+        random_ligand = 0
+        labels = data_element[4]
+        n_ligands = labels.shape[1]
+        pocket_points = tf.reshape(tf.where(labels[:, random_ligand] != 0), [-1, ])
+        label = np.max(labels[:, random_ligand]) - 1
+        pocket_labels = np.zeros(7, dtype=np.float32)
+        pocket_labels[label] = 1.0
+        npoints = pocket_points.shape[0]
+        if npoints < 32:
+            continue
+        # Sample 32 points randomly
+        # Fix later - otherwise it's same random points every epoch
+        sample = np.random.choice(pocket_points, 32, replace=False)
+        feed_dict = {
+            'input_feat' : tf.gather(data_element[0], sample, axis = 0),
+            'rho_coords' : np.expand_dims(data_element[1], -1)[
+                sample, :, :
+            ],
+            'theta_coords' : np.expand_dims(data_element[2], -1)[
+                sample, :, :
+            ],
+            'mask' : tf.gather(data_element[3], pocket_points[:32], axis = 0),
+            'keep_prob' : 1.0,
+        }
+        ret = model.bigPrepData(feed_dict)
+        X_list.append(ret)
+        y_list.append(pocket_labels)
+        i += 1
 
-X = tf.stack(X_list, axis = 0)
-y = tf.stack(y_list, axis = 0)
+    X = tf.stack(X_list, axis = 0)
+    y = tf.stack(y_list, axis = 0)
 
-np.save('X.npy', X)
-np.save('y.npy', y)
+    np.save(outdir + '{}_X.npy'.format(dataset), X)
+    np.save(outdir + '{}_y.npy'.format(dataset), y)
