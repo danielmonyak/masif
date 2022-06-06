@@ -35,14 +35,14 @@ testing_data = tf.data.TFRecordDataset(
 training_data = training_data.map(_parse_function)
 validation_data = validation_data.map(_parse_function)
 testing_data = testing_data.map(_parse_function)
-
+'''
 @tf.function
 def make_iter(data):
     return iter(data)
 training_data = make_iter(training_data)
 validation_data = make_iter(validation_data)
 testing_data = make_iter(testing_data)
-
+'''
 
 
 # Create Model
