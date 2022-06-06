@@ -25,8 +25,13 @@ model = MaSIF_ligand(
   costfun=params["costfun"]
 )
 
+gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
+gpus_str = [g.name for g in gpus]
+strategy = tf.distribute.MirroredStrategy(gpus_str)
+
 num_epochs = 100
-model.fit(x = train_X, y = train_y,
-  epochs = num_epochs,
-  validation_data = (val_X, val_y)
-)
+with strategy.scope():
+  model.fit(x = train_X, y = train_y,
+    epochs = num_epochs,
+    validation_data = (val_X, val_y)
+  )
