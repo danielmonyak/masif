@@ -60,6 +60,7 @@ print('start')
 
 i = 0
 for data_element in training_data:
+    print(i)
     if i < 5:
         continue
     if i == 10:
