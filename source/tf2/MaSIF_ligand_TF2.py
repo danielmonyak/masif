@@ -164,7 +164,7 @@ class MaSIF_ligand(Model):
         minPockets = 32
     ):
         ## Call super - model initializer
-        super().__init__()
+        super(MaSIF_ligand, self).__init__()
         
         ##
         self.keep_prob = keep_prob
@@ -254,7 +254,7 @@ class MaSIF_ligand(Model):
     
 class CovarLayer(layers.Layer):
     def __init__(self):
-        super().__init__()
+        super(CovarLayer, self).__init__()
     def call(self, x):
         #x = tf.squeeze(x)
         numer = tf.matmul(tf.transpose(x), x)
