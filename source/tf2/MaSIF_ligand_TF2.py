@@ -3,6 +3,7 @@ import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 
 import time
+import functools
 
 #tf.debugging.set_log_device_placement(True)
 npockets = 32
@@ -177,8 +178,7 @@ class ConvLayer(layers.Layer):
         '''
         
         print('Start unpacking:', time.process_time())
-        
-        ## how to handle batches?
+        '''
         input_feat_list = [x_i[0] for x_i in x]
         rho_coords_list = [x_i[1] for x_i in x]
         theta_coords_list = [x_i[2] for x_i in x]
@@ -194,7 +194,20 @@ class ConvLayer(layers.Layer):
         rho_coords = tf.transpose(rho_coords_temp.to_tensor(), perm = perm)
         theta_coords = tf.transpose(theta_coords_temp.to_tensor(), perm = perm)
         mask = tf.transpose(mask_temp.to_tensor(), perm = perm)
+        '''
+        batches = x.shape[0]
         
+        bigShape = [32, 200, 5]
+        smallShape = [32, 200, 1]
+        prodFunc = lambda a,b : a*b
+        bigLen = reduce(prodFunc, bigShape)
+        smallLen = reduce(prodFunc, smallShape)
+        
+        input_feat = tf.reshape(x[:, :bigLen], [batches] + bigShape)
+        rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
+        rho_coords = rest[:, 0, :, :, :]
+        theta_coords = rest[:, 1, :, :, :]
+        mask = rest[:, 2, :, :, :]
         print('End unpacking:', time.process_time())
         
         
