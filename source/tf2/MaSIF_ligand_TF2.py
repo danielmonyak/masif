@@ -204,8 +204,7 @@ class ConvLayer(layers.Layer):
         self.global_desc_1 = []
         
         for i in range(self.n_feat):
-            # check axis on this - batch
-            my_input_feat = tf.expand_dims(input_feat[:, :, i], 2)
+            my_input_feat = input_feat[:, :, :, i:i+1]
 
             # W_conv or W_conv[i] ???
             self.global_desc_1.append(
@@ -223,8 +222,7 @@ class ConvLayer(layers.Layer):
                 )
             )  # batch_size, n_gauss*1
 
-        # check axis on this - batch
-        return tf.stack(self.global_desc_1, axis=1)
+        return tf.stack(self.global_desc_1, axis=2)
     
     def inference(
         self,
@@ -241,15 +239,16 @@ class ConvLayer(layers.Layer):
         eps=1e-5,
         mean_gauss_activation=True,
     ):
-        n_samples = tf.shape(input=rho_coords)[0]
-        n_vertices = tf.shape(input=rho_coords)[1]
+        batches = input_feat.shape[0]
+        
+        n_samples = tf.shape(input=rho_coords)[1]
+        n_vertices = tf.shape(input=rho_coords)[2]
 
         all_conv_feat = []
         for k in range(self.n_rotations):
             
-            # check axis on this - batch
-            rho_coords_ = tf.reshape(rho_coords, [-1, 1])  # batch_size*n_vertices
-            thetas_coords_ = tf.reshape(theta_coords, [-1, 1])  # batch_size*n_vertices
+            rho_coords_ = tf.reshape(rho_coords, [batches, -1, 1])  # batch_size*n_vertices
+            thetas_coords_ = tf.reshape(theta_coords, [batches, -1, 1])  # batch_size*n_vertices
 
             thetas_coords_ += k * 2 * np.pi / self.n_rotations
             thetas_coords_ = tf.math.mod(thetas_coords_, 2 * np.pi)
@@ -264,40 +263,37 @@ class ConvLayer(layers.Layer):
                 rho_coords_, thetas_coords_
             )  # batch_size*n_vertices, n_gauss
             gauss_activations = tf.reshape(
-                gauss_activations, [n_samples, n_vertices, -1]
+                gauss_activations, [batches, n_samples, n_vertices, -1]
             )  # batch_size, n_vertices, n_gauss
             gauss_activations = tf.multiply(gauss_activations, mask)
             if (
                 mean_gauss_activation
             ):  # computes mean weights for the different gaussians
                 
-                # check axis on this - batch
                 gauss_activations /= (
-                    tf.reduce_sum(input_tensor=gauss_activations, axis=1, keepdims=True) + eps
+                    tf.reduce_sum(input_tensor=gauss_activations, axis=2, keepdims=True) + eps
                 )  # batch_size, n_vertices, n_gauss
 
-            # check axis on this - batch
             gauss_activations = tf.expand_dims(
-                gauss_activations, 2
+                gauss_activations, 3
             )  # batch_size, n_vertices, 1, n_gauss,
             input_feat_ = tf.expand_dims(
-                input_feat, 3
+                input_feat, 4
             )  # batch_size, n_vertices, n_feat, 1
 
             
-            # check axis on this - batch
             gauss_desc = tf.multiply(
                 gauss_activations, input_feat_
             )  # batch_size, n_vertices, n_feat, n_gauss,
-            gauss_desc = tf.reduce_sum(input_tensor=gauss_desc, axis=1)  # batch_size, n_feat, n_gauss,
+            gauss_desc = tf.reduce_sum(input_tensor=gauss_desc, axis=2)  # batch_size, n_feat, n_gauss,
             gauss_desc = tf.reshape(
-                gauss_desc, [n_samples, self.n_thetas * self.n_rhos]
+                gauss_desc, [batches, n_samples, self.n_thetas * self.n_rhos]
             )  # batch_size, 80
 
             conv_feat = tf.matmul(gauss_desc, W_conv) + b_conv  # batch_size, 80
             all_conv_feat.append(conv_feat)
         all_conv_feat = tf.stack(all_conv_feat)
-        conv_feat = tf.reduce_max(input_tensor=all_conv_feat, axis=0)
+        conv_feat = tf.reduce_max(input_tensor=all_conv_feat, axis=1)
         conv_feat = tf.nn.relu(conv_feat)
         return conv_feat
 
