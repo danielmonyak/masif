@@ -86,7 +86,7 @@ for data_element in training_data:
 
 ragged_list = []
 for feed_dict in feed_list:
-    tsr_list = tf.transpose(tsr, perm=[0,2,1]) for tsr in feed_dict.values()
+    tsr_list = [tf.transpose(tsr, perm=[0,2,1]) for tsr in feed_dict.values()]
     ragged_input = tf.ragged.stack(tsr_list)
     ragged_list.append(ragged_input)
 X = tf.ragged.stack(ragged_list)
