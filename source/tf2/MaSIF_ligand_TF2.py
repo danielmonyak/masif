@@ -88,7 +88,7 @@ class ConvLayer(layers.Layer):
         n_rhos,
         n_rotations,
         feat_mask):
-        super(ConLayer, self).__init__()
+        super(ConvLayer, self).__init__()
         
         # order of the spectral filters
         self.max_rho = max_rho
