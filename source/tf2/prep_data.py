@@ -37,7 +37,7 @@ minPockets = params['minPockets']
 
 outdir = 'datasets/'
 
-X_list = []
+feed_list = []
 y_list = []
 
 dataset_list = {'train' : training_data, 'val' : validation_data, 'test' : testing_data}
