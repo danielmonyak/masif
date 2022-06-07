@@ -22,7 +22,7 @@ train_y = np.load(datadir + 'train_y.npy')
 #
 
 model = tf.keras.models.Sequential([
-  tf.keras.layers.InputLayer(shape = [32, 5, 80]),
+  tf.keras.layers.InputLayer([32, 5, 80]),
   tf.keras.layers.Flatten(),
   tf.keras.layers.Dense(7, activation="softmax")
 ])
