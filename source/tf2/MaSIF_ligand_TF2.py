@@ -173,10 +173,11 @@ class ConvLayer(layers.Layer):
         mask = x['mask']
         '''
         ## how to handle batches?
-        input_feat = x[0]
-        rho_coords = x[1]
-        theta_coords = x[2]
-        mask = x[3]
+        perm = [0, 2, 1]
+        input_feat = tf.transpose(x[0], perm = perm)
+        rho_coords = tf.transpose(x[1], perm = perm)
+        theta_coords = tf.transpose(x[2], perm = perm)
+        mask = tf.transpose(x[3], perm = perm)
         
         self.global_desc_1 = []
         
