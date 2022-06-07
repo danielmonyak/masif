@@ -67,13 +67,13 @@ with tf.python_io.TFRecordWriter(
         try:
             # Load precomputed data
             input_feat = np.load(
-                os.path.join(precom_dir, pdb, "p1_input_feat.npy")
+                os.path.join(precom_dir, pdb + "_", "p1_input_feat.npy")
             )
             rho_wrt_center = np.load(
-                os.path.join(precom_dir, pdb, "p1_rho_wrt_center.npy")
+                os.path.join(precom_dir, pdb + "_", "p1_rho_wrt_center.npy")
             )
             theta_wrt_center = np.load(
-                os.path.join(precom_dir, pdb, "p1_theta_wrt_center.npy")
+                os.path.join(precom_dir, pdb + "_", "p1_theta_wrt_center.npy")
             )
             mask = np.expand_dims(np.load(os.path.join(precom_dir, pdb + "_", "p1_mask.npy")),-1)
             X = np.load(os.path.join(precom_dir, pdb + "_", "p1_X.npy"))
