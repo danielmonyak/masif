@@ -21,7 +21,7 @@ train_y = np.load(datadir + 'train_y.npy')
 #
 
 model = tf.keras.models.Sequential([
-  layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
+  layers.InputLayer([32, 5, 80]),
   layers.Flatten(),
   layers.Dense(64, activation="relu"),
   layers.Dense(self.n_ligands, activation="softmax")
