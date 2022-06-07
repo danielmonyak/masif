@@ -143,7 +143,7 @@ with tf.python_io.TFRecordWriter(
             success += 1
             print(success)
             print(pdb)
-            print(float(i) / len(train_pdbs))
+            print('{}% done'.format(round(float(i) / len(train_pdbs) * 100)))
 
 
 success = 0
@@ -229,7 +229,7 @@ with tf.python_io.TFRecordWriter(
             success += 1
             print(success)
             print(pdb)
-            print(float(i) / len(val_pdbs))
+            print('{}% done'.format(round(float(i) / len(val_pdbs) * 100)))
 
 success = 0
 with tf.python_io.TFRecordWriter(
@@ -314,6 +314,6 @@ with tf.python_io.TFRecordWriter(
             success += 1
             print(success)
             print(pdb)
-            print(float(i) / len(test_pdbs))
+            print('{}% done'.format(round(float(i) / len(test_pdbs) * 100)))
 
 print('Finished writing all PDBs to record!')
