@@ -85,11 +85,7 @@ for data_element in training_data:
         i += 1
     if i == 5:
         break
-[32, 200, 5]
-[32, 200, 1]
-[32, 200, 1]
-[32, 200, 1]
-
+        
 print('start data prep:', time.process_time())
 '''
 ragged_list = []
