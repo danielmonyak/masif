@@ -16,6 +16,8 @@ from read_ligand_tfrecords import _parse_function
 from sklearn.metrics import confusion_matrix
 import tensorflow as tf
 
+import time
+
 continue_training = True
 
 
