@@ -154,17 +154,19 @@ class ConvLayer(layers.Layer):
                 )
             )
         
+        # Recreating weight every time? - change back?
+        self.W_conv = []
         for i in range(self.n_feat):
-            my_input_feat = tf.expand_dims(input_feat[:, :, i], 2)
-
             #W_conv = tf.compat.v1.get_variable("W_conv_{}".format(i), shape=[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos], initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"))
-            self.W_conv = tf.Variable(
-                initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=[
-                    self.n_thetas * self.n_rhos,
-                    self.n_thetas * self.n_rhos,
-                ]),
-                name = "W_conv_{}".format(i),
-                trainable = True
+            self.W_conv.append(
+                tf.Variable(
+                    initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=[
+                        self.n_thetas * self.n_rhos,
+                        self.n_thetas * self.n_rhos,
+                    ]),
+                    name = "W_conv_{}".format(i),
+                    trainable = True
+                )
             )
         
     def call(self, x):
@@ -179,14 +181,15 @@ class ConvLayer(layers.Layer):
             # check axis on this - batch
             my_input_feat = tf.expand_dims(input_feat[:, :, i], 2)
 
+            # W_conv or W_conv[i] ???
             self.global_desc_1.append(
                 self.inference(
                     my_input_feat,
                     rho_coords,
                     theta_coords,
                     mask,
-                    W_conv,
-                    b_conv[i],
+                    self.W_conv[i],
+                    self.b_conv[i],
                     self.mu_rho[i],
                     self.sigma_rho[i],
                     self.mu_theta[i],
