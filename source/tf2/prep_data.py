@@ -77,10 +77,13 @@ for data_element in training_data:
     }
     
     if npoints >= model.minPockets:
+        lis.append(feed_dict)
+        i += 1
+    if i == 2:
         break
 
-tsr_list = [tf.transpose(tsr, perm=[0,2,1]) for tsr in feed_dict.values()]
-ragged_input = tf.ragged.stack(tsr_list)
+#tsr_list = [tf.transpose(tsr, perm=[0,2,1]) for tsr in feed_dict.values()]
+#ragged_input = tf.ragged.stack(tsr_list)
 '''outdir = 'datasets/'
 
 X_list = []
