@@ -174,10 +174,10 @@ class ConvLayer(layers.Layer):
         '''
         ## how to handle batches?
         perm = [0, 2, 1]
-        input_feat = tf.transpose(x[0], perm = perm)
-        rho_coords = tf.transpose(x[1], perm = perm)
-        theta_coords = tf.transpose(x[2], perm = perm)
-        mask = tf.transpose(x[3], perm = perm)
+        input_feat = tf.transpose(x[0].to_tensor(), perm = perm)
+        rho_coords = tf.transpose(x[1].to_tensor(), perm = perm)
+        theta_coords = tf.transpose(x[2].to_tensor(), perm = perm)
+        mask = tf.transpose(x[3].to_tensor(), perm = perm)
         
         self.global_desc_1 = []
         
