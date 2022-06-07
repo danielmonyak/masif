@@ -2,14 +2,14 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 from default_config.masif_opts import masif_opts
-
 import functools
 
 #tf.debugging.set_log_device_placement(True)
 params = masif_opts["ligand"]
+minPockets = params['minPockets']
 
-bigShape = [self.minPockets, 200, 5]
-smallShape = [self.minPockets, 200, 1]
+bigShape = [minPockets, 200, 5]
+smallShape = [minPockets, 200, 1]
 prodFunc = lambda a,b : a*b
 bigLen = functools.reduce(prodFunc, bigShape)
 smallLen = functools.reduce(prodFunc, smallShape)
@@ -27,15 +27,13 @@ class MaSIF_ligand(Model):
         learning_rate=1e-4,
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
-        keep_prob = 1.0,
-        minPockets = params['minPockets']
+        keep_prob = 1.0
     ):
         ## Call super - model initializer
         super(MaSIF_ligand, self).__init__()
         
         ##
         self.keep_prob = keep_prob
-        self.minPockets = minPockets
         ##
         
         # order of the spectral filters
@@ -60,7 +58,7 @@ class MaSIF_ligand(Model):
         self.myLayers=[
             layers.InputLayer(input_shape = [bigLen + smallLen * 3], ragged = True),
             self.myConvLayer,
-            layers.Reshape([self.minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
+            layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             CovarLayer(),
             layers.Flatten(),
