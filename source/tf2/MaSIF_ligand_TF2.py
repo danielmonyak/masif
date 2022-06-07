@@ -221,7 +221,7 @@ class MaSIF_ligand(Model):
         
         self.myLayers=[
             layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
-            layers.Reshape([self.minPockets, self.n_thetas * self.n_rhos * self.n_feat][self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
+            layers.Reshape([self.minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             #layers.Lambda(lambda x : tf.reshape(x, [npockets, self.n_thetas * self.n_rhos * self.n_feat]), input_shape = [self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             CovarLayer(),
