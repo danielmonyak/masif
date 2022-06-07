@@ -44,7 +44,6 @@ dataset_list = {'train' : training_data, 'val' : validation_data, 'test' : testi
 for dataset in dataset_list.keys():
     print('\n' + dataset)
     i = 0
-    temp_len = len(dataset_list[dataset])
     for data_element in dataset_list[dataset]:
         print('{} record {}'.format(dataset, i))
         
