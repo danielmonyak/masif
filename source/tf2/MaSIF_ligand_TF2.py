@@ -193,7 +193,7 @@ class ConvLayer(layers.Layer):
         
         print(time.process_time())
         
-        perm = [0, 2, 1]
+        perm = [0, 1, 3, 2]
         input_feat = tf.transpose(input_feat_temp.to_tensor(), perm = perm)
         rho_coords = tf.transpose(rho_coords_temp.to_tensor(), perm = perm)
         theta_coords = tf.transpose(theta_coords_temp.to_tensor(), perm = perm)
