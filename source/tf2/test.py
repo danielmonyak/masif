@@ -15,12 +15,16 @@ high_y = np.ones(500)
 train_x = np.concatenate( [low_x, high_x] ).reshape(  (low_x.shape[0] + high_x.shape[0], 1)  )
 train_y = np.concatenate( [low_y, high_y] )
 
-
-
+#
+datadir = 'datasets/'
+train_x = np.load(datadir + 'train_X.npy')
+train_y = np.load(datadir + 'train_y.npy')
+#
 
 model = tf.keras.models.Sequential([
-  tf.keras.layers.InputLayer(1),
-  tf.keras.layers.Dense(2, activation="softmax")
+  tf.keras.layers.InputLayer(shape = [32, 5, 80]),
+  tf.keras.layers.Flatten(),
+  tf.keras.layers.Dense(7, activation="softmax")
 ])
 
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
@@ -28,4 +32,4 @@ model.compile(optimizer='adam',
               loss=loss_fn,
               metrics=['accuracy'])
 
-model.fit(train_x, train_y, epochs=100, verbose=2)
+model.fit(train_x, train_y, epochs=10, verbose=2)
