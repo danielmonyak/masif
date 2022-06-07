@@ -32,7 +32,12 @@ model = MaSIF_ligand(
   costfun=params["costfun"]
 )
 
-gpus = tf.compat.v1.config.experimental.list_logical_devices('GPU')
+model.compile(optimizer = model.opt,
+  loss = model.loss_fn,
+  metrics=['accuracy']
+)
+
+gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str)
 
