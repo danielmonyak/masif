@@ -9,6 +9,7 @@ import sys
 from default_config.masif_opts import masif_opts
 from MaSIF_ligand_TF2 import MaSIF_ligand
 from sklearn.metrics import confusion_matrix
+import pickle
 import tensorflow as tf
 
 params = masif_opts["ligand"]
