@@ -56,6 +56,8 @@ model = MaSIF_ligand(
 
 
 i = 0
+lis = []
+
 for data_element in training_data:
     random_ligand = 0
     labels = data_element[4]
