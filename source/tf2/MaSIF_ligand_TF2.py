@@ -2,6 +2,8 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 
+import time
+
 #tf.debugging.set_log_device_placement(True)
 npockets = 32
 
