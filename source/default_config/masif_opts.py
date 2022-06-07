@@ -82,4 +82,4 @@ masif_opts["ligand"]["feat_mask"] = [1.0, 1.0, 1.0, 1.0, 1.0]
 masif_opts["ligand"]["costfun"] = "dprime"
 masif_opts["ligand"]["model_dir"] = "nn_models/all_feat/"
 masif_opts["ligand"]["test_set_out_dir"] = "test_set_predictions/"
-
+masif_opts['ligand']['minPockets'] = 32
