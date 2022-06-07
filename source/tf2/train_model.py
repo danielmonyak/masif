@@ -22,6 +22,7 @@ test_X = np.load(datadir + 'test_X.npy')
 test_y = np.load(datadir + 'test_y.npy')
 
 modelDir = 'kerasModel'
+modelPath = modelDir + '/model'
 # model = tf.keras.models.load_model(modelDir)
 model = MaSIF_ligand(
   params["max_distance"],
@@ -36,7 +37,7 @@ strategy = tf.distribute.MirroredStrategy(gpus_str)
 
 
 saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
-  modelDir,
+  modelPath,
   monitor = 'val_accuracy',
   save_best_only = True,
   verbose = 1
