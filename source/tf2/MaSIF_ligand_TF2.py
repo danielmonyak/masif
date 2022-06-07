@@ -49,7 +49,7 @@ class MaSIF_ligand(Model):
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
     
         self.myLayers=[
-            layers.InputLayer(ragged = True),
+            #layers.InputLayer(ragged = True),
             self.myConvLayer,
             #layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Reshape([self.minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
@@ -68,7 +68,6 @@ class MaSIF_ligand(Model):
         return ret
 
 
-
 class CovarLayer(layers.Layer):
     def __init__(self):
         super(CovarLayer, self).__init__()
@@ -76,7 +75,6 @@ class CovarLayer(layers.Layer):
         ret = tf.matmul(tf.transpose(x, perm=[0, 2, 1]), x)
         scale = tf.cast(tf.shape(x)[1], tf.float32)
         return ret/scale
-
     
     
 class ConvLayer(layers.Layer):
