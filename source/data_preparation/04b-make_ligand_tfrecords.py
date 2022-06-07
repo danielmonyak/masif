@@ -33,6 +33,13 @@ train_pdbs = all_pdbs[:train]
 val_pdbs = all_pdbs[train : train + val]
 test_pdbs = all_pdbs[train + val : train + val + test]
 
+#### Had to be formatted correctly so that the rest of the code works
+train_pdbs = np.char.rstrip(train_pdbs, '_')
+val_pdbs = np.char.rstrip(val_pdbs, '_')
+test_pdbs = np.char.rstrip(test_pdbs, '_')
+####
+
+
 #
 # Edited by Daniel Monyak
 # Uncommented these save statements so that the lists would be redone
@@ -60,13 +67,13 @@ with tf.python_io.TFRecordWriter(
         try:
             # Load precomputed data
             input_feat = np.load(
-                os.path.join(precom_dir, pdb + "_", "p1_input_feat.npy")
+                os.path.join(precom_dir, pdb, "p1_input_feat.npy")
             )
             rho_wrt_center = np.load(
-                os.path.join(precom_dir, pdb + "_", "p1_rho_wrt_center.npy")
+                os.path.join(precom_dir, pdb, "p1_rho_wrt_center.npy")
             )
             theta_wrt_center = np.load(
-                os.path.join(precom_dir, pdb + "_", "p1_theta_wrt_center.npy")
+                os.path.join(precom_dir, pdb, "p1_theta_wrt_center.npy")
             )
             mask = np.expand_dims(np.load(os.path.join(precom_dir, pdb + "_", "p1_mask.npy")),-1)
             X = np.load(os.path.join(precom_dir, pdb + "_", "p1_X.npy"))
