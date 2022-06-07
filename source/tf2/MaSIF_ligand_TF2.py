@@ -193,6 +193,7 @@ class ConvLayer(layers.Layer):
         batches = x.shape[0]
         
         print(x.shape)
+        print(x)
         
         input_feat = tf.reshape(x[:, :bigLen], [batches] + bigShape)
         rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
