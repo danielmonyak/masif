@@ -71,10 +71,10 @@ for data_element in training_data:
     sample = np.random.choice(pocket_points, model.minPockets, replace=False)
     feed_dict = {
         'input_feat' : tf.gather(data_element[0], sample, axis = 0),
-        'rho_coords' : np.expand_dims(data_element[1], -1)[
+        'rho_coords' : tf.expand_dims(data_element[1], -1)[
             sample, :, :
         ],
-        'theta_coords' : np.expand_dims(data_element[2], -1)[
+        'theta_coords' : tf.expand_dims(data_element[2], -1)[
             sample, :, :
         ],
         'mask' : tf.gather(data_element[3], pocket_points[:model.minPockets], axis = 0)
