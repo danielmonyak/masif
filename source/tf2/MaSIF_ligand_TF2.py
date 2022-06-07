@@ -218,7 +218,7 @@ class MaSIF_ligand(Model):
         #self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
         self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
  
-        '''
+        
         self.myLayers=[
             layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Reshape([self.minPockets, self.n_thetas * self.n_rhos * self.n_feat][self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
@@ -238,7 +238,7 @@ class MaSIF_ligand(Model):
             layers.Flatten(),
             layers.Dense(64, activation="relu"),
             layers.Dense(self.n_ligands, activation="softmax")
-        ]
+        ]'''
         
         self.compile(optimizer = self.opt,
           loss = self.loss_fn,
