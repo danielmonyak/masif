@@ -53,6 +53,38 @@ model = MaSIF_ligand(
   feat_mask=params["feat_mask"]
 )
 
+
+
+i = 0
+for data_element in training_data:
+    random_ligand = 0
+    labels = data_element[4]
+    n_ligands = labels.shape[1]
+    pocket_points = tf.reshape(tf.where(labels[:, random_ligand] != 0), [-1, ])
+    label = np.max(labels[:, random_ligand]) - 1
+    pocket_labels = np.zeros(7, dtype=np.float32)
+    pocket_labels[label] = 1.0
+    npoints = pocket_points.shape[0]
+    
+    # Sample model.minPockets (32) points randomly
+    # Fix later - otherwise it's same random points every epoch
+    sample = np.random.choice(pocket_points, model.minPockets, replace=False)
+    feed_dict = {
+        'input_feat' : tf.gather(data_element[0], sample, axis = 0),
+        'rho_coords' : np.expand_dims(data_element[1], -1)[
+            sample, :, :
+        ],
+        'theta_coords' : np.expand_dims(data_element[2], -1)[
+            sample, :, :
+        ],
+        'mask' : tf.gather(data_element[3], pocket_points[:model.minPockets], axis = 0),
+        'keep_prob' : 1.0,
+    }
+    
+    if npoints >= model.minPockets:
+        break
+    
+    
 '''outdir = 'datasets/'
 
 X_list = []
