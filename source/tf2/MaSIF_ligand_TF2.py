@@ -49,7 +49,7 @@ class MaSIF_ligand(Model):
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
     
         self.myLayers=[
-            #layers.InputLayer(ragged = True),
+            layers.InputLayer(shape = [4, None, None, 200], ragged = True),
             self.myConvLayer,
             #layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Reshape([self.minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
@@ -167,19 +167,38 @@ class ConvLayer(layers.Layer):
             )
         
     def call(self, x):
+        '''
         rho_coords = x['rho_coords']
         theta_coords = x['theta_coords']
         input_feat = x['input_feat']
         mask = x['mask']
+        '''
         
-        '''
+        print(time.process_time())
+        
         ## how to handle batches?
+        input_feat_list = [x_i[0] for x_i in x]
+        rho_coords_list = [x_i[1] for x_i in x]
+        theta_coords_list = [x_i[2] for x_i in x]
+        mask_list = [x_i[3] for x_i in x]
+        
+        print(time.process_time())
+        
+        input_feat_temp = tf.stack(input_feat_list)
+        rho_coords_temp = tf.stack(rho_coords_list)
+        theta_coords_temp = tf.stack(theta_coords_list)
+        mask_temp = tf.stack(mask_list)
+        
+        print(time.process_time())
+        
         perm = [0, 2, 1]
-        input_feat = tf.transpose(x[0].to_tensor(), perm = perm)
-        rho_coords = tf.transpose(x[1].to_tensor(), perm = perm)
-        theta_coords = tf.transpose(x[2].to_tensor(), perm = perm)
-        mask = tf.transpose(x[3].to_tensor(), perm = perm)
-        '''
+        input_feat = tf.transpose(input_feat_temp.to_tensor(), perm = perm)
+        rho_coords = tf.transpose(rho_coords_temp.to_tensor(), perm = perm)
+        theta_coords = tf.transpose(theta_coords_temp.to_tensor(), perm = perm)
+        mask = tf.transpose(mask_temp.to_tensor(), perm = perm)
+        
+        print(time.process_time())
+        
         self.global_desc_1 = []
         
         for i in range(self.n_feat):
