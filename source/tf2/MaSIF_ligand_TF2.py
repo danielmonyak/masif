@@ -1,12 +1,12 @@
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
+from default_config.masif_opts import masif_opts
 
-import time
 import functools
 
 #tf.debugging.set_log_device_placement(True)
-npockets = 32
+params = masif_opts["ligand"]
 
 class MaSIF_ligand(Model):
     """
@@ -22,7 +22,7 @@ class MaSIF_ligand(Model):
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
-        minPockets = 32
+        minPockets = params['minPockets']
     ):
         ## Call super - model initializer
         super(MaSIF_ligand, self).__init__()
@@ -52,7 +52,7 @@ class MaSIF_ligand(Model):
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
     
         self.myLayers=[
-            layers.InputLayer(input_shape = [4, None, None, 200], ragged = True),
+            layers.InputLayer(input_shape = [], ragged = True),
             self.myConvLayer,
             #layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Reshape([self.minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
@@ -171,14 +171,6 @@ class ConvLayer(layers.Layer):
         
     def call(self, x):
         '''
-        rho_coords = x['rho_coords']
-        theta_coords = x['theta_coords']
-        input_feat = x['input_feat']
-        mask = x['mask']
-        '''
-        
-        print('Start unpacking:', time.process_time())
-        '''
         input_feat_list = [x_i[0] for x_i in x]
         rho_coords_list = [x_i[1] for x_i in x]
         theta_coords_list = [x_i[2] for x_i in x]
@@ -197,8 +189,8 @@ class ConvLayer(layers.Layer):
         '''
         batches = x.shape[0]
         
-        bigShape = [32, 200, 5]
-        smallShape = [32, 200, 1]
+        bigShape = [self.minPockets, 200, 5]
+        smallShape = [self.minPockets, 200, 1]
         prodFunc = lambda a,b : a*b
         bigLen = functools.reduce(prodFunc, bigShape)
         smallLen = functools.reduce(prodFunc, smallShape)
@@ -208,7 +200,6 @@ class ConvLayer(layers.Layer):
         rho_coords = rest[:, 0, :, :, :]
         theta_coords = rest[:, 1, :, :, :]
         mask = rest[:, 2, :, :, :]
-        print('End unpacking:', time.process_time())
         
         
         self.global_desc_1 = []
