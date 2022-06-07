@@ -30,7 +30,7 @@ model = tf.keras.models.Sequential([
 opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
 loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
     
-loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
+#loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
 model.compile(optimizer=opt,
               loss=loss_fn,
               metrics=['accuracy'])
