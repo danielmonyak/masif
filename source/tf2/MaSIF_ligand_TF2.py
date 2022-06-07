@@ -200,8 +200,8 @@ class ConvLayer(layers.Layer):
         bigShape = [32, 200, 5]
         smallShape = [32, 200, 1]
         prodFunc = lambda a,b : a*b
-        bigLen = reduce(prodFunc, bigShape)
-        smallLen = reduce(prodFunc, smallShape)
+        bigLen = functools.reduce(prodFunc, bigShape)
+        smallLen = functools.reduce(prodFunc, smallShape)
         
         input_feat = tf.reshape(x[:, :bigLen], [batches] + bigShape)
         rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
