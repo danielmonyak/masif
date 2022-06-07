@@ -176,7 +176,7 @@ class ConvLayer(layers.Layer):
         mask = x['mask']
         '''
         
-        print(time.process_time())
+        print('Start unpacking:', time.process_time())
         
         ## how to handle batches?
         input_feat_list = [x_i[0] for x_i in x]
@@ -184,14 +184,10 @@ class ConvLayer(layers.Layer):
         theta_coords_list = [x_i[2] for x_i in x]
         mask_list = [x_i[3] for x_i in x]
         
-        print(time.process_time())
-        
         input_feat_temp = tf.stack(input_feat_list)
         rho_coords_temp = tf.stack(rho_coords_list)
         theta_coords_temp = tf.stack(theta_coords_list)
         mask_temp = tf.stack(mask_list)
-        
-        print(time.process_time())
         
         perm = [0, 1, 3, 2]
         input_feat = tf.transpose(input_feat_temp.to_tensor(), perm = perm)
@@ -199,7 +195,8 @@ class ConvLayer(layers.Layer):
         theta_coords = tf.transpose(theta_coords_temp.to_tensor(), perm = perm)
         mask = tf.transpose(mask_temp.to_tensor(), perm = perm)
         
-        print(time.process_time())
+        print('End unpacking:', time.process_time())
+        
         
         self.global_desc_1 = []
         
@@ -298,7 +295,6 @@ class ConvLayer(layers.Layer):
         return conv_feat
 
     
-    # check axis on this - batch
     def compute_initial_coordinates(self):
         range_rho = [0.0, self.max_rho]
         range_theta = [0, 2 * np.pi]
