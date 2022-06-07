@@ -51,7 +51,7 @@ class MaSIF_ligand(Model):
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
     
         self.myLayers=[
-            layers.InputLayer(shape = [4, None, None, 200], ragged = True),
+            layers.InputLayer(input_shape = [4, None, None, 200], ragged = True),
             self.myConvLayer,
             #layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Reshape([self.minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
