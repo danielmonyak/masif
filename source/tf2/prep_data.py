@@ -50,18 +50,10 @@ modelDir = 'kerasModel'
 model = MaSIF_ligand(
   params["max_distance"],
   params["n_classes"],
-  idx_gpu="/gpu:0",
-  feat_mask=params["feat_mask"],
-  costfun=params["costfun"]
+  feat_mask=params["feat_mask"]
 )
-model.save(modelDir)
-'''
-model.compile(optimizer = model.opt,
-  loss = model.loss_fn,
-  metrics=['accuracy']
-)
-'''
-outdir = 'datasets/'
+
+'''outdir = 'datasets/'
 
 X_list = []
 y_list = []
@@ -107,3 +99,4 @@ for dataset in dataset_list.keys():
 
     np.save(outdir + '{}_X.npy'.format(dataset), X)
     np.save(outdir + '{}_y.npy'.format(dataset), y)
+'''
