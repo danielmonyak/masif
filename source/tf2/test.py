@@ -20,10 +20,10 @@ train_y = np.concatenate( [low_y, high_y] )
 
 model = tf.keras.models.Sequential([
   tf.keras.layers.InputLayer(1),
-  tf.keras.layers.Dense(2, activation="sigmoid")
+  tf.keras.layers.Dense(2, activation="softmax")
 ])
 
-loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
 model.compile(optimizer='adam',
               loss=loss_fn,
               metrics=['accuracy'])
