@@ -1,0 +1,106 @@
+import tensorflow as tf
+import numpy as np
+from tensorflow.keras import layers, Sequential, initializers, Model
+from default_config.masif_opts import masif_opts
+import functools
+
+#tf.debugging.set_log_device_placement(True)
+params = masif_opts["ligand"]
+minPockets = params['minPockets']
+
+bigShape = [minPockets, 200, 5]
+smallShape = [minPockets, 200, 1]
+prodFunc = lambda a,b : a*b
+bigLen = functools.reduce(prodFunc, bigShape)
+smallLen = functools.reduce(prodFunc, smallShape)
+
+
+x = train_X[0:1]
+layer = model.myConvLayer
+self = layer
+
+batches = tf.shape(x)[0]
+
+input_feat = tf.reshape(x[:, :bigLen], [batches] + bigShape)
+rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
+rho_coords = rest[:, 0, :, :, :]
+theta_coords = rest[:, 1, :, :, :]
+mask = rest[:, 2, :, :, :]
+
+
+global_desc_1 = []
+
+
+i = 0
+my_input_feat = input_feat[:, :, :, i:i+1]
+
+
+
+my_input_feat = my_input_feat[0]
+rho_coords = rho_coords[0]
+theta_coords = theta_coords[0]
+mask = mask[0]
+
+
+
+(
+  input_feat,
+  rho_coords,
+  theta_coords,
+  mask,
+  W_conv,
+  b_conv,
+  mu_rho,
+  sigma_rho,
+  mu_theta,
+  sigma_theta
+) = (
+  my_input_feat,
+  rho_coords,
+  theta_coords,
+  mask,
+  self.W_conv[i],
+  self.b_conv[i],
+  self.mu_rho[i],
+  self.sigma_rho[i],
+  self.mu_theta[i],
+  self.sigma_theta[i]
+)
+
+
+eps=1e-5
+mean_gauss_activation=True
+
+
+
+
+n_samples = tf.shape(rho_coords)[0]
+n_vertices = tf.shape(rho_coords)[1]
+
+all_conv_feat = []
+for k in range(self.n_rotations):
+  k=0
+  rho_coords_ = tf.reshape(rho_coords, [-1, 1])  # batch_size*n_vertices
+  thetas_coords_ = tf.reshape(theta_coords, [-1, 1])  # batch_size*n_vertices
+  thetas_coords_ += k * 2 * np.pi / self.n_rotations
+  thetas_coords_ = tf.math.mod(thetas_coords_, 2 * np.pi)
+  rho_coords_ = tf.exp(-tf.square(rho_coords_ - mu_rho) / (tf.square(sigma_rho) + eps))
+  thetas_coords_ = tf.exp(-tf.square(thetas_coords_ - mu_theta) / (tf.square(sigma_theta) + eps))
+  gauss_activations = tf.multiply(rho_coords_, thetas_coords_)  # batch_size*n_vertices, n_gauss
+  gauss_activations = tf.reshape(gauss_activations, [n_samples, n_vertices, -1])  # batch_size, n_vertices, n_gauss
+  gauss_activations = tf.multiply(gauss_activations, mask)
+  if (mean_gauss_activation):  # computes mean weights for the different gaussians
+      gauss_activations /= (tf.reduce_sum(gauss_activations, 1, keepdims=True) + eps)  # batch_size, n_vertices, n_gauss
+  
+  gauss_activations = tf.expand_dims(gauss_activations, 2)  # batch_size, n_vertices, 1, n_gauss,
+  input_feat_ = tf.expand_dims(input_feat, 3)  # batch_size, n_vertices, n_feat, 1
+  gauss_desc = tf.multiply(gauss_activations, input_feat_)  # batch_size, n_vertices, n_feat, n_gauss,
+  gauss_desc = tf.reduce_sum(gauss_desc, 1)  # batch_size, n_feat, n_gauss,
+  gauss_desc = tf.reshape(gauss_desc, [n_samples, self.n_thetas * self.n_rhos])  # batch_size, 80
+  conv_feat = tf.matmul(gauss_desc, W_conv) + b_conv  # batch_size, 80
+  all_conv_feat.append(conv_feat)
+
+all_conv_feat = tf.stack(all_conv_feat)
+conv_feat = tf.reduce_max(all_conv_feat, 0)
+conv_feat = tf.nn.relu(conv_feat)
+
