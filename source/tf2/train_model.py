@@ -51,7 +51,7 @@ history = model.fit(x = train_X, y = train_y,
   verbose = 2)
 #  use_multiprocessing = True
 #)
-model.evaluate(x_test,  y_test_encoded, verbose=2)
+model.evaluate(test_X,  test_y, verbose=2)
 
 #model.save(modelDir)
 with open(modelDir + '/train_history', 'wb') as file_pi:
