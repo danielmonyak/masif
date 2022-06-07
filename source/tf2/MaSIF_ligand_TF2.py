@@ -18,7 +18,6 @@ class MaSIF_ligand(Model):
         learning_rate=1e-4,
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
-        costfun="dprime",
         keep_prob = 1.0,
         minPockets = 32
     ):
