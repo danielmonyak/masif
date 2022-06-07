@@ -49,6 +49,7 @@ class MaSIF_ligand(Model):
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
     
         self.myLayers=[
+            layers.InputLayer(ragged = True),
             self.myConvLayer,
             #layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Reshape([self.minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
@@ -168,11 +169,17 @@ class ConvLayer(layers.Layer):
             )
         
     def call(self, x):
-        rho_coords = x['rho_coords']
+        '''rho_coords = x['rho_coords']
         theta_coords = x['theta_coords']
         input_feat = x['input_feat']
         mask = x['mask']
-
+        '''
+        ## how to handle batches?
+        input_feat = x[0]
+        rho_coords = x[1]
+        theta_coords = x[2]
+        mask = x[3]
+        
         self.global_desc_1 = []
         
         for i in range(self.n_feat):
