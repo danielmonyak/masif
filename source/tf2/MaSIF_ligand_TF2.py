@@ -8,6 +8,12 @@ import functools
 #tf.debugging.set_log_device_placement(True)
 params = masif_opts["ligand"]
 
+bigShape = [self.minPockets, 200, 5]
+smallShape = [self.minPockets, 200, 1]
+prodFunc = lambda a,b : a*b
+bigLen = functools.reduce(prodFunc, bigShape)
+smallLen = functools.reduce(prodFunc, smallShape)
+
 class MaSIF_ligand(Model):
     """
     The neural network model.
@@ -52,9 +58,8 @@ class MaSIF_ligand(Model):
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
     
         self.myLayers=[
-            layers.InputLayer(input_shape = [], ragged = True),
+            layers.InputLayer(input_shape = [bigLen + smallLen * 3], ragged = True),
             self.myConvLayer,
-            #layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Reshape([self.minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             CovarLayer(),
@@ -188,12 +193,6 @@ class ConvLayer(layers.Layer):
         mask = tf.transpose(mask_temp.to_tensor(), perm = perm)
         '''
         batches = x.shape[0]
-        
-        bigShape = [self.minPockets, 200, 5]
-        smallShape = [self.minPockets, 200, 1]
-        prodFunc = lambda a,b : a*b
-        bigLen = functools.reduce(prodFunc, bigShape)
-        smallLen = functools.reduce(prodFunc, smallShape)
         
         input_feat = tf.reshape(x[:, :bigLen], [batches] + bigShape)
         rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
