@@ -2,7 +2,6 @@ import numpy as np
 from random import randint
 
 import tensorflow as tf
-from tensorflow import keras
 from tensorflow.keras import layers
 
 
@@ -22,9 +21,10 @@ train_y = np.load(datadir + 'train_y.npy')
 #
 
 model = tf.keras.models.Sequential([
-  tf.keras.layers.InputLayer([32, 5, 80]),
-  tf.keras.layers.Flatten(),
-  tf.keras.layers.Dense(7, activation="softmax")
+  layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
+  layers.Flatten(),
+  layers.Dense(64, activation="relu"),
+  layers.Dense(self.n_ligands, activation="softmax")
 ])
 
 loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
