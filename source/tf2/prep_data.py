@@ -46,7 +46,7 @@ for dataset in dataset_list.keys():
     i = 0
     temp_len = len(dataset_list[dataset])
     for data_element in dataset_list[dataset]:
-        print('{}% done'.format(round(float(i) / temp_len * 100)))
+        print('{} record {}'.format(dataset, i)
         
         random_ligand = 0
         labels = data_element[4]
