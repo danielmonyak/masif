@@ -26,7 +26,6 @@ modelDir = 'kerasModel'
 model = MaSIF_ligand(
   params["max_distance"],
   params["n_classes"],
-  idx_gpu="/gpu:0",
   feat_mask=params["feat_mask"],
   costfun=params["costfun"]
 )
