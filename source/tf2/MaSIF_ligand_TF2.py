@@ -232,7 +232,6 @@ class MaSIF_ligand(Model):
         ]
         '''
         self.myLayers=[
-            layers.Reshape([self.minPockets, self.n_thetas * self.n_rhos * self.n_feat], input_shape = [self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Flatten(),
             layers.Dense(64, activation="relu"),
             layers.Dense(self.n_ligands, activation="relu")
