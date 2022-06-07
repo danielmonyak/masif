@@ -24,7 +24,7 @@ model = tf.keras.models.Sequential([
   layers.InputLayer([32, 5, 80]),
   layers.Flatten(),
   layers.Dense(64, activation="relu"),
-  layers.Dense(self.n_ligands, activation="softmax")
+  layers.Dense(7, activation="softmax")
 ])
 
 loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
