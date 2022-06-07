@@ -17,7 +17,7 @@ datadir = 'datasets/'
 train_X = np.load(datadir + 'train_X.npy')
 train_y = np.load(datadir + 'train_y.npy')
 val_X = np.load(datadir + 'val_X.npy')
-val_y = np.load(datadir + 'val_X.npy')
+val_y = np.load(datadir + 'val_y.npy')
 test_X = np.load(datadir + 'test_X.npy')
 test_y = np.load(datadir + 'test_y.npy')
 
