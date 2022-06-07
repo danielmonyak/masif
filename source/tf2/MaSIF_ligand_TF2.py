@@ -192,6 +192,8 @@ class ConvLayer(layers.Layer):
         '''
         batches = x.shape[0]
         
+        print(x.shape)
+        
         input_feat = tf.reshape(x[:, :bigLen], [batches] + bigShape)
         rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
         rho_coords = rest[:, 0, :, :, :]
