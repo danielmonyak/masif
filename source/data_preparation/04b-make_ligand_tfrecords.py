@@ -91,8 +91,6 @@ with tf.python_io.TFRecordWriter(
             ).astype(str)
         except:
             continue
-
-        print(i)
         
         if len(all_ligand_types) == 0:
             continue
@@ -139,8 +137,6 @@ with tf.python_io.TFRecordWriter(
         features = tf.train.Features(feature=features_dict)
         example = tf.train.Example(features=features)
         writer.write(example.SerializeToString())
-        
-        print(i)
         
         if i % 1 == 0:
             print("Training data")
