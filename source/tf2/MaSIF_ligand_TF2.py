@@ -46,16 +46,14 @@ class MaSIF_ligand(Model):
         self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
  
         
-        conv = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
+        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
     
         self.myLayers=[
-            layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
+            self.myConvLayer,
+            #layers.InputLayer([self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Reshape([self.minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
-            #layers.Lambda(lambda x : tf.reshape(x, [npockets, self.n_thetas * self.n_rhos * self.n_feat]), input_shape = [self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             CovarLayer(),
-            #layers.Lambda(self.lambdaLayer),
-            #layers.Reshape([1, -1]),
             layers.Flatten(),
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
