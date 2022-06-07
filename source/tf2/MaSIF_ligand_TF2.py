@@ -157,7 +157,6 @@ class MaSIF_ligand(Model):
         n_gamma=1.0,
         learning_rate=1e-4,
         n_rotations=16,
-        idx_gpu="/gpu:0",
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         costfun="dprime",
         keep_prob = 1.0,
@@ -218,7 +217,7 @@ class MaSIF_ligand(Model):
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
  
-
+        '''
         self.myLayers=[
             layers.Reshape([self.minPockets, self.n_thetas * self.n_rhos * self.n_feat], input_shape = [self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
             #layers.Lambda(lambda x : tf.reshape(x, [npockets, self.n_thetas * self.n_rhos * self.n_feat]), input_shape = [self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
@@ -231,7 +230,14 @@ class MaSIF_ligand(Model):
             layers.Dense(64, activation="relu"),
             layers.Dense(self.n_ligands, activation="relu")
         ]
-    
+        '''
+        self.myLayers=[
+            layers.Reshape([self.minPockets, self.n_thetas * self.n_rhos * self.n_feat], input_shape = [self.minPockets, self.n_feat, self.n_thetas * self.n_rhos]),
+            layers.Flatten(),
+            layers.Dense(64, activation="relu"),
+            layers.Dense(self.n_ligands, activation="relu")
+        ]
+        
         self.compile(optimizer = self.opt,
           loss = self.loss_fn,
           metrics=['accuracy']
