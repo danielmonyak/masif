@@ -294,7 +294,7 @@ class ConvLayer(layers.Layer):
             conv_feat = tf.matmul(gauss_desc, W_conv) + b_conv  # batch_size, 80
             all_conv_feat.append(conv_feat)
         all_conv_feat = tf.stack(all_conv_feat)
-        conv_feat = tf.reduce_max(input_tensor=all_conv_feat, axis=1)
+        conv_feat = tf.reduce_max(input_tensor=all_conv_feat, axis=0)
         conv_feat = tf.nn.relu(conv_feat)
         return conv_feat
 
