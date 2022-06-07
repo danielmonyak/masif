@@ -57,7 +57,6 @@ with tf.python_io.TFRecordWriter(
 ) as writer:
     for i, pdb in enumerate(train_pdbs):
         print("Working on", pdb)
-        print(i)
         try:
             # Load precomputed data
             input_feat = np.load(
@@ -86,6 +85,8 @@ with tf.python_io.TFRecordWriter(
         except:
             continue
 
+        print(i)
+        
         if len(all_ligand_types) == 0:
             continue
         xyz_coords = np.vstack([X, Y, Z]).T
@@ -131,6 +132,9 @@ with tf.python_io.TFRecordWriter(
         features = tf.train.Features(feature=features_dict)
         example = tf.train.Example(features=features)
         writer.write(example.SerializeToString())
+        
+        print(i)
+        
         if i % 1 == 0:
             print("Training data")
             success += 1
