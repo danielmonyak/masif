@@ -44,7 +44,7 @@ saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
   verbose = 1
 )
 
-num_epochs = 1
+num_epochs = 20
 #with strategy.scope():
 history = model.fit(x = train_X, y = train_y,
   epochs = num_epochs,
