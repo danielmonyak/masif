@@ -56,7 +56,7 @@ model = MaSIF_ligand(
 
 
 i = 0
-lis = []
+feed_list = []
 
 for data_element in training_data:
     random_ligand = 0
@@ -79,13 +79,17 @@ for data_element in training_data:
     }
     
     if npoints >= model.minPockets:
-        lis.append(feed_dict)
+        feed_list.append(feed_dict)
         i += 1
     if i == 2:
         break
 
-#tsr_list = [tf.transpose(tsr, perm=[0,2,1]) for tsr in feed_dict.values()]
-#ragged_input = tf.ragged.stack(tsr_list)
+ragged_list = []
+for feed_dict in feed_list:
+    tsr_list = tf.transpose(tsr, perm=[0,2,1]) for tsr in feed_dict.values()
+    ragged_input = tf.ragged.stack(tsr_list)
+    ragged_list.append(ragged_input)
+X = tf.ragged.stack(ragged_list)
 '''outdir = 'datasets/'
 
 X_list = []
