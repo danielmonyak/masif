@@ -50,6 +50,9 @@ ligand_coord_dir = params["ligand_coords_dir"]
 tfrecords_dir = params["tfrecords_dir"]
 if not os.path.exists(tfrecords_dir):
     os.mkdir(tfrecords_dir)
+    
+    
+print('Writing training data...')
 with tf.python_io.TFRecordWriter(
     os.path.join(tfrecords_dir, "training_data_sequenceSplit_30.tfrecord")
 ) as writer:
@@ -136,11 +139,15 @@ with tf.python_io.TFRecordWriter(
             print(float(i) / len(train_pdbs))
 
 
+
+print('Writing validation data...')
+
 success = 0
 with tf.python_io.TFRecordWriter(
     os.path.join(tfrecords_dir, "validation_data_sequenceSplit_30.tfrecord")
 ) as writer:
     for i, pdb in enumerate(val_pdbs):
+        print("Working on", pdb)
         try:
             input_feat = np.load(
                 os.path.join(precom_dir, pdb + "_", "p1_input_feat.npy")
@@ -221,11 +228,14 @@ with tf.python_io.TFRecordWriter(
             print(float(i) / len(val_pdbs))
 
 
+print('Writing testing data...')
+
 success = 0
 with tf.python_io.TFRecordWriter(
     os.path.join(tfrecords_dir, "testing_data_sequenceSplit_30.tfrecord")
 ) as writer:
     for i, pdb in enumerate(test_pdbs):
+        print("Working on", pdb)
         try:
             input_feat = np.load(
                 os.path.join(precom_dir, pdb + "_", "p1_input_feat.npy")
@@ -304,3 +314,5 @@ with tf.python_io.TFRecordWriter(
             print(success)
             print(pdb)
             print(float(i) / len(test_pdbs))
+
+print('Finished writing all PDBs to record!')
