@@ -77,8 +77,7 @@ for data_element in training_data:
         'theta_coords' : np.expand_dims(data_element[2], -1)[
             sample, :, :
         ],
-        'mask' : tf.gather(data_element[3], pocket_points[:model.minPockets], axis = 0),
-        'keep_prob' : 1.0,
+        'mask' : tf.gather(data_element[3], pocket_points[:model.minPockets], axis = 0)
     }
     
     if npoints >= model.minPockets:
@@ -118,8 +117,7 @@ for dataset in dataset_list.keys():
             'theta_coords' : np.expand_dims(data_element[2], -1)[
                 sample, :, :
             ],
-            'mask' : tf.gather(data_element[3], pocket_points[:model.minPockets], axis = 0),
-            'keep_prob' : 1.0,
+            'mask' : tf.gather(data_element[3], pocket_points[:model.minPockets], axis = 0)
         }
         ret = model.bigPrepData(feed_dict)
         X_list.append(ret)
