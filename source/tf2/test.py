@@ -27,7 +27,6 @@ model = tf.keras.models.Sequential([
   tf.keras.layers.Dense(7, activation="softmax")
 ])
 
-opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
 loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
     
 #loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
