@@ -83,7 +83,7 @@ for data_element in training_data:
     if npoints >= model.minPockets:
         feed_list.append(feed_dict)
         i += 1
-    if i == 2:
+    if i == 5:
         break
 
 print('start data prep:', time.process_time())
@@ -99,6 +99,11 @@ print('end data prep:', time.process_time())
 print('start layer:', time.process_time())
 res = model.myConvLayer(X)
 print('end layer:', time.process_time())
+
+
+
+
+
 '''outdir = 'datasets/'
 
 X_list = []
