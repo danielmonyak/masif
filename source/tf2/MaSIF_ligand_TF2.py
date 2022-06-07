@@ -167,10 +167,11 @@ class ConvLayer(layers.Layer):
             )
         
     def call(self, x):
-        '''rho_coords = x['rho_coords']
+        rho_coords = x['rho_coords']
         theta_coords = x['theta_coords']
         input_feat = x['input_feat']
         mask = x['mask']
+        
         '''
         ## how to handle batches?
         perm = [0, 2, 1]
@@ -178,7 +179,7 @@ class ConvLayer(layers.Layer):
         rho_coords = tf.transpose(x[1].to_tensor(), perm = perm)
         theta_coords = tf.transpose(x[2].to_tensor(), perm = perm)
         mask = tf.transpose(x[3].to_tensor(), perm = perm)
-        
+        '''
         self.global_desc_1 = []
         
         for i in range(self.n_feat):
