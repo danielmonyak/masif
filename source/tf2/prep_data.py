@@ -100,7 +100,7 @@ for feed_dict in feed_list:
     flat_list = []
     for tsr_key in ['input_feat', 'rho_coords', 'theta_coords', 'mask']:
         tsr = feed_dict[tsr_key]
-        flat_list.append(tf.flatten(tsr))
+        flat_list.append(tf.reshape(tsr, [-1]))
     tsr_list.append(tf.concat(flat_list, axis = 0))
 X = tf.stack(tsr_list)
 print('end data prep:', time.process_time())
