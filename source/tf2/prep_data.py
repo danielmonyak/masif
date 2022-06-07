@@ -98,7 +98,8 @@ X = tf.ragged.stack(ragged_list)
 tsr_list = []
 for feed_dict in feed_list:
     flat_list = []
-    for tsr in feed_dict.values():
+    for tsr_key in ['input_feat', 'rho_coords', 'theta_coords', 'mask']:
+        tsr = feed_dict[tsr_key]
         flat_list.append(tf.flatten(tsr))
     tsr_list.append(tf.concat(flat_list, axis = 0))
 X = tf.stack(tsr_list)
