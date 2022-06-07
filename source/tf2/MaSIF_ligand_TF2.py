@@ -190,10 +190,10 @@ class ConvLayer(layers.Layer):
         theta_coords = tf.transpose(theta_coords_temp.to_tensor(), perm = perm)
         mask = tf.transpose(mask_temp.to_tensor(), perm = perm)
         '''
-        batches = x.shape[0]
+        batches = tf.shape(x)[0]
         
-        print(x.shape)
-        print(x)
+        #print(tf.shape(x))
+        #print(x)
         
         input_feat = tf.reshape(x[:, :bigLen], [batches] + bigShape)
         rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
@@ -240,7 +240,7 @@ class ConvLayer(layers.Layer):
         eps=1e-5,
         mean_gauss_activation=True,
     ):
-        batches = input_feat.shape[0]
+        batches = tf.shape(input_feat)[0]
         
         n_samples = tf.shape(input=rho_coords)[1]
         n_vertices = tf.shape(input=rho_coords)[2]
