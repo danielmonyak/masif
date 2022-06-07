@@ -85,14 +85,27 @@ for data_element in training_data:
         i += 1
     if i == 5:
         break
+[32, 200, 5]
+[32, 200, 1]
+[32, 200, 1]
+[32, 200, 1]
 
 print('start data prep:', time.process_time())
+'''
 ragged_list = []
 for feed_dict in feed_list:
     tsr_list = [tf.transpose(tsr, perm=[0,2,1]) for tsr in feed_dict.values()]
     ragged_input = tf.ragged.stack(tsr_list)
     ragged_list.append(ragged_input)
 X = tf.ragged.stack(ragged_list)
+'''
+tsr_list = []
+for feed_dict in feed_list:
+    flat_list = []
+    for tsr in feed_dict.values():
+        flat_list.append(tf.flatten(tsr))
+    tsr_list.append(tf.concat(flat_list, axis = 0))
+X = tf.stack(tsr_list)
 print('end data prep:', time.process_time())
 
 
