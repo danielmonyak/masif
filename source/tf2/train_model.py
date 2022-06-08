@@ -50,7 +50,7 @@ if continue_training:
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
-strategy = tf.distribute.MirroredStrategy(gpus_str)
+strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
 
 saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
