@@ -37,13 +37,13 @@ model.compile(optimizer = model.opt,
 )
 
 modelDir = 'kerasModel'
-modelPath = modelDir + '/model'
+ckpPath = modelDir + '/ckp'
 
 last_epoch = 0
 initValThresh = None
 
 if continue_training:
-  model.load_weights(modelPath)
+  model.load_weights(ckpPath)
   last_epoch += 22
   initValThresh = 0.62606
 
@@ -54,7 +54,7 @@ strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
 
 saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
-  modelPath,
+  ckpPath,
   monitor = 'val_accuracy',
   save_best_only = True,
   verbose = 1,
