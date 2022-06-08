@@ -29,7 +29,5 @@ train_y = np.load(datadir + 'train_y.npy')
 _ = model.predict(train_X[:1])
 
 #model.build([None, model.bigLen + model.smallLen * 3])
-'''
 model.load_weights(ckpPath)
 model.save(modelPath)
-'''
