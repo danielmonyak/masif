@@ -55,7 +55,8 @@ saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
   modelPath,
   monitor = 'val_accuracy',
   save_best_only = True,
-  verbose = 1
+  verbose = 1,
+  initial_value_threshold = 0.63267
 )
 
 num_epochs = 100
