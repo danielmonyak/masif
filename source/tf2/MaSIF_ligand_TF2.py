@@ -179,7 +179,7 @@ class ConvLayer(layers.Layer):
 
     
     def map_func(self, row):
-        n_pockets = int(tf.shape(row)[0]/(8*200))
+        n_pockets = int(tf.shape(row)[0].numpy()/(8*200))
         bigShape = [n_pockets, 200, self.n_feat]
         smallShape = [n_pockets, 200, 1]
         idx = int(functools.reduce(self.prodFunc, bigShape))
