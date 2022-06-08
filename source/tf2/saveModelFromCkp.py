@@ -22,4 +22,4 @@ ckpPath = os.path.join(modelDir, 'model')
 modelPath = os.path.join(modelDir, 'savedModel')
 
 model.load_weights(ckpPath)
-model.save(modelDir)
+model.save(modelPath)
