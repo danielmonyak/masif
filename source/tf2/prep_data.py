@@ -37,13 +37,13 @@ minPockets = params['minPockets']
 
 outdir = 'datasets/'
 
-feed_list = []
-y_list = []
-
 dataset_list = {'train' : training_data, 'val' : validation_data, 'test' : testing_data}
 for dataset in dataset_list.keys():
     print('\n' + dataset)
     i = 0
+    
+    feed_list = []
+    y_list = []
     for data_element in dataset_list[dataset]:
         print('{} record {}'.format(dataset, i))
         
@@ -82,8 +82,8 @@ for dataset in dataset_list.keys():
             tsr = feed_dict[tsr_key]
             flat_list.append(tf.reshape(tsr, [-1]))
         tsr_list.append(tf.concat(flat_list, axis = 0))
+    
     X = tf.stack(tsr_list)
-
     y = tf.stack(y_list, axis = 0)
 
     np.save(outdir + '{}_X.npy'.format(dataset), X)
