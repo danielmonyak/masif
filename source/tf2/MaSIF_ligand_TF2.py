@@ -196,7 +196,7 @@ class ConvLayer(layers.Layer):
         
         def func1(row): return row.shape[0]/8
         def func2(num): return np.random.choice(num, minPockets, replace = True)
-        n_pockets = tf.cast(tf.map_fn(fn=func1, elems = test_X, fn_output_signature = 'float'), dtype = tf.int32)
+        n_pockets = tf.cast(tf.map_fn(fn=func1, elems = x, fn_output_signature = 'float'), dtype = tf.int32)
         sample_tsr = tf.map_fn(fn=func2, elems = n_pockets, fn_output_signature = tf.TensorSpec(32))
         
         #self.n_pockets = x.shape[1]/(3 + self.n_feat)
@@ -214,7 +214,7 @@ class ConvLayer(layers.Layer):
             shape = [int(n_pockets/200), 200, 5]
             idx = int(functools.reduce(prodFunc, shape))
             return tf.RaggedTensor.from_tensor(tf.reshape(row[:idx], shape), ragged_rank = 2)
-        input_feat_full = tf.map_fn(fn=func, elems = test_X, fn_output_signature = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32))
+        input_feat_full = tf.map_fn(fn=func, elems = x, fn_output_signature = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32))
         input_feat = tf.gather(input_feat_full, sample, axis = 1)
         #input_feat_full = tf.reshape(x[:, :bigLen], [batches] + bigShape)
         #input_feat = tf.gather(input_feat_full, sample, axis = 1)
@@ -226,7 +226,7 @@ class ConvLayer(layers.Layer):
 
         inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
         restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
-        ret = tf.map_fn(fn=self.map_func, elems = test_X, fn_output_signature = [[inputFeatType, restType, restType, restType], tf.TensorSpec([minPockets], dtype = tf.int32)])
+        ret = tf.map_fn(fn=self.map_func, elems = x, fn_output_signature = [[inputFeatType, restType, restType, restType], tf.TensorSpec([minPockets], dtype = tf.int32)])
 
         data_list, sample = ret
         input_feat, rho_coords, theta_coords, mask = [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
