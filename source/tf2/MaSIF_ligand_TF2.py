@@ -90,9 +90,7 @@ class ConvLayer(layers.Layer):
         n_rotations,
         feat_mask,
         bigShape,
-        smallShape,
-        bigLen,
-        smallLen):
+        smallShape):
         
         super(ConvLayer, self).__init__()
         
