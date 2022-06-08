@@ -57,9 +57,10 @@ for dataset in dataset_list.keys():
         npoints = pocket_points.shape[0]
         if npoints < minPockets:
             continue
-        # Sample minPockets (32) points randomly
-        # Fix later - otherwise it's same random points every epoch
-        sample = np.random.choice(pocket_points, minPockets, replace=False)
+        # select random pockets in training, not prep_data.py
+        #sample = np.random.choice(pocket_points, minPockets, replace=False)
+        sample = pocket_points
+        
         feed_dict = {
             'input_feat' : tf.gather(data_element[0], sample, axis = 0),
             'rho_coords' : np.expand_dims(data_element[1], -1)[
@@ -83,7 +84,8 @@ for dataset in dataset_list.keys():
             flat_list.append(tf.reshape(tsr, [-1]))
         tsr_list.append(tf.concat(flat_list, axis = 0))
     
-    X = tf.stack(tsr_list)
+    #X = tf.stack(tsr_list)
+    X = tf.ragged.stack(tsr_list).to_tensor(default_value = -1)
     y = tf.stack(y_list, axis = 0)
 
     np.save(outdir + '{}_X.npy'.format(dataset), X)
