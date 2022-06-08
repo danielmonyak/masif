@@ -17,7 +17,7 @@ import tensorflow as tf
 #import time
 
 params = masif_opts["ligand"]
-
+defaultCode = params['defaultCode']
 
 # Load dataset
 training_data = tf.data.TFRecordDataset(
@@ -85,7 +85,7 @@ for dataset in dataset_list.keys():
         tsr_list.append(tf.concat(flat_list, axis = 0))
     
     #X = tf.stack(tsr_list)
-    X = tf.ragged.stack(tsr_list).to_tensor(default_value = -1)
+    X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
     y = tf.stack(y_list, axis = 0)
 
     np.save(outdir + '{}_X.npy'.format(dataset), X)
