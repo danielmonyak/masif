@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+import os
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'model')
