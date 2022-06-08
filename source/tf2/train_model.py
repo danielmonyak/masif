@@ -12,13 +12,8 @@ from sklearn.metrics import confusion_matrix
 import pickle
 import tensorflow as tf
 
-
-
 continue_training = True
 
-
-
-params = masif_opts["ligand"]
 
 datadir = 'datasets/'
 train_X = np.load(datadir + 'train_X.npy')
@@ -28,24 +23,28 @@ val_y = np.load(datadir + 'val_y.npy')
 test_X = np.load(datadir + 'test_X.npy')
 test_y = np.load(datadir + 'test_y.npy')
 
+
+params = masif_opts["ligand"]
+
+model = MaSIF_ligand(
+  params["max_distance"],
+  params["n_classes"],
+  feat_mask=params["feat_mask"]
+)
+model.compile(optimizer = model.opt,
+  loss = model.loss_fn,
+  metrics=['accuracy']
+)
+
 modelDir = 'kerasModel'
 modelPath = modelDir + '/model'
 
 last_epoch = 0
 
 if continue_training:
-  model = tf.keras.models.load_model(modelPath)
+  model.load_weights(modelPath)
   last_epoch += 20
-else:
-  model = MaSIF_ligand(
-    params["max_distance"],
-    params["n_classes"],
-    feat_mask=params["feat_mask"]
-  )
-  model.compile(optimizer = model.opt,
-    loss = model.loss_fn,
-    metrics=['accuracy']
-  )
+
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
