@@ -32,9 +32,6 @@ class MaSIF_ligand(Model):
         
         self.bigShape = [minPockets, 200, 5]
         self.smallShape = [minPockets, 200, 1]
-        prodFunc = lambda a,b : a*b
-        self.bigLen = functools.reduce(prodFunc, self.bigShape)
-        self.smallLen = functools.reduce(prodFunc, self.smallShape)
         ##
         
         # order of the spectral filters
@@ -54,10 +51,10 @@ class MaSIF_ligand(Model):
         self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
  
         
-        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
-    
+        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask,
+                                    self.bigShape, self.smallShape)
         self.myLayers=[
-            layers.InputLayer(input_shape = [self.bigLen + self.smallLen * 3]),
+            layers.InputLayer(input_shape = [myConvLayer.bigLen + myConvLayer.smallLen * 3]),
             self.myConvLayer,
             layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
@@ -91,8 +88,21 @@ class ConvLayer(layers.Layer):
         n_thetas,
         n_rhos,
         n_rotations,
-        feat_mask):
+        feat_mask,
+        bigShape,
+        smallShape,
+        bigLen,
+        smallLen):
+        
         super(ConvLayer, self).__init__()
+        
+        ###
+        self.bigShape = bigShape
+        self.smallShape = smallShape
+        prodFunc = lambda a,b : a*b
+        self.bigLen = functools.reduce(prodFunc, self.bigShape)
+        self.smallLen = functools.reduce(prodFunc, self.smallShape)
+        ###
         
         # order of the spectral filters
         self.max_rho = max_rho
