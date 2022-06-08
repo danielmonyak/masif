@@ -12,6 +12,12 @@ from sklearn.metrics import confusion_matrix
 import pickle
 import tensorflow as tf
 
+
+
+continue_training = True
+
+
+
 params = masif_opts["ligand"]
 
 datadir = 'datasets/'
@@ -24,17 +30,22 @@ test_y = np.load(datadir + 'test_y.npy')
 
 modelDir = 'kerasModel'
 modelPath = modelDir + '/model'
-# model = tf.keras.models.load_model(modelDir)
-model = MaSIF_ligand(
-  params["max_distance"],
-  params["n_classes"],
-  feat_mask=params["feat_mask"]
-)
 
-model.compile(optimizer = model.opt,
-  loss = model.loss_fn,
-  metrics=['accuracy']
-)
+last_epoch = 0
+
+if continue_training:
+  model = tf.keras.models.load_model(modelPath)
+  last_epoch += 20
+else:
+  model = MaSIF_ligand(
+    params["max_distance"],
+    params["n_classes"],
+    feat_mask=params["feat_mask"]
+  )
+  model.compile(optimizer = model.opt,
+    loss = model.loss_fn,
+    metrics=['accuracy']
+  )
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
@@ -48,15 +59,15 @@ saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
   verbose = 1
 )
 
-num_epochs = 20
-#with strategy.scope():
-history = model.fit(x = train_X, y = train_y,
-  epochs = num_epochs,
-  validation_data = (val_X, val_y),
-  callbacks = [saveCheckpoints],
-  verbose = 2,
-  use_multiprocessing = True
-)
+num_epochs = 100
+with strategy.scope():
+  history = model.fit(x = train_X, y = train_y,
+    epochs = num_epochs - last_epoch,
+    validation_data = (val_X, val_y),
+    callbacks = [saveCheckpoints],
+    verbose = 2,
+    use_multiprocessing = True
+  )
 
 model.evaluate(test_X,  test_y, verbose=2)
 
