@@ -7,6 +7,10 @@ import tensorflow as tf
 
 params = masif_opts["ligand"]
 
+modelDir = 'kerasModel'
+ckpPath = os.path.join(modelDir, 'model')
+modelPath = os.path.join(modelDir, 'savedModel')
+
 model = MaSIF_ligand(
   params["max_distance"],
   params["n_classes"],
@@ -16,12 +20,9 @@ model.compile(optimizer = model.opt,
   loss = model.loss_fn,
   metrics=['accuracy']
 )
-
+'''
 model.build([model.bigLen + model.smallLen * 3])
-
-modelDir = 'kerasModel'
-ckpPath = os.path.join(modelDir, 'model')
-modelPath = os.path.join(modelDir, 'savedModel')
 
 model.load_weights(ckpPath)
 model.save(modelPath)
+'''
