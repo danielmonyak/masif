@@ -25,3 +25,5 @@ while read p; do
 	running+=($!)
 	i=$((i+1))
 done < lists/sequence_split_list_UNIQUE.txt
+
+echo Finished!
