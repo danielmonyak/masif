@@ -5,7 +5,7 @@ import numpy as np
 datadir = 'datasets/'
 test_X_raw = np.load(datadir + 'test_X.npy')
 print(test_X_raw[0].shape[0])
-test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=-1)
+test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=defaultCode)
 print(test_X[0].shape[0])
 
 prodFunc = lambda a,b : a*b
