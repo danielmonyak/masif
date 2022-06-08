@@ -12,7 +12,7 @@ from sklearn.metrics import confusion_matrix
 import pickle
 import tensorflow as tf
 
-continue_training = True
+continue_training = False
 
 
 datadir = 'datasets/'
@@ -29,7 +29,8 @@ params = masif_opts["ligand"]
 model = MaSIF_ligand(
   params["max_distance"],
   params["n_classes"],
-  feat_mask=params["feat_mask"]
+  feat_mask=params["feat_mask"],
+  keep_prob = 0.75
 )
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
@@ -37,7 +38,7 @@ model.compile(optimizer = model.opt,
 )
 
 modelDir = 'kerasModel'
-ckpPath = modelDir + '/ckp'
+ckpPath = os.path.join(modelDir, 'ckp')
 
 last_epoch = 0
 initValThresh = None
@@ -71,8 +72,5 @@ with strategy.scope():
     use_multiprocessing = True
   )
 
-#model.evaluate(test_X,  test_y, verbose=2)
-#model.save(modelDir)
-
-with open(modelDir + '/train_history', 'wb') as file_pi:
+with open(os.path.join(modelDir, 'train_history'), 'wb') as file_pi:
   pickle.dump(history.history, file_pi)
