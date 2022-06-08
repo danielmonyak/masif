@@ -73,9 +73,6 @@ class MaSIF_ligand(Model):
         for l in self.myLayers:
             ret = l(ret)
         return ret
-    
-    def build(self, input_shape):
-        super(MaSIF_ligand, self).build(input_shape)
 
 class CovarLayer(layers.Layer):
     def __init__(self):
@@ -187,27 +184,7 @@ class ConvLayer(layers.Layer):
             )
     
     def call(self, x):
-        '''
-        input_feat_list = [x_i[0] for x_i in x]
-        rho_coords_list = [x_i[1] for x_i in x]
-        theta_coords_list = [x_i[2] for x_i in x]
-        mask_list = [x_i[3] for x_i in x]
-        
-        input_feat_temp = tf.stack(input_feat_list)
-        rho_coords_temp = tf.stack(rho_coords_list)
-        theta_coords_temp = tf.stack(theta_coords_list)
-        mask_temp = tf.stack(mask_list)
-        
-        perm = [0, 1, 3, 2]
-        input_feat = tf.transpose(input_feat_temp.to_tensor(), perm = perm)
-        rho_coords = tf.transpose(rho_coords_temp.to_tensor(), perm = perm)
-        theta_coords = tf.transpose(theta_coords_temp.to_tensor(), perm = perm)
-        mask = tf.transpose(mask_temp.to_tensor(), perm = perm)
-        '''
         batches = tf.shape(x)[0]
-        
-        #print(tf.shape(x))
-        #print(x)
         
         input_feat = tf.reshape(x[:, :self.bigLen], [batches] + self.bigShape)
         rest = tf.reshape(x[:, self.bigLen:], [batches, 3] + self.smallShape)
@@ -335,6 +312,3 @@ class ConvLayer(layers.Layer):
         coords = np.concatenate((grid_rho_[None, :], grid_theta_[None, :]), axis=0)
         coords = coords.T  # every row contains the coordinates of a grid intersection
         return coords
-    
-    def build(self, input_shape):
-        super(ConvLayer, self).build(input_shape)
