@@ -26,14 +26,14 @@ def func(row):
 	#print('smallShape:', smallShape)
 	def makeRagged(tsr):
 		return tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
-	#feat = makeRagged(tf.reshape(row[:idx], bigShape))
+	feat = makeRagged(tf.reshape(row[:idx], bigShape))
 	rest = tf.reshape(row[idx:], [3] + smallShape)
-	#return [feat, makeRagged(rest[0]), makeRagged(rest[1]), makeRagged(rest[2])]
-	return makeRagged(rest[0])
+	return [feat, makeRagged(rest[0]), makeRagged(rest[1]), makeRagged(rest[2])]
+	#return makeRagged(rest[0])
 
 featType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
 restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
-#input_feat_full = tf.map_fn(fn=func, elems = test_X, fn_output_signature = [featType, restType, restType, restType])
-input_feat_full = tf.map_fn(fn=func, elems = test_X, fn_output_signature = restType)
+input_feat_full = tf.map_fn(fn=func, elems = test_X, fn_output_signature = [featType, restType, restType, restType])
+#input_feat_full = tf.map_fn(fn=func, elems = test_X, fn_output_signature = restType)
 
 
