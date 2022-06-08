@@ -53,8 +53,6 @@ class MaSIF_ligand(Model):
         
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask,
                                     self.bigShape, self.smallShape)
-        self.bigLen = self.myConvLayer.bigLen
-        self.smallLen = self.myConvLayer.smallLen
         
         self.myLayers=[
             #layers.InputLayer(input_shape = [self.bigLen + self.smallLen * 3]),
@@ -190,7 +188,7 @@ class ConvLayer(layers.Layer):
         smallShape = [self.n_pockets, 200, 1]
         prodFunc = lambda a,b : a*b
         bigLen = functools.reduce(prodFunc, bigShape)
-        smallLen = functools.reduce(prodFunc, smallShape)
+        #smallLen = functools.reduce(prodFunc, smallShape)
         
         input_feat_full = tf.reshape(x[:, :bigLen], [batches] + bigShape)
         input_feat = tf.gather(input_feat_full, sample, axis = 1)
