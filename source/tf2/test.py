@@ -30,7 +30,7 @@ def func(row):
 
 inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
 restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
-ret = tf.map_fn(fn=func, elems = test_X, fn_output_signature = [[inputFeatType, restType, restType, restType], tf.TensorSpec([minPockets], dtype = int64)])
+ret = tf.map_fn(fn=func, elems = test_X, fn_output_signature = [[inputFeatType, restType, restType, restType], tf.TensorSpec([minPockets], dtype = tf.int64)])
 
 data_list = ret[0]
 sample = tf.cast(ret[1], dtype=tf.int32)
