@@ -24,4 +24,4 @@ with strategy.scope():
   #train_res = model.evaluate(train_X, train_y, use_multiprocessing=True)
   #val_res = model.evaluate(val_X, val_y, use_multiprocessing=True)
   #test_res = model.evaluate(test_X, test_y, use_multiprocessing=True)
-  y_pred = model.predict(test_x, use_multiprocessing=True)
+  y_pred = model.predict(test_X, use_multiprocessing=True)
