@@ -57,7 +57,7 @@ class MaSIF_ligand(Model):
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
     
         self.myLayers=[
-            layers.InputLayer(input_shape = [bigLen + smallLen * 3]),
+            layers.InputLayer(input_shape = [self.bigLen + self.smallLen * 3]),
             self.myConvLayer,
             layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
