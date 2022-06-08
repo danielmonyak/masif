@@ -1,7 +1,11 @@
 import tensorflow as tf
 import numpy as np
 
-model = tf.keras.models.load_model('kerasModel/savedModel')
+modelDir = 'kerasModel'
+ckpPath = os.path.join(modelDir, 'model')
+modelPath = os.path.join(modelDir, 'savedModel')
+
+model = tf.keras.models.load_model(modelPath)
 
 datadir = 'datasets/'
 train_X = np.load(datadir + 'train_X.npy')
