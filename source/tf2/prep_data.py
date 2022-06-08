@@ -91,3 +91,4 @@ for dataset in dataset_list.keys():
     np.save(outdir + '{}_X.npy'.format(dataset), X)
     np.save(outdir + '{}_y.npy'.format(dataset), y)
 
+print('Finished!')
