@@ -69,7 +69,7 @@ for dataset in dataset_list.keys():
             'theta_coords' : np.expand_dims(data_element[2], -1)[
                 sample, :, :
             ],
-            'mask' : tf.gather(data_element[3], pocket_points[:minPockets], axis = 0)
+            'mask' : tf.gather(data_element[3], sample, axis = 0)
         }
         feed_list.append(feed_dict)
         y_list.append(pocket_labels)
