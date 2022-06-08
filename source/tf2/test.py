@@ -18,9 +18,9 @@ print(test_X[0].shape[0])
 prodFunc = lambda a,b : a*b
 makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
 def func(row):
-	n_pockets = int(row.shape[0]/8)
-	bigShape = [int(n_pockets/200), 200, 5]
-	smallShape = [int(n_pockets/200), 200, 1]
+	n_pockets = int(row.shape[0]/(8*200))
+	bigShape = [n_pockets, 200, 5]
+	smallShape = [n_pockets, 200, 1]
 	idx = int(functools.reduce(prodFunc, bigShape))
 	input_feat = tf.reshape(row[:idx], bigShape)
 	rest = tf.reshape(row[idx:], [3] + smallShape)
