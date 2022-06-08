@@ -30,4 +30,4 @@ ret = tf.map_fn(fn=func, elems = test_X, fn_output_signature = [[inputFeatType, 
 
 data_list = ret[0]
 sample = tf.cast(ret[1], dtype=tf.int32)
-inputFeatType, rho_coords, theta_coords, mask = [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1) for data in data_list]
+input_feat, rho_coords, theta_coords, mask = [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1) for data in data_list]
