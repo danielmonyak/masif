@@ -9,11 +9,7 @@ minPockets = 32
 
 datadir = 'datasets/'
 test_X_raw = np.load(datadir + 'test_X.npy')
-print(test_X_raw[0].shape[0])
-
-
 test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=defaultCode)
-print(test_X[0].shape[0])
 
 prodFunc = lambda a,b : a*b
 makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
