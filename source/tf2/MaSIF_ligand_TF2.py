@@ -53,8 +53,8 @@ class MaSIF_ligand(Model):
         
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask,
                                     self.bigShape, self.smallShape)
-        self.bigLen = myConvLayer.bigLen
-        self.smallLen = myConvLayer.smallLen
+        self.bigLen = self.myConvLayer.bigLen
+        self.smallLen = self.myConvLayer.smallLen
         
         self.myLayers=[
             layers.InputLayer(input_shape = [self.bigLen + self.smallLen * 3]),
