@@ -199,12 +199,19 @@ class ConvLayer(layers.Layer):
         
         
         
+        def func(row):
+            n_pockets = int(row.shape[0]/8)
+            shape = [int(n_pockets/200), 200, 5]
+            idx = int(functools.reduce(prodFunc, shape))
+            return tf.RaggedTensor.from_tensor(tf.reshape(row[:idx], shape), ragged_rank = 2)
         
-        
-        
-        
-        input_feat_full = tf.reshape(x[:, :bigLen], [batches] + bigShape)
+        input_feat_full = tf.map_fn(fn=func, elems = test_X, fn_output_signature = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32))
         input_feat = tf.gather(input_feat_full, sample, axis = 1)
+        
+        
+        
+        #input_feat_full = tf.reshape(x[:, :bigLen], [batches] + bigShape)
+        #input_feat = tf.gather(input_feat_full, sample, axis = 1)
         
         rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
         rho_coords = tf.gather(rest[:, 0, :, :, :], sample, axis = 1)
