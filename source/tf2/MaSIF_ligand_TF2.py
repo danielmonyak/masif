@@ -57,7 +57,8 @@ class MaSIF_ligand(Model):
         self.smallLen = self.myConvLayer.smallLen
         
         self.myLayers=[
-            layers.InputLayer(input_shape = [self.bigLen + self.smallLen * 3]),
+            #layers.InputLayer(input_shape = [self.bigLen + self.smallLen * 3]),
+            layers.InputLayer(input_shape = [None], ragged=True),
             self.myConvLayer,
             layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
@@ -95,14 +96,6 @@ class ConvLayer(layers.Layer):
         smallShape):
         
         super(ConvLayer, self).__init__()
-        
-        ###
-        self.bigShape = bigShape
-        self.smallShape = smallShape
-        prodFunc = lambda a,b : a*b
-        self.bigLen = functools.reduce(prodFunc, self.bigShape)
-        self.smallLen = functools.reduce(prodFunc, self.smallShape)
-        ###
         
         # order of the spectral filters
         self.max_rho = max_rho
@@ -182,15 +175,30 @@ class ConvLayer(layers.Layer):
                     trainable = True
                 )
             )
+        
     
     def call(self, x):
         batches = tf.shape(x)[0]
         
-        input_feat = tf.reshape(x[:, :self.bigLen], [batches] + self.bigShape)
-        rest = tf.reshape(x[:, self.bigLen:], [batches, 3] + self.smallShape)
-        rho_coords = rest[:, 0, :, :, :]
-        theta_coords = rest[:, 1, :, :, :]
-        mask = rest[:, 2, :, :, :]
+        self.n_pockets = x.shape[1]/(3 + self.n_feat)
+        if self.n_pockets != int(self.n_pockets):
+            sys.exit('n_pockets is not an integer...')
+        
+        sample = np.random.choice(range(int(self.n_pockets)), minPockets, replace=False)
+        
+        bigShape = [self.n_pockets, 200, self.n_feat]
+        smallShape = [self.n_pockets, 200, 1]
+        prodFunc = lambda a,b : a*b
+        bigLen = functools.reduce(prodFunc, bigShape)
+        smallLen = functools.reduce(prodFunc, smallShape)
+        
+        input_feat_full = tf.reshape(x[:, :bigLen], [batches] + bigShape)
+        input_feat = tf.gather(input_feat_full, sample, axis = 1)
+        
+        rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
+        rho_coords = tf.gather(rest[:, 0, :, :, :], sample, axis = 1)
+        theta_coords = tf.gather(rest[:, 1, :, :, :], sample, axis = 1)
+        mask = tf.gather(rest[:, 2, :, :, :], sample, axis = 1)
         
         
         self.global_desc_1 = []
