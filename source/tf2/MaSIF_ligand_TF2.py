@@ -73,7 +73,9 @@ class MaSIF_ligand(Model):
         for l in self.myLayers:
             ret = l(ret)
         return ret
-
+    
+    def build(self, input_shape):
+        super(MaSIF_ligand, self).build(input_shape)
 
 class CovarLayer(layers.Layer):
     def __init__(self):
@@ -183,7 +185,7 @@ class ConvLayer(layers.Layer):
                     trainable = True
                 )
             )
-        
+    
     def call(self, x):
         '''
         input_feat_list = [x_i[0] for x_i in x]
@@ -333,3 +335,6 @@ class ConvLayer(layers.Layer):
         coords = np.concatenate((grid_rho_[None, :], grid_theta_[None, :]), axis=0)
         coords = coords.T  # every row contains the coordinates of a grid intersection
         return coords
+    
+    def build(self, input_shape):
+        super(ConvLayer, self).build(input_shape)
