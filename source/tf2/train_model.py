@@ -16,13 +16,16 @@ continue_training = False
 
 
 datadir = 'datasets/'
-train_X = np.load(datadir + 'train_X.npy')
+train_X_raw = np.load(datadir + 'train_X.npy')
 train_y = np.load(datadir + 'train_y.npy')
-val_X = np.load(datadir + 'val_X.npy')
+val_X_raw = np.load(datadir + 'val_X.npy')
 val_y = np.load(datadir + 'val_y.npy')
-test_X = np.load(datadir + 'test_X.npy')
+test_X_raw = np.load(datadir + 'test_X.npy')
 test_y = np.load(datadir + 'test_y.npy')
 
+train_X = tf.RaggedTensor.from_tensor(train_X_raw, padding=-1)
+val_X = tf.RaggedTensor.from_tensor(val_X_raw, padding=-1)
+test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=-1)
 
 params = masif_opts["ligand"]
 
