@@ -40,10 +40,12 @@ modelDir = 'kerasModel'
 modelPath = modelDir + '/model'
 
 last_epoch = 0
+initValThresh = None
 
 if continue_training:
   model.load_weights(modelPath)
-  last_epoch += 20
+  last_epoch += 22
+  initValThresh = 0.62606
 
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
@@ -56,7 +58,7 @@ saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
   monitor = 'val_accuracy',
   save_best_only = True,
   verbose = 1,
-  initial_value_threshold = 0.63267
+  initial_value_threshold = initValThresh
 )
 
 num_epochs = 100
