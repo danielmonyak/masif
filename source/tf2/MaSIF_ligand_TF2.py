@@ -180,7 +180,7 @@ class ConvLayer(layers.Layer):
         batches = x.shape[0]
         
         def func1(row): return row.shape[0]/8
-        def func2(num): return np.random.choice(num, 32, replace = True)
+        def func2(num): return np.random.choice(num, minPockets, replace = True)
         n_pockets = tf.cast(tf.map_fn(fn=func1, elems = test_X, fn_output_signature = 'float'), dtype = tf.int32)
         sample_tsr = tf.map_fn(fn=func2, elems = n_pockets, fn_output_signature = tf.TensorSpec(32))
 
@@ -196,6 +196,12 @@ class ConvLayer(layers.Layer):
         prodFunc = lambda a,b : a*b
         bigLen = functools.reduce(prodFunc, bigShape)
         #smallLen = functools.reduce(prodFunc, smallShape)
+        
+        
+        
+        
+        
+        
         
         input_feat_full = tf.reshape(x[:, :bigLen], [batches] + bigShape)
         input_feat = tf.gather(input_feat_full, sample, axis = 1)
