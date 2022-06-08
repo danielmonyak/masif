@@ -17,6 +17,8 @@ model.compile(optimizer = model.opt,
   metrics=['accuracy']
 )
 
+model.build([model.bigLen + model.smallLen * 3])
+
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'model')
 modelPath = os.path.join(modelDir, 'savedModel')
