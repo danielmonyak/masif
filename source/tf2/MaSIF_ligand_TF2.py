@@ -8,11 +8,6 @@ import functools
 params = masif_opts["ligand"]
 minPockets = params['minPockets']
 
-bigShape = [minPockets, 200, 5]
-smallShape = [minPockets, 200, 1]
-prodFunc = lambda a,b : a*b
-bigLen = functools.reduce(prodFunc, bigShape)
-smallLen = functools.reduce(prodFunc, smallShape)
 
 class MaSIF_ligand(Model):
     """
@@ -34,6 +29,12 @@ class MaSIF_ligand(Model):
         
         ##
         self.keep_prob = keep_prob
+        
+        self.bigShape = [minPockets, 200, 5]
+        self.smallShape = [minPockets, 200, 1]
+        prodFunc = lambda a,b : a*b
+        self.bigLen = functools.reduce(prodFunc, self.bigShape)
+        self.smallLen = functools.reduce(prodFunc, self.smallShape)
         ##
         
         # order of the spectral filters
@@ -195,8 +196,8 @@ class ConvLayer(layers.Layer):
         #print(tf.shape(x))
         #print(x)
         
-        input_feat = tf.reshape(x[:, :bigLen], [batches] + bigShape)
-        rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
+        input_feat = tf.reshape(x[:, :self.bigLen], [batches] + self.bigShape)
+        rest = tf.reshape(x[:, self.bigLen:], [batches, 3] + self.smallShape)
         rho_coords = rest[:, 0, :, :, :]
         theta_coords = rest[:, 1, :, :, :]
         mask = rest[:, 2, :, :, :]
