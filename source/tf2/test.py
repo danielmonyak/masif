@@ -26,12 +26,12 @@ def func(row):
 	rest = tf.reshape(row[idx:], [3] + smallShape)
 	sample = np.random.choice(n_pockets, minPockets, replace = False)
 	data_list = [makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
-	return [data_list, sample]
+	return [data_list, tf.constant(sample)]
 
 inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
 restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
-ret = tf.map_fn(fn=func, elems = test_X, fn_output_signature = [inputFeatType, restType, restType, restType])
+ret = tf.map_fn(fn=func, elems = test_X, fn_output_signature = [[inputFeatType, restType, restType, restType], tf.TensorSpec([minPockets])])
 
 data_list = ret[0]
-sample = ret[1]
-#inputFeatType, rho_coords, theta_coords, mask = [tf.gather(data, sample, axis = 1, batch_dims = 1) for data in data_list]
+sample = tf.cast(ret[1], dtype=tf.int32)
+inputFeatType, rho_coords, theta_coords, mask = [tf.gather(data, sample, axis = 1, batch_dims = 1) for data in data_list]
