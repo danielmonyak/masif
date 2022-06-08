@@ -174,8 +174,23 @@ class ConvLayer(layers.Layer):
                 )
             )
         
+        self.prodFunc = lambda a,b : a*b
+        self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
+
+    
+    def map_func(self, row):
+        n_pockets = int(row.shape[0]/(8*200))
+        bigShape = [n_pockets, 200, self.n_feat]
+        smallShape = [n_pockets, 200, 1]
+        idx = int(functools.reduce(self.prodFunc, bigShape))
+        input_feat = tf.reshape(row[:idx], bigShape)
+        rest = tf.reshape(row[idx:], [3] + smallShape)
+        sample = np.random.choice(n_pockets, minPockets, replace = False)
+        data_list = [self.makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
+        return [data_list, tf.constant(sample, dtype=tf.int32)]
     
     def call(self, x):
+        '''
         #batches = tf.shape(x)[0]
         batches = x.shape[0]
         
@@ -183,12 +198,10 @@ class ConvLayer(layers.Layer):
         def func2(num): return np.random.choice(num, minPockets, replace = True)
         n_pockets = tf.cast(tf.map_fn(fn=func1, elems = test_X, fn_output_signature = 'float'), dtype = tf.int32)
         sample_tsr = tf.map_fn(fn=func2, elems = n_pockets, fn_output_signature = tf.TensorSpec(32))
-
-
+        
         #self.n_pockets = x.shape[1]/(3 + self.n_feat)
         #if self.n_pockets != int(self.n_pockets):
         #    sys.exit('n_pockets is not an integer...')
-        
         #sample = np.random.choice(int(self.n_pockets), [batches, minPockets], replace=False)
         
         bigShape = [self.n_pockets, 200, self.n_feat]
@@ -196,28 +209,28 @@ class ConvLayer(layers.Layer):
         prodFunc = lambda a,b : a*b
         bigLen = functools.reduce(prodFunc, bigShape)
         #smallLen = functools.reduce(prodFunc, smallShape)
-        
-        
-        
         def func(row):
             n_pockets = int(row.shape[0]/8)
             shape = [int(n_pockets/200), 200, 5]
             idx = int(functools.reduce(prodFunc, shape))
             return tf.RaggedTensor.from_tensor(tf.reshape(row[:idx], shape), ragged_rank = 2)
-        
         input_feat_full = tf.map_fn(fn=func, elems = test_X, fn_output_signature = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32))
         input_feat = tf.gather(input_feat_full, sample, axis = 1)
-        
-        
-        
         #input_feat_full = tf.reshape(x[:, :bigLen], [batches] + bigShape)
         #input_feat = tf.gather(input_feat_full, sample, axis = 1)
-        
         rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
         rho_coords = tf.gather(rest[:, 0, :, :, :], sample, axis = 1)
         theta_coords = tf.gather(rest[:, 1, :, :, :], sample, axis = 1)
         mask = tf.gather(rest[:, 2, :, :, :], sample, axis = 1)
-        
+        '''
+
+        inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
+        restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
+        ret = tf.map_fn(fn=self.map_func, elems = test_X, fn_output_signature = [[inputFeatType, restType, restType, restType], tf.TensorSpec([minPockets], dtype = tf.int32)])
+
+        data_list, sample = ret
+        input_feat, rho_coords, theta_coords, mask = [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
+
         
         self.global_desc_1 = []
         
