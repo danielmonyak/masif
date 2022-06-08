@@ -20,10 +20,10 @@ def func(row):
 	bigShape = [int(n_pockets/200), 200, 5]
 	smallShape = [int(n_pockets/200), 200, 1]
 	idx = int(functools.reduce(prodFunc, bigShape))
-	print('idx:', idx)
-	print('row.shape[0]:', row.shape[0])
-	print('bigShape:', bigShape)
-	print('smallShape:', smallShape)
+	#print('idx:', idx)
+	#print('row.shape[0]:', row.shape[0])
+	#print('bigShape:', bigShape)
+	#print('smallShape:', smallShape)
 	def makeRagged(tsr):
 		return tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
 	#feat = makeRagged(tf.reshape(row[:idx], bigShape))
