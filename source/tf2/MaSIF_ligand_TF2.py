@@ -176,13 +176,20 @@ class ConvLayer(layers.Layer):
         
     
     def call(self, x):
-        batches = tf.shape(x)[0]
+        #batches = tf.shape(x)[0]
+        batches = x.shape[0]
         
-        self.n_pockets = x.shape[1]/(3 + self.n_feat)
-        if self.n_pockets != int(self.n_pockets):
-            sys.exit('n_pockets is not an integer...')
+        def func1(row): return row.shape[0]/8
+        def func2(num): return np.random.choice(num, 32, replace = True)
+        n_pockets = tf.cast(tf.map_fn(fn=func1, elems = test_X, fn_output_signature = 'float'), dtype = tf.int32)
+        sample_tsr = tf.map_fn(fn=func2, elems = n_pockets, fn_output_signature = tf.TensorSpec(32))
+
+
+        #self.n_pockets = x.shape[1]/(3 + self.n_feat)
+        #if self.n_pockets != int(self.n_pockets):
+        #    sys.exit('n_pockets is not an integer...')
         
-        sample = np.random.choice(range(int(self.n_pockets)), minPockets, replace=False)
+        #sample = np.random.choice(int(self.n_pockets), [batches, minPockets], replace=False)
         
         bigShape = [self.n_pockets, 200, self.n_feat]
         smallShape = [self.n_pockets, 200, 1]
