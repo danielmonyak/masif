@@ -71,8 +71,8 @@ with strategy.scope():
     use_multiprocessing = True
   )
 
-model.evaluate(test_X,  test_y, verbose=2)
-
+#model.evaluate(test_X,  test_y, verbose=2)
 #model.save(modelDir)
+
 with open(modelDir + '/train_history', 'wb') as file_pi:
   pickle.dump(history.history, file_pi)
