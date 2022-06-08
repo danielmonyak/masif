@@ -182,7 +182,7 @@ class ConvLayer(layers.Layer):
         n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
         bigShape = [n_pockets, 200, self.n_feat]
         smallShape = [n_pockets, 200, 1]
-        idx = int(functools.reduce(self.prodFunc, bigShape))
+        idx = tf.cast(functools.reduce(self.prodFunc, bigShape), dtype = tf.int32)
         input_feat = tf.reshape(row[:idx], bigShape)
         rest = tf.reshape(row[idx:], [3] + smallShape)
         sample = np.random.choice(n_pockets, minPockets, replace = False)
