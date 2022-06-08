@@ -5,6 +5,7 @@ from default_config.masif_opts import masif_opts
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
+minPockets = 32
 
 datadir = 'datasets/'
 test_X_raw = np.load(datadir + 'test_X.npy')
@@ -21,11 +22,16 @@ def func(row):
 	bigShape = [int(n_pockets/200), 200, 5]
 	smallShape = [int(n_pockets/200), 200, 1]
 	idx = int(functools.reduce(prodFunc, bigShape))
-	feat = tf.reshape(row[:idx], bigShape)
+	input_feat = tf.reshape(row[:idx], bigShape)
 	rest = tf.reshape(row[idx:], [3] + smallShape)
-	return [makeRagged(tsr) for tsr in [feat, rest[0], rest[1], rest[2]]
+	sample = np.random.choice(n_pockets, minPockets, replace = False)
+	data_list = [makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
+	return [data_list, sample]
 
-featType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
+inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
 restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
-data_list = tf.map_fn(fn=func, elems = test_X, fn_output_signature = [featType, restType, restType, restType])
+ret = tf.map_fn(fn=func, elems = test_X, fn_output_signature = [inputFeatType, restType, restType, restType])
 
+data_list = ret[0]
+sample = ret[1]
+inputFeatType, rho_coords, theta_coords, mask = [tf.gather(data, sample, axis = 1, batch_dims = 1) for data in data_list]
