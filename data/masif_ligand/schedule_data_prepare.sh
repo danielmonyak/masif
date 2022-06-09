@@ -1,5 +1,5 @@
-out=output_files
-err=error_files
+out=output_files_200
+err=error_files_200
 if [ ! -d $out ]; then mkdir $out; fi
 if [ ! -d $err ]; then mkdir $err; fi
 
@@ -24,6 +24,7 @@ while read p; do
 	disown -h $!
 	running+=($!)
 	i=$((i+1))
-done < lists/sequence_split_list_UNIQUE.txt
+done < lists/others_200.txt
+#done < lists/sequence_split_list_UNIQUE.txt
 
 echo Finished!
