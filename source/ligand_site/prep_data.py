@@ -10,14 +10,15 @@ import sys
 from default_config.masif_opts import masif_opts
 #####
 # Edited by Daniel Monyak
-from MaSIF_ligand_TF2 import MaSIF_ligand
+from MaSIF_ligand_site import MaSIF_ligand_site
 #####
-from read_ligand_tfrecords import _parse_function
+from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
 #import time
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
+n_classes = params['n_classes']
 
 # Load dataset
 training_data = tf.data.TFRecordDataset(
@@ -33,8 +34,6 @@ training_data = training_data.map(_parse_function)
 validation_data = validation_data.map(_parse_function)
 testing_data = testing_data.map(_parse_function)
 
-minPockets = params['minPockets']
-
 outdir = 'datasets/'
 
 dataset_list = {'train' : training_data, 'val' : validation_data, 'test' : testing_data}
@@ -47,32 +46,21 @@ for dataset in dataset_list.keys():
     for data_element in dataset_list[dataset]:
         print('{} record {}'.format(dataset, i))
         
-        random_ligand = 0
         labels = data_element[4]
         n_ligands = labels.shape[1]
-        pocket_points = tf.reshape(tf.where(labels[:, random_ligand] != 0), [-1, ])
-        label = np.max(labels[:, random_ligand]) - 1
-        pocket_labels = np.zeros(7, dtype=np.float32)
-        pocket_labels[label] = 1.0
-        npoints = pocket_points.shape[0]
-        if npoints < minPockets:
-            continue
-        # select random pockets in training, not prep_data.py
-        #sample = np.random.choice(pocket_points, minPockets, replace=False)
-        sample = pocket_points
+        if n_ligands > 1:
+            print('More than one ligand, check this out...')
+        
+        one_hot_labels = tf.one_hot(tf.reshape(labels, [-1,]) - 1, n_classes)
         
         feed_dict = {
-            'input_feat' : tf.gather(data_element[0], sample, axis = 0),
-            'rho_coords' : np.expand_dims(data_element[1], -1)[
-                sample, :, :
-            ],
-            'theta_coords' : np.expand_dims(data_element[2], -1)[
-                sample, :, :
-            ],
-            'mask' : tf.gather(data_element[3], sample, axis = 0)
+            'input_feat' : data_element[0],
+            'rho_coords' : np.expand_dims(data_element[1], -1),
+            'theta_coords' : np.expand_dims(data_element[2], -1),
+            'mask' : data_element[3],
         }
         feed_list.append(feed_dict)
-        y_list.append(pocket_labels)
+        y_list.append(one_hot_labels)
         
         i += 1
 
@@ -84,7 +72,6 @@ for dataset in dataset_list.keys():
             flat_list.append(tf.reshape(tsr, [-1]))
         tsr_list.append(tf.concat(flat_list, axis = 0))
     
-    #X = tf.stack(tsr_list)
     X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
     y = tf.stack(y_list, axis = 0)
 
