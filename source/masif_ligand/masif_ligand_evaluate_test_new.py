@@ -53,6 +53,7 @@ testing_next_element = testing_iterator.get_next()
 
 
 saved_pdbs = []
+bad_pdbs = []
 
 for num_test_sample in range(num_test_samples):
     try:
@@ -107,7 +108,7 @@ for num_test_sample in range(num_test_samples):
 
         pdb_logits_softmax.append(samples_logits_softmax)
     if len(pdb_labels) == 0:
-        bad_pdbs.append(pdbP
+        bad_pdbs.append(pdb)
         continue
     saved_pdbs.append(pdb)
     np.save(test_set_out_dir + "{}_labels.npy".format(pdb), pdb_labels)
