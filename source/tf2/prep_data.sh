@@ -1,3 +1,6 @@
+out=datasets
+if [ ! -d $out ]; then mkdir $out; fi
+
 source /apps01/anaconda3/etc/profile.d/conda.sh
 conda activate venv_tf
 
