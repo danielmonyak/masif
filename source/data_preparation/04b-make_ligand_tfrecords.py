@@ -43,9 +43,9 @@ test_pdbs = np.char.rstrip(test_pdbs, '_')
 #
 # Edited by Daniel Monyak
 # Uncommented these save statements so that the lists would be redone
-np.save('lists/train_pdbs_sequence.npy',train_pdbs)
-np.save('lists/val_pdbs_sequence.npy',val_pdbs)
-np.save('lists/test_pdbs_sequence.npy',test_pdbs)
+#np.save('lists/train_pdbs_sequence.npy',train_pdbs)
+#np.save('lists/val_pdbs_sequence.npy',val_pdbs)
+#np.save('lists/test_pdbs_sequence.npy',test_pdbs)
 
 # For this run use the train, validation and test sets actually used
 train_pdbs = np.load("lists/train_pdbs_sequence.npy").astype(str)
