@@ -8,13 +8,8 @@ from IPython.core.debugger import set_trace
 import importlib
 import sys
 from default_config.masif_opts import masif_opts
-#####
-# Edited by Daniel Monyak
-from MaSIF_ligand_site import MaSIF_ligand_site
-#####
 from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
-#import time
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
