@@ -21,9 +21,9 @@ def map_func(row):
         input_feat = tf.reshape(row[:idx], bigShape)
         rest = tf.reshape(row[idx:], [3] + smallShape)
         #sample = np.random.choice(n_pockets, minPockets, replace = False)
-        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
+        sample = tf.random.shuffle(tf.range(n_pockets, dtype=tf.int32))[:minPockets]
         data_list = [makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
-        return [data_list, tf.constant(sample, dtype=tf.int32)]
+        return [data_list, sample]
 
 inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
 restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
