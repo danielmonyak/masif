@@ -185,7 +185,8 @@ class ConvLayer(layers.Layer):
         idx = tf.cast(functools.reduce(self.prodFunc, bigShape), dtype = tf.int32)
         input_feat = tf.reshape(row[:idx], bigShape)
         rest = tf.reshape(row[idx:], [3] + smallShape)
-        sample = np.random.choice(n_pockets.numpy(), minPockets, replace = False)
+        #sample = np.random.choice(n_pockets, minPockets, replace = False)
+        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
         data_list = [self.makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
         return [data_list, tf.constant(sample, dtype=tf.int32)]
     
