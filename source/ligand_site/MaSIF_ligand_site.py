@@ -55,9 +55,6 @@ class MaSIF_ligand(Model):
                                     self.bigShape, self.smallShape)
         
         self.myLayers=[
-            #layers.InputLayer(input_shape = [self.bigLen + self.smallLen * 3]),
-            layers.InputLayer(input_shape = [None], ragged=True),
-            self.myConvLayer,
             layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             CovarLayer(),
@@ -67,11 +64,37 @@ class MaSIF_ligand(Model):
             layers.Dense(self.n_ligands, activation="softmax")
         ]
     
-    def call(self, inputs):
-        ret = inputs
+    def call(self, inputs, sample):
+        ret = self.myConvLayer(inputs, sample)
         for l in self.myLayers:
             ret = l(ret)
         return ret
+    
+    
+    def train_step(self, data):
+        x, y_full = data
+        
+        n_pockets = tf.shape(y_full)[1]
+        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
+        # Check if this works
+        y = tf.gather(params = y_full, indices = sample, axis = 1, batch_dims = 1)
+        
+        
+        with tf.GradientTape() as tape:
+            y_pred = self(inputs = x, sample = sample, training=True)  # Forward pass
+            # Compute the loss value
+            # (the loss function is configured in `compile()`)
+            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+
+        # Compute gradients
+        trainable_vars = self.trainable_variables
+        gradients = tape.gradient(loss, trainable_vars)
+        # Update weights
+        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
+        # Update metrics (includes the metric that tracks the loss)
+        self.compiled_metrics.update_state(y, y_pred)
+        # Return a dict mapping metric names to current value
+        return {m.name: m.result() for m in self.metrics}
 
 class CovarLayer(layers.Layer):
     def __init__(self):
@@ -176,8 +199,10 @@ class ConvLayer(layers.Layer):
         
         self.prodFunc = lambda a,b : a*b
         self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
-
-    
+        
+        self.inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
+        self.restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
+        
     def map_func(self, row):
         n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
         bigShape = [n_pockets, 200, self.n_feat]
@@ -185,54 +210,16 @@ class ConvLayer(layers.Layer):
         idx = tf.cast(functools.reduce(self.prodFunc, bigShape), dtype = tf.int32)
         input_feat = tf.reshape(row[:idx], bigShape)
         rest = tf.reshape(row[idx:], [3] + smallShape)
-        #sample = np.random.choice(n_pockets, minPockets, replace = False)
-        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
         data_list = [self.makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
-        #return [data_list, tf.constant(sample, dtype=tf.int32)]
-        return [data_list, sample]
+        return data_list
     
-    def call(self, x):
-        '''
-        #batches = tf.shape(x)[0]
-        batches = x.shape[0]
-        
-        def func1(row): return row.shape[0]/8
-        def func2(num): return np.random.choice(num, minPockets, replace = True)
-        n_pockets = tf.cast(tf.map_fn(fn=func1, elems = x, fn_output_signature = 'float'), dtype = tf.int32)
-        sample_tsr = tf.map_fn(fn=func2, elems = n_pockets, fn_output_signature = tf.TensorSpec(32))
-        
-        #self.n_pockets = x.shape[1]/(3 + self.n_feat)
-        #if self.n_pockets != int(self.n_pockets):
-        #    sys.exit('n_pockets is not an integer...')
-        #sample = np.random.choice(int(self.n_pockets), [batches, minPockets], replace=False)
-        
-        bigShape = [self.n_pockets, 200, self.n_feat]
-        smallShape = [self.n_pockets, 200, 1]
-        prodFunc = lambda a,b : a*b
-        bigLen = functools.reduce(prodFunc, bigShape)
-        #smallLen = functools.reduce(prodFunc, smallShape)
-        def func(row):
-            n_pockets = int(row.shape[0]/8)
-            shape = [int(n_pockets/200), 200, 5]
-            idx = int(functools.reduce(prodFunc, shape))
-            return tf.RaggedTensor.from_tensor(tf.reshape(row[:idx], shape), ragged_rank = 2)
-        input_feat_full = tf.map_fn(fn=func, elems = x, fn_output_signature = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32))
-        input_feat = tf.gather(input_feat_full, sample, axis = 1)
-        #input_feat_full = tf.reshape(x[:, :bigLen], [batches] + bigShape)
-        #input_feat = tf.gather(input_feat_full, sample, axis = 1)
-        rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
-        rho_coords = tf.gather(rest[:, 0, :, :, :], sample, axis = 1)
-        theta_coords = tf.gather(rest[:, 1, :, :, :], sample, axis = 1)
-        mask = tf.gather(rest[:, 2, :, :, :], sample, axis = 1)
-        '''
-
-        inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
-        restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
-        ret = tf.map_fn(fn=self.map_func, elems = x, fn_output_signature = [[inputFeatType, restType, restType, restType], tf.TensorSpec([minPockets], dtype = tf.int32)])
-
-        data_list, sample = ret
-        input_feat, rho_coords, theta_coords, mask = [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
-
+    def unpack_data(self, x, sample):
+        data_list, sample = tf.map_fn(fn=self.map_func, elems = x,
+                                      fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
+        return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
+    
+    def call(self, x, sample):
+        input_feat, rho_coords, theta_coords, mask = self.unpack_data(x, sample)
         
         self.global_desc_1 = []
         
