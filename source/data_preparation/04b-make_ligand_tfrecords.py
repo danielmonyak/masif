@@ -33,6 +33,7 @@ train_pdbs = all_pdbs[:train]
 val_pdbs = all_pdbs[train : train + val]
 test_pdbs = all_pdbs[train + val : train + val + test]
 
+# Edited by Daniel Monyak
 #### Had to be formatted correctly so that the rest of the code works
 train_pdbs = np.char.rstrip(train_pdbs, '_')
 val_pdbs = np.char.rstrip(val_pdbs, '_')
@@ -43,9 +44,9 @@ test_pdbs = np.char.rstrip(test_pdbs, '_')
 #
 # Edited by Daniel Monyak
 # Uncommented these save statements so that the lists would be redone
-#np.save('lists/train_pdbs_sequence.npy',train_pdbs)
-#np.save('lists/val_pdbs_sequence.npy',val_pdbs)
-#np.save('lists/test_pdbs_sequence.npy',test_pdbs)
+np.save('lists/train_pdbs_sequence.npy',train_pdbs)
+np.save('lists/val_pdbs_sequence.npy',val_pdbs)
+np.save('lists/test_pdbs_sequence.npy',test_pdbs)
 
 # For this run use the train, validation and test sets actually used
 train_pdbs = np.load("lists/train_pdbs_sequence.npy").astype(str)
