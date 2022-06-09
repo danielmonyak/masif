@@ -12,7 +12,7 @@ from sklearn.metrics import confusion_matrix
 import pickle
 import tensorflow as tf
 
-continue_training = False
+continue_training = True
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -48,8 +48,8 @@ initValThresh = None
 
 if continue_training:
   model.load_weights(ckpPath)
-  last_epoch += 22
-  initValThresh = 0.62606
+  last_epoch += 100
+  initValThresh = 0.69159
 
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
@@ -65,7 +65,7 @@ saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
   initial_value_threshold = initValThresh
 )
 
-num_epochs = 100
+num_epochs = 200
 with strategy.scope():
   history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs - last_epoch,
