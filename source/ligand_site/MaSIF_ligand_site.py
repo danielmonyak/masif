@@ -89,6 +89,7 @@ class MaSIF_ligand(Model):
         # Compute gradients
         trainable_vars = self.trainable_variables
         gradients = tape.gradient(loss, trainable_vars)
+        
         # Update weights
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
         # Update metrics (includes the metric that tracks the loss)
@@ -213,13 +214,13 @@ class ConvLayer(layers.Layer):
         data_list = [self.makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
         return data_list
     
-    def unpack_data(self, x, sample):
+    def unpack_x(self, x, sample):
         data_list, sample = tf.map_fn(fn=self.map_func, elems = x,
                                       fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
     
     def call(self, x, sample):
-        input_feat, rho_coords, theta_coords, mask = self.unpack_data(x, sample)
+        input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
         self.global_desc_1 = []
         
