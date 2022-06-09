@@ -12,7 +12,7 @@ from default_config.masif_opts import masif_opts
 # Edited by Daniel Monyak
 from MaSIF_ligand_TF2 import MaSIF_ligand
 #####
-from read_ligand_tfrecords import _parse_function
+from masif_modules.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
 #import time
 
