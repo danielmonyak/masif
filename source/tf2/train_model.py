@@ -33,7 +33,7 @@ model = MaSIF_ligand(
   params["max_distance"],
   params["n_classes"],
   feat_mask=params["feat_mask"],
-  keep_prob = 0.75
+  keep_prob = 1.0
 )
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
