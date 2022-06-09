@@ -9,7 +9,7 @@ import numpy as np
 params = masif_opts["ligand"]
 
 modelDir = 'kerasModel'
-ckpPath = os.path.join(modelDir, 'model')
+ckpPath = os.path.join(modelDir, 'ckp')
 modelPath = os.path.join(modelDir, 'savedModel')
 
 model = MaSIF_ligand(
