@@ -80,8 +80,8 @@ with strategy.scope():
 
         X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
         y = tf.stack(y_list, axis = 0)
-        np.save(genOutPath).format(dataset, 'X'), X)
-        np.save(genOutPath).format(dataset, 'y'), y)
+        np.save(genOutPath.format(dataset, 'X'), X)
+        np.save(genOutPath.format(dataset, 'y'), y)
 
 
 print('Finished!')
