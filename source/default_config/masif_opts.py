@@ -1,6 +1,6 @@
 import tempfile
 
-basedir = "/data02/daniel/masif/"
+basedir = "/data02/daniel/masif/site"
 
 masif_opts = {}
 # Default directories
