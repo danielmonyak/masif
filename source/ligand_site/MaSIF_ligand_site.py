@@ -76,7 +76,7 @@ class MaSIF_ligand_site(Model):
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
         # Check if this works
         y = tf.gather(params = y_full, indices = sample, axis = 1, batch_dims = 1)
-        
+        one_hot_labels = tf.one_hot(tf.squeeze(y) - 1, n_classes)
         
         with tf.GradientTape() as tape:
             y_pred = self(inputs = x, sample = sample, training=True)  # Forward pass
