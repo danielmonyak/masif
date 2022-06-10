@@ -80,7 +80,7 @@ with strategy.scope():
             pocket_empties = tf.squeeze(tf.where(labels == 0))
             empties_sample = tf.random.shuffle(pocket_empties)[:npoints*4]
             
-            sample = tf.concat([pocket_points, empties_sample])
+            sample = tf.concat([pocket_points, empties_sample], axis=0)
             
             #one_hot_labels = tf.one_hot(tf.squeeze(labels) - 1, n_classes)
             
