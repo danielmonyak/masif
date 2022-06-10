@@ -17,8 +17,8 @@ continue_training = False
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
-datadir = '~/software/masif/tf2/datasets'
-genPath = os.path.join(datadir, {}_{}.npy)
+datadir = 'datasets'
+genPath = os.path.join(datadir, '{}_{}.npy')
 
 train_X_raw = np.load(genPath.format('train', 'X'))
 train_y = np.load(genPath.format('train', 'y'))
