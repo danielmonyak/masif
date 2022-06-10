@@ -57,8 +57,6 @@ class MaSIF_ligand(Model):
         self.myLayers=[
             layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
-            CovarLayer(),
-            layers.Flatten(),
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
             layers.Dense(self.n_ligands, activation="softmax")
