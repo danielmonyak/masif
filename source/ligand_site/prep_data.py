@@ -75,7 +75,6 @@ with tf.device(dev):
             labels = tf.squeeze(labels_raw)
             
             #print('b:', process_time())
-            y_list.append(labels)
             
             #print('c:', process_time())
             pocket_points = tf.squeeze(tf.where(labels != 0))
@@ -92,6 +91,7 @@ with tf.device(dev):
             #print('f:', process_time())
             sample = tf.concat([pocket_points, empties_sample], axis=0)
             
+            y_list.append(tf.gather(labels, sample))
             #one_hot_labels = tf.one_hot(tf.squeeze(labels) - 1, n_classes)
             
         #with tf.device(gpus_str[0]):
