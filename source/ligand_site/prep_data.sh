@@ -1,4 +1,4 @@
-out=datasets
+out=/data02/daniel/masif/datasets/ligand_site
 if [ ! -d $out ]; then mkdir $out; fi
 
 source /apps01/anaconda3/etc/profile.d/conda.sh
