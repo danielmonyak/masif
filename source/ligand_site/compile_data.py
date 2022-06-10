@@ -11,18 +11,20 @@ import tensorflow as tf
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
-datadir = '/data02/daniel/masif/datasets/ligand_site'
-genPath = os.path.join(datadir, '{}_{}_{}.npy')
+#datadir = '/data02/daniel/masif/datasets/ligand_site'
+#genPath = os.path.join(datadir, '{}_{}_{}.npy')
+datadir = '/data02/daniel/masif/datasets/tf2'
+genPath = os.path.join(datadir, '{}_{}.npy')
 
 dev = '/GPU:1'
 with tf.device(dev):
   j = 4
   print('one')
-  train_X_raw = np.load(genPath.format('train', 'X', j))
+  train_X_raw = np.load(genPath.format('train', 'X'))
   print('two')
-  train_y_raw = np.load(genPath.format('train', 'y', j))
+  train_y_raw = np.load(genPath.format('train', 'y'))
   print('three')
   train_X = tf.RaggedTensor.from_tensor(train_X_raw, padding=defaultCode)
   print('four')
-  train_y = tf.RaggedTensor.from_tensor(train_y_raw, padding=defaultCode)
+  #train_y = tf.RaggedTensor.from_tensor(train_y_raw, padding=defaultCode)
   
