@@ -7,29 +7,31 @@ from IPython.core.debugger import set_trace
 import importlib
 import sys
 from default_config.masif_opts import masif_opts
-from MaSIF_ligand_TF2 import MaSIF_ligand
+from MaSIF_ligand_site import MaSIF_ligand_site
 from sklearn.metrics import confusion_matrix
 import pickle
 import tensorflow as tf
 
-continue_training = True
+continue_training = False
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
-datadir = 'datasets/'
-train_X_raw = np.load(datadir + 'train_X.npy')
-train_y = np.load(datadir + 'train_y.npy')
-val_X_raw = np.load(datadir + 'val_X.npy')
-val_y = np.load(datadir + 'val_y.npy')
-test_X_raw = np.load(datadir + 'test_X.npy')
-test_y = np.load(datadir + 'test_y.npy')
+datadir = '~/software/masif/tf2/datasets'
+genPath = os.path.join(datadir, {}_{}.npy)
+
+train_X_raw = np.load(genPath.format('train', 'X'))
+train_y = np.load(genPath.format('train', 'y'))
+val_X_raw = np.load(genPath.format('val', 'X'))
+val_y = np.load(genPath.format('val', 'y'))
+test_X_raw = np.load(genPath.format('test', 'X'))
+test_y =np.load(genPath.format('test', 'y'))
 
 train_X = tf.RaggedTensor.from_tensor(train_X_raw, padding=defaultCode)
 val_X = tf.RaggedTensor.from_tensor(val_X_raw, padding=defaultCode)
 test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=defaultCode)
 
-model = MaSIF_ligand(
+model = MaSIF_ligand_site(
   params["max_distance"],
   params["n_classes"],
   feat_mask=params["feat_mask"],
@@ -65,7 +67,7 @@ saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
   initial_value_threshold = initValThresh
 )
 
-num_epochs = 200
+num_epochs = 100
 with strategy.scope():
   history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs - last_epoch,
