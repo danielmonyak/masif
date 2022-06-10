@@ -16,6 +16,7 @@ defaultCode = params['defaultCode']
 n_classes = params['n_classes']
 
 # Load dataset
+'''
 training_data = tf.data.TFRecordDataset(
     os.path.join(params["tfrecords_dir"], "training_data_sequenceSplit_30.tfrecord")
 )
@@ -28,7 +29,7 @@ testing_data = tf.data.TFRecordDataset(
 training_data = training_data.map(_parse_function)
 validation_data = validation_data.map(_parse_function)
 testing_data = testing_data.map(_parse_function)
-
+'''
 outdir = '/data02/daniel/masif/datasets/ligand_site'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
