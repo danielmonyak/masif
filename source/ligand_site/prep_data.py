@@ -15,25 +15,22 @@ params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 n_classes = params['n_classes']
 
-# Load dataset
-'''
-training_data = tf.data.TFRecordDataset(
-    os.path.join(params["tfrecords_dir"], "training_data_sequenceSplit_30.tfrecord")
-)
-validation_data = tf.data.TFRecordDataset(
-    os.path.join(params["tfrecords_dir"], "validation_data_sequenceSplit_30.tfrecord")
-)
-testing_data = tf.data.TFRecordDataset(
-    os.path.join(params["tfrecords_dir"], "testing_data_sequenceSplit_30.tfrecord")
-)
-training_data = training_data.map(_parse_function)
-validation_data = validation_data.map(_parse_function)
-testing_data = testing_data.map(_parse_function)
-'''
 outdir = '/data02/daniel/masif/datasets/ligand_site'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
-#def compile_and_save(feed_list, y_list):
+def helper(feed_dict):
+    def helperInner(tsr_key):
+        tsr = feed_dict[tsr_key]
+        return tf.reshape(tsr, [-1])
+    key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
+    flat_list = list(map(helperInner, key_list))
+    return tf.concat(flat_list, axis = 0)
+def compile_and_save(feed_list, y_list, j):
+    tsr_list = list(map(helper, feed_list))
+    X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
+    y = tf.stack(y_list, axis = 0)
+    np.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
+    np.save(genOutPath.format(dataset, 'y_{}'.format(j)), y)
 
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 
@@ -72,19 +69,12 @@ with strategy.scope():
             y_list.append(one_hot_labels)
 
             i += 1
-
-        tsr_list = []
-        for feed_dict in feed_list:
-            flat_list = []
-            for tsr_key in ['input_feat', 'rho_coords', 'theta_coords', 'mask']:
-                tsr = feed_dict[tsr_key]
-                flat_list.append(tf.reshape(tsr, [-1]))
-            tsr_list.append(tf.concat(flat_list, axis = 0))
-
-        X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
-        y = tf.stack(y_list, axis = 0)
-        np.save(genOutPath.format(dataset, 'X'), X)
-        np.save(genOutPath.format(dataset, 'y'), y)
+            
+            if i % 300:
+                compile_and_save(feed_list, y_list, j)
+                feed_list = []
+                y_list = []
+                j += 1
 
 
 print('Finished!')
