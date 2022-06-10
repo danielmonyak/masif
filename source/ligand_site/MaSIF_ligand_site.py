@@ -8,7 +8,6 @@ import functools
 params = masif_opts["ligand"]
 minPockets = params['minPockets']
 
-
 class MaSIF_ligand_site(Model):
     """
     The neural network model.
@@ -61,22 +60,25 @@ class MaSIF_ligand_site(Model):
             layers.Dense(64, activation="relu"),
             layers.Dense(self.n_ligands, activation="softmax")
         ]
+        
+        
+        self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 1)
+        self.y_spec = tf.RaggedTensorSpec(shape=[None, self.n_ligands], dtype=tf.int32)
     
-    def call(self, inputs, sample):
-        ret = self.myConvLayer(inputs, sample)
-        for l in self.myLayers:
-            ret = l(ret)
-        return ret
-    
+    def map_func(self, row):
+        n_pockets = tf.shape(row)[0]
+        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
+        y = tf.cast(tf.one_hot(tf.squeeze(row) - 1, self.n_ligands), dtype = tf.int32)
+        return [self.makeRagged(y), sample]
+    def make_y(self, y_raw):
+        y, sample = tf.map_fn(fn=self.map_func, elems = y_raw,
+                                      fn_output_signature = [self.y_spec, tf.TensorSpec([minPockets],dtype=tf.int32)])
+        return [tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1).to_tensor(), sample]
     
     def train_step(self, data):
-        x, y_full = data
+        x, y_raw = data
         
-        n_pockets = tf.shape(y_full)[1]
-        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        # Check if this works
-        y = tf.gather(params = y_full, indices = sample, axis = 1, batch_dims = 1)
-        y = tf.expand_dims(tf.one_hot(tf.squeeze(y) - 1, n_classes), axis = 0)
+        y, sample = self.make_y(y_raw)
         
         with tf.GradientTape() as tape:
             y_pred = self(inputs = x, sample = sample, training=True)  # Forward pass
@@ -94,6 +96,12 @@ class MaSIF_ligand_site(Model):
         self.compiled_metrics.update_state(y, y_pred)
         # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
+    
+    def call(self, inputs, sample):
+        ret = self.myConvLayer(inputs, sample)
+        for l in self.myLayers:
+            ret = l(ret)
+        return ret
 
 class CovarLayer(layers.Layer):
     def __init__(self):
