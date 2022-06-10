@@ -71,25 +71,25 @@ for dataset in dataset_list.keys():
             continue
         
         with tf.device(dev):
-            print('a:', process_time())
+            #print('a:', process_time())
             labels = tf.squeeze(labels_raw)
             
-            print('b:', process_time())
+            #print('b:', process_time())
             y_list.append(labels)
             
-            print('c:', process_time())
+            #print('c:', process_time())
             pocket_points = tf.squeeze(tf.where(labels != 0))
             npoints = pocket_points.shape[0]
             if npoints < minPockets:
                 continue
             
-            print('d:', process_time())
+            #print('d:', process_time())
             pocket_empties = tf.squeeze(tf.where(labels == 0))
             
-            print('e:', process_time())
+            #print('e:', process_time())
             empties_sample = tf.random.shuffle(pocket_empties)[:npoints*4]
             
-            print('f:', process_time())
+            #print('f:', process_time())
             sample = tf.concat([pocket_points, empties_sample], axis=0)
             
             #one_hot_labels = tf.one_hot(tf.squeeze(labels) - 1, n_classes)
@@ -102,7 +102,7 @@ for dataset in dataset_list.keys():
             theta_coords = tf.gather(tf.expand_dims(data_element[2], -1), sample)
         with tf.device(gpus_str[3]):
             mask = tf.gather(data_element[3], sample)
-        print('g:', process_time())
+        #print('g:', process_time())
         feed_dict = {
             'input_feat' : input_feat,
             'rho_coords' : rho_coords,
@@ -110,10 +110,10 @@ for dataset in dataset_list.keys():
             'mask' : mask
         }
 
-        print('h:', process_time())
+        #print('h:', process_time())
         feed_list.append(feed_dict)
 
-        print('i:', process_time())
+        #print('i:', process_time())
         i += 1
 
         '''if i % epochSize == 0:
