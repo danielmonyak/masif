@@ -17,7 +17,7 @@ continue_training = False
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
-datadir = 'datasets'
+datadir = '/data02/daniel/masif/datasets/ligand_site'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
 train_X_raw = np.load(genPath.format('train', 'X'))
