@@ -39,7 +39,8 @@ gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
-with strategy.scope():
+#with strategy.scope():
+with 1 as foo:
     for dataset in dataset_list.keys():
         
         print('\n' + dataset)
@@ -73,10 +74,11 @@ with strategy.scope():
             i += 1
             
             if i % 5 == 0:
-                compile_and_save(feed_list, y_list, j)
-                feed_list = []
-                y_list = []
-                j += 1
+                with tf.device('/GPU:3'):
+                    compile_and_save(feed_list, y_list, j)
+                    feed_list = []
+                    y_list = []
+                    j += 1
 
 
 print('Finished!')
