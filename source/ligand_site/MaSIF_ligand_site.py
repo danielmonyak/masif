@@ -9,7 +9,7 @@ params = masif_opts["ligand"]
 minPockets = params['minPockets']
 
 
-class MaSIF_ligand(Model):
+class MaSIF_ligand_site(Model):
     """
     The neural network model.
     """ 
