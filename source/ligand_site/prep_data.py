@@ -13,7 +13,7 @@ import tensorflow as tf
 from time import process_time
 
 #lastEpoch = 4
-#epochSize = 25
+epochSize = 300
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -31,12 +31,12 @@ def helper(feed_dict):
     flat_list = list(map(helperInner, key_list))
     return tf.concat(flat_list, axis = 0)
 
-def compile_and_save(feed_list, y_list, dataset):
+def compile_and_save(feed_list, y_list, dataset, j):
     tsr_list = list(map(helper, feed_list))
     X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
     y = tf.ragged.stack(y_list).to_tensor(default_value = defaultCode)
-    np.save(genOutPath.format(dataset, 'X'), X)
-    np.save(genOutPath.format(dataset, 'y'), y)
+    np.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
+    np.save(genOutPath.format(dataset, 'y_{}'.format(j)), y)
 
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 #dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord"}
@@ -51,7 +51,7 @@ with strategy.scope():
 #with tf.device(dev):
     for dataset in dataset_list.keys():
         i = 0
-        #j = lastEpoch
+        j = 0
 
         feed_list = []
         y_list = []
@@ -117,15 +117,14 @@ with strategy.scope():
             #print('i:', process_time())
             i += 1
             
-            '''if i % epochSize == 0:
-            #with tf.device(dev):
-            compile_and_save(feed_list, y_list, j)
-            feed_list = []
-            y_list = []
-            j += 1'''
+            if i % epochSize == 0:
+                compile_and_save(feed_list, y_list, dataset, j)
+                feed_list = []
+                y_list = []
+                j += 1
             
         
    # with tf.device(dev):
-        compile_and_save(feed_list, y_list, dataset)
+        compile_and_save(feed_list, y_list, dataset, j)
 
 print('Finished!')
