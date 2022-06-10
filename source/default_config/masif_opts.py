@@ -83,4 +83,4 @@ masif_opts["ligand"]["costfun"] = "dprime"
 masif_opts["ligand"]["model_dir"] = "nn_models/all_feat/"
 masif_opts["ligand"]["test_set_out_dir"] = "test_set_predictions/"
 masif_opts['ligand']['minPockets'] = 32
-masif_opts['ligand']['defaultCode'] = 123.456789
+masif_opts['ligand']['defaultCode'] = -1234567
