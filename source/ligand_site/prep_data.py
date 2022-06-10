@@ -30,12 +30,12 @@ def helper(feed_dict):
     flat_list = list(map(helperInner, key_list))
     return tf.concat(flat_list, axis = 0)
 
-def compile_and_save(feed_list, y_list, dataset, j):
+def compile_and_save(feed_list, y_list, dataset):
     tsr_list = list(map(helper, feed_list))
     X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
     y = tf.ragged.stack(y_list).to_tensor(default_value = defaultCode)
-    np.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
-    np.save(genOutPath.format(dataset, 'y_{}'.format(j)), y)
+    np.save(genOutPath.format(dataset, 'X'), X)
+    np.save(genOutPath.format(dataset, 'y'), y)
 
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 #dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord"}
@@ -51,16 +51,15 @@ with strategy.scope():
     for dataset in dataset_list.keys():
         i = 0
         #j = lastEpoch
-        j = 0
         
         feed_list = []
         y_list = []
         
         temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
         for data_element in temp_data:
-            if i < j*epochSize:
+            '''if i < j*epochSize:
                 i += 1
-                continue
+                continue'''
             
             print('{} record {}'.format(dataset, i))
 
