@@ -40,45 +40,44 @@ gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
 #with strategy.scope():
-with 1 as foo:
-    for dataset in dataset_list.keys():
-        
-        print('\n' + dataset)
-        i = 0
-        j = 0
+for dataset in dataset_list.keys():
 
-        feed_list = []
-        y_list = []
-        
-        temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
-        for data_element in temp_data:
-            print('{} record {}'.format(dataset, i))
+    print('\n' + dataset)
+    i = 0
+    j = 0
 
-            labels = data_element[4]
-            n_ligands = labels.shape[1]
-            if n_ligands > 1:
-                print('More than one ligand, check this out...')
-                continue
+    feed_list = []
+    y_list = []
 
-            one_hot_labels = tf.one_hot(tf.reshape(labels, [-1,]) - 1, n_classes)
+    temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
+    for data_element in temp_data:
+        print('{} record {}'.format(dataset, i))
 
-            feed_dict = {
-                'input_feat' : data_element[0],
-                'rho_coords' : np.expand_dims(data_element[1], -1),
-                'theta_coords' : np.expand_dims(data_element[2], -1),
-                'mask' : data_element[3],
-            }
-            feed_list.append(feed_dict)
-            y_list.append(one_hot_labels)
+        labels = data_element[4]
+        n_ligands = labels.shape[1]
+        if n_ligands > 1:
+            print('More than one ligand, check this out...')
+            continue
 
-            i += 1
-            
-            if i % 5 == 0:
-                with tf.device('/GPU:3'):
-                    compile_and_save(feed_list, y_list, j)
-                    feed_list = []
-                    y_list = []
-                    j += 1
+        one_hot_labels = tf.one_hot(tf.reshape(labels, [-1,]) - 1, n_classes)
+
+        feed_dict = {
+            'input_feat' : data_element[0],
+            'rho_coords' : np.expand_dims(data_element[1], -1),
+            'theta_coords' : np.expand_dims(data_element[2], -1),
+            'mask' : data_element[3],
+        }
+        feed_list.append(feed_dict)
+        y_list.append(one_hot_labels)
+
+        i += 1
+
+        if i % 5 == 0:
+            with tf.device('/GPU:3'):
+                compile_and_save(feed_list, y_list, j)
+                feed_list = []
+                y_list = []
+                j += 1
 
 
 print('Finished!')
