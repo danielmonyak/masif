@@ -41,7 +41,7 @@ def compile_and_save(feed_list, y_list, dataset):
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 #dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord"}
 
-gpus = tf.config.experimental.list_logical_devices('GPU')[1:]
+gpus = tf.config.experimental.list_logical_devices('GPU')
 dev = '/GPU:1'
 #tf.config.experimental.set_memory_growth(gpus, True)
 gpus_str = [g.name for g in gpus]
