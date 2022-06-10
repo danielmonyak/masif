@@ -11,8 +11,8 @@ from default_config.masif_opts import masif_opts
 from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
 
-lastEpoch = 1
-epochSize = 100
+lastEpoch = 4
+epochSize = 25
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
