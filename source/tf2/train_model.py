@@ -17,13 +17,16 @@ continue_training = True
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
-datadir = 'datasets/'
-train_X_raw = np.load(datadir + 'train_X.npy')
-train_y = np.load(datadir + 'train_y.npy')
-val_X_raw = np.load(datadir + 'val_X.npy')
-val_y = np.load(datadir + 'val_y.npy')
-test_X_raw = np.load(datadir + 'test_X.npy')
-test_y = np.load(datadir + 'test_y.npy')
+
+datadir = '/data02/daniel/masif/datasets/tf2'
+genPath = os.path.join(datadir, '{}_{}.npy')
+
+train_X_raw = np.load(genPath.format('train', 'X'))
+train_y = np.load(genPath.format('train', 'y'))
+val_X_raw = np.load(genPath.format('val', 'X'))
+val_y = np.load(genPath.format('val', 'y'))
+test_X_raw = np.load(genPath.format('test', 'X'))
+test_y =np.load(genPath.format('test', 'y'))
 
 train_X = tf.RaggedTensor.from_tensor(train_X_raw, padding=defaultCode)
 val_X = tf.RaggedTensor.from_tensor(val_X_raw, padding=defaultCode)
