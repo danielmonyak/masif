@@ -14,7 +14,7 @@ defaultCode = params['defaultCode']
 datadirLS = '/data02/daniel/masif/datasets/ligand_site'
 #genPath = os.path.join(datadir, '{}_{}_{}.npy')
 datadirTF2 = '/data02/daniel/masif/datasets/tf2'
-genPath = os.path.join(datadir, '{}_{}.npy')
+#genPath = os.path.join(datadir, '{}_{}.npy')
 
 dev = '/GPU:1'
 with tf.device(dev):
