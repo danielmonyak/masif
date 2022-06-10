@@ -9,6 +9,7 @@ sleep_time=60
 i=0
 unset running
 while read p; do
+	echo $p
 	if [ $(( i % $batchSize )) -eq 0 ]; then
 		for pid in ${running[@]}; do
 			while ps -o pid ax | grep -q $pid; do
@@ -25,7 +26,8 @@ while read p; do
 	disown -h $!
 	running+=($!)
 	i=$((i+1))
-done < lists/masif_site_only.txt
+done < lists/todo.txt
+#done < lists/masif_site_only.txt
 #done < lists/full_list.txt
 
 echo Finished!
