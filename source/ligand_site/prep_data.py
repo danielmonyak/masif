@@ -17,6 +17,7 @@ epochSize = 25
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 n_classes = params['n_classes']
+minPockets = params['minPockets']
 
 outdir = '/data02/daniel/masif/datasets/ligand_site'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
