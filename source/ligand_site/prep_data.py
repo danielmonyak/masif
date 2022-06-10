@@ -47,8 +47,8 @@ dev = '/GPU:1'
 gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
-#with strategy.scope():
-with tf.device(dev):
+with strategy.scope():
+#with tf.device(dev):
     for dataset in dataset_list.keys():
         i = 0
         #j = lastEpoch
