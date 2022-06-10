@@ -70,7 +70,7 @@ with strategy.scope():
 
             i += 1
             
-            if i % 300:
+            if i % 300 == 0:
                 compile_and_save(feed_list, y_list, j)
                 feed_list = []
                 y_list = []
