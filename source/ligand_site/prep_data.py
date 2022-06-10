@@ -61,15 +61,15 @@ with tf.device(dev):
             '''if i < j*epochSize:
                 i += 1
                 continue'''
-
+            
             print('{} record {}'.format(dataset, i))
-
+            
             labels_raw = data_element[4]
             n_ligands = labels_raw.shape[1]
             if n_ligands > 1:
                 print('More than one ligand, check this out...')
                 continue
-        
+            
             #with tf.device(dev):
             #print('a:', process_time())
             labels = tf.squeeze(labels_raw)
@@ -93,7 +93,7 @@ with tf.device(dev):
             sample = tf.concat([pocket_points, empties_sample], axis=0)
             
             #one_hot_labels = tf.one_hot(tf.squeeze(labels) - 1, n_classes)
-        
+            
         #with tf.device(gpus_str[0]):
             input_feat = tf.gather(data_element[0], sample)
         #with tf.device(gpus_str[1]):
@@ -103,30 +103,30 @@ with tf.device(dev):
         #with tf.device(gpus_str[3]):
             mask = tf.gather(data_element[3], sample)
         #print('g:', process_time())
-        
+            
             feed_dict = {
                 'input_feat' : input_feat,
                 'rho_coords' : rho_coords,
                 'theta_coords' : theta_coords,
                 'mask' : mask
             }
-
+            
             #print('h:', process_time())
             feed_list.append(feed_dict)
-
+            
             #print('i:', process_time())
             i += 1
-
+            
         '''if i % epochSize == 0:
             #with tf.device(dev):
             compile_and_save(feed_list, y_list, j)
             feed_list = []
             y_list = []
             j += 1'''
-        
+            
             if i == 10:
                 break
-    
+        
    # with tf.device(dev):
         compile_and_save(feed_list, y_list, dataset)
 
