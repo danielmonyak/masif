@@ -29,48 +29,59 @@ training_data = training_data.map(_parse_function)
 validation_data = validation_data.map(_parse_function)
 testing_data = testing_data.map(_parse_function)
 
-outdir = 'datasets/'
+outdir = '/data02/daniel/masif/datasets/ligand_site'
+genOutPath = os.path.join(outdir, '{}_{}.npy')
+
+#def compile_and_save(feed_list, y_list):
 
 dataset_list = {'train' : training_data, 'val' : validation_data, 'test' : testing_data}
-for dataset in dataset_list.keys():
-    print('\n' + dataset)
-    i = 0
-    
-    feed_list = []
-    y_list = []
-    for data_element in dataset_list[dataset]:
-        print('{} record {}'.format(dataset, i))
-        
-        labels = data_element[4]
-        n_ligands = labels.shape[1]
-        if n_ligands > 1:
-            print('More than one ligand, check this out...')
-        
-        one_hot_labels = tf.one_hot(tf.reshape(labels, [-1,]) - 1, n_classes)
-        
-        feed_dict = {
-            'input_feat' : data_element[0],
-            'rho_coords' : np.expand_dims(data_element[1], -1),
-            'theta_coords' : np.expand_dims(data_element[2], -1),
-            'mask' : data_element[3],
-        }
-        feed_list.append(feed_dict)
-        y_list.append(one_hot_labels)
-        
-        i += 1
 
-    tsr_list = []
-    for feed_dict in feed_list:
-        flat_list = []
-        for tsr_key in ['input_feat', 'rho_coords', 'theta_coords', 'mask']:
-            tsr = feed_dict[tsr_key]
-            flat_list.append(tf.reshape(tsr, [-1]))
-        tsr_list.append(tf.concat(flat_list, axis = 0))
-    
-    X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
-    y = tf.stack(y_list, axis = 0)
+gpus = tf.config.experimental.list_logical_devices('GPU')
+gpus_str = [g.name for g in gpus]
+strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
-    np.save(outdir + '{}_X.npy'.format(dataset), X)
-    np.save(outdir + '{}_y.npy'.format(dataset), y)
+with strategy.scope():
+    for dataset in dataset_list.keys():
+        print('\n' + dataset)
+        i = 0
+        j = 0
+
+        feed_list = []
+        y_list = []
+
+        for data_element in dataset_list[dataset]:
+            print('{} record {}'.format(dataset, i))
+
+            labels = data_element[4]
+            n_ligands = labels.shape[1]
+            if n_ligands > 1:
+                print('More than one ligand, check this out...')
+
+            one_hot_labels = tf.one_hot(tf.reshape(labels, [-1,]) - 1, n_classes)
+
+            feed_dict = {
+                'input_feat' : data_element[0],
+                'rho_coords' : np.expand_dims(data_element[1], -1),
+                'theta_coords' : np.expand_dims(data_element[2], -1),
+                'mask' : data_element[3],
+            }
+            feed_list.append(feed_dict)
+            y_list.append(one_hot_labels)
+
+            i += 1
+
+        tsr_list = []
+        for feed_dict in feed_list:
+            flat_list = []
+            for tsr_key in ['input_feat', 'rho_coords', 'theta_coords', 'mask']:
+                tsr = feed_dict[tsr_key]
+                flat_list.append(tf.reshape(tsr, [-1]))
+            tsr_list.append(tf.concat(flat_list, axis = 0))
+
+        X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
+        y = tf.stack(y_list, axis = 0)
+        np.save(genOutPath).format(dataset, 'X'), X)
+        np.save(genOutPath).format(dataset, 'y'), y)
+
 
 print('Finished!')
