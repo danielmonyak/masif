@@ -11,6 +11,9 @@ from default_config.masif_opts import masif_opts
 from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
 
+lastEpoch = 1
+epochSize = 100
+
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 n_classes = params['n_classes']
@@ -33,27 +36,32 @@ def compile_and_save(feed_list, y_list, j):
     np.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
     np.save(genOutPath.format(dataset, 'y_{}'.format(j)), y)
 
-dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
+#dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
+dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord"}
 
-gpus = tf.config.experimental.list_logical_devices('GPU')[1:]
+#gpus = tf.config.experimental.list_logical_devices('GPU')[1:]
 dev = '/GPU:1'
 #tf.config.experimental.set_memory_growth(gpus, True)
-gpus_str = [g.name for g in gpus]
-strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
+#gpus_str = [g.name for g in gpus]
+#strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
-with strategy.scope():
-#with tf.device(dev):
+#with strategy.scope():
+with tf.device(dev):
     for dataset in dataset_list.keys():
 
         print('\n' + dataset)
         i = 0
-        j = 0
+        j = lastEpoch
 
         feed_list = []
         y_list = []
 
         temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
         for data_element in temp_data:
+            if i < j*epochSize:
+                i += 1
+                continue
+            
             print('{} record {}'.format(dataset, i))
 
             labels = data_element[4]
@@ -75,7 +83,7 @@ with strategy.scope():
 
             i += 1
 
-            if i % 100 == 0:
+            if i % epochSize == 0:
                 #with tf.device(dev):
                 compile_and_save(feed_list, y_list, j)
                 feed_list = []
