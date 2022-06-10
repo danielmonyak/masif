@@ -10,7 +10,7 @@ import sys
 from default_config.masif_opts import masif_opts
 from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
-from time improt process_time
+from time import process_time
 
 #lastEpoch = 4
 #epochSize = 25
