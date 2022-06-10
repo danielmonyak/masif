@@ -29,7 +29,7 @@ def helper(feed_dict):
 def compile_and_save(feed_list, y_list, j):
     tsr_list = list(map(helper, feed_list))
     X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
-    y = tf.stack(y_list, axis = 0)
+    y = tf.ragged.stack(y_list).to_tensor(default_value = defaultCode)
     np.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
     np.save(genOutPath.format(dataset, 'y_{}'.format(j)), y)
 
@@ -59,8 +59,9 @@ for dataset in dataset_list.keys():
             print('More than one ligand, check this out...')
             continue
 
-        one_hot_labels = tf.one_hot(tf.reshape(labels, [-1,]) - 1, n_classes)
-
+        #one_hot_labels = tf.one_hot(tf.squeeze(labels) - 1, n_classes)
+        y_list.append(tf.squeeze(labels))
+        
         feed_dict = {
             'input_feat' : data_element[0],
             'rho_coords' : np.expand_dims(data_element[1], -1),
@@ -68,7 +69,6 @@ for dataset in dataset_list.keys():
             'mask' : data_element[3],
         }
         feed_list.append(feed_dict)
-        y_list.append(one_hot_labels)
 
         i += 1
 
