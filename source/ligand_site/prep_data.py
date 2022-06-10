@@ -117,7 +117,7 @@ with tf.device(dev):
             #print('i:', process_time())
             i += 1
             
-        '''if i % epochSize == 0:
+            '''if i % epochSize == 0:
             #with tf.device(dev):
             compile_and_save(feed_list, y_list, j)
             feed_list = []
