@@ -25,6 +25,7 @@ def helper(feed_dict):
     key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
     flat_list = list(map(helperInner, key_list))
     return tf.concat(flat_list, axis = 0)
+
 def compile_and_save(feed_list, y_list, j):
     tsr_list = list(map(helper, feed_list))
     X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
@@ -56,6 +57,7 @@ with strategy.scope():
             n_ligands = labels.shape[1]
             if n_ligands > 1:
                 print('More than one ligand, check this out...')
+                continue
 
             one_hot_labels = tf.one_hot(tf.reshape(labels, [-1,]) - 1, n_classes)
 
