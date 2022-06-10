@@ -10,9 +10,10 @@ import sys
 from default_config.masif_opts import masif_opts
 from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
+from time improt process_time
 
-lastEpoch = 4
-epochSize = 25
+#lastEpoch = 4
+#epochSize = 25
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -69,29 +70,42 @@ with strategy.scope():
                 print('More than one ligand, check this out...')
                 continue
             
+            print('a:', process_time())
             labels = tf.squeeze(labels_raw)
+            
+            print('b:', process_time())
             y_list.append(labels)
             
+            print('c:', process_time())
             pocket_points = tf.squeeze(tf.where(labels != 0))
             npoints = pocket_points.shape[0]
             if npoints < minPockets:
                 continue
             
+            print('d:', process_time())
             pocket_empties = tf.squeeze(tf.where(labels == 0))
+            
+            print('e:', process_time())
             empties_sample = tf.random.shuffle(pocket_empties)[:npoints*4]
             
+            print('f:', process_time())
             sample = tf.concat([pocket_points, empties_sample], axis=0)
             
             #one_hot_labels = tf.one_hot(tf.squeeze(labels) - 1, n_classes)
             
+            print('g:', process_time())
             feed_dict = {
                 'input_feat' : tf.gather(data_element[0], sample),
                 'rho_coords' : tf.gather(tf.expand_dims(data_element[1], -1), sample),
                 'theta_coords' : tf.gather(tf.expand_dims(data_element[2], -1), sample),
                 'mask' : tf.gather(data_element[3], sample)
             }
+            
+            
+            print('h:', process_time())
             feed_list.append(feed_dict)
             
+            print('i:', process_time())
             i += 1
             
             '''if i % epochSize == 0:
