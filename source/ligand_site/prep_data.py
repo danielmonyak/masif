@@ -124,8 +124,6 @@ with tf.device(dev):
             y_list = []
             j += 1'''
             
-            if i == 10:
-                break
         
    # with tf.device(dev):
         compile_and_save(feed_list, y_list, dataset)
