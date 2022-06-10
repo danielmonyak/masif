@@ -48,8 +48,6 @@ dev = '/GPU:1'
 #with strategy.scope():
 with tf.device(dev):
     for dataset in dataset_list.keys():
-
-        print('\n' + dataset)
         i = 0
         j = lastEpoch
 
