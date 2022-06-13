@@ -9,22 +9,30 @@ from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
 
 params = masif_opts["ligand"]
-defaultCode = params['defaultCode']
 
 datadir = '/data02/daniel/masif/datasets/ligand_site'
-genPath = os.path.join(datadir, '{}_{}_{}.npy')
-#datadirTF2 = '/data02/daniel/masif/datasets/tf2'
-#genPath = os.path.join(datadir, '{}_{}.npy')
+genPathIn = os.path.join(datadir, '{}_{}_{}.npy')
+
+outDir = '/data02/daniel/masif/datasets/ligand_site/complete'
+genPathOut = os.path.join(outDir, '{}_{}.npy')
 
 dev = '/GPU:1'
 train_j = range(10)
 
-#train_X_temp = np.load(os.path.join(datadirLS, 'train_X_{}.npy'.format(0)))
+#defaultCode = params['defaultCode']
 #train_X_temp = tf.RaggedTensor.from_tensor(train_X_temp, padding=defaultCode)
 
-train_X_list = []
-for j in train_j:
-  print(j)
-  train_X_list.append(np.load(genPath.format('train', 'X', j)))
+numFiles_dict = {'train' : 10, 'val' : 2, 'test' : 3}
 
-train_X = tf.concat(train_X_list, axis=0)
+for dataset in numFiles_dict.keys():
+  print(dataset)
+  X_list = []
+  y_list = []
+  for j in range(numFiles_dict[dataset]):
+    print(j)
+    X_list.append(np.load(genPathIn.format(dataset, 'X', j)))
+    y_list.append(np.load(genPathIn.format(dataset, 'y', j)))
+  X = tf.concat(X_list, axis=0)
+  y = tf.concat(y_list, axis=0)
+  np.save(genPathOut.format(dataset, 'X'), X) 
+  np.save(genPathOut.format(dataset, 'y'), y) 
