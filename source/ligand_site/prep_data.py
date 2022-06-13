@@ -120,8 +120,9 @@ with tf.device(dev):
                 y_list = []
                 j += 1
         
+        if i == 105:
+            break
         compile_and_save(feed_list, y_list, dataset, j)
-    if i == 105:
-        break
+    
 
 print('Finished!')
