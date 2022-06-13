@@ -116,7 +116,7 @@ for dataset in dataset_list.keys():
                 y_list = []
                 j += 1
         
-        compile_and_save(feed_list, y_list, dataset, j)
+    compile_and_save(feed_list, y_list, dataset, j)
     
 
 print('Finished!')
