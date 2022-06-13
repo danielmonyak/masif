@@ -71,3 +71,4 @@ else:
 
 train_masif_site(learning_obj, params)
 
+print('Finished training!')
