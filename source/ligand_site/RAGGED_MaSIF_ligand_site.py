@@ -221,7 +221,7 @@ class ConvLayer(layers.Layer):
         return data_list
     
     def unpack_x(self, x, sample):
-        data_list, sample = tf.map_fn(fn=self.map_func, elems = x,
+        data_list = tf.map_fn(fn=self.map_func, elems = x,
                                       fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
     
