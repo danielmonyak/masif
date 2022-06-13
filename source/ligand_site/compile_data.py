@@ -37,4 +37,4 @@ with tf.device(dev):
   train_X_temp = np.load(os.path.join(datadirTF2, 'train_X.npy'))
   train_X_temp = tf.RaggedTensor.from_tensor(train_X_temp, padding=defaultCode)
   
-  print(tf.shape(train_X_temp))
+  print(train_X_temp.shape)
