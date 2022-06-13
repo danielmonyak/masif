@@ -82,7 +82,7 @@ class MaSIF_ligand_site(Model):
         y, sample = self.make_y(y_raw)
         
         with tf.GradientTape() as tape:
-            y_pred = self(x, sample, training=True)  # Forward pass
+            y_pred = self(x, sample = sample, training=True)  # Forward pass
             # Compute the loss value
             # (the loss function is configured in `compile()`)
             loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
@@ -98,7 +98,7 @@ class MaSIF_ligand_site(Model):
         # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
     
-    def call(self, x, sample):
+    def call(self, x, sample = None):
         #x, sample = packed
         ret = self.myConvLayer(x, sample)
         #ret = self.myConvLayer(packed)
