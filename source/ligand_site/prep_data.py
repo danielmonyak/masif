@@ -14,8 +14,11 @@ from time import process_time
 
 epochSize = 200
 
-ratio = 1
-savedPockets = 100
+ratio = 0
+savedPockets = 32
+epochSize = 50
+
+
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 n_classes = params['n_classes']
