@@ -40,7 +40,9 @@ def compile_and_save(feed_list, y_list, dataset, j):
     tsr_list = list(map(helper, feed_list))
     X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
     y = tf.ragged.stack(y_list).to_tensor(default_value = defaultCode)
-    np.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
+    #X = tf.stack(tsr_list)
+    #y = tf.stack(y_list)
+    nnp.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
     np.save(genOutPath.format(dataset, 'y_{}'.format(j)), y)
 
 #dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
@@ -78,9 +80,11 @@ for dataset in dataset_list.keys():
             if npoints < minPockets:
                 continue
             
+            savedPockets_temp = min(savedPockets, npoints)
+            
             ##
-            pocket_points = tf.random.shuffle(pocket_points)[:savedPockets]
-            npoints = savedPockets
+            pocket_points = tf.random.shuffle(pocket_points)[:savedPockets_temp]
+            npoints = savedPockets_temp
             ##
             pocket_empties = tf.squeeze(tf.where(labels == 0))
             empties_sample = tf.random.shuffle(pocket_empties)[:npoints*ratio]
