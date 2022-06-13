@@ -21,7 +21,8 @@ defaultCode = params['defaultCode']
 n_classes = params['n_classes']
 minPockets = params['minPockets']
 
-outdir = '/data02/daniel/masif/datasets/ligand_site'
+#outdir = '/data02/daniel/masif/datasets/ligand_site'
+outdir = '.'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 def helper(feed_dict):
@@ -39,8 +40,8 @@ def compile_and_save(feed_list, y_list, dataset, j):
     np.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
     np.save(genOutPath.format(dataset, 'y_{}'.format(j)), y)
 
-dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
-#dataset_list = {'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
+#dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
+dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val'}
 
 dev = '/GPU:1'
 '''gpus = tf.config.experimental.list_logical_devices('GPU')
@@ -108,6 +109,7 @@ with tf.device(dev):
             #print('i:', process_time())
             if i % epochSize == 0:
                 compile_and_save(feed_list, y_list, dataset, j)
+                break
                 feed_list = []
                 y_list = []
                 j += 1
