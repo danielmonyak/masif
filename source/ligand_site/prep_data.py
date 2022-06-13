@@ -15,6 +15,7 @@ from time import process_time
 #lastEpoch = 4
 epochSize = 50
 
+ratio = 1
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 n_classes = params['n_classes']
@@ -38,8 +39,8 @@ def compile_and_save(feed_list, y_list, dataset, j):
     np.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
     np.save(genOutPath.format(dataset, 'y_{}'.format(j)), y)
 
-#dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
-dataset_list = {'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
+dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
+#dataset_list = {'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 
 dev = '/GPU:1'
 '''gpus = tf.config.experimental.list_logical_devices('GPU')
@@ -58,13 +59,6 @@ with tf.device(dev):
 
         temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
         for data_element in temp_data:
-            #if i == 105:
-            #    break
-            
-            '''if i < j*epochSize:
-                i += 1
-                continue'''
-            
             print('{} record {}'.format(dataset, i))
             
             labels_raw = data_element[4]
@@ -73,7 +67,6 @@ with tf.device(dev):
                 print('More than one ligand, check this out...')
                 continue
             
-            #with tf.device(dev):
             #print('a:', process_time())
             labels = tf.squeeze(labels_raw)
             
@@ -89,7 +82,7 @@ with tf.device(dev):
             pocket_empties = tf.squeeze(tf.where(labels == 0))
             
             #print('e:', process_time())
-            empties_sample = tf.random.shuffle(pocket_empties)[:npoints*4]
+            empties_sample = tf.random.shuffle(pocket_empties)[:npoints*ratio]
             
             #print('f:', process_time())
             sample = tf.concat([pocket_points, empties_sample], axis=0)
@@ -119,8 +112,6 @@ with tf.device(dev):
                 y_list = []
                 j += 1
         
-        #if i == 105:
-        #    break
         compile_and_save(feed_list, y_list, dataset, j)
     
 
