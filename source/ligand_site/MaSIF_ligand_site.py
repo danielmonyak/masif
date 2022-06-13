@@ -228,7 +228,7 @@ class ConvLayer(layers.Layer):
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1) for data in data_list]
     
     def call(self, x, sample):
-        super(ConvLayer, self).__call__(x, sample)
+        #super(ConvLayer, self).__call__(x, sample)
         
         #x, sample = packed
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
