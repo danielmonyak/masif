@@ -228,12 +228,12 @@ class ConvLayer(layers.Layer):
         return [data_list, sample]
 
     def unpack_x(self, x, sample):
-        if sample:
+        if sample is None:
+            data_list, sample = tf.map_fn(fn=self.Map_func_sample, elems = x,
+                                              fn_output_signature = [[self.inputFeatType, self.restType, self.restType, self.restType], self.sampleSpec])
+        else:
             data_list = tf.map_fn(fn=self.Map_func, elems = x,
                                           fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
-        else:
-            data_list, sample = tf.map_fn(fn=self.Map_func_sample, elems = x,
-                                          fn_output_signature = [[self.inputFeatType, self.restType, self.restType, self.restType], self.sampleSpec])
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1) for data in data_list]
     
     def call(self, x, sample):
