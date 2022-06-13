@@ -15,8 +15,8 @@ from time import process_time
 epochSize = 200
 
 ratio = 1
-savedPockets = 128
-epochSize = 50
+savedPockets = 100
+epochSize = 100
 
 
 params = masif_opts["ligand"]
@@ -25,7 +25,7 @@ n_classes = params['n_classes']
 minPockets = params['minPockets']
 
 outdir = '/data02/daniel/masif/datasets/ligand_site'
-outdir = '.'
+#outdir = '.'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 def helper(feed_dict):
@@ -53,30 +53,26 @@ strategy = tf.distribute.MirroredStrategy(gpus_str[1:])'''
 #tf.config.experimental.set_memory_growth(gpus, True)
 
 #with strategy.scope():
-with tf.device(dev):
-    for dataset in dataset_list.keys():
-        i = 0
-        j = 0
+#with tf.device(dev):
+for dataset in dataset_list.keys():
+    i = 0
+    j = 0
 
-        feed_list = []
-        y_list = []
+    feed_list = []
+    y_list = []
 
-        temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
-        for data_element in temp_data:
-            print('{} record {}'.format(dataset, i))
-            
-            labels_raw = data_element[4]
-            n_ligands = labels_raw.shape[1]
-            if n_ligands > 1:
-                print('More than one ligand, check this out...')
-                continue
-            
-            #print('a:', process_time())
+    temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
+    for data_element in temp_data:
+        print('{} record {}'.format(dataset, i))
+
+        labels_raw = data_element[4]
+        n_ligands = labels_raw.shape[1]
+        if n_ligands > 1:
+            print('More than one ligand, check this out...')
+            continue
+        
+        with tf.device(dev):
             labels = tf.squeeze(labels_raw)
-            
-            #print('b:', process_time())
-            
-            #print('c:', process_time())
             pocket_points = tf.squeeze(tf.where(labels != 0))
             npoints = pocket_points.shape[0]
             if npoints < minPockets:
@@ -111,7 +107,7 @@ with tf.device(dev):
             #print('i:', process_time())
             if i % epochSize == 0:
                 compile_and_save(feed_list, y_list, dataset, j)
-                break
+                #break
                 feed_list = []
                 y_list = []
                 j += 1
