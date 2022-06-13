@@ -58,7 +58,7 @@ with tf.device(dev):
 
         temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
         for data_element in temp_data:
-            if i == 104:
+            if i == 105:
                 break
             
             '''if i < j*epochSize:
@@ -121,7 +121,7 @@ with tf.device(dev):
                 j += 1
         
         compile_and_save(feed_list, y_list, dataset, j)
-    if i == 104:
+    if i == 105:
         break
 
 print('Finished!')
