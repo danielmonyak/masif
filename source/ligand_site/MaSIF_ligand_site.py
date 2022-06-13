@@ -25,7 +25,7 @@ class MaSIF_ligand_site(Model):
         keep_prob = 1.0
     ):
         ## Call super - model initializer
-        super(MaSIF_ligand, self).__init__()
+        super(MaSIF_ligand_site, self).__init__()
         
         ##
         self.keep_prob = keep_prob
