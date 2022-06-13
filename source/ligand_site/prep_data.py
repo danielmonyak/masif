@@ -12,18 +12,17 @@ from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
 from time import process_time
 
-#lastEpoch = 4
-epochSize = 50
+epochSize = 200
 
-ratio = 0
-savedPockets = 32
+ratio = 1
+savedPockets = 100
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 n_classes = params['n_classes']
 minPockets = params['minPockets']
 
-#outdir = '/data02/daniel/masif/datasets/ligand_site'
-outdir = '.'
+outdir = '/data02/daniel/masif/datasets/ligand_site'
+#outdir = '.'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 def helper(feed_dict):
@@ -109,7 +108,7 @@ with tf.device(dev):
             #print('i:', process_time())
             if i % epochSize == 0:
                 compile_and_save(feed_list, y_list, dataset, j)
-                break
+                #break
                 feed_list = []
                 y_list = []
                 j += 1
