@@ -34,7 +34,8 @@ with tf.device(dev):
   print('four')
   #train_y_raw = np.load(genPath.format('train', 'y'))
   #train_y = tf.RaggedTensor.from_tensor(train_y_raw, padding=defaultCode)'''
-  train_X_temp = np.load(os.path.join(datadirTF2, 'train_X.npy'))
+  train_X_temp = np.load(os.path.join(datadirLS, 'train_X_{}.npy'.format(0)))
+  #train_X_temp = np.load(os.path.join(datadirTF2, 'train_X.npy'))
   train_X_temp = tf.RaggedTensor.from_tensor(train_X_temp, padding=defaultCode)
   
   print(train_X_temp.shape)
