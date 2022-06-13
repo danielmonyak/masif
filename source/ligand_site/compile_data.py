@@ -17,13 +17,16 @@ datadirTF2 = '/data02/daniel/masif/datasets/tf2'
 #genPath = os.path.join(datadir, '{}_{}.npy')
 
 dev = '/GPU:1'
+train_j = range(4)
 with tf.device(dev):
-  j = 4
-  train_X_raw_TF2 = np.load(os.path.join(datadirTF2, 'train_X.npy'))
-  train_X_raw_LS = np.load(os.path.join(datadirLS, 'train_X_4.npy'))
+  j = 0
+  train_X_list = []
+  for j in range(2):
+    train_X_temp = np.load(os.path.join(datadirLS, 'train_X_{}.npy'.format(j)))
+    train_X_temp = tf.RaggedTensor.from_tensor(train_X_temp, padding=defaultCode)
+    train_X_list.append(train_X_temp)
+  train_X = tf.concatenate(train_X_list)
   #train_y_raw = np.load(genPath.format('train', 'y'))
-  '''print('three')
-  train_X = tf.RaggedTensor.from_tensor(train_X_raw, padding=defaultCode)
-  print('four')
   #train_y = tf.RaggedTensor.from_tensor(train_y_raw, padding=defaultCode)'''
   
+  print(tf.shape(train_X))
