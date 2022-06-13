@@ -42,7 +42,7 @@ def compile_and_save(feed_list, y_list, dataset, j):
     y = tf.ragged.stack(y_list).to_tensor(default_value = defaultCode)
     #X = tf.stack(tsr_list)
     #y = tf.stack(y_list)
-    nnp.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
+    np.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
     np.save(genOutPath.format(dataset, 'y_{}'.format(j)), y)
 
 #dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
