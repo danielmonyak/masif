@@ -27,4 +27,4 @@ for j in train_j:
   print(j)
   train_X_list.append(np.load(genPath.format('train', 'X', j)))
 
-train_X = tf.stack(train_X_list)
+train_X = tf.concatenate(train_X_list)
