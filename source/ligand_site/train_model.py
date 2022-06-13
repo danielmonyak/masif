@@ -24,8 +24,7 @@ train_X_raw = np.load(genPath.format('train', 'X'))
 train_y_raw = np.load(genPath.format('train', 'y'))
 val_X_raw = np.load(genPath.format('val', 'X'))
 val_y_raw = np.load(genPath.format('val', 'y'))
-test_X_raw = np.load(genPath.format('test', 'X'))
-test_y_raw =np.load(genPath.format('test', 'y'))
+
 '''
 train_X = tf.RaggedTensor.from_tensor(train_X_raw, padding=defaultCode)
 train_y = tf.RaggedTensor.from_tensor(train_y_raw, padding=defaultCode)
