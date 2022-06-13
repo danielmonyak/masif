@@ -25,7 +25,7 @@ n_classes = params['n_classes']
 minPockets = params['minPockets']
 
 outdir = '/data02/daniel/masif/datasets/ligand_site'
-#outdir = '.'
+outdir = '.'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 def helper(feed_dict):
@@ -111,7 +111,7 @@ with tf.device(dev):
             #print('i:', process_time())
             if i % epochSize == 0:
                 compile_and_save(feed_list, y_list, dataset, j)
-                #break
+                break
                 feed_list = []
                 y_list = []
                 j += 1
