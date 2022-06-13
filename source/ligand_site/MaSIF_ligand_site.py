@@ -65,6 +65,7 @@ class MaSIF_ligand_site(Model):
         
         self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 1)
         self.y_spec = tf.TensorSpec(shape=[prepSize, self.n_ligands], dtype=tf.int32)
+        self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
     
     def map_func(self, row):
         n_pockets = tf.shape(row)[0]
@@ -73,7 +74,7 @@ class MaSIF_ligand_site(Model):
         return [y, sample]
     def make_y(self, y_raw):
         y, sample = tf.map_fn(fn=self.map_func, elems = y_raw,
-                                      fn_output_signature = [self.y_spec, tf.TensorSpec([minPockets],dtype=tf.int32)])
+                                      fn_output_signature = [self.y_spec, self.sampleSpec])
         return [tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1), sample]
     
     def train_step(self, data):
@@ -210,6 +211,7 @@ class ConvLayer(layers.Layer):
         
         self.inputFeatType = tf.TensorSpec(shape=[prepSize, 200, 5], dtype=tf.float32)
         self.restType = tf.TensorSpec(shape=[prepSize, 200, 1], dtype=tf.float32)
+        self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
         
         self.Map_func = lambda row : self.map_func(row)
         self.Map_func_sample = lambda row : self.map_func(row, makeSample = True)
