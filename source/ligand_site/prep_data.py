@@ -114,11 +114,12 @@ with tf.device(dev):
             
             #print('i:', process_time())
             
-            if i % epochSize == 0:
+            compile_and_save(feed_list, y_list, dataset, j)
+            '''if i % epochSize == 0:
                 compile_and_save(feed_list, y_list, dataset, j)
                 feed_list = []
                 y_list = []
-                j += 1
+                j += 1'''
         
         if i == 105:
             break
