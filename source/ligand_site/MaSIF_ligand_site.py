@@ -98,10 +98,8 @@ class MaSIF_ligand_site(Model):
         # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
     
-    def call(self, x, sample = None):
-        #x, sample = packed
+    def call(self, x, sample):
         ret = self.myConvLayer(x, sample)
-        #ret = self.myConvLayer(packed)
         for l in self.myLayers:
             ret = l(ret)
         return ret
@@ -228,9 +226,6 @@ class ConvLayer(layers.Layer):
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1) for data in data_list]
     
     def call(self, x, sample):
-        #super(ConvLayer, self).__call__(x, sample)
-        
-        #x, sample = packed
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
         self.global_desc_1 = []
