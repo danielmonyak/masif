@@ -22,10 +22,15 @@ with tf.device(dev):
   j = 0
   train_X_list = []
   for j in range(2):
+    print(j)
     train_X_temp = np.load(os.path.join(datadirLS, 'train_X_{}.npy'.format(j)))
+    print('one')
     train_X_temp = tf.RaggedTensor.from_tensor(train_X_temp, padding=defaultCode)
+    print('two')
     train_X_list.append(train_X_temp)
+  print('three')
   train_X = tf.concatenate(train_X_list)
+  print('four')
   #train_y_raw = np.load(genPath.format('train', 'y'))
   #train_y = tf.RaggedTensor.from_tensor(train_y_raw, padding=defaultCode)'''
   
