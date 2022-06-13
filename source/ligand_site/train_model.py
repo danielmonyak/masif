@@ -20,19 +20,18 @@ defaultCode = params['defaultCode']
 datadir = '/data02/daniel/masif/datasets/ligand_site'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
-train_X_raw = np.load(genPath.format('train', 'X'))
-train_y_raw = np.load(genPath.format('train', 'y'))
-val_X_raw = np.load(genPath.format('val', 'X'))
-val_y_raw = np.load(genPath.format('val', 'y'))
+train_X = np.load(genPath.format('train', 'X'))
+train_y = np.load(genPath.format('train', 'y'))
+val_X = np.load(genPath.format('val', 'X'))
+val_y = np.load(genPath.format('val', 'y'))
 
 '''
-train_X = tf.RaggedTensor.from_tensor(train_X_raw, padding=defaultCode)
-train_y = tf.RaggedTensor.from_tensor(train_y_raw, padding=defaultCode)
-val_X = tf.RaggedTensor.from_tensor(val_X_raw, padding=defaultCode)
-val_y = tf.RaggedTensor.from_tensor(val_y_raw, padding=defaultCode)
-test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=defaultCode)
-test_y = tf.RaggedTensor.from_tensor(test_y_raw, padding=defaultCode)
+train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
+train_y = tf.RaggedTensor.from_tensor(train_y, padding=defaultCode)
+val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
+val_y = tf.RaggedTensor.from_tensor(val_y, padding=defaultCode)
 '''
+
 model = MaSIF_ligand_site(
   params["max_distance"],
   params["n_classes"],
