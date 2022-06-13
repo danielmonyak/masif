@@ -15,7 +15,7 @@ from time import process_time
 epochSize = 200
 
 ratio = 1
-savedPockets = 32
+savedPockets = 64
 epochSize = 50
 
 
