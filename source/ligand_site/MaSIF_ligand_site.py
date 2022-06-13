@@ -7,6 +7,7 @@ import functools
 #tf.debugging.set_log_device_placement(True)
 params = masif_opts["ligand"]
 minPockets = params['minPockets']
+prepSize = 2 * 100
 
 class MaSIF_ligand_site(Model):
     """
@@ -63,17 +64,17 @@ class MaSIF_ligand_site(Model):
         
         
         self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 1)
-        self.y_spec = tf.RaggedTensorSpec(shape=[None, self.n_ligands], dtype=tf.int32)
+        self.y_spec = tf.TensorSpec(shape=[prepSize, self.n_ligands], dtype=tf.int32)
     
     def map_func(self, row):
         n_pockets = tf.shape(row)[0]
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
         y = tf.cast(tf.one_hot(tf.squeeze(row) - 1, self.n_ligands), dtype = tf.int32)
-        return [self.makeRagged(y), sample]
+        return [y, sample]
     def make_y(self, y_raw):
         y, sample = tf.map_fn(fn=self.map_func, elems = y_raw,
                                       fn_output_signature = [self.y_spec, tf.TensorSpec([minPockets],dtype=tf.int32)])
-        return [tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1).to_tensor(), sample]
+        return [tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1), sample]
     
     def train_step(self, data):
         x, y_raw = data
@@ -207,8 +208,8 @@ class ConvLayer(layers.Layer):
         self.prodFunc = lambda a,b : a*b
         self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
         
-        self.inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
-        self.restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
+        self.inputFeatType = tf.TensorSpec(shape=[prepSize, 200, 5], dtype=tf.float32)
+        self.restType = tf.TensorSpec(shape=[prepSize, 200, 1], dtype=tf.float32)
         
     def map_func(self, row):
         n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
@@ -217,13 +218,12 @@ class ConvLayer(layers.Layer):
         idx = tf.cast(functools.reduce(self.prodFunc, bigShape), dtype = tf.int32)
         input_feat = tf.reshape(row[:idx], bigShape)
         rest = tf.reshape(row[idx:], [3] + smallShape)
-        data_list = [self.makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
-        return data_list
-    
+        return [input_feat, rest[0], rest[1], rest[2]]
+
     def unpack_x(self, x, sample):
-        data_list, sample = tf.map_fn(fn=self.map_func, elems = x,
+        data_list = tf.map_fn(fn=self.map_func, elems = x,
                                       fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
-        return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
+        return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1) for data in data_list]
     
     def call(self, x, sample):
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
