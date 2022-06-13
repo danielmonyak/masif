@@ -16,6 +16,7 @@ from time import process_time
 epochSize = 50
 
 ratio = 0
+savedPockets = 32
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 n_classes = params['n_classes']
@@ -79,13 +80,12 @@ with tf.device(dev):
             if npoints < minPockets:
                 continue
             
-            #print('d:', process_time())
+            ##
+            pocket_points = tf.random.shuffle(pocket_points)[:savedPockets]
+            npoints = savedPockets
+            ##
             pocket_empties = tf.squeeze(tf.where(labels == 0))
-            
-            #print('e:', process_time())
             empties_sample = tf.random.shuffle(pocket_empties)[:npoints*ratio]
-            
-            #print('f:', process_time())
             sample = tf.concat([pocket_points, empties_sample], axis=0)
             
             y_list.append(tf.gather(labels, sample))
