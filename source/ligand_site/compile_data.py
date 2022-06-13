@@ -11,7 +11,7 @@ import tensorflow as tf
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
-datadirLS = '/data02/daniel/masif/datasets/ligand_site'
+datadir = '/data02/daniel/masif/datasets/ligand_site'
 genPath = os.path.join(datadir, '{}_{}_{}.npy')
 #datadirTF2 = '/data02/daniel/masif/datasets/tf2'
 #genPath = os.path.join(datadir, '{}_{}.npy')
@@ -19,12 +19,12 @@ genPath = os.path.join(datadir, '{}_{}_{}.npy')
 dev = '/GPU:1'
 train_j = range(10)
 
-train_X_temp = np.load(os.path.join(datadirLS, 'train_X_{}.npy'.format(0)))
+#train_X_temp = np.load(os.path.join(datadirLS, 'train_X_{}.npy'.format(0)))
 #train_X_temp = tf.RaggedTensor.from_tensor(train_X_temp, padding=defaultCode)
 
 train_X_list = []
 for j in train_j:
   print(j)
-  train_X_list.append(np.load(os.path.join(datadirLS, 'train_X_{}.npy'.format(0))))
+  train_X_list.append(np.load(genPath.format('train', 'X', j)))
 
 train_X = tf.stack(train_X_list)
