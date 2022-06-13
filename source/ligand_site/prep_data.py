@@ -15,7 +15,7 @@ from time import process_time
 #lastEpoch = 4
 epochSize = 50
 
-ratio = 1
+ratio = 0
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 n_classes = params['n_classes']
