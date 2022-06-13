@@ -13,7 +13,7 @@ import tensorflow as tf
 from time import process_time
 
 #lastEpoch = 4
-epochSize = 300
+epochSize = 10
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -113,12 +113,11 @@ with tf.device(dev):
             i += 1
             
             #print('i:', process_time())
-            #if i % epochSize == 0:
-            if i % 10 == 0:
+            '''if i % epochSize == 0:
                 compile_and_save(feed_list, y_list, dataset, j)
                 feed_list = []
                 y_list = []
-                #j += 1
+                j += 1'''
         
         #if i == 105:
         #    break
