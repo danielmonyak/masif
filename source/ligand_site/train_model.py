@@ -26,14 +26,14 @@ val_X_raw = np.load(genPath.format('val', 'X'))
 val_y_raw = np.load(genPath.format('val', 'y'))
 test_X_raw = np.load(genPath.format('test', 'X'))
 test_y_raw =np.load(genPath.format('test', 'y'))
-
+'''
 train_X = tf.RaggedTensor.from_tensor(train_X_raw, padding=defaultCode)
 train_y = tf.RaggedTensor.from_tensor(train_y_raw, padding=defaultCode)
 val_X = tf.RaggedTensor.from_tensor(val_X_raw, padding=defaultCode)
 val_y = tf.RaggedTensor.from_tensor(val_y_raw, padding=defaultCode)
 test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=defaultCode)
 test_y = tf.RaggedTensor.from_tensor(test_y_raw, padding=defaultCode)
-
+'''
 model = MaSIF_ligand_site(
   params["max_distance"],
   params["n_classes"],
