@@ -98,7 +98,7 @@ class MaSIF_ligand_site(Model):
         # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
     
-    def call(self, x, sample):
+    def call(self, x, sample = None):
         ret = self.myConvLayer(x, sample)
         for l in self.myLayers:
             ret = l(ret)
