@@ -15,6 +15,7 @@ Released under an Apache License 2.0
 
 params = masif_opts["site"]
 
+'''
 if len(sys.argv) > 0:
     custom_params_file = sys.argv[1]
     custom_params = importlib.import_module(custom_params_file, package=None)
@@ -23,7 +24,7 @@ if len(sys.argv) > 0:
     for key in custom_params:
         print("Setting {} to {} ".format(key, custom_params[key]))
         params[key] = custom_params[key]
-
+'''
 
 # Apply mask to input_feat
 def mask_input_feat(input_feat, mask):
