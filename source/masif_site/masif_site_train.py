@@ -44,7 +44,7 @@ if "n_theta" in params:
         n_thetas=params["n_theta"],
         n_rhos=params["n_rho"],
         n_rotations=params["n_rotations"],
-        idx_gpu="/gpu:1",
+        idx_gpu="/gpu:2",
         feat_mask=params["feat_mask"],
         n_conv_layers=params["n_conv_layers"],
     )
@@ -54,7 +54,7 @@ else:
         n_thetas=4,
         n_rhos=3,
         n_rotations=4,
-        idx_gpu="/gpu:1",
+        idx_gpu="/gpu:2",
         feat_mask=params["feat_mask"],
         n_conv_layers=params["n_conv_layers"],
     )
