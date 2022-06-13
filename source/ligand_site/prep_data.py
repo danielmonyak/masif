@@ -113,8 +113,8 @@ with tf.device(dev):
             i += 1
             
             #print('i:', process_time())
-            
-            compile_and_save(feed_list, y_list, dataset, j)
+            if i > 1:
+                compile_and_save(feed_list, y_list, dataset, j)
             '''if i % epochSize == 0:
                 compile_and_save(feed_list, y_list, dataset, j)
                 feed_list = []
