@@ -19,11 +19,12 @@ datadirTF2 = '/data02/daniel/masif/datasets/tf2'
 dev = '/GPU:1'
 train_j = range(4)
 with tf.device(dev):
-  j = 0
+  '''j = 0
   train_X_list = []
   for j in range(2):
     print(j)
-    train_X_temp = np.load(os.path.join(datadirLS, 'train_X_{}.npy'.format(j)))
+    #train_X_temp = np.load(os.path.join(datadirLS, 'train_X_{}.npy'.format(j)))
+    train_X_temp = np.load(os.path.join(datadirTF2, 'train_X.npy'))
     print('one')
     train_X_temp = tf.RaggedTensor.from_tensor(train_X_temp, padding=defaultCode)
     print('two')
@@ -33,5 +34,7 @@ with tf.device(dev):
   print('four')
   #train_y_raw = np.load(genPath.format('train', 'y'))
   #train_y = tf.RaggedTensor.from_tensor(train_y_raw, padding=defaultCode)'''
+  train_X_temp = np.load(os.path.join(datadirTF2, 'train_X.npy'))
+  train_X_temp = tf.RaggedTensor.from_tensor(train_X_temp, padding=defaultCode)
   
-  print(tf.shape(train_X))
+  print(tf.shape(train_X_temp))
