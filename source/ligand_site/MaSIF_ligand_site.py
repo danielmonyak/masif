@@ -211,18 +211,29 @@ class ConvLayer(layers.Layer):
         self.inputFeatType = tf.TensorSpec(shape=[prepSize, 200, 5], dtype=tf.float32)
         self.restType = tf.TensorSpec(shape=[prepSize, 200, 1], dtype=tf.float32)
         
-    def map_func(self, row):
+        self.Map_func = lambda row : self.map_func(row)
+        self.Map_func_sample = lambda row : self.map_func(row, makeSample = True)
+        
+    def map_func(self, row, makeSample = False):
         n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
         bigShape = [n_pockets, 200, self.n_feat]
         smallShape = [n_pockets, 200, 1]
         idx = tf.cast(functools.reduce(self.prodFunc, bigShape), dtype = tf.int32)
         input_feat = tf.reshape(row[:idx], bigShape)
         rest = tf.reshape(row[idx:], [3] + smallShape)
-        return [input_feat, rest[0], rest[1], rest[2]]
+        data_list = [input_feat, rest[0], rest[1], rest[2]]
+        if not makeSample:
+            return data_list
+        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
+        return [data_list, sample]
 
     def unpack_x(self, x, sample):
-        data_list = tf.map_fn(fn=self.map_func, elems = x,
-                                      fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
+        if sample:
+            data_list = tf.map_fn(fn=self.Map_func, elems = x,
+                                          fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
+        else:
+            data_list, sample = tf.map_fn(fn=self.Map_func_sample, elems = x,
+                                          fn_output_signature = [[self.inputFeatType, self.restType, self.restType, self.restType], self.sampleSpec])
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1) for data in data_list]
     
     def call(self, x, sample):
