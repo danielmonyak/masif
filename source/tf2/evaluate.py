@@ -22,7 +22,7 @@ datadir = '/data02/daniel/masif/datasets/tf2'
 test_X_raw = np.load(os.path.join(datadir, 'test_X.npy'))
 test_y = np.load(os.path.join(datadir, 'test_y.npy'))
 
-defaultCode = -1234567
+defaultCode = 123.45679
 
 with tf.device('/CPU:0'):
   test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=defaultCode)
