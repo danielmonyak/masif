@@ -63,14 +63,11 @@ class MaSIF_ligand_site(Model):
             layers.Dense(1, activation="sigmoid")
         ]
         
-        #self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 1)
-        #self.y_spec = tf.RaggedTensorSpec(shape=[None, self.n_ligands], dtype=tf.int32)
         self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
     
     def map_func(self, row):
         n_pockets = tf.shape(row)[0]
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        #return [self.makeRagged(row), sample]
         return sample
     def make_y(self, y_raw):
         sample = tf.map_fn(fn=self.map_func, elems = y_raw, fn_output_signature = self.sampleSpec)
@@ -216,11 +213,8 @@ class ConvLayer(layers.Layer):
         self.prodFunc = lambda a,b : a*b
         self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
         
-        #self.inputFeatType = tf.TensorSpec(shape=[prepSize, 200, 5], dtype=tf.float32)
-        #self.restType = tf.TensorSpec(shape=[prepSize, 200, 1], dtype=tf.float32)
         self.inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
         self.restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
-        
         self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
         
         self.Map_func = lambda row : self.map_func(row)
