@@ -25,6 +25,14 @@ train_y = np.load(genPath.format('train', 'y'))
 val_X = np.load(genPath.format('val', 'X'))
 val_y = np.load(genPath.format('val', 'y'))
 
+##
+def binarize_y(y):
+  y[y > 0] = 1
+  return tf.constant(y)
+train_y = binarize_y(train_y)
+val_y = binarize_y(val_y)
+##
+
 '''
 train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
 train_y = tf.RaggedTensor.from_tensor(train_y, padding=defaultCode)
