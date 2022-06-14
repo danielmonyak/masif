@@ -26,8 +26,8 @@ model.compile(optimizer = model.opt,
 )
 
 datadir = '/data02/daniel/masif/datasets/ligand_site'
-test_X = np.load(os.path.join(datadir, 'test_X.npy'))
-_ = model.predict(train_X[:1])
+X = np.load(os.path.join(datadir, 'test_X.npy'))
+_ = model.predict(X[:1])
 
 model.load_weights(ckpPath)
 model.save(modelPath)
