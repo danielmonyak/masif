@@ -26,6 +26,8 @@ train_y = np.load(genPath.format('train', 'y'))
 val_X = np.load(genPath.format('val', 'X'))
 val_y = np.load(genPath.format('val', 'y'))
 
+defaultCode = -1234567
+
 train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
 val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
 
