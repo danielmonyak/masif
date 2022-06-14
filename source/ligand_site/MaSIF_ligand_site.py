@@ -62,52 +62,9 @@ class MaSIF_ligand_site(Model):
             layers.Dense(30, activation="relu"),
             layers.Dense(1, activation="sigmoid")
         ]
-        
-        
-        self.y_spec = tf.TensorSpec(shape=[prepSize], dtype=tf.int32)
-        self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
     
-    def map_func(self, row):
-        n_pockets = tf.shape(row)[0]
-        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        return sample
-    def make_y(self, y_raw):
-        sample = tf.map_fn(fn=self.map_func, elems = y_raw,
-                                      fn_output_signature = self.sampleSpec)
-        return [tf.gather(params = y_raw, indices = sample, axis = 1, batch_dims = 1), sample]
-    
-    def train_step(self, data):
-        x, y_raw = data
-        y, sample = self.make_y(y_raw)
-        
-        with tf.GradientTape() as tape:
-            y_pred = self(x, sample = sample, training=True)  # Forward pass
-            # Compute the loss value
-            # (the loss function is configured in `compile()`)
-            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
-
-        # Compute gradients
-        trainable_vars = self.trainable_variables
-        gradients = tape.gradient(loss, trainable_vars)
-        
-        # Update weights
-        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
-        # Update metrics (includes the metric that tracks the loss)
-        self.compiled_metrics.update_state(y, y_pred)
-        # Return a dict mapping metric names to current value
-        return {m.name: m.result() for m in self.metrics}
-    
-    def test_step(self, data):
-        x, y_raw = data
-        y, sample = self.make_y(y_raw)
-        
-        y_pred = self(x, sample = sample, training=False)
-        self.compiled_loss(y, y_pred, regularization_losses=self.losses)
-        self.compiled_metrics.update_state(y, y_pred)
-        return {m.name: m.result() for m in self.metrics}
-    
-    def call(self, x, sample = None):
-        ret = self.myConvLayer(x, sample)
+    def call(self, x):
+        ret = self.myConvLayer(x)
         for l in self.myLayers:
             ret = l(ret)
         return ret
@@ -217,12 +174,8 @@ class ConvLayer(layers.Layer):
         
         self.inputFeatType = tf.TensorSpec(shape=[prepSize, 200, 5], dtype=tf.float32)
         self.restType = tf.TensorSpec(shape=[prepSize, 200, 1], dtype=tf.float32)
-        self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
-        
-        self.Map_func = lambda row : self.map_func(row)
-        self.Map_func_sample = lambda row : self.map_func(row, makeSample = True)
-        
-    def map_func(self, row, makeSample = False):
+    
+    def map_func(self, row):
         n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
         bigShape = [n_pockets, 200, self.n_feat]
         smallShape = [n_pockets, 200, 1]
@@ -230,22 +183,14 @@ class ConvLayer(layers.Layer):
         input_feat = tf.reshape(row[:idx], bigShape)
         rest = tf.reshape(row[idx:], [3] + smallShape)
         data_list = [input_feat, rest[0], rest[1], rest[2]]
-        if not makeSample:
-            return data_list
-        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        return [data_list, sample]
-
-    def unpack_x(self, x, sample):
-        if sample is None:
-            data_list, sample = tf.map_fn(fn=self.Map_func_sample, elems = x,
-                                              fn_output_signature = [[self.inputFeatType, self.restType, self.restType, self.restType], self.sampleSpec])
-        else:
-            data_list = tf.map_fn(fn=self.Map_func, elems = x,
-                                          fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
-        return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1) for data in data_list]
+        return data_list
     
-    def call(self, x, sample):
-        input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
+    def unpack_x(self, x):
+        return tf.map_fn(fn=self.map_func, elems = x,
+                                          fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
+    
+    def call(self, x):
+        input_feat, rho_coords, theta_coords, mask = self.unpack_x(x)
         
         self.global_desc_1 = []
         
