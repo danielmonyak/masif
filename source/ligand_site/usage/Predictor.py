@@ -32,16 +32,16 @@ class Predictor:
       os.path.join(precom_dir, "p1_mask.npy")
     )
     self.n_pockets = input_feat.shape[0]
-    
+
     data_dict = {'input_feat' : input_feat.flatten(), 'rho_coords' : rho_coords.flatten(),
                  'theta_coords' : theta_coords.flatten(), 'mask' : mask.flatten()}
-    flat_list = list(map(self.getDataFromDict, key_list))
-    return np.concatenate(flat_list)
+    flat_list = list(map(self.getDataFromDict, self.key_list))
+    return tf.concat(flat_list, axis = 0)
   
   def predictLigandIdx(self, X):
     ligand_pred_list = []
     for i in range(n_predictions):
-      ligand_pred_list.append(ligand_model(X))
+      ligand_pred_list.append(self.ligand_model(X))
     
     ligand_preds = np.vstack(ligand_pred_list)
     ligand_preds_mean = np.mean(ligand_preds, axis=0)
@@ -55,9 +55,8 @@ class Predictor:
       sample = np.arange(minPockets * i, minPockets * (i+1)) 
       if i == fullSamples:
         sample[garbage_idx:] = 0
-      
-      ligand_site_pred_list.append(ligand_site_model(X, sample))
-    
+      ligand_site_pred_list.append(self.ligand_site_model(X, sample))
+
     ligand_site_preds_raw = np.vstack(ligand_site_pred_list)
     ligand_site_preds = ligand_site_preds_raw[:garbage_idx]
     coords_list = np.where(ligand_site_preds > self.threshold)
