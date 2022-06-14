@@ -215,7 +215,7 @@ class ConvLayer(layers.Layer):
                                               fn_output_signature = [[inputFeatSpec, restSpec, restSpec, restSpec], sampleSpec])
         else:
             data_list = tf.map_fn(fn=self.Map_func, elems = x,
-                                          fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
+                                          fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
     
     def call(self, x, sample):
