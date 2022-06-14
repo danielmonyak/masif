@@ -8,43 +8,42 @@ from IPython.core.debugger import set_trace
 import importlib
 import sys
 from default_config.masif_opts import masif_opts
-#####
-# Edited by Daniel Monyak
-from MaSIF_ligand_TF2 import MaSIF_ligand
-#####
 from read_ligand_tfrecords import _parse_function
 import tensorflow as tf
-#import time
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
-
-# Load dataset
-training_data = tf.data.TFRecordDataset(
-    os.path.join(params["tfrecords_dir"], "training_data_sequenceSplit_30.tfrecord")
-)
-validation_data = tf.data.TFRecordDataset(
-    os.path.join(params["tfrecords_dir"], "validation_data_sequenceSplit_30.tfrecord")
-)
-testing_data = tf.data.TFRecordDataset(
-    os.path.join(params["tfrecords_dir"], "testing_data_sequenceSplit_30.tfrecord")
-)
-training_data = training_data.map(_parse_function)
-validation_data = validation_data.map(_parse_function)
-testing_data = testing_data.map(_parse_function)
-
 minPockets = params['minPockets']
 
-outdir = 'datasets/'
+outdir = '/data02/daniel/masif/datasets/tf2/new'
+genOutPath = os.path.join(outdir, '{}_{}.npy')
 
-dataset_list = {'train' : training_data, 'val' : validation_data, 'test' : testing_data}
+def helper(feed_dict):
+    def helperInner(tsr_key):
+        tsr = feed_dict[tsr_key]
+        return tf.reshape(tsr, [-1])
+    key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
+    flat_list = list(map(helperInner, key_list))
+    return tf.concat(flat_list, axis = 0)
+
+def compile_and_save(feed_list, y_list, dataset):
+    tsr_list = list(map(helper, feed_list))
+    X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
+    y = tf.stack(y_list, axis = 0)
+    np.save(genOutPath.format(dataset, 'X'), X)
+    np.save(genOutPath.format(dataset, 'y'), y)
+
+dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
+#dataset_list = {'train' : training_data, 'val' : validation_data, 'test' : testing_data}
+
 for dataset in dataset_list.keys():
-    print('\n' + dataset)
     i = 0
     
     feed_list = []
     y_list = []
-    for data_element in dataset_list[dataset]:
+
+    temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
+    for data_element in temp_data:
         print('{} record {}'.format(dataset, i))
         
         random_ligand = 0
@@ -57,8 +56,6 @@ for dataset in dataset_list.keys():
         npoints = pocket_points.shape[0]
         if npoints < minPockets:
             continue
-        # select random pockets in training, not prep_data.py
-        #sample = np.random.choice(pocket_points, minPockets, replace=False)
         sample = pocket_points
         
         feed_dict = {
@@ -76,19 +73,6 @@ for dataset in dataset_list.keys():
         
         i += 1
 
-    tsr_list = []
-    for feed_dict in feed_list:
-        flat_list = []
-        for tsr_key in ['input_feat', 'rho_coords', 'theta_coords', 'mask']:
-            tsr = feed_dict[tsr_key]
-            flat_list.append(tf.reshape(tsr, [-1]))
-        tsr_list.append(tf.concat(flat_list, axis = 0))
-    
-    #X = tf.stack(tsr_list)
-    X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
-    y = tf.stack(y_list, axis = 0)
-
-    np.save(outdir + '{}_X.npy'.format(dataset), X)
-    np.save(outdir + '{}_y.npy'.format(dataset), y)
+    compile_and_save(feed_list, y_list, dataset)
 
 print('Finished!')
