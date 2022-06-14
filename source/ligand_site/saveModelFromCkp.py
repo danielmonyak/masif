@@ -14,10 +14,11 @@ modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 modelPath = os.path.join(modelDir, 'savedModel')
 
-model = MaSIF_ligand(
+model = MaSIF_ligand_site(
   params["max_distance"],
   params["n_classes"],
-  feat_mask=params["feat_mask"]
+  feat_mask=params["feat_mask"],
+  keep_prob = 1.0
 )
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
