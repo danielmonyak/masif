@@ -2,8 +2,8 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 from default_config.masif_opts import masif_opts
+from default_config.util import *
 import functools
-from util import *
 
 #tf.debugging.set_log_device_placement(True)
 params = masif_opts["ligand"]
