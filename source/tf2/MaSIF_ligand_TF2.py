@@ -3,6 +3,7 @@ import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 from default_config.masif_opts import masif_opts
 import functools
+from util import *
 
 #tf.debugging.set_log_device_placement(True)
 params = masif_opts["ligand"]
@@ -29,9 +30,6 @@ class MaSIF_ligand(Model):
         
         ##
         self.keep_prob = keep_prob
-        
-        self.bigShape = [minPockets, 200, 5]
-        self.smallShape = [minPockets, 200, 1]
         ##
         
         # order of the spectral filters
@@ -51,13 +49,10 @@ class MaSIF_ligand(Model):
         self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
  
         
-        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask,
-                                    self.bigShape, self.smallShape)
+        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
         
         self.myLayers=[
-            #layers.InputLayer(input_shape = [self.bigLen + self.smallLen * 3]),
-            layers.InputLayer(input_shape = [None], ragged=True),
-            self.myConvLayer,
+            #layers.InputLayer(input_shape = [None], ragged=True),
             layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             CovarLayer(),
@@ -67,8 +62,8 @@ class MaSIF_ligand(Model):
             layers.Dense(self.n_ligands, activation="softmax")
         ]
     
-    def call(self, inputs):
-        ret = inputs
+    def call(self, x):
+        ret = self.myConvLayer(x, sample)
         for l in self.myLayers:
             ret = l(ret)
         return ret
@@ -89,9 +84,7 @@ class ConvLayer(layers.Layer):
         n_thetas,
         n_rhos,
         n_rotations,
-        feat_mask,
-        bigShape,
-        smallShape):
+        feat_mask):
         
         super(ConvLayer, self).__init__()
         
@@ -173,66 +166,24 @@ class ConvLayer(layers.Layer):
                     trainable = True
                 )
             )
-        
-        self.prodFunc = lambda a,b : a*b
-        self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
-
     
     def map_func(self, row):
         n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
         bigShape = [n_pockets, 200, self.n_feat]
         smallShape = [n_pockets, 200, 1]
-        idx = tf.cast(functools.reduce(self.prodFunc, bigShape), dtype = tf.int32)
+        idx = tf.cast(functools.reduce(prodFunc, bigShape), dtype = tf.int32)
         input_feat = tf.reshape(row[:idx], bigShape)
         rest = tf.reshape(row[idx:], [3] + smallShape)
-        #sample = np.random.choice(n_pockets, minPockets, replace = False)
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        data_list = [self.makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
-        #return [data_list, tf.constant(sample, dtype=tf.int32)]
+        data_list = [makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
         return [data_list, sample]
     
+    def unpack_x(self, x):
+        data_list, sample = tf.map_fn(fn=self.map_func, elems = x, fn_output_signature = [[inputFeatSpec, restSpec, restSpec, restSpec], sampleSpec])
+        return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
+    
     def call(self, x):
-        '''
-        #batches = tf.shape(x)[0]
-        batches = x.shape[0]
-        
-        def func1(row): return row.shape[0]/8
-        def func2(num): return np.random.choice(num, minPockets, replace = True)
-        n_pockets = tf.cast(tf.map_fn(fn=func1, elems = x, fn_output_signature = 'float'), dtype = tf.int32)
-        sample_tsr = tf.map_fn(fn=func2, elems = n_pockets, fn_output_signature = tf.TensorSpec(32))
-        
-        #self.n_pockets = x.shape[1]/(3 + self.n_feat)
-        #if self.n_pockets != int(self.n_pockets):
-        #    sys.exit('n_pockets is not an integer...')
-        #sample = np.random.choice(int(self.n_pockets), [batches, minPockets], replace=False)
-        
-        bigShape = [self.n_pockets, 200, self.n_feat]
-        smallShape = [self.n_pockets, 200, 1]
-        prodFunc = lambda a,b : a*b
-        bigLen = functools.reduce(prodFunc, bigShape)
-        #smallLen = functools.reduce(prodFunc, smallShape)
-        def func(row):
-            n_pockets = int(row.shape[0]/8)
-            shape = [int(n_pockets/200), 200, 5]
-            idx = int(functools.reduce(prodFunc, shape))
-            return tf.RaggedTensor.from_tensor(tf.reshape(row[:idx], shape), ragged_rank = 2)
-        input_feat_full = tf.map_fn(fn=func, elems = x, fn_output_signature = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32))
-        input_feat = tf.gather(input_feat_full, sample, axis = 1)
-        #input_feat_full = tf.reshape(x[:, :bigLen], [batches] + bigShape)
-        #input_feat = tf.gather(input_feat_full, sample, axis = 1)
-        rest = tf.reshape(x[:, bigLen:], [batches, 3] + smallShape)
-        rho_coords = tf.gather(rest[:, 0, :, :, :], sample, axis = 1)
-        theta_coords = tf.gather(rest[:, 1, :, :, :], sample, axis = 1)
-        mask = tf.gather(rest[:, 2, :, :, :], sample, axis = 1)
-        '''
-
-        inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
-        restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
-        ret = tf.map_fn(fn=self.map_func, elems = x, fn_output_signature = [[inputFeatType, restType, restType, restType], tf.TensorSpec([minPockets], dtype = tf.int32)])
-
-        data_list, sample = ret
-        input_feat, rho_coords, theta_coords, mask = [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
-
+        input_feat, rho_coords, theta_coords, mask = self.unpack_x(x)
         
         self.global_desc_1 = []
         
