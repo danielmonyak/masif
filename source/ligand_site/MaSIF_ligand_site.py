@@ -64,7 +64,7 @@ class MaSIF_ligand_site(Model):
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
         return sample
     def make_y(self, y_raw):
-        sample = tf.map_fn(fn=self.map_func, elems = y_raw, fn_output_signature = self.sampleSpec)
+        sample = tf.map_fn(fn=self.map_func, elems = y_raw, fn_output_signature = sampleSpec)
         return (tf.gather(params = y_raw, indices = sample, axis = 1, batch_dims = 1), sample)
     
     def train_step(self, data):
