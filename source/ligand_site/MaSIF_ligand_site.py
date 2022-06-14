@@ -70,11 +70,11 @@ class MaSIF_ligand_site(Model):
     def map_func(self, row):
         n_pockets = tf.shape(row)[0]
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        return sample
+        return [self.makeRagged(row), sample]
     def make_y(self, y_raw):
         sample = tf.map_fn(fn=self.map_func, elems = y_raw,
-                                      fn_output_signature = self.sampleSpec)
-        return [tf.gather(params = y_raw, indices = sample, axis = 1, batch_dims = 1), sample]
+                                      fn_output_signature = [self.y_spec, self.sampleSpec])
+        return [tf.gather(params = y_raw, indices = sample, axis = 1, batch_dims = 1).to_tensor(), sample]
     
     def train_step(self, data):
         x, y_raw = data
@@ -214,9 +214,13 @@ class ConvLayer(layers.Layer):
             )
         
         self.prodFunc = lambda a,b : a*b
+        self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
         
-        self.inputFeatType = tf.TensorSpec(shape=[prepSize, 200, 5], dtype=tf.float32)
-        self.restType = tf.TensorSpec(shape=[prepSize, 200, 1], dtype=tf.float32)
+        #self.inputFeatType = tf.TensorSpec(shape=[prepSize, 200, 5], dtype=tf.float32)
+        #self.restType = tf.TensorSpec(shape=[prepSize, 200, 1], dtype=tf.float32)
+        self.inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
+        self.restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
+        
         self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
         
         self.Map_func = lambda row : self.map_func(row)
@@ -229,7 +233,7 @@ class ConvLayer(layers.Layer):
         idx = tf.cast(functools.reduce(self.prodFunc, bigShape), dtype = tf.int32)
         input_feat = tf.reshape(row[:idx], bigShape)
         rest = tf.reshape(row[idx:], [3] + smallShape)
-        data_list = [input_feat, rest[0], rest[1], rest[2]]
+        data_list = [self.makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
         if not makeSample:
             return data_list
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
@@ -242,7 +246,7 @@ class ConvLayer(layers.Layer):
         else:
             data_list = tf.map_fn(fn=self.Map_func, elems = x,
                                           fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
-        return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1) for data in data_list]
+        return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
     
     def call(self, x, sample):
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
