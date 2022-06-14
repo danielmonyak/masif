@@ -20,7 +20,7 @@ class Predictor:
   
   def getData(self, precom_dir):
     input_feat = np.load(
-        os.path.join(precom_dir "p1_input_feat.npy")
+        os.path.join(precom_dir, "p1_input_feat.npy")
     )
     rho_coords = np.load(
         os.path.join(precom_dir, "p1_rho_wrt_center.npy")
