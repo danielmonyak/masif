@@ -7,7 +7,7 @@ ligand_list = params['ligand_list']
 minPockets = params['minPockets']
 
 class Predictor:
-  def __init__(self, ligand_model, ligand_site_model, n_predictions = 100):
+  def __init__(self, ligand_model, ligand_site_model, n_predictions = 100, threshold = 0.5):
     self.ligand_model = ligand_model
     self.ligand_site_model = ligand_site_model
     
@@ -15,6 +15,7 @@ class Predictor:
     self.getDataFromDict = lambda key : data_dict[key]
     
     self.n_predictions = n_predictions
+    self.threshold = threshold
   
   def getData(self, precom_dir):
     input_feat = np.load(
@@ -36,17 +37,16 @@ class Predictor:
     flat_list = list(map(self.getDataFromDict, key_list))
     return np.concatenate(flat_list)
   
-  def predict(self, precom_dir):
-    X = self.getData(precom_dir)
-    
+  def predictLigandIdx(self, X):
     ligand_pred_list = []
     for i in range(n_predictions):
       ligand_pred_list.append(ligand_model(X))
     
     ligand_preds = np.vstack(ligand_pred_list)
     ligand_preds_mean = np.mean(ligand_preds, axis=0)
-    ligand_pred = ligand_list[ligand_preds_mean.argmax()]
-    
+    return ligand_preds_mean.argmax()
+  
+  def predictCoords(self, X):
     ligand_site_pred_list = []
     fullSamples = self.n_pockets // minPockets
     garbage_idx = self.n_pockets % minPockets
@@ -59,5 +59,24 @@ class Predictor:
     
     ligand_site_preds_raw = np.vstack(ligand_site_pred_list)
     ligand_site_preds = ligand_site_preds_raw[:garbage_idx]
-    coord_list = np.where(ligand_site_preds > self.threshold)
+    coords_list = np.where(ligand_site_preds > self.threshold)
+    return coords_list
+  
+  def getXYZCoords(self, precom_dir):
+    X = np.load(os.path.join(precom_dir, pdb + "_", "p1_X.npy"))
+    Y = np.load(os.path.join(precom_dir, pdb + "_", "p1_Y.npy"))
+    Z = np.load(os.path.join(precom_dir, pdb + "_", "p1_Z.npy"))
+    xyz_coords = np.vstack([X, Y, Z]).T
+    return xyz_coords
+  
+  def predict(self, precom_dir):
+    X = self.getData(precom_dir)
+    
+    ligandIdx_pred = self.predictLigandIdx(X)
+    ligand_pred = ligand_list[ligandIdx_pred]
+    
+    coords_list = self.predictCoords(X)
+    xyz_coords = self.getXYZCoords(precom_dir)
+    coord_list = xyz_coords[coords_list]
+    
     return (ligand_pred, coord_list)
