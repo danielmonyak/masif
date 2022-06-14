@@ -48,7 +48,7 @@ class MaSIF_ligand_site(Model):
         
         
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-        self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
+        self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = False)
  
         
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask,
@@ -59,23 +59,22 @@ class MaSIF_ligand_site(Model):
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
-            layers.Dense(self.n_ligands, activation="softmax")
+            layers.Dense(30, activation="relu"),
+            layers.Dense(1, activation="sigmoid")
         ]
         
         
-        self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 1)
-        self.y_spec = tf.TensorSpec(shape=[prepSize, self.n_ligands], dtype=tf.int32)
+        self.y_spec = tf.TensorSpec(shape=[prepSize], dtype=tf.int32)
         self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
     
     def map_func(self, row):
         n_pockets = tf.shape(row)[0]
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        y = tf.cast(tf.one_hot(tf.squeeze(row) - 1, self.n_ligands), dtype = tf.int32)
-        return [y, sample]
+        return sample
     def make_y(self, y_raw):
-        y, sample = tf.map_fn(fn=self.map_func, elems = y_raw,
-                                      fn_output_signature = [self.y_spec, self.sampleSpec])
-        return [tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1), sample]
+        sample = tf.map_fn(fn=self.map_func, elems = y_raw,
+                                      fn_output_signature = self.sampleSpec)
+        return [tf.gather(params = y_raw, indices = sample, axis = 1, batch_dims = 1), sample]
     
     def train_step(self, data):
         x, y_raw = data
@@ -215,7 +214,6 @@ class ConvLayer(layers.Layer):
             )
         
         self.prodFunc = lambda a,b : a*b
-        self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
         
         self.inputFeatType = tf.TensorSpec(shape=[prepSize, 200, 5], dtype=tf.float32)
         self.restType = tf.TensorSpec(shape=[prepSize, 200, 1], dtype=tf.float32)
