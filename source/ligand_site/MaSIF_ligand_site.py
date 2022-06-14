@@ -63,17 +63,18 @@ class MaSIF_ligand_site(Model):
             layers.Dense(1, activation="sigmoid")
         ]
         
-        self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 1)
-        self.y_spec = tf.RaggedTensorSpec(shape=[None, self.n_ligands], dtype=tf.int32)
+        #self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 1)
+        #self.y_spec = tf.RaggedTensorSpec(shape=[None, self.n_ligands], dtype=tf.int32)
         self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
     
     def map_func(self, row):
         n_pockets = tf.shape(row)[0]
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        return [self.makeRagged(row), sample]
+        #return [self.makeRagged(row), sample]
+        return sample
     def make_y(self, y_raw):
         sample = tf.map_fn(fn=self.map_func, elems = y_raw,
-                                      fn_output_signature = [self.y_spec, self.sampleSpec])
+                                      fn_output_signature = self.sampleSpec)
         return [tf.gather(params = y_raw, indices = sample, axis = 1, batch_dims = 1).to_tensor(), sample]
     
     def train_step(self, data):
