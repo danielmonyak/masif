@@ -10,17 +10,12 @@ import sys
 from default_config.masif_opts import masif_opts
 from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
-from time import process_time
-
-epochSize = 200
 
 ratio = 1
 epochSize = 100
 
-
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
-n_classes = params['n_classes']
 minPockets = params['minPockets']
 savedPockets = params['savedPockets']
 
@@ -51,8 +46,6 @@ gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str[1:])'''
 #tf.config.experimental.set_memory_growth(gpus, True)
 
-#with strategy.scope():
-#with tf.device(dev):
 for dataset in dataset_list.keys():
     i = 0
     j = 0
