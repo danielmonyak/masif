@@ -14,15 +14,16 @@ modelPath = os.path.join(modelDir, 'savedModel')
 
 model = tf.keras.models.load_model(modelPath)
 
-datadir = 'datasets/'
+datadir = '/data02/daniel/masif/datasets/tf2'
 #train_X = np.load(datadir + 'train_X.npy')
 #train_y = np.load(datadir + 'train_y.npy')
 #val_X = np.load(datadir + 'val_X.npy')
 #val_y = np.load(datadir + 'val_y.npy')
-test_X_raw = np.load(datadir + 'test_X.npy')
-test_y = np.load(datadir + 'test_y.npy')
+test_X_raw = np.load(os.path.join(datadir, 'test_X.npy'))
+test_y = np.load(os.path.join(datadir, 'test_y.npy'))
 
-test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=defaultCode)
+with tf.device('/CPU:0'):
+  test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=defaultCode)
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
@@ -32,10 +33,10 @@ strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
   #train_res = model.evaluate(train_X, train_y, use_multiprocessing=True)
   #val_res = model.evaluate(val_X, val_y, use_multiprocessing=True)
   #test_res = model.evaluate(test_X, test_y, use_multiprocessing=True)
-#with tf.device('/GPU:3'):
-#  y_pred_probs = model.predict(test_X, use_multiprocessing=True)
+with tf.device('/GPU:3'):
+  y_pred_probs = model.predict(test_X, use_multiprocessing=True)
 
-print('model.evaluate:', test_res)
+#print('model.evaluate:', test_res)
 
 y_true = test_y.argmax(axis = 1)
 y_pred = y_pred_probs.argmax(axis = 1)
