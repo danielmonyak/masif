@@ -32,8 +32,8 @@ strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
   #train_res = model.evaluate(train_X, train_y, use_multiprocessing=True)
   #val_res = model.evaluate(val_X, val_y, use_multiprocessing=True)
   #test_res = model.evaluate(test_X, test_y, use_multiprocessing=True)
-with tf.device('/GPU:3'):
-  y_pred_probs = model.predict(test_X, use_multiprocessing=True)
+#with tf.device('/GPU:3'):
+#  y_pred_probs = model.predict(test_X, use_multiprocessing=True)
 
 print('model.evaluate:', test_res)
 
