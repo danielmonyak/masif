@@ -15,7 +15,6 @@ from time import process_time
 epochSize = 200
 
 ratio = 1
-savedPockets = 100
 epochSize = 100
 
 
@@ -23,9 +22,9 @@ params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 n_classes = params['n_classes']
 minPockets = params['minPockets']
+savedPockets = params['savedPockets']
 
-outdir = '/data02/daniel/masif/datasets/ligand_site'
-#outdir = '.'
+outdir = '/data02/daniel/masif/datasets/ligand_site/split'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 def helper(feed_dict):
@@ -40,13 +39,11 @@ def compile_and_save(feed_list, y_list, dataset, j):
     tsr_list = list(map(helper, feed_list))
     X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
     y = tf.ragged.stack(y_list).to_tensor(default_value = defaultCode)
-    #X = tf.stack(tsr_list)
-    #y = tf.stack(y_list)
     np.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
     np.save(genOutPath.format(dataset, 'y_{}'.format(j)), y)
 
-#dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
-dataset_list = {'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
+dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
+#dataset_list = {'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 
 dev = '/GPU:1'
 '''gpus = tf.config.experimental.list_logical_devices('GPU')
@@ -104,14 +101,11 @@ for dataset in dataset_list.keys():
                 'mask' : mask
             }
             
-            #print('h:', process_time())
             feed_list.append(feed_dict)
             i += 1
             
-            #print('i:', process_time())
             if i % epochSize == 0:
                 compile_and_save(feed_list, y_list, dataset, j)
-                #break
                 feed_list = []
                 y_list = []
                 j += 1
