@@ -14,6 +14,9 @@ import tensorflow as tf
 ratio = 1
 epochSize = 100
 
+next_epoch = 0
+next_epoch = 9
+
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 minPockets = params['minPockets']
@@ -32,8 +35,9 @@ def helper(feed_dict):
 
 def compile_and_save(feed_list, y_list, dataset, j):
     tsr_list = list(map(helper, feed_list))
-    X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
-    y = tf.ragged.stack(y_list).to_tensor(default_value = defaultCode)
+    with tf.device('/CPU:0'):
+        X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
+        y = tf.ragged.stack(y_list).to_tensor(default_value = defaultCode)
     np.save(genOutPath.format(dataset, 'X_{}'.format(j)), X)
     np.save(genOutPath.format(dataset, 'y_{}'.format(j)), y)
 
@@ -46,15 +50,22 @@ gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str[1:])'''
 #tf.config.experimental.set_memory_growth(gpus, True)
 
-for dataset in dataset_list.keys():
+#for dataset in dataset_list.keys():
+for dataset in ['train']:
     i = 0
-    j = 0
-
+    #j = 0
+    j = next_epoch
+    
     feed_list = []
     y_list = []
 
     temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
     for data_element in temp_data:
+        if i < j * epochSize:
+            print('Skipping {} record {}'.format(dataset, i))
+            i += 1
+            continue
+        
         print('{} record {}'.format(dataset, i))
 
         labels_raw = data_element[4]
