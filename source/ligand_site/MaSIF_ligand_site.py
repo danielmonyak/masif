@@ -7,7 +7,7 @@ import functools
 #tf.debugging.set_log_device_placement(True)
 params = masif_opts["ligand"]
 minPockets = params['minPockets']
-prepSize = 2 * 100
+prepSize = 2 * params['savedPockets']
 
 class MaSIF_ligand_site(Model):
     """
