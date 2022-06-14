@@ -79,7 +79,6 @@ class MaSIF_ligand_site(Model):
     
     def train_step(self, data):
         x, y_raw = data
-        
         y, sample = self.make_y(y_raw)
         
         with tf.GradientTape() as tape:
@@ -97,6 +96,15 @@ class MaSIF_ligand_site(Model):
         # Update metrics (includes the metric that tracks the loss)
         self.compiled_metrics.update_state(y, y_pred)
         # Return a dict mapping metric names to current value
+        return {m.name: m.result() for m in self.metrics}
+    
+    def test_step(self, data):
+        x, y_raw = data
+        y, sample = self.make_y(y_raw)
+        
+        y_pred = self(x, sample = sample, training=False)
+        self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+        self.compiled_metrics.update_state(y, y_pred)
         return {m.name: m.result() for m in self.metrics}
     
     def call(self, x, sample = None):
