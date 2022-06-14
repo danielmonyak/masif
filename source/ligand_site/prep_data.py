@@ -14,7 +14,7 @@ import tensorflow as tf
 ratio = 1
 epochSize = 100
 
-next_epoch = 0
+next_epoch = 9
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -52,7 +52,7 @@ for gpu in gpus:
 dev = '/GPU:1'
 with tf.device(dev):
     #for dataset in dataset_list.keys():
-    for dataset in ['val', 'test']:
+    for dataset in ['train']:
         i = 0
         j = next_epoch
 
@@ -114,7 +114,7 @@ with tf.device(dev):
                 y_list = []
                 j += 1
         
-    compile_and_save(feed_list, y_list, dataset, j)
-    
+        compile_and_save(feed_list, y_list, dataset, j)
+
 
 print('Finished!')
