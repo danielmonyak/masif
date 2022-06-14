@@ -3,8 +3,8 @@ import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 from default_config.masif_opts import masif_opts
 import functools
+from util import *
 
-#tf.debugging.set_log_device_placement(True)
 params = masif_opts["ligand"]
 minPockets = params['minPockets']
 prepSize = 2 * params['savedPockets']
@@ -29,9 +29,6 @@ class MaSIF_ligand_site(Model):
         
         ##
         self.keep_prob = keep_prob
-        
-        self.bigShape = [minPockets, 200, 5]
-        self.smallShape = [minPockets, 200, 1]
         ##
         
         # order of the spectral filters
@@ -51,8 +48,7 @@ class MaSIF_ligand_site(Model):
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = False)
  
         
-        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask,
-                                    self.bigShape, self.smallShape)
+        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
         
         self.myLayers=[
             layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
@@ -63,7 +59,6 @@ class MaSIF_ligand_site(Model):
             layers.Dense(1, activation="sigmoid")
         ]
         
-        self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
     
     def map_func(self, row):
         n_pockets = tf.shape(row)[0]
@@ -109,15 +104,6 @@ class MaSIF_ligand_site(Model):
             ret = l(ret)
         return ret
 
-class CovarLayer(layers.Layer):
-    def __init__(self):
-        super(CovarLayer, self).__init__()
-    def call(self, x):
-        ret = tf.matmul(tf.transpose(x, perm=[0, 2, 1]), x)
-        scale = tf.cast(tf.shape(x)[1], tf.float32)
-        return ret/scale
-    
-    
 class ConvLayer(layers.Layer):
     def __init__(self,
         max_rho,
@@ -125,9 +111,7 @@ class ConvLayer(layers.Layer):
         n_thetas,
         n_rhos,
         n_rotations,
-        feat_mask,
-        bigShape,
-        smallShape):
+        feat_mask):
         
         super(ConvLayer, self).__init__()
         
@@ -210,13 +194,6 @@ class ConvLayer(layers.Layer):
                 )
             )
         
-        self.prodFunc = lambda a,b : a*b
-        self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
-        
-        self.inputFeatType = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
-        self.restType = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
-        self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
-        
         self.Map_func = lambda row : self.map_func(row)
         self.Map_func_sample = lambda row : self.map_func(row, makeSample = True)
         
@@ -224,10 +201,10 @@ class ConvLayer(layers.Layer):
         n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
         bigShape = [n_pockets, 200, self.n_feat]
         smallShape = [n_pockets, 200, 1]
-        idx = tf.cast(functools.reduce(self.prodFunc, bigShape), dtype = tf.int32)
+        idx = tf.cast(functools.reduce(prodFunc, bigShape), dtype = tf.int32)
         input_feat = tf.reshape(row[:idx], bigShape)
         rest = tf.reshape(row[idx:], [3] + smallShape)
-        data_list = [self.makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
+        data_list = [makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
         if not makeSample:
             return data_list
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
@@ -236,7 +213,7 @@ class ConvLayer(layers.Layer):
     def unpack_x(self, x, sample):
         if sample is None:
             data_list, sample = tf.map_fn(fn=self.Map_func_sample, elems = x,
-                                              fn_output_signature = [[self.inputFeatType, self.restType, self.restType, self.restType], self.sampleSpec])
+                                              fn_output_signature = [[inputFeatSpec, restSpec, restSpec, restSpec], sampleSpec])
         else:
             data_list = tf.map_fn(fn=self.Map_func, elems = x,
                                           fn_output_signature = [self.inputFeatType, self.restType, self.restType, self.restType])
