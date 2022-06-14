@@ -22,14 +22,14 @@ datadir = '/data02/daniel/masif/datasets/tf2'
 test_X_raw = np.load(os.path.join(datadir, 'test_X.npy'))
 test_y = np.load(os.path.join(datadir, 'test_y.npy'))
 
+defaultCode = -1234567
+
 with tf.device('/CPU:0'):
   test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=defaultCode)
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
-
-defaultCode = -1234567
 
 #with strategy.scope():
   #train_res = model.evaluate(train_X, train_y, use_multiprocessing=True)
