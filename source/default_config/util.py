@@ -1,4 +1,6 @@
+import tensorflow as tf
 from default_config.masif_opts import masif_opts
+
 params = masif_opts["ligand"]
 minPockets = params['minPockets']
 

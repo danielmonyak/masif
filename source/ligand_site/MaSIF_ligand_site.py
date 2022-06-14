@@ -1,4 +1,3 @@
-import tensorflow as tf
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 from default_config.masif_opts import masif_opts
