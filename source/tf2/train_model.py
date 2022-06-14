@@ -12,7 +12,7 @@ from sklearn.metrics import confusion_matrix
 import pickle
 import tensorflow as tf
 
-continue_training = True
+continue_training = False
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
