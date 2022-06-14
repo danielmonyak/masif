@@ -66,7 +66,7 @@ class MaSIF_ligand(Model):
         ]
     
     def call(self, x):
-        ret = self.myConvLayer(x, sample)
+        ret = self.myConvLayer(x)
         for l in self.myLayers:
             ret = l(ret)
         return ret
