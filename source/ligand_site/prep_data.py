@@ -43,7 +43,7 @@ def compile_and_save(feed_list, y_list, dataset, j):
 
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 
-gpus = tf.config.experimental.list_logical_devices('GPU')
+gpus = tf.config.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
 #strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
