@@ -21,16 +21,13 @@ defaultCode = params['defaultCode']
 datadir = '/data02/daniel/masif/datasets/tf2'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
-train_X_raw = np.load(genPath.format('train', 'X'))
+train_X = np.load(genPath.format('train', 'X'))
 train_y = np.load(genPath.format('train', 'y'))
-val_X_raw = np.load(genPath.format('val', 'X'))
+val_X = np.load(genPath.format('val', 'X'))
 val_y = np.load(genPath.format('val', 'y'))
-test_X_raw = np.load(genPath.format('test', 'X'))
-test_y =np.load(genPath.format('test', 'y'))
 
-train_X = tf.RaggedTensor.from_tensor(train_X_raw, padding=defaultCode)
-val_X = tf.RaggedTensor.from_tensor(val_X_raw, padding=defaultCode)
-test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=defaultCode)
+train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
+val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
 
 model = MaSIF_ligand(
   params["max_distance"],
