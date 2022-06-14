@@ -1,6 +1,8 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
+import numpy as np
+
 from default_config.masif_opts import masif_opts
 from MaSIF_ligand_TF2 import MaSIF_ligand
 import tensorflow as tf
@@ -22,12 +24,9 @@ model.compile(optimizer = model.opt,
   metrics=['accuracy']
 )
 
-import numpy as np
-datadir = 'datasets/'
-train_X = np.load(datadir + 'train_X.npy')
-train_y = np.load(datadir + 'train_y.npy')
+datadir = '/data02/daniel/masif/datasets/ligand_site'
+test_X = np.load(os.path.join(datadir, 'test_X.npy'))
 _ = model.predict(train_X[:1])
 
-#model.build([None, model.bigLen + model.smallLen * 3])
 model.load_weights(ckpPath)
 model.save(modelPath)
