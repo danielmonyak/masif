@@ -43,38 +43,39 @@ def compile_and_save(feed_list, y_list, dataset, j):
 
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 
-gpus = tf.config.list_logical_devices('GPU')
-gpus_str = [g.name for g in gpus]
+#gpus = tf.config.list_logical_devices('GPU')
+gpus = tf.config.list_physical_devices('GPU')
 #strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
-dev = gpus_str[1]
-tf.config.experimental.set_memory_growth(gpus, True)
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)
 
+dev = '/GPU:1'
+with tf.device(dev):
+    #for dataset in dataset_list.keys():
+    for dataset in ['train']:
+        i = 0
+        j = next_epoch
 
-#for dataset in dataset_list.keys():
-for dataset in ['train']:
-    i = 0
-    j = next_epoch
-    
-    feed_list = []
-    y_list = []
+        feed_list = []
+        y_list = []
 
-    temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
-    for data_element in temp_data:
-        if i < j * epochSize:
-            print('Skipping {} record {}'.format(dataset, i))
-            i += 1
-            continue
-        
-        print('{} record {}'.format(dataset, i))
+        temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
+        for data_element in temp_data:
+            if i < j * epochSize:
+                print('Skipping {} record {}'.format(dataset, i))
+                i += 1
+                continue
 
-        labels_raw = data_element[4]
-        n_ligands = labels_raw.shape[1]
-        if n_ligands > 1:
-            print('More than one ligand, check this out...')
-            continue
-        
-        with tf.device(dev):
+            print('{} record {}'.format(dataset, i))
+
+            labels_raw = data_element[4]
+            n_ligands = labels_raw.shape[1]
+            if n_ligands > 1:
+                print('More than one ligand, check this out...')
+                continue
+            
+            
             labels = tf.squeeze(labels_raw)
             pocket_points = tf.squeeze(tf.where(labels != 0))
             npoints = pocket_points.shape[0]
