@@ -48,7 +48,7 @@ gpus_str = [g.name for g in gpus]
 #strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
 dev = gpus_str[1]
-tf.config.experimental.set_memory_growth(dev, True)
+tf.config.experimental.set_memory_growth(gpus, True)
 
 
 #for dataset in dataset_list.keys():
