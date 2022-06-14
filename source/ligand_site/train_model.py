@@ -29,6 +29,7 @@ val_y = np.load(genPath.format('val', 'y'))
 def binarize_y(y):
   y[y > 0] = 1
   return tf.constant(y)
+
 train_y = binarize_y(train_y)
 val_y = binarize_y(val_y)
 ##
