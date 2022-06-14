@@ -1,15 +1,16 @@
 import numpy as np
 import os
 from default_config.masif_opts import masif_opts
+import tensorflow as tf
 
 params = masif_opts['ligand']
 ligand_list = params['ligand_list']
 minPockets = params['minPockets']
 
 class Predictor:
-  def __init__(self, ligand_model, ligand_site_model, n_predictions = 100, threshold = 0.5):
-    self.ligand_model = ligand_model
-    self.ligand_site_model = ligand_site_model
+  def __init__(self, ligand_model_path, ligand_site_model_path, n_predictions = 100, threshold = 0.5):
+    self.ligand_model = tf.keras.models.load_model(ligand_model_path)
+    self.ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
     
     self.key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
     self.getDataFromDict = lambda key : data_dict[key]
