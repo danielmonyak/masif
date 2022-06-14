@@ -28,8 +28,9 @@ val_y = np.load(genPath.format('val', 'y'))
 
 defaultCode = 123.45679
 
-train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
-val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
+with tf.device('/CPU:0'):
+  train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
+  val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
 
 model = MaSIF_ligand(
   params["max_distance"],
