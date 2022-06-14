@@ -33,12 +33,12 @@ train_y = binarize_y(train_y)
 val_y = binarize_y(val_y)
 ##
 
-'''
+
 train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
 train_y = tf.RaggedTensor.from_tensor(train_y, padding=defaultCode)
 val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
 val_y = tf.RaggedTensor.from_tensor(val_y, padding=defaultCode)
-'''
+
 
 model = MaSIF_ligand_site(
   params["max_distance"],
