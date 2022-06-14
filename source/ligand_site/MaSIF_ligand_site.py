@@ -73,9 +73,8 @@ class MaSIF_ligand_site(Model):
         #return [self.makeRagged(row), sample]
         return sample
     def make_y(self, y_raw):
-        sample = tf.map_fn(fn=self.map_func, elems = y_raw,
-                                      fn_output_signature = self.sampleSpec)
-        return [tf.gather(params = y_raw, indices = sample, axis = 1, batch_dims = 1).to_tensor(), sample]
+        sample = tf.map_fn(fn=self.map_func, elems = y_raw, fn_output_signature = self.sampleSpec)
+        return (tf.gather(params = y_raw, indices = sample, axis = 1, batch_dims = 1), sample)
     
     def train_step(self, data):
         x, y_raw = data
