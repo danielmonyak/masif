@@ -63,8 +63,8 @@ class MaSIF_ligand_site(Model):
             layers.Dense(1, activation="sigmoid")
         ]
         
-        
-        self.y_spec = tf.TensorSpec(shape=[prepSize], dtype=tf.int32)
+        self.makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 1)
+        self.y_spec = tf.RaggedTensorSpec(shape=[None, self.n_ligands], dtype=tf.int32)
         self.sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
     
     def map_func(self, row):
