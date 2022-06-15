@@ -13,7 +13,7 @@ class Predictor:
     self.ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
     
     self.key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
-    self.getDataFromDict = lambda key : data_dict[key]
+    self.getDataFromDict = lambda key : self.key_list[key]
     
     self.n_predictions = n_predictions
     self.threshold = threshold
@@ -35,7 +35,8 @@ class Predictor:
 
     data_dict = {'input_feat' : input_feat.flatten(), 'rho_coords' : rho_coords.flatten(),
                  'theta_coords' : theta_coords.flatten(), 'mask' : mask.flatten()}
-    flat_list = list(map(self.getDataFromDict, self.key_list))
+    getDataFromDict = lambda key : data_dict[key]
+    flat_list = list(map(getDataFromDict, self.key_list))
     return tf.concat(flat_list, axis = 0)
   
   def predictLigandIdx(self, X):
