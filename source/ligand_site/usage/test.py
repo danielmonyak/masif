@@ -10,4 +10,5 @@ pred = Predictor(ligand_model_path, ligand_site_ckp_path)
 
 pdb_dir = os.path.join(precom_dir, pdb)
 
-ret = pred(pdb_dir)
+#ret = pred(pdb_dir)
+X = pred.getData(pdb_dir)
