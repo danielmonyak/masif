@@ -53,7 +53,7 @@ class Predictor:
     fullSamples = self.n_pockets // minPockets
     garbage_idx = self.n_pockets % minPockets
     for i in range(fullSamples + 1):
-      sample = np.arange(minPockets * i, minPockets * (i+1)) 
+      sample = tf.range(minPockets * i, minPockets * (i+1))
       if i == fullSamples:
         sample[garbage_idx:] = 0
       ligand_site_pred_list.append(self.ligand_site_model(X, sample))
