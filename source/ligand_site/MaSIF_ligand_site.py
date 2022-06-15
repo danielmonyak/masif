@@ -230,7 +230,7 @@ class ConvLayer(layers.Layer):
         self.global_desc_1 = []
         
         for i in range(self.n_feat):
-            my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1, batch_dims=1)
+            my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
             #my_input_feat = input_feat[:, :, :, i:i+1]
             
             # W_conv or W_conv[i] ???
