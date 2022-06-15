@@ -16,8 +16,8 @@ class Predictor:
       feat_mask=params["feat_mask"],
       keep_prob = 1.0
     )
-    ligand_site_model.compile(optimizer = model.opt,
-      loss = model.loss_fn,
+    ligand_site_model.compile(optimizer = ligand_site_model.opt,
+      loss = ligand_site_model.loss_fn,
       metrics=['accuracy']
     )
     ligand_site_model.load_weights(ligand_site_ckp_path)
