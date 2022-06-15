@@ -10,6 +10,7 @@ import numpy as np
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
+minPockets = params['minPockets']
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
@@ -32,7 +33,8 @@ cpu = '/CPU:0'
 with tf.device(cpu):
   X = tf.RaggedTensor.from_tensor(test_X[:2], padding=defaultCode)
 
-_ = model.predict(X)
+sample = tf.range(minPockets)
+_ = model(X, sample = sample)
 
 model.load_weights(ckpPath)
 model.save(modelPath)
