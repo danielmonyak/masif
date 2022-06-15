@@ -31,9 +31,9 @@ datadir = '/data02/daniel/masif/datasets/ligand_site'
 test_X = np.load(os.path.join(datadir, 'test_X.npy'))
 cpu = '/CPU:0'
 with tf.device(cpu):
-  X = tf.RaggedTensor.from_tensor(test_X[:2], padding=defaultCode)
+  X = tf.RaggedTensor.from_tensor(test_X[:1], padding=defaultCode)
 
-sample = tf.range(minPockets)
+sample = tf.expand_dims(tf.range(minPockets), axis = 0)
 _ = model(X, sample = sample)
 
 model.load_weights(ckpPath)
