@@ -79,7 +79,7 @@ class Predictor:
     for i in range(fullSamples + 1):
       print(i)
       sample = tf.expand_dims(tf.range(minPockets * i, minPockets * (i+1)), axis = 0)
-      temp_pred = tf.squeeze(self.ligand_site_model(X, sample)
+      temp_pred = tf.squeeze(self.ligand_site_model(X, sample))
       ligand_site_pred_list.append(temp_pred)
     
     i = fullSamples
