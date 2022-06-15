@@ -35,6 +35,7 @@ with tf.device(cpu):
 
 sample = tf.expand_dims(tf.range(minPockets), axis = 0)
 _ = model(X, sample = sample)
+_ = model.myConvLayer(X, sample = sample)
 
 model.load_weights(ckpPath)
 model.save(modelPath)
