@@ -40,7 +40,7 @@ class Predictor:
     return tf.RaggedTensor.from_tensor(
       tf.expand_dims(
         tf.concat(flat_list, axis=0),
-        axis=0)
+        axis=0),
       ragged_rank = 1
     )
   
