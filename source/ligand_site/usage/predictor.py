@@ -74,24 +74,31 @@ class Predictor:
   def predictCoords(self, X):
     ligand_site_pred_list = []
     fullSamples = self.n_pockets // minPockets
-    garbage_idx = self.n_pockets % minPockets
+    
     print('fullSamples: {}'.format(fullSamples))
     for i in range(fullSamples + 1):
       print(i)
       sample = tf.expand_dims(tf.range(minPockets * i, minPockets * (i+1)), axis = 0)
-      if i == fullSamples:
-        sample[:, garbage_idx:] = 0
-      ligand_site_pred_list.append(self.ligand_site_model(X, sample))
-
-    ligand_site_preds = tf.concat(ligand_site_pred_list, axis = 1)
-    ligand_site_preds = ligand_site_preds[:, :garbage_idx]
+      temp_pred = tf.squeeze(self.ligand_site_model(X, sample)
+      ligand_site_pred_list.append(temp_pred)
+    
+    i = fullSamples
+    garbage_idx =  self.n_pockets % minPockets
+    valid = tf.range(minPockets * i, minPockets * i + garbage_idx)
+    garbage = tf.zeros([minPockets - garbage_idx], dtype=tf.int32)
+    sample = tf.expand_dims(tf.concat([valid,garbage], axis=0), axis=0)
+    temp_pred = tf.squeeze(self.ligand_site_model(X, sample)
+    ligand_site_pred_list.append(temp_pred)
+    
+    ligand_site_preds = tf.concat(ligand_site_pred_list, axis = 0)
+    ligand_site_preds = ligand_site_preds[:minPockets * i + garbage_idx]
     coords_list = tf.where(ligand_site_preds > self.threshold)
-    return coords_list
+    return tf.squeeze(coords_list)
   
   def getXYZCoords(self, pdb_dir):
-    X = np.load(os.path.join(pdb_dir, pdb + "_", "p1_X.npy"))
-    Y = np.load(os.path.join(pdb_dir, pdb + "_", "p1_Y.npy"))
-    Z = np.load(os.path.join(pdb_dir, pdb + "_", "p1_Z.npy"))
+    X = np.load(os.path.join(pdb_dir, "p1_X.npy"))
+    Y = np.load(os.path.join(pdb_dir, "p1_Y.npy"))
+    Z = np.load(os.path.join(pdb_dir, "p1_Z.npy"))
     xyz_coords = np.vstack([X, Y, Z]).T
     return xyz_coords
   
