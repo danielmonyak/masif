@@ -22,12 +22,11 @@ model.compile(optimizer = model.opt,
   metrics=['accuracy']
 )
 
-import numpy as np
-datadir = 'datasets/'
-train_X = np.load(datadir + 'train_X.npy')
-train_y = np.load(datadir + 'train_y.npy')
-_ = model.predict(train_X[:1])
+datadir = '/data02/daniel/masif/datasets/tf2'
+test_X = np.load(os.path.join(datadir, 'test_X.npy'))
+X = test_X[:1]
 
-#model.build([None, model.bigLen + model.smallLen * 3])
+_ = model(X)
+
 model.load_weights(ckpPath)
 model.save(modelPath)
