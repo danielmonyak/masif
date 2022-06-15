@@ -226,7 +226,7 @@ class ConvLayer(layers.Layer):
     ])
     def call(self, x, sample):
         print(x[0].shape)
-        if tf.reduce_sum(sample) == 0:
+        if tf.cond(tf.reduce_sum(a) == 0, lambda:1,lambda:0):
             sample = None
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
