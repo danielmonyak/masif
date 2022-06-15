@@ -218,9 +218,9 @@ class ConvLayer(layers.Layer):
                                           fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
     
-    @tf.function(input_signature=[
-                    tf.RaggedTensorSpec(tf.TensorShape([None, None]), tf.float32, 1, tf.int64),
-                    tf.TensorSpec(tf.TensorShape([minPockets]), tf.int32)])
+    #@tf.function(input_signature=[
+    #                tf.RaggedTensorSpec(tf.TensorShape([None, None]), tf.float32, 1, tf.int64),
+    #                tf.TensorSpec(tf.TensorShape([minPockets]), tf.int32)])
     def call(self, x, sample = None):
         print(x[0].shape)
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
