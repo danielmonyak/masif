@@ -98,8 +98,8 @@ class MaSIF_ligand_site(Model):
         return {m.name: m.result() for m in self.metrics}
     
     def call(self, x, sample = None):
-        if sample is None:
-            sample = tf.zeros([1, minPockets])
+        #if sample is None:
+        #    sample = tf.zeros([1, minPockets])
         ret = self.myConvLayer(x, sample)
         for l in self.myLayers:
             ret = l(ret)
@@ -220,17 +220,17 @@ class ConvLayer(layers.Layer):
                                           fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
     
-    @tf.function(input_signature=[
-                    tf.RaggedTensorSpec(tf.TensorShape([None, None]), tf.float32, 1, tf.int64),
-                    tf.TensorSpec(shape=tf.TensorShape([None, minPockets]), dtype=tf.int32, name=None)
-    ])
+    #@tf.function(input_signature=[
+    #                tf.RaggedTensorSpec(tf.TensorShape([None, None]), tf.float32, 1, tf.int64),
+    #                tf.TensorSpec(shape=tf.TensorShape([None, minPockets]), dtype=tf.int32, name=None)
+    #])
     def call(self, x, sample):
-        print(x[0].shape)
-        if tf.cond(tf.reduce_sum(sample) == 0, lambda:1,lambda:0):
-            sample = None
+        #print(x[0].shape)
+        #if tf.cond(tf.reduce_sum(sample) == 0, lambda:1,lambda:0):
+        #    sample = None
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
-        print(input_feat.shape)
+        #print(input_feat.shape)
         
         self.global_desc_1 = []
         
