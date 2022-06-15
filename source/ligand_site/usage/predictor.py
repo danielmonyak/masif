@@ -36,18 +36,18 @@ class Predictor:
     self.n_predictions = n_predictions
     self.threshold = threshold
   
-  def getData(self, precom_dir):
+  def getData(self, pdb_dir):
     input_feat = np.load(
-        os.path.join(precom_dir, "p1_input_feat.npy")
+        os.path.join(pdb_dir, "p1_input_feat.npy")
     )
     rho_coords = np.load(
-        os.path.join(precom_dir, "p1_rho_wrt_center.npy")
+        os.path.join(pdb_dir, "p1_rho_wrt_center.npy")
     )
     theta_coords = np.load(
-        os.path.join(precom_dir, "p1_theta_wrt_center.npy")
+        os.path.join(pdb_dir, "p1_theta_wrt_center.npy")
     )
     mask = np.load(
-      os.path.join(precom_dir, "p1_mask.npy")
+      os.path.join(pdb_dir, "p1_mask.npy")
     )
     self.n_pockets = input_feat.shape[0]
 
@@ -75,32 +75,34 @@ class Predictor:
     ligand_site_pred_list = []
     fullSamples = self.n_pockets // minPockets
     garbage_idx = self.n_pockets % minPockets
+    print('fullSamples: {}'.format(fullSamples))
     for i in range(fullSamples + 1):
-      sample = tf.range(minPockets * i, minPockets * (i+1))
+      print(i)
+      sample = tf.expand_dims(tf.range(minPockets * i, minPockets * (i+1)), axis = 0)
       if i == fullSamples:
-        sample[garbage_idx:] = 0
-      ligand_site_pred_list.append(self.ligand_site_model(X, sample = sample))
+        sample[:, garbage_idx:] = 0
+      ligand_site_pred_list.append(self.ligand_site_model(X, sample))
 
-    ligand_site_preds_raw = np.vstack(ligand_site_pred_list)
-    ligand_site_preds = ligand_site_preds_raw[:garbage_idx]
-    coords_list = np.where(ligand_site_preds > self.threshold)
+    ligand_site_preds = tf.concat(ligand_site_pred_list, axis = 1)
+    ligand_site_preds = ligand_site_preds[:, :garbage_idx]
+    coords_list = tf.where(ligand_site_preds > self.threshold)
     return coords_list
   
-  def getXYZCoords(self, precom_dir):
-    X = np.load(os.path.join(precom_dir, pdb + "_", "p1_X.npy"))
-    Y = np.load(os.path.join(precom_dir, pdb + "_", "p1_Y.npy"))
-    Z = np.load(os.path.join(precom_dir, pdb + "_", "p1_Z.npy"))
+  def getXYZCoords(self, pdb_dir):
+    X = np.load(os.path.join(pdb_dir, pdb + "_", "p1_X.npy"))
+    Y = np.load(os.path.join(pdb_dir, pdb + "_", "p1_Y.npy"))
+    Z = np.load(os.path.join(pdb_dir, pdb + "_", "p1_Z.npy"))
     xyz_coords = np.vstack([X, Y, Z]).T
     return xyz_coords
   
-  def predict(self, precom_dir):
-    X = self.getData(precom_dir)
+  def predict(self, pdb_dir):
+    X = self.getData(pdb_dir)
     
     ligandIdx_pred = self.predictLigandIdx(X)
     ligand_pred = ligand_list[ligandIdx_pred]
     
     coords_list = self.predictCoords(X)
-    xyz_coords = self.getXYZCoords(precom_dir)
+    xyz_coords = self.getXYZCoords(pdb_dir)
     coord_list = xyz_coords[coords_list]
     
     return (ligand_pred, coord_list)
