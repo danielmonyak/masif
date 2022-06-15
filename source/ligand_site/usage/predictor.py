@@ -2,15 +2,33 @@ import numpy as np
 import os
 from default_config.masif_opts import masif_opts
 import tensorflow as tf
+from ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
 params = masif_opts['ligand']
 ligand_list = params['ligand_list']
 minPockets = params['minPockets']
 
 class Predictor:
-  def __init__(self, ligand_model_path, ligand_site_model_path, n_predictions = 100, threshold = 0.5):
+  def getLigandSiteModel(self, ligand_site_ckp_path):
+    ligand_site_model = MaSIF_ligand_site(
+      params["max_distance"],
+      params["n_classes"],
+      feat_mask=params["feat_mask"],
+      keep_prob = 1.0
+    )
+    ligand_site_model.compile(optimizer = model.opt,
+      loss = model.loss_fn,
+      metrics=['accuracy']
+    )
+    ligand_site_model.load_weights(ligand_site_ckp_path)
+    return ligand_site_model
+    
+  def __init__(self, ligand_model_path, ligand_site_ckp_path, n_predictions = 100, threshold = 0.5):
     self.ligand_model = tf.keras.models.load_model(ligand_model_path)
-    self.ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
+    #self.ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
+    
+    self.ligand_site_model = self.getLigandSiteModel(ligand_site_ckp_path)
+    
     
     self.key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
     self.getDataFromDict = lambda key : self.key_list[key]
