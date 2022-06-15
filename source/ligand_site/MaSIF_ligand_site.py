@@ -98,7 +98,9 @@ class MaSIF_ligand_site(Model):
         return {m.name: m.result() for m in self.metrics}
     
     def call(self, x, sample = None):
-        ret = self.myConvLayer(x, sample = sample)
+        if sample is None:
+            sample = tf.zeros([1, minPockets])
+        ret = self.myConvLayer(x, sample)
         for l in self.myLayers:
             ret = l(ret)
         return ret
@@ -220,15 +222,12 @@ class ConvLayer(layers.Layer):
     
     @tf.function(input_signature=[
                     tf.RaggedTensorSpec(tf.TensorShape([None, None]), tf.float32, 1, tf.int64),
-                    #tf.TensorSpec(shape=tf.TensorShape([None, minPockets]), dtype=tf.int32, name=None)
+                    tf.TensorSpec(shape=tf.TensorShape([None, minPockets]), dtype=tf.int32, name=None)
     ])
-    def call(self, x, **kwargs):
-        kwg = 'sample'
-        if kwg in kwargs:
-            sample = kwargs[kwg]
-        else:
-            sample = None
+    def call(self, x, sample):
         print(x[0].shape)
+        if np.all(sample==0):
+            sample = None
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
         print(input_feat.shape)
