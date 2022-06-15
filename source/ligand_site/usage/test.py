@@ -9,5 +9,5 @@ X = pred.getData(precom_dir)
 i = 0
 sample = tf.range(minPockets * i, minPockets * (i+1))
 
-#a = pred.ligand_site_model(X, sample = sample)
-a = pred.ligand_site_model.myConvLayer(X, sample)
+a = pred.ligand_site_model(X, sample)
+#a = pred.ligand_site_model.myConvLayer(X, sample = sample)
