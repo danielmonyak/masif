@@ -219,19 +219,19 @@ class ConvLayer(layers.Layer):
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
     
     @tf.function(input_signature=[
-                    tf.RaggedTensorSpec(tf.TensorShape([None, None]), tf.float32, 2, tf.int64),
+                    tf.RaggedTensorSpec(tf.TensorShape([None, None]), tf.float32, 1, tf.int64),
                     tf.TensorSpec(tf.TensorShape([minPockets]), tf.int32)])
     def call(self, x, sample = None):
-        #print(x.shape)
+        print(x.shape)
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
-        #print(input_feat.shape)
+        print(input_feat.shape)
         
         self.global_desc_1 = []
         
         for i in range(self.n_feat):
-            #my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=3)
-            my_input_feat = input_feat[:, :, :, i:i+1]
+            my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=3)
+            #my_input_feat = input_feat[:, :, :, i:i+1]
             
             # W_conv or W_conv[i] ???
             self.global_desc_1.append(
