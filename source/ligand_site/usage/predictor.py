@@ -36,22 +36,27 @@ class Predictor:
     self.n_predictions = n_predictions
     self.threshold = threshold
   
-  def getData(self, pdb_dir):
-    input_feat = np.load(
+  def loadData(self, pdb_dir):
+    self.input_feat = np.load(
         os.path.join(pdb_dir, "p1_input_feat.npy")
     )
-    rho_coords = np.load(
+    self.rho_coords = np.load(
         os.path.join(pdb_dir, "p1_rho_wrt_center.npy")
     )
-    theta_coords = np.load(
+    self.theta_coords = np.load(
         os.path.join(pdb_dir, "p1_theta_wrt_center.npy")
     )
-    mask = np.load(
+    self.mask = np.load(
       os.path.join(pdb_dir, "p1_mask.npy")
     )
-    self.n_pockets = input_feat.shape[0]
+  
+  def getLigandX(self):
+    
+  
+  def getLigandSiteX(self):
+    self.n_pockets = self.input_feat.shape[0]
 
-    data_dict = {'input_feat' : input_feat.flatten(), 'rho_coords' : rho_coords.flatten(),
+    data_dict = {'input_feat' : self.input_feat.flatten(), 'rho_coords' : rho_coords.flatten(),
                  'theta_coords' : theta_coords.flatten(), 'mask' : mask.flatten()}
     getDataFromDict = lambda key : data_dict[key]
     flat_list = list(map(getDataFromDict, self.key_list))
@@ -64,7 +69,7 @@ class Predictor:
   
   def predictLigandIdx(self, X):
     ligand_pred_list = []
-    for i in range(n_predictions):
+    for i in range(self.n_predictions):
       ligand_pred_list.append(self.ligand_model(X))
     
     ligand_preds = np.vstack(ligand_pred_list)
@@ -103,13 +108,15 @@ class Predictor:
     return xyz_coords
   
   def predict(self, pdb_dir):
-    X = self.getData(pdb_dir)
+    self.loadData(pdb_dir)
     
-    ligandIdx_pred = self.predictLigandIdx(X)
-    ligand_pred = ligand_list[ligandIdx_pred]
-    
-    coords_list = self.predictCoords(X)
+    ligand_site_X = self.getLigandSiteX()
+    coords_list = self.predictCoords(ligand_site_X)
     xyz_coords = self.getXYZCoords(pdb_dir)
     coord_list = xyz_coords[coords_list]
+    
+    ligand_X = self.getLigandX(coord_list)
+    ligandIdx_pred = self.predictLigandIdx(X)
+    ligand_pred = ligand_list[ligandIdx_pred]
     
     return (ligand_pred, coord_list)
