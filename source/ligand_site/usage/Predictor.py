@@ -37,7 +37,12 @@ class Predictor:
                  'theta_coords' : theta_coords.flatten(), 'mask' : mask.flatten()}
     getDataFromDict = lambda key : data_dict[key]
     flat_list = list(map(getDataFromDict, self.key_list))
-    return tf.concat(flat_list, axis = 0)
+    return tf.RaggedTensor.from_tensor(
+      tf.expand_dims(
+        tf.concat(flat_list, axis=0),
+        axis=0)
+      ragged_rank = 1
+    )
   
   def predictLigandIdx(self, X):
     ligand_pred_list = []
