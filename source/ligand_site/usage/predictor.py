@@ -87,7 +87,7 @@ class Predictor:
     valid = tf.range(minPockets * i, minPockets * i + garbage_idx)
     garbage = tf.zeros([minPockets - garbage_idx], dtype=tf.int32)
     sample = tf.expand_dims(tf.concat([valid,garbage], axis=0), axis=0)
-    temp_pred = tf.squeeze(self.ligand_site_model(X, sample)
+    temp_pred = tf.squeeze(self.ligand_site_model(X, sample))
     ligand_site_pred_list.append(temp_pred)
     
     ligand_site_preds = tf.concat(ligand_site_pred_list, axis = 0)
