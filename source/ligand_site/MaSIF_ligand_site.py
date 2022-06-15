@@ -98,7 +98,7 @@ class MaSIF_ligand_site(Model):
         return {m.name: m.result() for m in self.metrics}
     
     def call(self, x, sample = None):
-        ret = self.myConvLayer(x, sample = sample)
+        ret = self.myConvLayer(x, sample)
         for l in self.myLayers:
             ret = l(ret)
         return ret
@@ -218,7 +218,7 @@ class ConvLayer(layers.Layer):
                                           fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
     
-    def call(self, x, sample = None):
+    def call(self, x, sample):
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
         self.global_desc_1 = []
