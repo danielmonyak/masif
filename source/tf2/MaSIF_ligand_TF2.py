@@ -60,7 +60,7 @@ class MaSIF_ligand(Model):
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
             ##
-            layers.Dense(30, activation="relu"),
+            #layers.Dense(30, activation="relu"),
             ##
             layers.Dense(self.n_ligands, activation="softmax")
         ]
