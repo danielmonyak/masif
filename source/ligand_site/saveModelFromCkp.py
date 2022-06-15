@@ -34,8 +34,7 @@ with tf.device(cpu):
   X = tf.RaggedTensor.from_tensor(test_X[:1], padding=defaultCode)
 
 sample = tf.expand_dims(tf.range(minPockets), axis = 0)
-#_ = model(X, sample = sample)
-_ = model.myConvLayer(X, sample = sample)
+_ = model(X, sample)
 
 model.load_weights(ckpPath)
 model.save(modelPath)
