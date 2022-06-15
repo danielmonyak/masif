@@ -220,7 +220,7 @@ class ConvLayer(layers.Layer):
     
     @tf.function(input_signature=[
         tf.RaggedTensorSpec(tf.TensorShape([None, None]), tf.float32, 1, tf.int64),
-        tf.TensorSpec(tf.TensorShape[minPockets], tf.dtypes.float32)
+        tf.TensorSpec(tf.TensorShape([minPockets]), tf.float32)
 	])
     def call(self, x, sample = None):
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
