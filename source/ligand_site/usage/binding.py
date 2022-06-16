@@ -1,8 +1,9 @@
-from predictor import Predictor
-from default_config.util import *
+import os
+import numpy as np
 from sklearn.cluster import KMeans
-from sklearn.metrics import balanced_accuracy
 from scipy import spatial
+from default_config.util import *
+from predictor import Predictor
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
@@ -34,12 +35,13 @@ def findBestK(coord_list, kmax=10):
   getDifs = lambda x : [x[i]-x[i+1] for i in range(len(x)-1)]
   sse_dif_difs = np.array(getDifs(getDifs(sse)))
   best_k = np.argmax(sse_dif_difs) + 2
+  return best_k
 
 # Run predictor on pdb, find best k, cluster coordinates
 def predictRaw(pdb):
   pdb_dir = os.path.join(precom_dir, pdb)
   ligand_pred, coord_list = pred.predict(pdb_dir)
-
+  
   best_k = findBestK(coord_list)
   kmeans = KMeans(n_clusters = best_k).fit(coord_list)
   binding_loc = kmeans.cluster_centers_
@@ -48,4 +50,4 @@ def predictRaw(pdb):
 
 def predict(pdb = '1C75_A_'):
   ligand_pred, binding_loc = predictRaw(pdb)
-  print('{} binds {} at {}'.format(pdb.split('_')[0], ligand_pred, binding_loc))
+  print('{} binds {} at \n{}'.format(pdb.split('_')[0], ligand_pred, binding_loc))
