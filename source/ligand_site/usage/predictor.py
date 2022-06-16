@@ -49,32 +49,20 @@ class Predictor:
     self.mask = np.load(
       os.path.join(pdb_dir, "p1_mask.npy")
     )
-  
-  def getLigandX(self):
-    
+    self.data_dict = {'input_feat' : self.input_feat, 'rho_coords' : self.rho_coords,
+                   'theta_coords' : self.theta_coords, 'mask' : self.mask}
   
   def getLigandSiteX(self):
     self.n_pockets = self.input_feat.shape[0]
-
-    data_dict = {'input_feat' : self.input_feat.flatten(), 'rho_coords' : rho_coords.flatten(),
-                 'theta_coords' : theta_coords.flatten(), 'mask' : mask.flatten()}
-    getDataFromDict = lambda key : data_dict[key]
-    flat_list = list(map(getDataFromDict, self.key_list))
+    
+    getFlatDataFromDict = lambda key : self.data_dict[key].flatten()
+    flat_list = list(map(getFlatDataFromDict, self.key_list))
     return tf.RaggedTensor.from_tensor(
       tf.expand_dims(
         tf.concat(flat_list, axis=0),
         axis=0),
       ragged_rank = 1
     )
-  
-  def predictLigandIdx(self, X):
-    ligand_pred_list = []
-    for i in range(self.n_predictions):
-      ligand_pred_list.append(self.ligand_model(X))
-    
-    ligand_preds = np.vstack(ligand_pred_list)
-    ligand_preds_mean = np.mean(ligand_preds, axis=0)
-    return ligand_preds_mean.argmax()
   
   def predictCoords(self, X):
     ligand_site_pred_list = []
@@ -106,6 +94,27 @@ class Predictor:
     Z = np.load(os.path.join(pdb_dir, "p1_Z.npy"))
     xyz_coords = np.vstack([X, Y, Z]).T
     return xyz_coords
+  
+  
+  def getLigandX(self, coord_list):
+    getDataFromDict = lambda key : tf.gather(self.data_dict[key], coord_list, axis = 0).flatten()
+    flat_list = list(map(getDataFromDict, self.key_list))
+    return tf.RaggedTensor.from_tensor(
+      tf.expand_dims(
+        tf.concat(flat_list, axis=0),
+        axis=0),
+      ragged_rank = 1
+    )
+  
+  def predictLigandIdx(self, X):
+    ligand_pred_list = []
+    for i in range(self.n_predictions):
+      temp_pred = tf.squeeze(self.ligand_model(X))
+      ligand_pred_list.append(temp_pred)
+    
+    ligand_preds = tf.stack(ligand_pred_list, axis=0)
+    ligand_preds_mean = np.mean(ligand_preds, axis=0)
+    return ligand_preds_mean.argmax()
   
   def predict(self, pdb_dir):
     self.loadData(pdb_dir)
