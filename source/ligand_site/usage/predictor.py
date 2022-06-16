@@ -68,9 +68,11 @@ class Predictor:
     ligand_site_pred_list = []
     fullSamples = self.n_pockets // minPockets
     
-    print('fullSamples: {}'.format(fullSamples))
+    print('{} batches to run'.format(fullSamples))
     for i in range(fullSamples):
-      print(i)
+      if i % 10 == 0:
+        done = 100.0 * i/fullSamples
+        print('{} of {} batches completed. {}% done...'.format(i, fullSamples))
       sample = tf.expand_dims(tf.range(minPockets * i, minPockets * (i+1)), axis = 0)
       temp_pred = tf.squeeze(self.ligand_site_model(X, sample))
       ligand_site_pred_list.append(temp_pred)
@@ -96,8 +98,8 @@ class Predictor:
     return xyz_coords
   
   
-  def getLigandX(self, coords_list):
-    getDataFromDict = lambda key : tf.gather(self.data_dict[key], coords_list, axis = 0).flatten()
+  def getLigandX(self, pocket_points):
+    getDataFromDict = lambda key : tf.gather(self.data_dict[key], pocket_points, axis = 0).flatten()
     flat_list = list(map(getDataFromDict, self.key_list))
     return tf.RaggedTensor.from_tensor(
       tf.expand_dims(
@@ -120,11 +122,11 @@ class Predictor:
     self.loadData(pdb_dir)
     
     ligand_site_X = self.getLigandSiteX()
-    coords_list = self.predictCoords(ligand_site_X)
+    pocket_points = self.predictCoords(ligand_site_X)
     xyz_coords = self.getXYZCoords(pdb_dir)
-    coords_list = xyz_coords[coords_list]
+    coords_list = xyz_coords[pocket_points]
     
-    ligand_X = self.getLigandX(coords_list)
+    ligand_X = self.getLigandX(pocket_points)
     ligandIdx_pred = self.predictLigandIdx(X)
     ligand_pred = ligand_list[ligandIdx_pred]
     
