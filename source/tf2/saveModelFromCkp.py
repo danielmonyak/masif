@@ -30,3 +30,4 @@ _ = model(X)
 
 model.load_weights(ckpPath)
 model.save(modelPath)
+print('Saved model!')
