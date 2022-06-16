@@ -56,8 +56,8 @@ for i, pdb in enumerate(test_list):
     f1 = (recall + precision)/2
     f1_scores.append(f1)
     ########################
-    ligandIdx_true = all_ligand_types[0]
-    y_true.append(ligand_list.idxOf(ligandIdx_true))
+    ligand_true = all_ligand_types[0]
+    y_true.append(ligand_list.index(ligand_true))
     y_pred.append(ligandIdx_pred)
 
 #f1_scores = np.array(f1_scores)
