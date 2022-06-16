@@ -99,7 +99,7 @@ class Predictor:
   
   
   def getLigandX(self, pocket_points):
-    getDataFromDict = lambda key : tf.gather(self.data_dict[key], pocket_points, axis = 0).flatten()
+    getDataFromDict = lambda key : tf.reshape(tf.gather(self.data_dict[key], pocket_points, axis = 0), [-1])
     flat_list = list(map(getDataFromDict, self.key_list))
     return tf.RaggedTensor.from_tensor(
       tf.expand_dims(
