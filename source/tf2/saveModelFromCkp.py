@@ -24,7 +24,11 @@ model.compile(optimizer = model.opt,
 
 datadir = '/data02/daniel/masif/datasets/tf2'
 test_X = np.load(os.path.join(datadir, 'test_X.npy'))
-X = test_X[:1]
+
+
+defaultCode = 123.45679
+with tf.device('/CPU:0'):
+  X = tf.RaggedTensor.from_tensor(test_X[:1], padding=defaultCode)
 
 _ = model(X)
 
