@@ -23,9 +23,9 @@ class Predictor:
     return ligand_site_model
     
   def __init__(self, ligand_model_path, ligand_site_ckp_path, n_predictions = 100, threshold = 0.5):
+    # Load MaSIF_ligand and MaSIF_ligand_site models
+    # MaSIF_ligand_site model comes from saved checkpoint
     self.ligand_model = tf.keras.models.load_model(ligand_model_path)
-    #self.ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
-    
     self.ligand_site_model = self.getLigandSiteModel(ligand_site_ckp_path)
     
     self.n_predictions = n_predictions
@@ -47,6 +47,7 @@ class Predictor:
     self.data_dict = {'input_feat' : self.input_feat, 'rho_coords' : self.rho_coords,
                    'theta_coords' : self.theta_coords, 'mask' : self.mask}
   
+  # Get input to MaSIF_ligand_site model
   def getLigandSiteX(self):
     self.n_pockets = self.input_feat.shape[0]
     
@@ -59,11 +60,12 @@ class Predictor:
       ragged_rank = 1
     )
   
-  def predictCoords(self, X):
+  # Run MaSIF_ligand_site on all points in pdb, return pocket_points
+  def predictPocketPoints(self, X):
     ligand_site_pred_list = []
     fullSamples = self.n_pockets // minPockets
     
-    print('{} batches to run'.format(fullSamples))
+    print('{} batches to run on ligand_site'.format(fullSamples))
     for i in range(fullSamples):
       if i % 10 == 0:
         done = 100.0 * i/fullSamples
@@ -73,18 +75,19 @@ class Predictor:
       ligand_site_pred_list.append(temp_pred)
     
     i = fullSamples
-    garbage_idx =  self.n_pockets % minPockets
-    valid = tf.range(minPockets * i, minPockets * i + garbage_idx)
-    garbage = tf.zeros([minPockets - garbage_idx], dtype=tf.int32)
-    sample = tf.expand_dims(tf.concat([valid,garbage], axis=0), axis=0)
+    n_leftover = self.n_pockets % minPockets
+    valid = tf.range(minPockets * i, minPockets * i + n_leftover)
+    garbage = tf.zeros([minPockets - n_leftover], dtype=tf.int32)
+    sample = tf.expand_dims(tf.concat([valid, garbage], axis=0), axis=0)
     temp_pred = tf.squeeze(self.ligand_site_model(X, sample))
     ligand_site_pred_list.append(temp_pred)
     
     ligand_site_preds = tf.concat(ligand_site_pred_list, axis = 0)
-    ligand_site_preds = ligand_site_preds[:minPockets * i + garbage_idx]
-    coords_list = tf.where(ligand_site_preds > self.threshold)
-    return tf.squeeze(coords_list)
+    ligand_site_preds = ligand_site_preds[:minPockets * i + n_leftover]
+    pocket_points = tf.where(ligand_site_preds > self.threshold)
+    return tf.squeeze(pocket_points)
   
+  # Get geometric coordinates of PDB
   def getXYZCoords(self, pdb_dir):
     X = np.load(os.path.join(pdb_dir, "p1_X.npy"))
     Y = np.load(os.path.join(pdb_dir, "p1_Y.npy"))
@@ -92,7 +95,7 @@ class Predictor:
     xyz_coords = np.vstack([X, Y, Z]).T
     return xyz_coords
   
-  
+  # Get input to MaSIF_ligand, using pocket_points
   def getLigandX(self, pocket_points):
     getDataFromDict = lambda key : tf.reshape(tf.gather(self.data_dict[key], pocket_points, axis = 0), [-1])
     flat_list = list(map(getDataFromDict, data_order))
@@ -103,6 +106,7 @@ class Predictor:
       ragged_rank = 1
     )
   
+  # Run MaSIF_ligand on pdb, return index of ligand (based on ligand_list in defaul_config/util.py)
   def predictLigandIdx(self, X):
     ligand_pred_list = []
     for i in range(self.n_predictions):
@@ -113,16 +117,24 @@ class Predictor:
     ligand_preds_mean = np.mean(ligand_preds, axis=0)
     return ligand_preds_mean.argmax()
   
-  def predict(self, pdb_dir):
+  # Run input through both models, return index of ligand prediction, pocket_points
+  def predictRaw(self, pdb_dir):
     self.loadData(pdb_dir)
     
     ligand_site_X = self.getLigandSiteX()
-    pocket_points = self.predictCoords(ligand_site_X)
-    xyz_coords = self.getXYZCoords(pdb_dir)
-    coords_list = xyz_coords[pocket_points]
+    pocket_points = self.predictPocketPoints(ligand_site_X)
     
     ligand_X = self.getLigandX(pocket_points)
     ligandIdx_pred = self.predictLigandIdx(ligand_X)
+
+    return (ligandIdx_pred, pocket_points)
+  
+  # Call predictRaw and return name of predicted ligand, coordinates of pocket_points
+  def predict(self, pdb_dir):
+    ligandIdx_pred, pocket_points = self.predictRaw(pdb_dir)
+
+    xyz_coords = self.getXYZCoords(pdb_dir)
+    coords_list = xyz_coords[pocket_points]
     ligand_pred = ligand_list[ligandIdx_pred]
     
     return (ligand_pred, coords_list)
