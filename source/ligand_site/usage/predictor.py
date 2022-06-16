@@ -125,4 +125,4 @@ class Predictor:
     ligandIdx_pred = self.predictLigandIdx(ligand_X)
     ligand_pred = ligand_list[ligandIdx_pred]
     
-    return (ligand_pred, coord_list)
+    return (ligand_pred, coords_list)
