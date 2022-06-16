@@ -33,12 +33,12 @@ def calculate_WSS(points, kmax):
 
 kmax = 10
 sse = calculate_WSS(coord_list, kmax)
-#import matplotlib.pyplot as plt
-#plt.plot(range(1, kmax+1), sse)
-#plt.savefig('sse_plot.png')
-
 getDifs = lambda x : [x[i]-x[i+1] for i in range(len(x)-1)]
-sse_difs = getDifs(sse)
-sse_dif_difs = np.array(getDifs(sse_difs))
-
+sse_dif_difs = np.array(getDifs(getDifs(sse)))
 best_k = np.argmax(sse_dif_difs) + 2
+
+kmeans = KMeans(n_clusters = best_k).fit(coord_list)
+binding_loc = kmeans.cluster_centers_
+
+print(ligand_pred)
+print(binding_loc)
