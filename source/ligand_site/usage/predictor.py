@@ -1,7 +1,6 @@
 import numpy as np
 import os
-from default_config.masif_opts import masif_opts
-import tensorflow as tf
+from default_config.util import *
 from ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
 params = masif_opts['ligand']
