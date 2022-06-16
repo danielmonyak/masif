@@ -6,6 +6,7 @@ from ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 params = masif_opts['ligand']
 ligand_list = params['ligand_list']
 minPockets = params['minPockets']
+gen_sample = tf.expand_dims(tf.range(minPockets), axis = 0)
 
 class Predictor:
   def getLigandSiteModel(self, ligand_site_ckp_path):
@@ -46,12 +47,18 @@ class Predictor:
     )
     self.data_dict = {'input_feat' : self.input_feat, 'rho_coords' : self.rho_coords,
                    'theta_coords' : self.theta_coords, 'mask' : self.mask}
-  
+    def getFlatDataFromDict(key, sample):
+      data = pred.data_dict[key]
+      return data[sample].flatten()
+    def getDataSample(self, sample):
+      temp_fn = lambda key : getFlatDataFromDict(key, sample)
+      flat_list = list(map(temp_fn, data_order))
+      return tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
+  '''
   # Get input to MaSIF_ligand_site model
   def getLigandSiteX(self):
     self.n_pockets = self.input_feat.shape[0]
     
-    getFlatDataFromDict = lambda key : self.data_dict[key].flatten()
     flat_list = list(map(getFlatDataFromDict, data_order))
     return tf.RaggedTensor.from_tensor(
       tf.expand_dims(
@@ -59,32 +66,33 @@ class Predictor:
         axis=0),
       ragged_rank = 1
     )
-  
+  '''
   # Run MaSIF_ligand_site on all points in pdb, return pocket_points
-  def predictPocketPoints(self, X):
+  def predictPocketPoints(self):
     ligand_site_pred_list = []
     fullSamples = self.n_pockets // minPockets
     
     print('{} batches to run on ligand_site'.format(fullSamples))
-    with tf.device('/GPU:1'):
-      for i in range(fullSamples):
-        if i % 10 == 0:
-          done = 100.0 * i/fullSamples
-          print('{} of {} batches completed. {}% done...'.format(i, fullSamples, done))
-        sample = tf.expand_dims(tf.range(minPockets * i, minPockets * (i+1)), axis = 0)
-        temp_pred = tf.squeeze(self.ligand_site_model(X, sample))
-        ligand_site_pred_list.append(temp_pred)
+    for i in range(fullSamples):
+      if i % 10 == 0:
+        done = 100.0 * i/fullSamples
+        print('{} of {} batches completed. {}% done...'.format(i, fullSamples, done))
+      sample = range(minPockets * i, minPockets * (i+1))
+      temp_X = self.getDataSample(sample)
+      temp_pred = tf.squeeze(self.ligand_site_model(temp_X, gen_sample))
+      ligand_site_pred_list.append(temp_pred)
     
     i = fullSamples
     n_leftover = self.n_pockets % minPockets
     valid = tf.range(minPockets * i, minPockets * i + n_leftover)
     garbage = tf.zeros([minPockets - n_leftover], dtype=tf.int32)
     sample = tf.expand_dims(tf.concat([valid, garbage], axis=0), axis=0)
-    temp_pred = tf.squeeze(self.ligand_site_model(X, sample))
-    ligand_site_pred_list.append(temp_pred)
+    
+    temp_X = self.getDataSample(sample)
+    temp_pred = tf.squeeze(self.ligand_site_model(temp_X, gen_sample))
+    ligand_site_pred_list.append(temp_pred[:n_leftover])
     
     ligand_site_preds = tf.concat(ligand_site_pred_list, axis = 0)
-    ligand_site_preds = ligand_site_preds[:minPockets * i + n_leftover]
     pocket_points = tf.where(ligand_site_preds > self.threshold)
     return tf.squeeze(pocket_points)
   
@@ -122,8 +130,9 @@ class Predictor:
   def predictRaw(self, pdb_dir):
     self.loadData(pdb_dir)
     
-    ligand_site_X = self.getLigandSiteX()
-    pocket_points = self.predictPocketPoints(ligand_site_X)
+    #ligand_site_X = self.getLigandSiteX()
+    #pocket_points = self.predictPocketPoints(ligand_site_X)
+    pocket_points = self.predictPocketPoints()
     
     ligand_X = self.getLigandX(pocket_points)
     ligandIdx_pred = self.predictLigandIdx(ligand_X)
