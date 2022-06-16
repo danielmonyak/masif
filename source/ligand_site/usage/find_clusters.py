@@ -37,7 +37,7 @@ sse = calculate_WSS(coord_list, kmax)
 #plt.plot(range(1, kmax+1), sse)
 #plt.savefig('sse_plot.png')
 
-getDifs = lambda x : [x[i]-x[i+1] for in range(len(x)-1)]
+getDifs = lambda x : [x[i]-x[i+1] for i in range(len(x)-1)]
 sse_difs = getDifs(sse)
 sse_dif_difs = np.array(getDifs(sse_difs))
 
