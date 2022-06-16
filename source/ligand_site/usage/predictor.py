@@ -66,13 +66,14 @@ class Predictor:
     fullSamples = self.n_pockets // minPockets
     
     print('{} batches to run on ligand_site'.format(fullSamples))
-    for i in range(fullSamples):
-      if i % 10 == 0:
-        done = 100.0 * i/fullSamples
-        print('{} of {} batches completed. {}% done...'.format(i, fullSamples, done))
-      sample = tf.expand_dims(tf.range(minPockets * i, minPockets * (i+1)), axis = 0)
-      temp_pred = tf.squeeze(self.ligand_site_model(X, sample))
-      ligand_site_pred_list.append(temp_pred)
+    with tf.device('/GPU:1'):
+      for i in range(fullSamples):
+        if i % 10 == 0:
+          done = 100.0 * i/fullSamples
+          print('{} of {} batches completed. {}% done...'.format(i, fullSamples, done))
+        sample = tf.expand_dims(tf.range(minPockets * i, minPockets * (i+1)), axis = 0)
+        temp_pred = tf.squeeze(self.ligand_site_model(X, sample))
+        ligand_site_pred_list.append(temp_pred)
     
     i = fullSamples
     n_leftover = self.n_pockets % minPockets
