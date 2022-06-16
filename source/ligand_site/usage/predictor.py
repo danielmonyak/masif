@@ -29,10 +29,6 @@ class Predictor:
     
     self.ligand_site_model = self.getLigandSiteModel(ligand_site_ckp_path)
     
-    
-    self.key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
-    self.getDataFromDict = lambda key : self.key_list[key]
-    
     self.n_predictions = n_predictions
     self.threshold = threshold
   
@@ -56,7 +52,7 @@ class Predictor:
     self.n_pockets = self.input_feat.shape[0]
     
     getFlatDataFromDict = lambda key : self.data_dict[key].flatten()
-    flat_list = list(map(getFlatDataFromDict, self.key_list))
+    flat_list = list(map(getFlatDataFromDict, self.data_order))
     return tf.RaggedTensor.from_tensor(
       tf.expand_dims(
         tf.concat(flat_list, axis=0),
@@ -100,7 +96,7 @@ class Predictor:
   
   def getLigandX(self, pocket_points):
     getDataFromDict = lambda key : tf.reshape(tf.gather(self.data_dict[key], pocket_points, axis = 0), [-1])
-    flat_list = list(map(getDataFromDict, self.key_list))
+    flat_list = list(map(getDataFromDict, self.data_order))
     return tf.RaggedTensor.from_tensor(
       tf.expand_dims(
         tf.concat(flat_list, axis=0),
@@ -127,7 +123,7 @@ class Predictor:
     coords_list = xyz_coords[pocket_points]
     
     ligand_X = self.getLigandX(pocket_points)
-    ligandIdx_pred = self.predictLigandIdx(X)
+    ligandIdx_pred = self.predictLigandIdx(ligand_X)
     ligand_pred = ligand_list[ligandIdx_pred]
     
     return (ligand_pred, coord_list)
