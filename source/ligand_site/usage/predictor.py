@@ -50,7 +50,7 @@ class Predictor:
     self.data_dict = {'input_feat' : self.input_feat, 'rho_coords' : self.rho_coords,
                    'theta_coords' : self.theta_coords, 'mask' : self.mask}
     def getFlatDataFromDict(key, sample):
-      data = pred.data_dict[key]
+      data = self.data_dict[key]
       return data[sample].flatten()
     def getDataSampleTemp(sample):
       temp_fn = lambda key : getFlatDataFromDict(key, sample)
