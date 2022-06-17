@@ -133,6 +133,9 @@ class Predictor:
     
     ligand_preds = tf.stack(ligand_pred_list, axis=0)
     ligand_preds_mean = np.mean(ligand_preds, axis=0)
+    
+    print('ligand_preds_mean:', ligand_preds_mean)
+    
     return ligand_preds_mean.argmax()
   
   # Run input through both models, return index of ligand prediction, pocket_points
