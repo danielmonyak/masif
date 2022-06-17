@@ -45,15 +45,18 @@ class Predictor:
     self.mask = np.load(
       os.path.join(pdb_dir, "p1_mask.npy")
     )
+    self.n_pockets = self.mask.shape[0]
+    
     self.data_dict = {'input_feat' : self.input_feat, 'rho_coords' : self.rho_coords,
                    'theta_coords' : self.theta_coords, 'mask' : self.mask}
     def getFlatDataFromDict(key, sample):
       data = pred.data_dict[key]
       return data[sample].flatten()
-    def getDataSample(self, sample):
+    def getDataSampleTemp(sample):
       temp_fn = lambda key : getFlatDataFromDict(key, sample)
       flat_list = list(map(temp_fn, data_order))
       return tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
+    self.getDataSample = lambda sample : getDataSampleTemp(sample)
   '''
   # Get input to MaSIF_ligand_site model
   def getLigandSiteX(self):
