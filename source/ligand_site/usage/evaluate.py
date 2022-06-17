@@ -34,7 +34,7 @@ f1_file = os.path.join(outdir, 'f1.txt')
 lig_true_file = os.path.join(outdir, 'lig_true.txt')
 lig_pred_file = os.path.join(outdir, 'lig_pred.txt')
 
-for fi in [fi_lie, lig_true_file, lig_pred_file]:
+for fi in [pdb_file, f1_file, lig_true_file, lig_pred_file]:
     with open(fi, 'w') as f:
         pass
 
