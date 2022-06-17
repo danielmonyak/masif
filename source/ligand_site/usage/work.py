@@ -1,7 +1,7 @@
 import numpy as np
 import os
 from default_config.util import *
-from ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
+from predictor import Predictor
 from time import process_time
 
 params = masif_opts['ligand']
@@ -9,8 +9,8 @@ ligand_list = params['ligand_list']
 minPockets = params['minPockets']
 
 
-pdb = '1C75_A_'
-#pdb='3AYI_AB_'
+#pdb = '1C75_A_'
+pdb='3AYI_AB_'
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
@@ -23,24 +23,33 @@ pred.loadData(pdb_dir)
 ligand_site_X = pred.getLigandSiteX()
 
 gen_sample = tf.expand_dims(tf.range(minPockets), axis = 0)
+def getFlatDataFromDict(key, j):
+  data = pred.data_dict[key]
+  return data[minPockets * j : minPockets * (j+1)].flatten()
 
-print(process_time())
 
-i = 3
-sample = tf.expand_dims(tf.range(minPockets * i, minPockets * (i+1)), axis = 0)
-temp_pred = tf.squeeze(self.ligand_site_model(X, sample))
+i = 4
 
-print(process_time())
+def proc1(i):
+  sample = tf.expand_dims(tf.range(minPockets * i, minPockets * (i+1)), axis = 0)
+  return tf.squeeze(pred.ligand_site_model(ligand_site_X, sample))
 
-def getFlatDataFromDict(key):
-  data = self.data_dict[key]
-  return data[].flatten() ################################################################# fix
-flat_list = list(map(getFlatDataFromDict, data_order))
-return tf.RaggedTensor.from_tensor(
-  tf.expand_dims(
-    tf.concat(flat_list, axis=0),
-    axis=0),
-  ragged_rank = 1
-)
+def proc2(i):
+  fn = lambda key : getFlatDataFromDict(key, i)
+  flat_list = list(map(fn, data_order))
+  #temp_X = tf.RaggedTensor.from_tensor(tf.expand_dims(tf.concat(flat_list, axis=0), axis=0), ragged_rank = 1)
+  temp_X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
+  return tf.squeeze(pred.ligand_site_model(temp_X, gen_sample))
 
-print(process_time())
+a = process_time()
+
+temp_pred_a = proc1(i)
+
+b = process_time()
+
+temp_pred_b = proc2(i)
+
+c = process_time()
+
+print('First:', b-a)
+print('Second:', c-b)
