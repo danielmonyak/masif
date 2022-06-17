@@ -66,22 +66,23 @@ for i, pdb in enumerate(test_list):
         )
     ).astype(str)
 
-    if len(all_ligand_coords) == 0:
+    #if len(all_ligand_coords) == 0:
+    #    continue
+    try:
+        ligand_coords = all_ligand_coords[0]
+        tree = spatial.KDTree(xyz_coords)
+        pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
+        pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
+        
+        overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
+        recall = len(overlap)/len(pocket_points_true)
+        precision = len(overlap)/len(pocket_points_pred)
+        #f1 = 2*recall*precision / (recall + precision)
+    
+        ligand_true = all_ligand_types[0]
+        ligandIdx_true = ligand_list.index(ligand_true)
+    except:
         continue
-
-    ligand_coords = all_ligand_coords[0]
-    tree = spatial.KDTree(xyz_coords)
-    pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
-    pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
-    
-    overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
-    recall = len(overlap)/len(pocket_points_true)
-    precision = len(overlap)/len(pocket_points_pred)
-    #f1 = 2*recall*precision / (recall + precision)
-    
-    ligand_true = all_ligand_types[0]
-    ligandIdx_true = ligand_list.index(ligand_true)
-    
     #f1_scores.append(f1)
     #lig_true.append(ligandIdx_true)
     #lig_pred.append(ligandIdx_pred)
@@ -99,7 +100,3 @@ for i, pdb in enumerate(test_list):
     with open(lig_pred_file, 'a') as f:
         f.write(str(ligandIdx_pred) + '\n')
 
-# order of args?
-#bal_acc = balanced_accuracy_score(lig_true, lig_pred)
-
-#confusion_matrix(lig_true, lig_pred)
