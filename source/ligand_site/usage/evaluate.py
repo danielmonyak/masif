@@ -58,14 +58,14 @@ for i, pdb in enumerate(test_list):
     f1_scores.append(f1)
     
     ligand_true = all_ligand_types[0]
-    y_true.append(ligand_list.index(ligand_true))
-    y_pred.append(ligandIdx_pred)
+    lig_true.append(ligand_list.index(ligand_true))
+    lig_pred.append(ligandIdx_pred)
 
 #f1_scores = np.array(f1_scores)
-#y_true = np.array(y_true)
-#y_pred = np.array(y_pred)
+#lig_true = np.array(lig_true)
+#lig_pred = np.array(lig_pred)
 
 # order of args?
-#bal_acc = balanced_accuracy_score(y_true, y_pred)
+#bal_acc = balanced_accuracy_score(lig_true, lig_pred)
 
-#confusion_matrix(y_true, y_pred)
+#confusion_matrix(lig_true, lig_pred)
