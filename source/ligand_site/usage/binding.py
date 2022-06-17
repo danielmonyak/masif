@@ -37,7 +37,7 @@ def findBestK(coord_list, kmax=10):
   return best_k
 
 # Run predictor on pdb, find best k, cluster coordinates
-def predictRaw(pred, pdb):
+def predictRaw(pdb):
   pdb_dir = os.path.join(precom_dir, pdb)
   ligand_pred, coord_list = pred.predict(pdb_dir)
   
@@ -47,6 +47,6 @@ def predictRaw(pred, pdb):
 
   return (ligand_pred, binding_loc)
 
-def predict(pred, pdb = '1C75_A_'):
-  ligand_pred, binding_loc = predictRaw(pred, pdb)
+def predict(pdb = '1C75_A_'):
+  ligand_pred, binding_loc = predictRaw(pdb)
   print('{} binds {} at \n{}'.format(pdb.split('_')[0], ligand_pred, binding_loc))
