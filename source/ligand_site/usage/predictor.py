@@ -2,6 +2,7 @@ import numpy as np
 import os
 from default_config.util import *
 from ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
+from time import process_time
 
 params = masif_opts['ligand']
 ligand_list = params['ligand_list']
@@ -76,6 +77,8 @@ class Predictor:
     fullSamples = self.n_pockets // minPockets
     
     print('{} batches to run on ligand_site'.format(fullSamples))
+    before_time = process_time()
+    
     for i in range(fullSamples):
       if i % 10 == 0:
         done = 100.0 * i/fullSamples
@@ -95,7 +98,8 @@ class Predictor:
     temp_pred = tf.squeeze(self.ligand_site_model(temp_X, gen_sample))
     ligand_site_pred_list.append(temp_pred[:n_leftover])
     
-    print('100% of batches completed!')
+    after_time = process_time()
+    print('100% of batches completed in {} seconds.'.format(after_time - before_time))
     
     ligand_site_preds = tf.concat(ligand_site_pred_list, axis = 0)
     pocket_points = tf.where(ligand_site_preds > self.threshold)
