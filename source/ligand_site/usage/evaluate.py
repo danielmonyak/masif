@@ -1,7 +1,9 @@
-from default_config.util import *
+import os
+import numpy as np
 from sklearn.cluster import KMeans
-from sklearn.metrics import balanced_accuracy
+from sklearn.metrics import balanced_accuracy_score
 from scipy import spatial
+from default_config.util import *
 from predictor import Predictor
 
 params = masif_opts['ligand']
@@ -15,8 +17,9 @@ ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/ligand_site/ke
 pred = Predictor(ligand_model_path, ligand_site_ckp_path)
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
-fileName = 'test.npy'
-test_list = np.load(os.path.join(listDir, fileName))
+fileName = 'test_pdbs_sequence.npy'
+test_list = np.load(os.path.join(listDir, fileName)).astype(str)
+test_list = np.char.add(test_list, '_')
 
 f1_scores = []
 lig_true = []
@@ -46,16 +49,14 @@ for i, pdb in enumerate(test_list):
     ligand_coords = all_ligand_coords[0]
     tree = spatial.KDTree(xyz_coords)
     pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
-    pocket_points_true = np.array(set([pp for p in pocket_points_true for pp in p]))
+    pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
     
     overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
-    recall = overlap.shape[0]/pocket_points_true.shape[0]
-    precision = overlap.shape[0]/pocket_points_pred.shape[0]
-    # Is this F1 score???
-    ########################
-    f1 = (recall + precision)/2
+    recall = len(overlap)/len(pocket_points_true)
+    precision = len(overlap)/len(pocket_points_pred)
+    f1 = 2*recall*precision / (recall + precision)
     f1_scores.append(f1)
-    ########################
+    
     ligand_true = all_ligand_types[0]
     y_true.append(ligand_list.index(ligand_true))
     y_pred.append(ligandIdx_pred)
