@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from tensorflow.keras import layers, Sequential, initializers, Model
+from tensorflow.keras import layers, Sequential, initializers, Model, regularizers
 from default_config.masif_opts import masif_opts
 from default_config.util import *
 import functools
@@ -58,9 +58,9 @@ class MaSIF_ligand(Model):
             CovarLayer(),
             layers.Flatten(),
             layers.Dropout(1 - self.keep_prob),
-            layers.Dense(64, activation="relu"),
+            layers.Dense(64, activation="relu", kernel_regularizer=regularizers.L1(0.01)),
             #
-            layers.Dense(30, activation="relu"),
+            layers.Dense(30, activation="relu", kernel_regularizer=regularizers.L1(0.01)),
             #
             layers.Dense(self.n_ligands, activation="softmax")
         ]
