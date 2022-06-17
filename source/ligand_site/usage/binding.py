@@ -5,12 +5,6 @@ from scipy import spatial
 from default_config.util import *
 from predictor import Predictor
 
-precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
-ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
-ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/ligand_site/kerasModel/ckp'
-
-pred = Predictor(ligand_model_path, ligand_site_ckp_path)
-
 # Calculate the Within-Cluster-Sum of Squared Errors (WSS) for different values of k
 def calculate_WSS(points, kmax):
   sse = []
@@ -38,7 +32,7 @@ def findBestK(coord_list, kmax=10):
   return best_k
 
 # Run predictor on pdb, find best k, cluster coordinates
-def predictRaw(pdb):
+def predictRaw(pred, pdb):
   pdb_dir = os.path.join(precom_dir, pdb)
   ligand_pred, coord_list = pred.predict(pdb_dir)
   
@@ -48,6 +42,6 @@ def predictRaw(pdb):
 
   return (ligand_pred, binding_loc)
 
-def predict(pdb = '1C75_A_'):
-  ligand_pred, binding_loc = predictRaw(pdb)
+def predict(pred, pdb = '1C75_A_'):
+  ligand_pred, binding_loc = predictRaw(pred, pdb)
   print('{} binds {} at \n{}'.format(pdb.split('_')[0], ligand_pred, binding_loc))
