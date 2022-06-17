@@ -51,7 +51,7 @@ class Predictor:
                    'theta_coords' : self.theta_coords, 'mask' : self.mask}
     def getFlatDataFromDict(key, sample):
       data = self.data_dict[key]
-      return data[sample].flatten()
+      return data[list(sample)].flatten()
     def getDataSampleTemp(sample):
       temp_fn = lambda key : getFlatDataFromDict(key, sample)
       flat_list = list(map(temp_fn, data_order))
@@ -89,7 +89,7 @@ class Predictor:
     n_leftover = self.n_pockets % minPockets
     valid = tf.range(minPockets * i, minPockets * i + n_leftover)
     garbage = tf.zeros([minPockets - n_leftover], dtype=tf.int32)
-    sample = list(tf.expand_dims(tf.concat([valid, garbage], axis=0), axis=0))
+    sample = tf.expand_dims(tf.concat([valid, garbage], axis=0), axis=0)
     
     temp_X = self.getDataSample(sample)
     temp_pred = tf.squeeze(self.ligand_site_model(temp_X, gen_sample))
