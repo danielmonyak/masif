@@ -15,8 +15,8 @@ ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/sa
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/ligand_site/kerasModel/ckp'
 
 thresh = 0.6
-
-pred = Predictor(ligand_model_path, ligand_site_ckp_path, n_predictions = 50, threshold = thresh)
+n_pred = 100
+pred = Predictor(ligand_model_path, ligand_site_ckp_path, n_predictions = n_pred, threshold = thresh)
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
 fileName = 'test_pdbs_sequence.npy'
