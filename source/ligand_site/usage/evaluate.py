@@ -25,6 +25,19 @@ f1_scores = []
 lig_true = []
 lig_pred = []
 
+outdir = 'results'
+if not os.path.exists(outdir):
+    os.mkdir(outdir)
+
+pdb_file = os.path.join(outdir, 'pdbs.txt')
+f1_file = os.path.join(outdir, 'f1.txt')
+lig_true_file = os.path.join(outdir, 'lig_true.txt')
+lig_pred_file = os.path.join(outdir, 'lig_pred.txt')
+
+for fi in [fi_lie, lig_true_file, lig_pred_file]:
+    with open(fi, 'w') as f:
+        pass
+
 n_test = 20
 for i, pdb in enumerate(test_list):
     if i == n_test:
@@ -55,15 +68,22 @@ for i, pdb in enumerate(test_list):
     recall = len(overlap)/len(pocket_points_true)
     precision = len(overlap)/len(pocket_points_pred)
     f1 = 2*recall*precision / (recall + precision)
-    f1_scores.append(f1)
     
     ligand_true = all_ligand_types[0]
-    lig_true.append(ligand_list.index(ligand_true))
-    lig_pred.append(ligandIdx_pred)
-
-#f1_scores = np.array(f1_scores)
-#lig_true = np.array(lig_true)
-#lig_pred = np.array(lig_pred)
+    ligandIdx_true = ligand_list.index(ligand_true)
+    
+    #f1_scores.append(f1)
+    #lig_true.append(ligandIdx_true)
+    #lig_pred.append(ligandIdx_pred)
+    
+    with open(pdb_file, 'a') as f:
+        f.write(str(pdb))
+    with open(f1_file, 'a') as f:
+        f.write(str(f1))
+    with open(lig_true_file, 'a') as f:
+        f.write(str(ligandIdx_true))
+    with open(lig_pred_file, 'a') as f:
+        f.write(str(ligandIdx_pred))
 
 # order of args?
 #bal_acc = balanced_accuracy_score(lig_true, lig_pred)
