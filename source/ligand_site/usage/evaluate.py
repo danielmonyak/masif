@@ -66,6 +66,6 @@ for i, pdb in enumerate(test_list):
 #y_pred = np.array(y_pred)
 
 # order of args?
-bal_acc = balanced_accuracy(y_true, y_pred)
+#bal_acc = balanced_accuracy_score(y_true, y_pred)
 
-confusion_matrix(y_true, y_pred)
+#confusion_matrix(y_true, y_pred)
