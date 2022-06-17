@@ -51,8 +51,7 @@ class Predictor:
                    'theta_coords' : self.theta_coords, 'mask' : self.mask}
     def getFlatDataFromDict(key, sample):
       data = self.data_dict[key]
-      #return np.take(data, sample, axis=0).flatten()
-      return data[sample].flatten()
+      return np.take(data, sample, axis=0).flatten()
     def getDataSampleTemp(sample):
       temp_fn = lambda key : getFlatDataFromDict(key, sample)
       flat_list = list(map(temp_fn, data_order))
