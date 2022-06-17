@@ -12,6 +12,8 @@ from sklearn.metrics import confusion_matrix
 import pickle
 import tensorflow as tf
 
+lr = 1e-3
+
 continue_training = False
 
 params = masif_opts["ligand"]
@@ -36,7 +38,8 @@ model = MaSIF_ligand(
   params["max_distance"],
   params["n_classes"],
   feat_mask=params["feat_mask"],
-  keep_prob = 1.0
+  keep_prob = 1.0,
+  learning_rate = lr
 )
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,

@@ -13,7 +13,7 @@ minPockets = params['minPockets']
 class MaSIF_ligand(Model):
     """
     The neural network model.
-    """ 
+    """
     def __init__(
         self,
         max_rho,
@@ -59,9 +59,9 @@ class MaSIF_ligand(Model):
             layers.Flatten(),
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
-            ##
-            #layers.Dense(30, activation="relu"),
-            ##
+            #
+            layers.Dense(30, activation="relu"),
+            #
             layers.Dense(self.n_ligands, activation="softmax")
         ]
     
