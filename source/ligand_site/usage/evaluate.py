@@ -27,7 +27,7 @@ lig_pred = []
 
 n_test = 20
 for i, pdb in enumerate(test_list):
-    if i == 20:
+    if i == n_test:
         break
     
     print('{} of {} test pdbs running...'.format(i, n_test))
