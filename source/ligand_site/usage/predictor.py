@@ -89,11 +89,13 @@ class Predictor:
     n_leftover = self.n_pockets % minPockets
     valid = tf.range(minPockets * i, minPockets * i + n_leftover)
     garbage = tf.zeros([minPockets - n_leftover], dtype=tf.int32)
-    sample = tf.expand_dims(tf.concat([valid, garbage], axis=0), axis=0)
+    sample = list(tf.expand_dims(tf.concat([valid, garbage], axis=0), axis=0))
     
     temp_X = self.getDataSample(sample)
     temp_pred = tf.squeeze(self.ligand_site_model(temp_X, gen_sample))
     ligand_site_pred_list.append(temp_pred[:n_leftover])
+    
+    print('100% of batches completed!')
     
     ligand_site_preds = tf.concat(ligand_site_pred_list, axis = 0)
     pocket_points = tf.where(ligand_site_preds > self.threshold)
