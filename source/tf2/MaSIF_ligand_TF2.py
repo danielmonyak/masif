@@ -58,9 +58,9 @@ class MaSIF_ligand(Model):
             CovarLayer(),
             layers.Flatten(),
             layers.Dropout(1 - self.keep_prob),
-            layers.Dense(64, activation="relu", kernel_regularizer=regularizers.L1(0.01)),
+            layers.Dense(64, activation="relu", kernel_regularizer=regularizers.L1(0.001)),
             #
-            layers.Dense(30, activation="relu", kernel_regularizer=regularizers.L1(0.01)),
+            layers.Dense(30, activation="relu", kernel_regularizer=regularizers.L1(0.001)),
             #
             layers.Dense(self.n_ligands, activation="softmax")
         ]
