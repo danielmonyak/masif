@@ -14,7 +14,9 @@ precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/preco
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/ligand_site/kerasModel/ckp'
 
-pred = Predictor(ligand_model_path, ligand_site_ckp_path, n_predictions = 50, threshold = 0.75)
+thresh = 0.6
+
+pred = Predictor(ligand_model_path, ligand_site_ckp_path, n_predictions = 50, threshold = thresh)
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
 fileName = 'test_pdbs_sequence.npy'
@@ -30,11 +32,16 @@ if not os.path.exists(outdir):
     os.mkdir(outdir)
 
 pdb_file = os.path.join(outdir, 'pdbs.txt')
-f1_file = os.path.join(outdir, 'f1.txt')
+
+recall_file = os.path.join(outdir, 'recall.txt')
+precision_file = os.path.join(outdir, 'precision.txt')
+
+#f1_file = os.path.join(outdir, 'f1.txt')
+
 lig_true_file = os.path.join(outdir, 'lig_true.txt')
 lig_pred_file = os.path.join(outdir, 'lig_pred.txt')
 
-for fi in [pdb_file, f1_file, lig_true_file, lig_pred_file]:
+for fi in [pdb_file, recall_file, precision_file, lig_true_file, lig_pred_file]:
     with open(fi, 'w') as f:
         pass
 
@@ -59,6 +66,9 @@ for i, pdb in enumerate(test_list):
         )
     ).astype(str)
 
+    if len(all_ligand_coords) == 0:
+        continue
+
     ligand_coords = all_ligand_coords[0]
     tree = spatial.KDTree(xyz_coords)
     pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
@@ -67,7 +77,7 @@ for i, pdb in enumerate(test_list):
     overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
     recall = len(overlap)/len(pocket_points_true)
     precision = len(overlap)/len(pocket_points_pred)
-    f1 = 2*recall*precision / (recall + precision)
+    #f1 = 2*recall*precision / (recall + precision)
     
     ligand_true = all_ligand_types[0]
     ligandIdx_true = ligand_list.index(ligand_true)
@@ -78,8 +88,12 @@ for i, pdb in enumerate(test_list):
     
     with open(pdb_file, 'a') as f:
         f.write(str(pdb) + '\n')
-    with open(f1_file, 'a') as f:
-        f.write(str(f1) + '\n')
+    
+    with open(recall_file, 'a') as f:
+        f.write(str(recall) + '\n')
+    with open(precision_file, 'a') as f:
+        f.write(str(precision) + '\n')
+    
     with open(lig_true_file, 'a') as f:
         f.write(str(ligandIdx_true) + '\n')
     with open(lig_pred_file, 'a') as f:
