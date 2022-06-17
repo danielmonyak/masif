@@ -77,13 +77,13 @@ for i, pdb in enumerate(test_list):
     #lig_pred.append(ligandIdx_pred)
     
     with open(pdb_file, 'a') as f:
-        f.write(str(pdb))
+        f.write(str(pdb) + '\n')
     with open(f1_file, 'a') as f:
-        f.write(str(f1))
+        f.write(str(f1) + '\n')
     with open(lig_true_file, 'a') as f:
-        f.write(str(ligandIdx_true))
+        f.write(str(ligandIdx_true) + '\n')
     with open(lig_pred_file, 'a') as f:
-        f.write(str(ligandIdx_pred))
+        f.write(str(ligandIdx_pred) + '\n')
 
 # order of args?
 #bal_acc = balanced_accuracy_score(lig_true, lig_pred)
