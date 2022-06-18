@@ -14,7 +14,7 @@ import tensorflow as tf
 
 lr = 1e-3
 
-continue_training = True
+continue_training = False
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -43,7 +43,7 @@ model = MaSIF_ligand(
 )
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=['accuracy']
+  metrics = ['categorical_accuracy']
 )
 
 modelDir = 'kerasModel'
@@ -66,7 +66,7 @@ dev = '/GPU:1'
 
 saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
   ckpPath,
-  monitor = 'val_accuracy',
+  monitor = 'val_categorical_accuracy',
   save_best_only = True,
   verbose = 1,
   initial_value_threshold = initValThresh
@@ -83,5 +83,7 @@ with tf.device(dev):
     use_multiprocessing = True
   )
 
+'''
 with open(os.path.join(modelDir, 'train_history'), 'wb') as file_pi:
   pickle.dump(history.history, file_pi)
+'''

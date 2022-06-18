@@ -17,7 +17,7 @@ precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/preco
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/ligand_site/kerasModel/ckp'
 
-thresh = 0.6
+thresh = 0.9
 n_pred = 100
 pred = Predictor(ligand_model_path, ligand_site_ckp_path, n_predictions = n_pred, threshold = thresh)
 
@@ -50,6 +50,8 @@ with tf.device('/GPU:2'):
     for i, pdb in enumerate(pdbs_left):
         if i == n_test:
             break
+
+        try:
 
         print('{} of {} test pdbs running...'.format(i, n_test))
         pdb_dir = os.path.join(precom_dir, pdb)
