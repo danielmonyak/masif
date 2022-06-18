@@ -50,3 +50,4 @@ source/ligand_site/saveModel_pid.txt
 source/ligand_site/train_model_pid.txt
 source/ligand_site/usage/evaluate.pid
 source/ligand_site/usage/test_git.txt
+source/ligand_site/usage/results
