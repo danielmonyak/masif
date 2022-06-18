@@ -6,7 +6,7 @@ from scipy import spatial
 from default_config.util import *
 from predictor import Predictor
 
-continue_running = True
+continue_running = False
 outdir = 'results'
 
 params = masif_opts['ligand']
