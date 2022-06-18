@@ -50,7 +50,7 @@ model = MaSIF_ligand_site(
 )
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=['accuracy']
+  metrics=['binary_accuracy']
 )
 
 modelDir = 'kerasModel'
@@ -72,14 +72,17 @@ strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
 saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
   ckpPath,
-  monitor = 'val_accuracy',
+  monitor = 'val_binary_accuracy',
   save_best_only = True,
   verbose = 1,
   initial_value_threshold = initValThresh
 )
 
+dev = '/GPU:3'
+
 num_epochs = 100
-with strategy.scope():
+#with strategy.scope():
+with tf.device(dev):
   history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs - last_epoch,
     validation_data = (val_X, val_y),
@@ -88,5 +91,8 @@ with strategy.scope():
     use_multiprocessing = True
   )
 
+
+'''
 with open(os.path.join(modelDir, 'train_history'), 'wb') as file_pi:
   pickle.dump(history.history, file_pi)
+'''
