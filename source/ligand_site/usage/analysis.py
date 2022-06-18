@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-dir = 'testing'
+dir = 'results'
 
 arr_list = ['lig_true', 'lig_pred', 'recall', 'precision']
 
