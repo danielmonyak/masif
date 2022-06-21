@@ -1,6 +1,5 @@
 import os
 import numpy as np
-from sklearn.cluster import KMeans
 from sklearn.metrics import balanced_accuracy_score
 from scipy import spatial
 from default_config.util import *
