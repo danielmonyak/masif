@@ -26,7 +26,7 @@ for i, data_element in enumerate(test_data):
   if data_element[5] != target_pdb:
     continue
   
-  labels_raw = tf.cast(data_element[4], dtype=tf.int32)
+  labels_raw = tf.cast(data_element[4] > 0, dtype=tf.int32)
   labels = tf.squeeze(labels_raw)
   pocket_points = tf.squeeze(tf.where(labels != 0))
   npoints = pocket_points.shape[0]
