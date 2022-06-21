@@ -44,3 +44,12 @@ y_pred[pocket_points_pred] = 1
 acc = accuracy_score(y_true, y_pred)
 print('Accuracy: ', round(acc, 2))
 '''
+
+X_true = pred.getLigandX(pocket_points_true)
+X_true_pred = pred.predictLigandIdx(X_true)
+
+
+X_pred = pred.getLigandX(pocket_points_true)
+X_pred_pred = self.predictLigandIdx(X_pred)
+
+
