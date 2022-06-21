@@ -6,11 +6,14 @@ import sys
 from IPython.core.debugger import set_trace
 import importlib
 import numpy as np
+from scipy import spatial
 from sklearn.metrics import accuracy_score, balanced_accuracy_score
 import tensorflow as tf
-from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
+from default_config.util import *
 from MaSIF_ligand_site import MaSIF_ligand_site
+from ligand_site.usage.predictor import Predictor
+
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -126,4 +129,33 @@ tree = spatial.KDTree(xyz_coords)
 pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
 
+#####
 
+X_true = pred.getLigandX(pocket_points_true)
+X_true_pred = pred.predictLigandIdx(X_true)
+
+X_pred = pred.getLigandX(pocket_points_pred)
+X_pred_pred = pred.predictLigandIdx(X_pred)
+'''
+
+def temp_fn(key):
+  data = pred.data_dict[key]
+  return data.flatten()
+
+flat_list = list(map(temp_fn, data_order))
+X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
+
+y_afc = np.zeros([1, pred.n_pockets])
+y_afc[0, pocket_points_pred] = 1
+
+sample = tf.map_fn(fn=map_func, elems = y_afc, fn_output_signature = sampleSpec)
+
+dev = '/GPU:3'
+with tf.device(dev):
+  y_pred = tf.squeeze(model(X, sample))
+  y_pred = tf.cast(y_pred > 0.5, dtype=tf.int32)
+  y_true = tf.squeeze(tf.gather(params = y_afc, indices = sample, axis = 1, batch_dims = 1))
+
+acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
+print('Balanced accuracy: ', round(acc, 2))
+'''
