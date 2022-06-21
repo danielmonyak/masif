@@ -57,7 +57,8 @@ for i, data_element in enumerate(test_data):
   empties_sample = tf.random.shuffle(pocket_empties)[:npoints]
   sample = tf.concat([pocket_points, empties_sample], axis=0)
   
-  y = tf.gather(labels, sample)
+  y = tf.expand_dims(tf.gather(labels, sample), axis=0)
+  y[y > 0] = 1
   
   input_feat = tf.gather(data_element[0], sample)
   rho_coords = tf.gather(tf.expand_dims(data_element[1], -1), sample)
@@ -77,11 +78,11 @@ for i, data_element in enumerate(test_data):
   
   key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
   flat_list = list(map(helperInner, key_list))
-  X = tf.concat(flat_list, axis = 0)
+  X = tf.expand_dims(tf.concat(flat_list, axis = 0), axis=0)
   
   break
 
-'''
+
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 
@@ -93,15 +94,26 @@ model = MaSIF_ligand_site(
 )
 model.load_weights(ckpPath)
 
-gen_sample = tf.range(y.shape[1])
-sample = tf.stack([gen_sample] * y.shape[0])
+def map_func(row):
+  pocket_points = tf.where(row != 0)
+  pocket_points = tf.random.shuffle(pocket_points)[:int(minPockets/2)]
+  pocket_empties = tf.where(row == 0)
+  pocket_empties = tf.random.shuffle(pocket_empties)[:int(minPockets/2)]
+  return tf.cast(
+    tf.squeeze(
+      tf.concat([pocket_points, pocket_empties], axis = 0)
+    ),
+    dtype=tf.int32
+  )
+
+sample = tf.map_fn(fn=map_func, elems = y, fn_output_signature = sampleSpec)
 
 dev = '/GPU:3'
 with tf.device(dev):
   y_pred = tf.squeeze(model(X, sample))
   y_pred = tf.cast(y_pred > 0.5, dtype=tf.int64)
   y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
-'''
+
 '''
 acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
 print('Balanced accuracy: ', round(acc, 2))
