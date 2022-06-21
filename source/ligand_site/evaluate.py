@@ -8,7 +8,7 @@ import importlib
 import sys
 from default_config.util import *
 from MaSIF_ligand_site import MaSIF_ligand_site
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, balanced_accuracy_score
 import tensorflow as tf
 
 params = masif_opts["ligand"]
@@ -69,5 +69,5 @@ with tf.device(dev):
   y_pred = tf.cast(y_pred > 0.5, dtype=tf.int64)
   y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
 
-acc = accuracy_score(flatten(y_true), flatten(y_pred))
+acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
 print('Balanced accuracy: ', round(acc, 2))
