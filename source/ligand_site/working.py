@@ -54,7 +54,7 @@ for i, data_element in enumerate(test_data):
   npoints = savedPockets_temp
   ##
   pocket_empties = tf.squeeze(tf.where(labels == 0))
-  empties_sample = tf.random.shuffle(pocket_empties)[:npoints*ratio]
+  empties_sample = tf.random.shuffle(pocket_empties)[:npoints]
   sample = tf.concat([pocket_points, empties_sample], axis=0)
   
   y = tf.gather(labels, sample)
