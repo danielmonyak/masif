@@ -12,3 +12,5 @@ prodFunc = lambda a,b : a*b
 makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
 
 data_order = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
+
+flatten = lambda a : tf.reshape(a, [-1])
