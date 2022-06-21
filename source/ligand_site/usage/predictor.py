@@ -82,7 +82,7 @@ class Predictor:
     for i in range(fullSamples):
       if i % 10 == 0:
         done = 100.0 * i/fullSamples
-        print('{} of {} batches completed. {}% done...'.format(i, fullSamples, done))
+        print('{} of {} batches completed. {}% done...'.format(i, fullSamples, round(done)))
       sample = range(minPockets * i, minPockets * (i+1))
       temp_X = self.getDataSample(sample)
       temp_pred = tf.squeeze(self.ligand_site_model(temp_X, gen_sample))
