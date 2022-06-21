@@ -34,7 +34,7 @@ ligand_coords = all_ligand_coords[0]
 tree = spatial.KDTree(xyz_coords)
 pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
-
+'''
 y_gen = np.zeros(pred.n_pockets)
 y_true = y_gen.copy()
 y_true[pocket_points_true] = 1
@@ -43,3 +43,4 @@ y_pred[pocket_points_pred] = 1
 
 acc = accuracy_score(y_true, y_pred)
 print('Accuracy: ', round(acc, 2))
+'''
