@@ -17,34 +17,17 @@ defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 savedPockets = params['savedPockets']
 
-'''
-datadir = '/data02/daniel/masif/datasets/ligand_site'
-genPath = os.path.join(datadir, '{}_{}.npy')
-
-X = np.load(genPath.format('test', 'X'))
-y = np.load(genPath.format('test', 'y'))
-
-##
-y[y > 0] = 1
-y = tf.constant(y)
-##
-
-cpu = '/CPU:0'
-with tf.device(cpu):
-  X = tf.RaggedTensor.from_tensor(X, padding=defaultCode)
-  y = tf.RaggedTensor.from_tensor(y, padding=defaultCode)
-'''
 pdb = '1RI4_A_'
-target_pdb = pdb.rstrip('_')
 
+target_pdb = pdb.rstrip('_')
 test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'testing_data_sequenceSplit_30.tfrecord')).map(_parse_function)
 for i, data_element in enumerate(test_data):
   print(i)
-  print(data_element[5])
   if data_element[5] != target_pdb:
     continue
   
-  labels = tf.squeeze(data_element[4])
+  labels_raw = tf.cast(data_element[4], dtype=tf.int32)
+  labels = tf.squeeze(labels_raw)
   pocket_points = tf.squeeze(tf.where(labels != 0))
   npoints = pocket_points.shape[0]
   savedPockets_temp = min(savedPockets, npoints)
