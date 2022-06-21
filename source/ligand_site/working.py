@@ -41,7 +41,6 @@ for i, data_element in enumerate(test_data):
   sample = tf.concat([pocket_points, empties_sample], axis=0)
   
   y = tf.expand_dims(tf.gather(labels, sample), axis=0)
-  y[y > 0] = 1
   
   input_feat = tf.gather(data_element[0], sample)
   rho_coords = tf.gather(tf.expand_dims(data_element[1], -1), sample)
