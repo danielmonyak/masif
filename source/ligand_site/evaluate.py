@@ -70,4 +70,4 @@ with tf.device(dev):
   y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
 
 acc = accuracy_score(flatten(y_true), flatten(y_pred))
-print('Balanced accuracy: ', round(balanced_acc, 2))
+print('Balanced accuracy: ', round(acc, 2))
