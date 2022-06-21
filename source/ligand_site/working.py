@@ -2,14 +2,15 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
-import numpy as np
+import sys
 from IPython.core.debugger import set_trace
 import importlib
-import sys
-from default_config.util import *
-from MaSIF_ligand_site import MaSIF_ligand_site
+import numpy as np
 from sklearn.metrics import accuracy_score, balanced_accuracy_score
 import tensorflow as tf
+from default_config.util import *
+from tf2.read_ligand_tfrecords import _parse_function
+from MaSIF_ligand_site import MaSIF_ligand_site
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -35,12 +36,10 @@ with tf.device(cpu):
 '''
 target_pdb = '1RI4_A_'
 
-
-
-dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
-test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
+test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'testing_data_sequenceSplit_30.tfrecord')).map(_parse_function)
 for i, data_element in enumerate(test_data):
   print(i)
+  print(data_element[5])
   if data_element[5] != target_pdb:
     continue
   
@@ -48,7 +47,7 @@ for i, data_element in enumerate(test_data):
   pocket_points = tf.squeeze(tf.where(labels != 0))
   npoints = pocket_points.shape[0]
   savedPockets_temp = min(savedPockets, npoints)
-
+  
   ##
   pocket_points = tf.random.shuffle(pocket_points)[:savedPockets_temp]
   npoints = savedPockets_temp
@@ -74,12 +73,14 @@ for i, data_element in enumerate(test_data):
   def helperInner(tsr_key):
       tsr = feed_dict[tsr_key]
       return tf.reshape(tsr, [-1])
+  
   key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
   flat_list = list(map(helperInner, key_list))
   X = tf.concat(flat_list, axis = 0)
   
   break
 
+'''
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 
@@ -99,6 +100,8 @@ with tf.device(dev):
   y_pred = tf.squeeze(model(X, sample))
   y_pred = tf.cast(y_pred > 0.5, dtype=tf.int64)
   y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
-
+'''
+'''
 acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
 print('Balanced accuracy: ', round(acc, 2))
+'''
