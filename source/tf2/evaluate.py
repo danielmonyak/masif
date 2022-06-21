@@ -1,24 +1,25 @@
-import tensorflow as tf
-from sklearn.metrics import balanced_accuracy_score, roc_auc_score
-import numpy as np
+# Header variables and parameters.
 import os
-from default_config.masif_opts import masif_opts
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
+
+import numpy as np
+from IPython.core.debugger import set_trace
+import importlib
+import sys
+from default_config.util import *
+from MaSIF_ligand_site import MaSIF_ligand_site
+from sklearn.metrics import accuracy_score
+import tensorflow as tf
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
 
 modelDir = 'kerasModel'
-#ckpPath = os.path.join(modelDir, 'model')
 modelPath = os.path.join(modelDir, 'savedModel')
-
 model = tf.keras.models.load_model(modelPath)
 
 datadir = '/data02/daniel/masif/datasets/tf2'
-#train_X = np.load(datadir + 'train_X.npy')
-#train_y = np.load(datadir + 'train_y.npy')
-#val_X = np.load(datadir + 'val_X.npy')
-#val_y = np.load(datadir + 'val_y.npy')
 test_X_raw = np.load(os.path.join(datadir, 'test_X.npy'))
 test_y = np.load(os.path.join(datadir, 'test_y.npy'))
 
@@ -36,10 +37,9 @@ strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
   #val_res = model.evaluate(val_X, val_y, use_multiprocessing=True)
   #test_res = model.evaluate(test_X, test_y, use_multiprocessing=True)
 with tf.device('/GPU:3'):
-  y_pred_probs = model.predict(test_X, use_multiprocessing=True)
+  y_pred_probs = model(test_X)
 
-#print('model.evaluate:', test_res)
-
+'''
 y_true = test_y.argmax(axis = 1)
 y_pred = y_pred_probs.argmax(axis = 1)
 
@@ -48,3 +48,4 @@ roc_auc = roc_auc_score(y_true, y_pred_probs, multi_class = 'ovr', labels = np.a
 
 print('Balanced accuracy:', balanced_acc)
 print('ROC AUC:', roc_auc)
+'''
