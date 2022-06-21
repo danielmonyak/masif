@@ -99,7 +99,7 @@ class Predictor:
     ligand_site_pred_list.append(temp_pred[:n_leftover])
     
     after_time = process_time()
-    print('100% of batches completed in {} seconds.'.format(after_time - before_time))
+    print('100% of batches completed in {} seconds.'.format(round(after_time - before_time)))
     
     ligand_site_preds = tf.concat(ligand_site_pred_list, axis = 0)
     pocket_points = tf.where(ligand_site_preds > self.threshold)
