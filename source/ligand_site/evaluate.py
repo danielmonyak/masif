@@ -40,17 +40,8 @@ model = MaSIF_ligand_site(
   feat_mask=params["feat_mask"],
   keep_prob = 1.0
 )
-'''
-model.compile(optimizer = model.opt,
-  loss = model.loss_fn,
-  metrics=['accuracy']
-)
-'''
 model.load_weights(ckpPath)
-'''
-gen_sample = tf.range(y.shape[1])
-sample = tf.stack([gen_sample] * y.shape[0])
-'''
+
 def map_func(row):
   pocket_points = tf.where(row != 0)
   pocket_points = tf.random.shuffle(pocket_points)[:int(minPockets/2)]
