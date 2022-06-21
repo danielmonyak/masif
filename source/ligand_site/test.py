@@ -47,12 +47,13 @@ print('Accuracy: ', round(acc, 2))
 X_true = pred.getLigandX(pocket_points_true)
 X_true_pred = pred.predictLigandIdx(X_true)
 
-X_pred = pred.getLigandX(pocket_points_true)
+X_pred = pred.getLigandX(pocket_points_pred)
 X_pred_pred = pred.predictLigandIdx(X_pred)
-
+'''
 all_ligand_types = np.load(os.path.join(
         ligand_coord_dir, "{}_ligand_types.npy".format(pdb.split("_")[0])
 )).astype(str)
 ligand_true = all_ligand_types[0]
 ligandIdx_true = ligand_list.index(ligand_true)
+'''
 
