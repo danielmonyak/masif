@@ -130,12 +130,23 @@ pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
 
 #####
+y_gen = np.zeros(pred.n_pockets)
+y_true = y_gen.copy()
+y_true[pocket_points_true] = 1
+y_pred = y_gen
+y_pred[pocket_points_pred] = 1
 
+acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
+print('Balanced accuracy: ', round(acc, 2))
+#####
+'''
 X_true = pred.getLigandX(pocket_points_true)
 X_true_pred = pred.predictLigandIdx(X_true)
 
 X_pred = pred.getLigandX(pocket_points_pred)
 X_pred_pred = pred.predictLigandIdx(X_pred)
+'''
+
 '''
 
 def temp_fn(key):
