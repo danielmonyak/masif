@@ -66,8 +66,10 @@ sample = tf.map_fn(fn=map_func, elems = y, fn_output_signature = sampleSpec)
 dev = '/GPU:3'
 with tf.device(dev):
   y_pred = tf.squeeze(model(X, sample))
+  y_pred = tf.cast(y_pred > 0.5, dtype=tf.int64)
+  y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
 
-y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
-balanced_acc = balanced_accuracy_score(y, y_pred)
+#def bin_acc(row
+acc = accuracy_score(flatten(y), flatten(y_pred))
 print('Balanced accuracy: ', round(balanced_acc, 2))
 
