@@ -6,35 +6,33 @@ import numpy as np
 from IPython.core.debugger import set_trace
 import importlib
 import sys
-from default_config.masif_opts import masif_opts
+from default_config.util import *
 from MaSIF_ligand_site import MaSIF_ligand_site
 from sklearn.metrics import balanced_accuracy_score
 import tensorflow as tf
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
+minPockets = params['minPockets']
 
 datadir = '/data02/daniel/masif/datasets/ligand_site'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
-test_X = np.load(genPath.format('test', 'X'))
-test_y = np.load(genPath.format('test', 'y'))
+X = np.load(genPath.format('test', 'X'))
+y = np.load(genPath.format('test', 'y'))
 
 ##
-def binarize_y(y):
-  y[y > 0] = 1
-  return tf.constant(y)
-
-test_y = binarize_y(test_y)
+y[y > 0] = 1
+y = tf.constant(y)
 ##
-
-modelDir = 'kerasModel'
-ckpPath = os.path.join(modelDir, 'ckp')
 
 cpu = '/CPU:0'
 with tf.device(cpu):
-  test_X = tf.RaggedTensor.from_tensor(test_X, padding=defaultCode)
-  test_y = tf.RaggedTensor.from_tensor(test_y, padding=defaultCode)
+  X = tf.RaggedTensor.from_tensor(X, padding=defaultCode)
+  y = tf.RaggedTensor.from_tensor(y, padding=defaultCode)
+
+modelDir = 'kerasModel'
+ckpPath = os.path.join(modelDir, 'ckp')
 
 model = MaSIF_ligand_site(
   params["max_distance"],
@@ -47,11 +45,29 @@ model.compile(optimizer = ligand_site_model.opt,
   metrics=['accuracy']
 )
 model.load_weights(ckpPath)
+'''
+gen_sample = tf.range(y.shape[1])
+sample = tf.stack([gen_sample] * y.shape[0])
+'''
+def map_func(row):
+  pocket_points = tf.where(row != 0)
+  pocket_points = tf.random.shuffle(pocket_points)[:int(minPockets/2)]
+  pocket_empties = tf.where(row == 0)
+  pocket_empties = tf.random.shuffle(pocket_empties)[:int(minPockets/2)]
+  return tf.cast(
+    tf.squeeze(
+      tf.concat([pocket_points, pocket_empties], axis = 0)
+    ),
+    dtype=tf.int32
+  )
+'''
+sample = tf.map_fn(fn=map_func, elems = y, fn_output_signature = sampleSpec)
 
 dev = '/GPU:3'
 with tf.device(dev):
-  y_pred = model(test_X)
-'''
-balanced_acc = balanced_accuracy_score(test_y, y_pred)
+  y_pred = model(X, sample)
+
+balanced_acc = balanced_accuracy_score(y, y_pred)
 print('Balanced accuracy: ', round(balanced_acc, 2))
+
 '''
