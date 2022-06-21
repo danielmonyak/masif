@@ -17,7 +17,7 @@ precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/preco
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/ligand_site/kerasModel/ckp'
 
-thresh = 0.9
+thresh = 0.5
 n_pred = 100
 pred = Predictor(ligand_model_path, ligand_site_ckp_path, n_predictions = n_pred, threshold = thresh)
 
