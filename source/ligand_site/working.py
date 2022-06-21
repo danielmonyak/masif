@@ -16,6 +16,8 @@ params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 savedPockets = params['savedPockets']
+ligand_coord_dir = params["ligand_coords_dir"]
+ligand_list = params['ligand_list']
 
 pdb = '1RI4_A_'
 
@@ -98,3 +100,18 @@ with tf.device(dev):
 
 acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
 print('Balanced accuracy: ', round(acc, 2))
+
+
+
+
+
+
+precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
+ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
+ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/ligand_site/kerasModel/ckp'
+pred = Predictor(ligand_model_path, ligand_site_ckp_path)
+
+
+
+
+
