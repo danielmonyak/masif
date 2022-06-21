@@ -6,13 +6,12 @@ import tensorflow as tf
 from ligand_site.usage.predictor import Predictor
 from default_config.util import *
 
-pdb='2VRB_AB_'
-#pdb='3AYI_AB_'
-#pdb='1C75_A_'
-
+#pdb='2VRB_AB_'
+pdb = '1RI4_A_'
 
 params = masif_opts['ligand']
 ligand_coord_dir = params["ligand_coords_dir"]
+ligand_list = params['ligand_list']
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
@@ -44,10 +43,9 @@ y_pred[pocket_points_pred] = 1
 acc = accuracy_score(y_true, y_pred)
 print('Accuracy: ', round(acc, 2))
 '''
-'''
+
 X_true = pred.getLigandX(pocket_points_true)
 X_true_pred = pred.predictLigandIdx(X_true)
-
 
 X_pred = pred.getLigandX(pocket_points_true)
 X_pred_pred = pred.predictLigandIdx(X_pred)
@@ -57,4 +55,4 @@ all_ligand_types = np.load(os.path.join(
 )).astype(str)
 ligand_true = all_ligand_types[0]
 ligandIdx_true = ligand_list.index(ligand_true)
-'''
+
