@@ -34,7 +34,8 @@ with tf.device(cpu):
   X = tf.RaggedTensor.from_tensor(X, padding=defaultCode)
   y = tf.RaggedTensor.from_tensor(y, padding=defaultCode)
 '''
-target_pdb = '1RI4_A_'
+pdb = '1RI4_A_'
+target_pdb = pdb.rstrip('_')
 
 test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'testing_data_sequenceSplit_30.tfrecord')).map(_parse_function)
 for i, data_element in enumerate(test_data):
