@@ -28,13 +28,8 @@ train_y = np.load(genPath.format('train', 'y'))
 val_X = np.load(genPath.format('val', 'X'))
 val_y = np.load(genPath.format('val', 'y'))
 
-cpu = '/CPU:0'
-with tf.device(cpu):
-  train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
-  train_y = tf.RaggedTensor.from_tensor(train_y, padding=defaultCode)
-  val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
-  val_y = tf.RaggedTensor.from_tensor(val_y, padding=defaultCode)
-
+if defaultCode > 0:
+  sys.exit("defaultCode will be erased...")
 
 ##
 def binarize_y(y):
@@ -44,6 +39,14 @@ def binarize_y(y):
 train_y = binarize_y(train_y)
 val_y = binarize_y(val_y)
 ##
+
+cpu = '/CPU:0'
+with tf.device(cpu):
+  train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
+  train_y = tf.RaggedTensor.from_tensor(train_y, padding=defaultCode)
+  val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
+  val_y = tf.RaggedTensor.from_tensor(val_y, padding=defaultCode)
+
 
 
 model = MaSIF_ligand_site(
