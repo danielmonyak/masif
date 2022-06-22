@@ -114,7 +114,7 @@ pdb_dir = os.path.join(precom_dir, pdb)
 
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/ligand_site/kerasModel/ckp'
-
+'''
 xyz_coords = pred.getXYZCoords(pdb_dir)            
 all_ligand_coords = np.load(
     os.path.join(
@@ -125,7 +125,7 @@ ligand_coords = all_ligand_coords[0]
 tree = spatial.KDTree(xyz_coords)
 pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
-
+'''
 
 
 
