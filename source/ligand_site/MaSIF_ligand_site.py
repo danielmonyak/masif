@@ -21,15 +21,13 @@ class MaSIF_ligand_site(Model):
         learning_rate=1e-4,
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
-        keep_prob = 1.0,
-        class_weight_ratio = 1.0
+        keep_prob = 1.0
     ):
         ## Call super - model initializer
         super(MaSIF_ligand_site, self).__init__()
         
         ##
         self.keep_prob = keep_prob
-        self.class_weight = {0 : class_weight_ratio, 1 : 1.0} 
         ##
         
         # order of the spectral filters
@@ -77,8 +75,7 @@ class MaSIF_ligand_site(Model):
             y_pred = self(x, sample = sample, training=True)  # Forward pass
             # Compute the loss value
             # (the loss function is configured in `compile()`)
-            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses,
-                    class_weight = self.class_weight)
+            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
         # Compute gradients
         trainable_vars = self.trainable_variables
@@ -96,8 +93,7 @@ class MaSIF_ligand_site(Model):
         y, sample = self.make_y(y_raw)
         
         y_pred = self(x, sample = sample, training=False)
-        self.compiled_loss(y, y_pred, regularization_losses=self.losses,
-                class_weight = self.class_weight)
+        self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
         self.compiled_metrics.update_state(y, y_pred)
         return {m.name: m.result() for m in self.metrics}
