@@ -1,9 +1,8 @@
-import tensorflow as tf
 import numpy as np
-from tensorflow.keras import layers, Sequential, initializers, Model, regularizers
-from default_config.masif_opts import masif_opts
-from default_config.util import *
 import functools
+import tensorflow as tf
+from tensorflow.keras import layers, Sequential, initializers, Model, regularizers
+from default_config.util import *
 
 #tf.debugging.set_log_device_placement(True)
 params = masif_opts["ligand"]
