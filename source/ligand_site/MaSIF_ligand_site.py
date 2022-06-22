@@ -72,6 +72,7 @@ class MaSIF_ligand_site(Model):
             x, y_raw, class_weight = data
         else:
             x, y_raw = data
+            class_weight = None
         
         y, sample = self.make_y(y_raw)
         
@@ -89,7 +90,8 @@ class MaSIF_ligand_site(Model):
         # Update weights
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
         # Update metrics (includes the metric that tracks the loss)
-        self.compiled_metrics.update_state(y, y_pred)
+        self.compiled_metrics.update_state(y, y_pred,
+                                          class_weight = class_weight)
         # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
     
@@ -98,6 +100,7 @@ class MaSIF_ligand_site(Model):
             x, y_raw, class_weight = data
         else:
             x, y_raw = data
+            class_weight = None
         
         y, sample = self.make_y(y_raw)
         
@@ -105,7 +108,8 @@ class MaSIF_ligand_site(Model):
         self.compiled_loss(y, y_pred, regularization_losses=self.losses,
                            class_weight = class_weight)
 
-        self.compiled_metrics.update_state(y, y_pred)
+        self.compiled_metrics.update_state(y, y_pred,
+                                          class_weight = class_weight)
         return {m.name: m.result() for m in self.metrics}
     
     def call(self, x, sample = None):
