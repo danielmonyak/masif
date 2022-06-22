@@ -68,7 +68,11 @@ class MaSIF_ligand_site(Model):
         return (tf.gather(params = y_raw, indices = sample, axis = 1, batch_dims = 1), sample)
     
     def train_step(self, data):
-        x, y_raw = data
+        if len(data) == 3:
+            x, y_raw, class_weight = data
+        else:
+            x, y_raw = data
+        
         y, sample = self.make_y(y_raw)
         
         with tf.GradientTape() as tape:
