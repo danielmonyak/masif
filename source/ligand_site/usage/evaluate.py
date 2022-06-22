@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.metrics import balanced_accuracy_score
 from scipy import spatial
 from default_config.util import *
-from predictor import Predictor
+from tf2.usage.predictor import Predictor
 
 continue_running = False
 outdir = 'results'
@@ -13,8 +13,8 @@ ligand_list = params['ligand_list']
 
 ligand_coord_dir = params["ligand_coords_dir"]
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
-ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
-ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/ligand_site/kerasModel/ckp'
+ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
+ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
 
 ligand_thresh = 0.75
 n_pred = 100
