@@ -110,13 +110,10 @@ print('Balanced accuracy: ', round(acc, 2))
 
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
+pdb_dir = os.path.join(precom_dir, pdb)
+
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/ligand_site/kerasModel/ckp'
-pred = Predictor(ligand_model_path, ligand_site_ckp_path)
-
-pdb_dir = os.path.join(precom_dir, pdb)
-pred.loadData(pdb_dir)
-pocket_points_pred = pred.predictPocketPoints()
 
 xyz_coords = pred.getXYZCoords(pdb_dir)            
 all_ligand_coords = np.load(
@@ -129,6 +126,23 @@ tree = spatial.KDTree(xyz_coords)
 pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
 
+
+
+
+
+do = lambda x : pred.predictLigandIdx(pred.getLigandX(x))
+for thresh in [.5, .6, .7, .8, .9, .95, .99]:
+  print('threshold:', thresh)
+  pred = Predictor(ligand_model_path, ligand_site_ckp_path, threshold = .5, ligand_threshold = thresh)
+  pred.loadData(pdb_dir)
+  pocket_points_pred = pred.predictPocketPoints()
+  print(do(pocket_points_pred))
+
+
+
+
+
+'''
 #####
 y_gen = np.zeros(pred.n_pockets)
 y_true = y_gen.copy()
@@ -140,11 +154,13 @@ acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
 print('Balanced accuracy: ', round(acc, 2))
 #####
 '''
+'''
 X_true = pred.getLigandX(pocket_points_true)
 X_true_pred = pred.predictLigandIdx(X_true)
 
 X_pred = pred.getLigandX(pocket_points_pred)
 X_pred_pred = pred.predictLigandIdx(X_pred)
+
 '''
 
 '''
