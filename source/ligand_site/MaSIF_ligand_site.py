@@ -80,8 +80,7 @@ class MaSIF_ligand_site(Model):
             y_pred = self(x, sample = sample, training=True)  # Forward pass
             # Compute the loss value
             # (the loss function is configured in `compile()`)
-            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses,
-                                     class_weight = class_weight)
+            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
         # Compute gradients
         trainable_vars = self.trainable_variables
@@ -90,8 +89,7 @@ class MaSIF_ligand_site(Model):
         # Update weights
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
         # Update metrics (includes the metric that tracks the loss)
-        self.compiled_metrics.update_state(y, y_pred,
-                                          class_weight = class_weight)
+        self.compiled_metrics.update_state(y, y_pred)
         # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
     
@@ -105,11 +103,9 @@ class MaSIF_ligand_site(Model):
         y, sample = self.make_y(y_raw)
         
         y_pred = self(x, sample = sample, training=False)
-        self.compiled_loss(y, y_pred, regularization_losses=self.losses,
-                           class_weight = class_weight)
+        self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
-        self.compiled_metrics.update_state(y, y_pred,
-                                          class_weight = class_weight)
+        self.compiled_metrics.update_state(y, y_pred)
         return {m.name: m.result() for m in self.metrics}
     
     def call(self, x, sample = None):
