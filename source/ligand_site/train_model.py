@@ -2,15 +2,14 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
-import numpy as np
-from IPython.core.debugger import set_trace
-import importlib
 import sys
-from default_config.masif_opts import masif_opts
-from MaSIF_ligand_site import MaSIF_ligand_site
-from sklearn.metrics import confusion_matrix
+import importlib
+from IPython.core.debugger import set_trace
 import pickle
+import numpy as np
 import tensorflow as tf
+from default_config.util import *
+from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
 continue_training = False
 cw_ratio = 1.0
@@ -20,7 +19,7 @@ class_weight = {0 : cw_ratio, 1 : 1.0}
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
-datadir = '/data02/daniel/masif/datasets/ligand_site'
+datadir = '/data02/daniel/masif/datasets/tf2/ligand_site'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
 train_X = np.load(genPath.format('train', 'X'))
@@ -95,8 +94,7 @@ with tf.device(dev):
     validation_data = (val_X, val_y),
     callbacks = [saveCheckpoints],
     verbose = 2,
-    use_multiprocessing = True,
-#    class_weight = class_weight
+    use_multiprocessing = True
   )
 
 
