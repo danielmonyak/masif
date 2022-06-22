@@ -10,7 +10,7 @@ import tensorflow as tf
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 
-empty_to_pocket_ratio = 2.0
+empty_to_pocket_ratio = 2
 epochSize = 100
 
 next_epoch = 0
