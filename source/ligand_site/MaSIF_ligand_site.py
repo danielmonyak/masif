@@ -1,8 +1,7 @@
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
-from default_config.masif_opts import masif_opts
-from default_config.util import *
 import functools
+from default_config.util import *
 
 params = masif_opts["ligand"]
 minPockets = params['minPockets']
