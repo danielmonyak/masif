@@ -79,7 +79,8 @@ class MaSIF_ligand_site(Model):
             y_pred = self(x, sample = sample, training=True)  # Forward pass
             # Compute the loss value
             # (the loss function is configured in `compile()`)
-            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses,
+                                     class_weight = class_weight)
 
         # Compute gradients
         trainable_vars = self.trainable_variables
@@ -93,11 +94,16 @@ class MaSIF_ligand_site(Model):
         return {m.name: m.result() for m in self.metrics}
     
     def test_step(self, data):
-        x, y_raw = data
+        if len(data) == 3:
+            x, y_raw, class_weight = data
+        else:
+            x, y_raw = data
+        
         y, sample = self.make_y(y_raw)
         
         y_pred = self(x, sample = sample, training=False)
-        self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+        self.compiled_loss(y, y_pred, regularization_losses=self.losses,
+                           class_weight = class_weight)
 
         self.compiled_metrics.update_state(y, y_pred)
         return {m.name: m.result() for m in self.metrics}
