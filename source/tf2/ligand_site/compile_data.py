@@ -31,9 +31,11 @@ for dataset in ['train', 'val', 'test']:
     print(j)
     y_file = X_file.replace('X', 'y')
     
-    X_list.append(np.load(os.path.join(datadir, X_file))
+    X_list.append(np.load(os.path.join(datadir, X_file)))
     y_list.append(np.load(os.path.join(datadir, y_file)))
   X = tf.concat(X_list, axis=0)
   y = tf.concat(y_list, axis=0)
   np.save(genPathOut.format(dataset, 'X'), X)
   np.save(genPathOut.format(dataset, 'y'), y)
+
+print('Finished!')
