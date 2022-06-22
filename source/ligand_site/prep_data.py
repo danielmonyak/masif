@@ -11,7 +11,7 @@ from default_config.masif_opts import masif_opts
 from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
 
-ratio = 1
+empty_to_pocket_ratio = 2.0
 epochSize = 100
 
 next_epoch = 0
@@ -23,6 +23,8 @@ savedPockets = params['savedPockets']
 
 outdir = '/data02/daniel/masif/datasets/ligand_site/split'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
+
+if not os.path.exists(outdir):                                                                                              os.mkdir(outdir)
 
 def helper(feed_dict):
     def helperInner(tsr_key):
@@ -52,7 +54,7 @@ for gpu in gpus:
 dev = '/GPU:1'
 with tf.device(dev):
     #for dataset in dataset_list.keys():
-    for dataset in ['val', 'test']:
+    for dataset in ['train', 'val', 'test']:
         i = 0
         j = next_epoch
 
@@ -88,7 +90,7 @@ with tf.device(dev):
             npoints = savedPockets_temp
             ##
             pocket_empties = tf.squeeze(tf.where(labels == 0))
-            empties_sample = tf.random.shuffle(pocket_empties)[:npoints*ratio]
+            empties_sample = tf.random.shuffle(pocket_empties)[:npoints * empty_to_pocket_ratio]
             sample = tf.concat([pocket_points, empties_sample], axis=0)
             
             y_list.append(tf.gather(labels, sample))
