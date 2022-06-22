@@ -2,11 +2,9 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
 import numpy as np
-
-from default_config.masif_opts import masif_opts
-from MaSIF_ligand_site import MaSIF_ligand_site
 import tensorflow as tf
-import numpy as np
+from default_config.util import *
+from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -27,7 +25,7 @@ model.compile(optimizer = model.opt,
   metrics=['accuracy']
 )
 
-datadir = '/data02/daniel/masif/datasets/ligand_site'
+datadir = '/data02/daniel/masif/datasets/tf2/ligand_site'
 test_X = np.load(os.path.join(datadir, 'test_X.npy'))
 cpu = '/CPU:0'
 with tf.device(cpu):
