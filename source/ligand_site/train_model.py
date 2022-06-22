@@ -13,6 +13,9 @@ import pickle
 import tensorflow as tf
 
 continue_training = False
+cw_ratio = 1.0
+class_weight = {0 : cw_ratio, 1 : 1.0}
+
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -88,7 +91,8 @@ with tf.device(dev):
     validation_data = (val_X, val_y),
     callbacks = [saveCheckpoints],
     verbose = 2,
-    use_multiprocessing = True
+    use_multiprocessing = True,
+    class_weight = class_weight
   )
 
 
