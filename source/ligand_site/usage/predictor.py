@@ -130,7 +130,7 @@ class Predictor:
     ligand_pred_list = []
     for i in range(self.n_predictions):
       temp_pred = tf.squeeze(self.ligand_model(X))
-      if tf.reduce_max(temp_pred) > ligand_threshold:
+      if tf.reduce_max(temp_pred) > self.ligand_threshold:
         ligand_pred_list.append(temp_pred)
     
     ligand_preds = tf.stack(ligand_pred_list, axis=0)
