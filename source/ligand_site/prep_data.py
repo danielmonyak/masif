@@ -2,14 +2,13 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
-
-import numpy as np
-from IPython.core.debugger import set_trace
-import importlib
 import sys
-from default_config.masif_opts import masif_opts
-from tf2.read_ligand_tfrecords import _parse_function
+import importlib
+from IPython.core.debugger import set_trace
+import numpy as np
 import tensorflow as tf
+from default_config.util import *
+from tf2.read_ligand_tfrecords import _parse_function
 
 empty_to_pocket_ratio = 2.0
 epochSize = 100
@@ -24,12 +23,13 @@ savedPockets = params['savedPockets']
 outdir = '/data02/daniel/masif/datasets/ligand_site/split'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
-if not os.path.exists(outdir):                                                                                              os.mkdir(outdir)
+if not os.path.exists(outdir):
+    os.mkdir(outdir)
 
 def helper(feed_dict):
     def helperInner(tsr_key):
         tsr = feed_dict[tsr_key]
-        return tf.reshape(tsr, [-1])
+        return flatten(tsr)
     key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
     flat_list = list(map(helperInner, key_list))
     return tf.concat(flat_list, axis = 0)
