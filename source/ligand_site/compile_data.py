@@ -2,33 +2,37 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
-import numpy as np
 import sys
-from default_config.masif_opts import masif_opts
-from tf2.read_ligand_tfrecords import _parse_function
+import numpy as np
 import tensorflow as tf
+from default_config.util import *
+from tf2.read_ligand_tfrecords import _parse_function
 
 params = masif_opts["ligand"]
 
-datadir = '/data02/daniel/masif/datasets/ligand_site/split'
-genPathIn = os.path.join(datadir, '{}_{}_{}.npy')
+datadir = '/data02/daniel/masif/datasets/tf2/ligand_site/split'
+all_files = np.array(os.listdir(datadir))
 
-outDir = '/data02/daniel/masif/datasets/ligand_site'
+outDir = '/data02/daniel/masif/datasets/tf2/ligand_site'
 genPathOut = os.path.join(outDir, '{}_{}.npy')
 
 dev = '/GPU:1'
 train_j = range(10)
 
-numFiles_dict = {'train' : 10, 'val' : 2, 'test' : 3}
+#numFiles_dict = {'train' : 10, 'val' : 2, 'test' : 3}
 
-for dataset in numFiles_dict.keys():
+for dataset in ['train', 'val', 'test']:
+  temp_X_files = all_files[np.char.startswith(all_files, dataset + '_X')]
+  
   print(dataset)
   X_list = []
   y_list = []
-  for j in range(numFiles_dict[dataset]):
+  for j, X_file in enumerate(temp_X_files):
     print(j)
-    X_list.append(np.load(genPathIn.format(dataset, 'X', j)))
-    y_list.append(np.load(genPathIn.format(dataset, 'y', j)))
+    y_file = X_file.replace('X', 'y')
+    
+    X_list.append(np.load(os.path.join(datadir, X_file))
+    y_list.append(np.load(os.path.join(datadir, y_file)))
   X = tf.concat(X_list, axis=0)
   y = tf.concat(y_list, axis=0)
   np.save(genPathOut.format(dataset, 'X'), X)
