@@ -96,7 +96,7 @@ with tf.device(dev):
     callbacks = [saveCheckpoints],
     verbose = 2,
     use_multiprocessing = True,
-    class_weight = class_weight
+#    class_weight = class_weight
   )
 
 
