@@ -3,7 +3,7 @@ import numpy as np
 from scipy import spatial
 from sklearn.metrics import accuracy_score, balanced_accuracy_score
 import tensorflow as tf
-from ligand_site.usage.predictor import Predictor
+from tf2.ligand_site.usage.predictor import Predictor
 from default_config.util import *
 
 #pdb='2VRB_AB_'
