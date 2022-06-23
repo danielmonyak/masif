@@ -54,6 +54,7 @@ class MaSIF_ligand_site(Model):
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
             layers.Dense(30, activation="relu"),
+            layers.Dense(10, activation='relu'),
             layers.Dense(1, activation="sigmoid")
         ]
         
