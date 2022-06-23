@@ -11,9 +11,7 @@ import tensorflow as tf
 from default_config.util import *
 from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
-continue_training = False
-#cw_ratio = 1.0
-#class_weight = {0 : cw_ratio, 1 : 1.0}
+continue_training = True
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -67,7 +65,7 @@ initValThresh = None
 if continue_training:
   model.load_weights(ckpPath)
   last_epoch += 100
-  initValThresh = 0.69159
+  initValThresh = 0.88709
 
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
