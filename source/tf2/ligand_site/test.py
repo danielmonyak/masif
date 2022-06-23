@@ -52,3 +52,5 @@ X_pred_pred = pred.predictLigandIdx(X_pred)
 
 t = pocket_points_true
 p = pocket_points_pred
+
+do = lambda x : pred.predictLigandIdx(pred.getLigandX(x))
