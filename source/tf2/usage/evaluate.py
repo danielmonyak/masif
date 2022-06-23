@@ -1,8 +1,16 @@
+print('e')
+
 import os
 import numpy as np
 from sklearn.metrics import balanced_accuracy_score
 from scipy import spatial
+
+print('d')
+
 from default_config.util import *
+
+print('c')
+
 from tf2.usage.predictor import Predictor
 
 continue_running = False
@@ -15,6 +23,8 @@ ligand_coord_dir = params["ligand_coords_dir"]
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
+
+print('a')
 
 thresh = 0.9
 pred = Predictor(ligand_model_path, ligand_site_ckp_path, threshold = thresh)
@@ -42,15 +52,13 @@ else:
         with open(fi, 'w') as f:
             pass
 
-n_test = len(test_list)
-
-with tf.device('/GPU:2'):
+print('b')
+n_test = len(pdbs_left)
+dev = '/GPU:0'
+with tf.device(dev):
     for i, pdb in enumerate(pdbs_left):
-        if i == n_test:
-            break
-        
+        print('{} of {} test pdbs running...'.format(i, n_test))
         try:
-            print('{} of {} test pdbs running...'.format(i, n_test))
             pdb_dir = os.path.join(precom_dir, pdb)
             ligandIdx_pred, pocket_points_pred = pred.predictRaw(pdb_dir)
             xyz_coords = pred.getXYZCoords(pdb_dir)

@@ -38,3 +38,4 @@ data/masif_ligand/nn_models*
 source/tf2/*/kerasModel*
 source/tf2/*/*pid*
 source/tf2/usage/results*
+func.py
