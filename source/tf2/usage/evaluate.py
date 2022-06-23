@@ -16,9 +16,8 @@ precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/preco
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
 
-ligand_thresh = 0.75
-n_pred = 100
-pred = Predictor(ligand_model_path, ligand_site_ckp_path, n_predictions = n_pred, ligand_thresh = ligand_thresh)
+thresh = 0.8
+pred = Predictor(ligand_model_path, ligand_site_ckp_path, threshold = thresh)
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
 fileName = 'test_pdbs_sequence.npy'
