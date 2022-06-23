@@ -28,7 +28,6 @@ class MaSIF_ligand_site(Model):
         
         ##
         self.keep_prob = keep_prob
-        self.n_conv_layers = n_conv_layers
         ##
         
         # order of the spectral filters
@@ -49,7 +48,7 @@ class MaSIF_ligand_site(Model):
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
  
         
-        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
+        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers)
         
         self.myLayers=[
             layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
@@ -144,7 +143,6 @@ class ConvLayer(layers.Layer):
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
         
-        self.n_conv_layers = n_conv_layers
         
         # Variable dict lists
         self.variables = []
@@ -152,7 +150,7 @@ class ConvLayer(layers.Layer):
         initial_coords = self.compute_initial_coordinates()
         # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
         
-        for layer_num in range(self.n_conv_layers):
+        for layer_num in range(n_conv_layers):
             
             mu_rho_initial = np.expand_dims(initial_coords[:, 0], 0).astype(
                 "float32"
@@ -259,8 +257,7 @@ class ConvLayer(layers.Layer):
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
         ret = input_feat
-        for layer_num in range(self.n_conv_layers):
-            var_dict = self.variables[layer_num]
+        for var_dict in self.variables:
             
             mu_rho = var_dict['mu_rho']
             mu_theta = var_dict['mu_theta']
