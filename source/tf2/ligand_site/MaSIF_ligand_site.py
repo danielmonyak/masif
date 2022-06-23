@@ -145,7 +145,7 @@ class ConvLayer(layers.Layer):
         
         
         # Variable dict lists
-        self.variables = []
+        self.variable_dicts = []
         
         initial_coords = self.compute_initial_coordinates()
         # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
@@ -220,7 +220,7 @@ class ConvLayer(layers.Layer):
             var_dict['sigma_theta'] = sigma_theta
             var_dict['b_conv'] = b_conv
             var_dict['W_conv'] = W_conv
-            self.variables.append(var_dict)
+            self.variable_dicts.append(var_dict)
         
         
         
@@ -257,7 +257,7 @@ class ConvLayer(layers.Layer):
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
         ret = input_feat
-        for var_dict in self.variables:
+        for var_dict in self.variable_dicts:
             
             mu_rho = var_dict['mu_rho']
             mu_theta = var_dict['mu_theta']
