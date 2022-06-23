@@ -21,6 +21,7 @@ train_j = range(10)
 
 #numFiles_dict = {'train' : 10, 'val' : 2, 'test' : 3}
 
+with tf.device('/GPU:1'):
 for dataset in ['train', 'val', 'test']:
   temp_X_files = all_files[np.char.startswith(all_files, dataset + '_X')]
   
