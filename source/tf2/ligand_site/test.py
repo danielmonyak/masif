@@ -14,9 +14,10 @@ ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
-ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/kerasModel/savedModel'
-ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/ligand_site/kerasModel/ckp'
-pred = Predictor(ligand_model_path, ligand_site_ckp_path, n_predictions = 100, threshold = 0.9)
+ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
+ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
+thresh = 0.9
+pred = Predictor(ligand_model_path, ligand_site_ckp_path, n_predictions = 100, threshold = thresh)
 
 
 pdb_dir = os.path.join(precom_dir, pdb)
@@ -49,11 +50,6 @@ X_true_pred = pred.predictLigandIdx(X_true)
 
 X_pred = pred.getLigandX(pocket_points_pred)
 X_pred_pred = pred.predictLigandIdx(X_pred)
-'''
-all_ligand_types = np.load(os.path.join(
-        ligand_coord_dir, "{}_ligand_types.npy".format(pdb.split("_")[0])
-)).astype(str)
-ligand_true = all_ligand_types[0]
-ligandIdx_true = ligand_list.index(ligand_true)
-'''
 
+t = pocket_points_true
+p = pocket_points_pred
