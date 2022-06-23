@@ -16,12 +16,14 @@ ligand_list = params['ligand_list']
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
-thresh = 0.5
-pred = Predictor(ligand_model_path, ligand_site_ckp_path, threshold = thresh)
-
 pdb_dir = os.path.join(precom_dir, pdb)
+
+thresh = 0.5
+pred = Predictor(ligand_model_path, ligand_site_ckp_path, threshold = thresh, ligand_threshold = 0.5, n_predictions = 200)
 pred.loadData(pdb_dir)
-pocket_points_pred = pred.predictPocketPoints()
+p = pred.predictPocketPoints()
+overlap = np.intersect1d(t, p)
+bad = p[~np.isin(p, t)]
 
 xyz_coords = pred.getXYZCoords(pdb_dir)            
 all_ligand_coords = np.load(
@@ -54,3 +56,8 @@ t = pocket_points_true
 p = pocket_points_pred
 
 do = lambda x : pred.predictLigandIdx(pred.getLigandX(x))
+
+def summary(p):
+    overlap = np.intersect1d(t, p)
+    print(len(overlap)/len(t))
+    print(len(overlap)/len(p))
