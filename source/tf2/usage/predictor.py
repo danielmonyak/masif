@@ -7,7 +7,8 @@ from time import process_time
 params = masif_opts['ligand']
 ligand_list = params['ligand_list']
 minPockets = params['minPockets']
-gen_sample = tf.expand_dims(tf.range(minPockets), axis = 0)
+with tf.device('/GPU:2'):
+  gen_sample = tf.expand_dims(tf.range(minPockets), axis = 0)
 
 class Predictor:
   def getLigandSiteModel(self, ligand_site_ckp_path):
