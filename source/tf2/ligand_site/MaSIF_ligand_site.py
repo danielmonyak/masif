@@ -127,7 +127,7 @@ class ConvLayer(layers.Layer):
         n_rhos,
         n_rotations,
         feat_mask,
-        n_conv_layers = 1):
+        n_conv_layers):
         
         super(ConvLayer, self).__init__()
         
