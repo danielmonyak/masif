@@ -95,9 +95,3 @@ with tf.device(dev):
     verbose = 2,
     use_multiprocessing = False
   )
-
-
-'''
-with open(os.path.join(modelDir, 'train_history'), 'wb') as file_pi:
-  pickle.dump(history.history, file_pi)
-'''
