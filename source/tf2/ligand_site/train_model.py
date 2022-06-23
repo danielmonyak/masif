@@ -11,7 +11,7 @@ import tensorflow as tf
 from default_config.util import *
 from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
-continue_training = False
+continue_training = True
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -64,8 +64,8 @@ initValThresh = None
 
 if continue_training:
   model.load_weights(ckpPath)
-  last_epoch += 100
-  initValThresh = 0.88709
+  last_epoch += 75
+  initValThresh = 0.91362
 
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
@@ -83,7 +83,7 @@ saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
 
 dev = '/GPU:3'
 
-num_epochs = 100
+num_epochs = 200
 #with strategy.scope():
 with tf.device(dev):
   history = model.fit(x = train_X, y = train_y,

@@ -15,7 +15,7 @@ params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 
-datadir = '/data02/daniel/masif/datasets/ligand_site'
+datadir = '/data02/daniel/masif/datasets/tf2/ligand_site'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
 X = np.load(genPath.format('test', 'X'))
@@ -62,5 +62,8 @@ with tf.device(dev):
   y_pred = tf.cast(y_pred > 0.5, dtype=tf.int64)
   y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
 
-acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
-print('Balanced accuracy: ', round(acc, 2))
+bal_acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
+print('Balanced accuracy: ', round(bal_acc, 2))
+
+acc = accuracy_score(flatten(y_true), flatten(y_pred))
+print('Accuracy: ', round(acc, 2))
