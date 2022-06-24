@@ -146,9 +146,12 @@ class ConvLayer(layers.Layer):
         
         # Variable dict lists
         self.variable_dicts = []
+        self.relu = tf.keras.layers.ReLU()
         
         initial_coords = self.compute_initial_coordinates()
         # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
+        w_init = tf.random_normal_initializer()
+        b_init = tf.zeros_initializer()
         
         for layer_num in range(n_conv_layers):
             
@@ -213,19 +216,17 @@ class ConvLayer(layers.Layer):
                     )
                 )
             
-            w_init = tf.random_normal_initializer()
-            b_init = tf.zeros_initializer()
-            self.FC1_W = tf.Variable(
-                initial_value=w_init(shape=(input_dim, units), dtype="float32"),
+            FC1_W = tf.Variable(
+                initial_value=w_init(shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), dtype="float32"),
                 trainable=True)
-            self.FC1_b = tf.Variable(
-                initial_value=b_init(shape=(units,), dtype="float32"), trainable=True)
+            FC1_b = tf.Variable(
+                initial_value=b_init(shape=(self.n_thetas * self.n_rhos,), dtype="float32"), trainable=True)
             
-            self.FC2_W = tf.Variable(
-                initial_value=w_init(shape=(input_dim, units), dtype="float32"),
+            FC2_W = tf.Variable(
+                initial_value=w_init(shape=(self.n_thetas * self.n_rhos, self.n_feat), dtype="float32"),
                 trainable=True)
-            self.FC2_b = tf.Variable(
-                initial_value=b_init(shape=(units,), dtype="float32"), trainable=True)
+            FC2_b = tf.Variable(
+                initial_value=b_init(shape=(self.n_feat,), dtype="float32"), trainable=True)
             
             var_dict = {}
             var_dict['mu_rho'] = mu_rho
