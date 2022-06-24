@@ -62,7 +62,6 @@ class MaSIF_ligand_site(Model):
             layers.Dense(1)
         ]'''
         self.myLayers=[
-            layers.Dense(self.n_feat, activation="relu"),
             layers.Dense(self.n_thetas, activation="relu"),
             layers.Dense(1)
         ]
@@ -225,9 +224,9 @@ class ConvLayer(layers.Layer):
             zero_init = tf.keras.initializers.Zeros
             FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
             FC1_b = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = zero_init, trainable=True, dtype="float32")
-            '''
+            
             FC2_W = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
-            FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = zero_init, trainable=True, dtype="float32")'''
+            FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = zero_init, trainable=True, dtype="float32")
             
             var_dict = {}
             var_dict['mu_rho'] = mu_rho
@@ -239,9 +238,9 @@ class ConvLayer(layers.Layer):
             
             var_dict['FC1_W'] = FC1_W
             var_dict['FC1_b'] = FC1_b
-            '''
+            
             var_dict['FC2_W'] = FC2_W
-            var_dict['FC2_b'] = FC2_b'''
+            var_dict['FC2_b'] = FC2_b
             
             self.variable_dicts.append(var_dict)
         
@@ -291,9 +290,9 @@ class ConvLayer(layers.Layer):
         
         FC1_W = var_dict['FC1_W']
         FC1_b = var_dict['FC1_b']
-        '''
+        
         FC2_W = var_dict['FC2_W']
-        FC2_b = var_dict['FC2_b']'''
+        FC2_b = var_dict['FC2_b']
 
         
         global_desc_1 = []
@@ -321,21 +320,11 @@ class ConvLayer(layers.Layer):
         ret = tf.stack(global_desc_1, axis=2)
         ret = tf.reshape(ret, [-1, minPockets, self.n_thetas * self.n_rhos * self.n_feat])
         
-        '''self.global_desc_1 = tf.contrib.layers.fully_connected(
-            self.global_desc_1,
-            self.n_thetas * self.n_rhos,
-            activation_fn=tf.nn.relu,
-        )
-        self.global_desc_1 = tf.contrib.layers.fully_connected(
-            self.global_desc_1, self.n_feat, activation_fn=tf.nn.relu
-        )'''
-        
-        
         ret = tf.matmul(ret, FC1_W) + FC1_b
         ret = self.relu(ret)
-        '''
+        
         ret = tf.matmul(ret, FC2_W) + FC2_b
-        ret = self.relu(ret)'''
+        ret = self.relu(ret)
         
         return ret
     
