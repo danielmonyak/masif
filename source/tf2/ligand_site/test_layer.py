@@ -16,8 +16,18 @@ class Linear(keras.layers.Layer):
     def call(self, inputs):
         return tf.matmul(inputs, self.w) + self.b
 
-l = Linear(2, 3)
+a = tf.constant([[1, 2, 3], [1, 2, 3]], dtype = tf.float32)
+x = tf.stack([a, a*2, a*10], axis=0)
+y = tf.constant([[1, 0], [1,1], [0, 0]])
+#y = tf.expand_dims(y, axis=-1)
 
-x = tf.constant([[[1, 2, 3], [1, 2, 3]]], dtype = tf.float32)
-l(x)
 
+lin = Linear(2, 3)
+model = keras.Sequential(
+    [lin, keras.layers.Dense(1)]
+)
+
+model.compile(optimizer = 'adam', loss = tf.keras.losses.BinaryCrossentropy(from_logits=True),
+              metrics=['binary_accuracy'])
+
+model.fit(x,y)
