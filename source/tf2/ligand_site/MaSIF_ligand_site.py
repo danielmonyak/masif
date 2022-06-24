@@ -261,8 +261,7 @@ class ConvLayer(layers.Layer):
             
             var_dict['b_conv'] = tf.Variable(tf.zeros(conv_shapes[layer_num][1]), name="b_conv_{}_{}".format(i, layer_num), trainable = True)
             var_dict['W_conv'] = tf.Variable(initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=conv_shapes[layer_num]),
-                                             name = "W_conv_{}_{}".format(i, layer_num)
-                                             trainable = True)
+                                             name = "W_conv_{}_{}".format(i, layer_num), trainable = True)
             self.variable_dicts.append(var_dict)
     
     def map_func(self, row, makeSample = False):
@@ -336,7 +335,7 @@ class ConvLayer(layers.Layer):
         
         ret = tf.matmul(ret, FC1_W) + FC1_b
         ret = self.relu(ret)
-
+        
         ret = tf.matmul(ret, FC2_W) + FC2_b
         ret = self.relu(ret)
         
