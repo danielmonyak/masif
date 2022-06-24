@@ -422,8 +422,10 @@ class ConvLayer(layers.Layer):
             gauss_activations = tf.expand_dims(
                 gauss_activations, 3
             )  # batch_size, n_vertices, 1, n_gauss,
+            
+            # check the axis on this
             input_feat_ = tf.expand_dims(
-                input_feat, 4
+                input_feat, -1
             )  # batch_size, n_vertices, n_feat, 1
 
             
