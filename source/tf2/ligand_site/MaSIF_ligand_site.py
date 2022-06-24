@@ -317,7 +317,7 @@ class ConvLayer(layers.Layer):
             )  # batch_size, n_gauss*1
         
         ret = tf.stack(global_desc_1, axis=2)
-        ret = tf.reshape(ret, [batch_size, -1, self.n_thetas * self.n_rhos * self.n_feat])
+        ret = tf.reshape(ret, [batch_size, minPockets, self.n_thetas * self.n_rhos * self.n_feat])
         
         '''self.global_desc_1 = tf.contrib.layers.fully_connected(
             self.global_desc_1,
