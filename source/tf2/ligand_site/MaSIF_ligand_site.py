@@ -52,9 +52,9 @@ class MaSIF_ligand_site(Model):
         
         self.myLayers=[
             #layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
-            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
+            #layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Dropout(1 - self.keep_prob),
-            layers.Dense(64, activation="relu"),
+            #layers.Dense(64, activation="relu"),
             layers.Dense(30, activation='relu'),
             layers.Dense(10, activation='relu'),
             #layers.Dense(1, activation="sigmoid")
@@ -254,44 +254,64 @@ class ConvLayer(layers.Layer):
     #                tf.TensorSpec(shape=tf.TensorShape([None, minPockets]), dtype=tf.int32, name=None)
     #])
     def call(self, x, sample):
+        batch_size = x.shape[0]
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
-        ret = input_feat
-        for var_dict in self.variable_dicts:
-            
-            mu_rho = var_dict['mu_rho']
-            mu_theta = var_dict['mu_theta']
-            sigma_rho = var_dict['sigma_rho']
-            sigma_theta = var_dict['sigma_theta']
-            b_conv = var_dict['b_conv']
-            W_conv = var_dict['W_conv']
-            
-            self.global_desc_1 = []
-            
-            for i in range(self.n_feat):
-                my_input_feat = tf.gather(ret, tf.range(i, i+1), axis=-1)
-                #my_input_feat = input_feat[:, :, :, i:i+1]
-
-                # W_conv or W_conv[i] ???
-                self.global_desc_1.append(
-                    self.inference(
-                        my_input_feat,
-                        rho_coords,
-                        theta_coords,
-                        mask,
-                        W_conv[i],
-                        b_conv[i],
-                        mu_rho[i],
-                        sigma_rho[i],
-                        mu_theta[i],
-                        sigma_theta[i],
-                    )
-                )  # batch_size, n_gauss*1
-
-            ret = tf.stack(self.global_desc_1, axis=2)
-            ret = tf.reshape(ret, [-1, self.n_thetas * self.n_rhos * self.n_feat])
+        var_dict = self.variable_dicts[0]
         
-        return ret
+        mu_rho = var_dict['mu_rho']
+        mu_theta = var_dict['mu_theta']
+        sigma_rho = var_dict['sigma_rho']
+        sigma_theta = var_dict['sigma_theta']
+        b_conv = var_dict['b_conv']
+        W_conv = var_dict['W_conv']
+        
+        FC1_W = var_dict['FC1_W']
+        FC1_b = var_dict['FC1_b']
+        FC2_W = var_dict['FC2_W']
+        FC2_b = var_dict['FC2_b']
+
+        
+        self.global_desc_1 = []
+
+        for i in range(self.n_feat):
+            my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
+            #my_input_feat = input_feat[:, :, :, i:i+1]
+
+            # W_conv or W_conv[i] ???
+            self.global_desc_1.append(
+                self.inference(
+                    my_input_feat,
+                    rho_coords,
+                    theta_coords,
+                    mask,
+                    W_conv[i],
+                    b_conv[i],
+                    mu_rho[i],
+                    sigma_rho[i],
+                    mu_theta[i],
+                    sigma_theta[i],
+                )
+            )  # batch_size, n_gauss*1
+        
+        self.global_desc_1 = tf.stack(self.global_desc_1, axis=2)
+        self.global_desc_1 = tf.reshape(self.global_desc_1, [batch_size, -1, self.n_thetas * self.n_rhos * self.n_feat])
+        
+        '''self.global_desc = tf.contrib.layers.fully_connected(
+            self.global_desc,
+            self.n_thetas * self.n_rhos,
+            activation_fn=tf.nn.relu,
+        )
+        self.global_desc = tf.contrib.layers.fully_connected(
+            self.global_desc, self.n_feat, activation_fn=tf.nn.relu
+        )'''
+        self.global_desc = tf.matmul(self.global_desc, FC1_W) + FC1_b
+        self.global_desc = self.relu(self.global_desc)
+        
+        self.global_desc = tf.matmul(self.global_desc, FC2_W) + FC2_b
+        self.global_desc = self.relu(self.global_desc)
+        
+        return self.global_desc
     
     def inference(
         self,
