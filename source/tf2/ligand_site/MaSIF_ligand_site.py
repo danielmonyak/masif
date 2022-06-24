@@ -389,6 +389,8 @@ class ConvLayer(layers.Layer):
         n_samples = tf.shape(input=rho_coords)[1]
         n_vertices = tf.shape(input=rho_coords)[2]
 
+        n_feat = tf.shape(input_feat)[2]
+        
         all_conv_feat = []
         for k in range(self.n_rotations):
             
@@ -411,10 +413,8 @@ class ConvLayer(layers.Layer):
                 gauss_activations, [batches, n_samples, n_vertices, -1]
             )  # batch_size, n_vertices, n_gauss
             gauss_activations = tf.multiply(gauss_activations, mask)
-            if (
-                mean_gauss_activation
-            ):  # computes mean weights for the different gaussians
-                
+            
+            if mean_gauss_activation:  # computes mean weights for the different gaussians
                 gauss_activations /= (
                     tf.reduce_sum(input_tensor=gauss_activations, axis=2, keepdims=True) + eps
                 )  # batch_size, n_vertices, n_gauss
@@ -432,7 +432,7 @@ class ConvLayer(layers.Layer):
             gauss_desc = tf.multiply(
                 gauss_activations, input_feat_
             )  # batch_size, n_vertices, n_feat, n_gauss,
-            gauss_desc = tf.reduce_sum(input_tensor=gauss_desc, axis=2)  # batch_size, n_feat, n_gauss,
+            gauss_desc = tf.reduce_sum(gauss_desc, axis=2)  # batch_size, n_feat, n_gauss,
             gauss_desc = tf.reshape(
                 gauss_desc, [batches, n_samples, self.n_thetas * self.n_rhos]
             )  # batch_size, 80
@@ -440,7 +440,7 @@ class ConvLayer(layers.Layer):
             conv_feat = tf.matmul(gauss_desc, W_conv) + b_conv  # batch_size, 80
             all_conv_feat.append(conv_feat)
         all_conv_feat = tf.stack(all_conv_feat)
-        conv_feat = tf.reduce_max(input_tensor=all_conv_feat, axis=0)
+        conv_feat = tf.reduce_max(all_conv_feat, axis=0)
         conv_feat = tf.nn.relu(conv_feat)
         return conv_feat
 
