@@ -53,12 +53,12 @@ class MaSIF_ligand_site(Model):
         self.myLayers=[
             #layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             
-            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
+            #layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
-            #layers.Dense(30, activation='relu'),
-            layers.Dense(10, activation='relu'),
+            layers.Dense(30, activation='relu'),
+            #layers.Dense(10, activation='relu'),
             layers.Dense(1)
         ]
         
