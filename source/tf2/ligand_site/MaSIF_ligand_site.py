@@ -53,7 +53,7 @@ class MaSIF_ligand_site(Model):
         self.myLayers=[
             #layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             
-            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
+            #layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
             #layers.Dense(30, activation='relu'),
@@ -215,13 +215,13 @@ class ConvLayer(layers.Layer):
                         trainable = True
                     )
                 )
-            '''
+            
             FC1_W = tf.Variable(
                 initial_value=w_init(shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), dtype="float32"),
                 trainable=True)
             FC1_b = tf.Variable(
                 initial_value=b_init(shape=(self.n_thetas * self.n_rhos,), dtype="float32"), trainable=True)
-            
+            '''
             FC2_W = tf.Variable(
                 initial_value=w_init(shape=(self.n_thetas * self.n_rhos, self.n_feat), dtype="float32"),
                 trainable=True)
@@ -235,10 +235,10 @@ class ConvLayer(layers.Layer):
             var_dict['sigma_theta'] = sigma_theta
             var_dict['b_conv'] = b_conv
             var_dict['W_conv'] = W_conv
-            '''
+            
             var_dict['FC1_W'] = FC1_W
             var_dict['FC1_b'] = FC1_b
-            
+            '''
             var_dict['FC2_W'] = FC2_W
             var_dict['FC2_b'] = FC2_b'''
             
@@ -287,9 +287,10 @@ class ConvLayer(layers.Layer):
         sigma_theta = var_dict['sigma_theta']
         b_conv = var_dict['b_conv']
         W_conv = var_dict['W_conv']
-        '''
+        
         FC1_W = var_dict['FC1_W']
         FC1_b = var_dict['FC1_b']
+        '''
         FC2_W = var_dict['FC2_W']
         FC2_b = var_dict['FC2_b']'''
 
@@ -328,10 +329,10 @@ class ConvLayer(layers.Layer):
             self.global_desc_1, self.n_feat, activation_fn=tf.nn.relu
         )'''
         
-        '''
+        
         ret = tf.matmul(ret, FC1_W) + FC1_b
         ret = self.relu(ret)
-        
+        '''
         ret = tf.matmul(ret, FC2_W) + FC2_b
         ret = self.relu(ret)'''
         
