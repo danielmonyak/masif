@@ -276,7 +276,7 @@ class ConvLayer(layers.Layer):
     #                tf.TensorSpec(shape=tf.TensorShape([None, minPockets]), dtype=tf.int32, name=None)
     #])
     def call(self, x, sample):
-        batch_size = x.shape[0]
+        #batch_size = x.shape[0]
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
         var_dict = self.variable_dicts[0]
@@ -317,7 +317,7 @@ class ConvLayer(layers.Layer):
             )  # batch_size, n_gauss*1
         
         ret = tf.stack(global_desc_1, axis=2)
-        ret = tf.reshape(ret, [batch_size, minPockets, self.n_thetas * self.n_rhos * self.n_feat])
+        ret = tf.reshape(ret, [-1, minPockets, self.n_thetas * self.n_rhos * self.n_feat])
         
         '''self.global_desc_1 = tf.contrib.layers.fully_connected(
             self.global_desc_1,
