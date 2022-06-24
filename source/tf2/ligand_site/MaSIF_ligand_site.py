@@ -152,103 +152,119 @@ class ConvLayer(layers.Layer):
         # Variable dict lists
         self.variable_dicts = []
         self.relu = tf.keras.layers.ReLU()
+        self.Map_func = lambda row : self.map_func(row)
+        self.Map_func_sample = lambda row : self.map_func(row, makeSample = True)
         
         initial_coords = self.compute_initial_coordinates()
         # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
         
-        for layer_num in range(n_conv_layers):
-            
-            mu_rho_initial = np.expand_dims(initial_coords[:, 0], 0).astype(
-                "float32"
-            )
-            mu_theta_initial = np.expand_dims(initial_coords[:, 1], 0).astype(
-                "float32"
-            )
-            mu_rho = []
-            mu_theta = []
-            sigma_rho = []
-            sigma_theta = []
+        conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
+                       [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
+                       [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
+                       [self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos]]
+        self.reshape_shapes = [[-1, minPockets, self.n_thetas * self.n_rhos * self.n_feat],
+                               [-1, minPockets, self.n_feat, self.n_thetas * self.n_rhos],
+                               [-1, minPockets, self.n_feat, self.n_thetas * self.n_rhos],
+                               [-1, minPockets, self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos]]
+        self.reduce_funcs = [None,
+                             lambda x : tf.reduce_mean(x, axis=-1),
+                             lambda x : tf.reduce_mean(x, axis=-1),
+                             lambda x : tf.reduce_max(x, axis=-1)]
+        
+        mu_rho_initial = np.expand_dims(initial_coords[:, 0], 0).astype(
+            "float32"
+        )
+        mu_theta_initial = np.expand_dims(initial_coords[:, 1], 0).astype(
+            "float32"
+        )
+        mu_rho = []
+        mu_theta = []
+        sigma_rho = []
+        sigma_theta = []
 
-            b_conv = []
-            W_conv = []
-            ## mu_rho and mu_theta inital values are used for sigma as well -- check on this
+        b_conv = []
+        W_conv = []
+        ## mu_rho and mu_theta inital values are used for sigma as well -- check on this
 
-            for i in range(self.n_feat):
-                mu_rho.append(
-                    tf.Variable(mu_rho_initial, name="mu_rho_{}_{}".format(i, layer_num),
-                               trainable = True)
-                )  # 1, n_gauss
-                mu_theta.append(
-                    tf.Variable(mu_theta_initial, name="mu_theta_{}_{}".format(i, layer_num),
-                               trainable = True)
-                )  # 1, n_gauss
-                sigma_rho.append(
-                    tf.Variable(
-                        np.ones_like(mu_rho_initial) * self.sigma_rho_init,
-                        name="sigma_rho_{}_{}".format(i, layer_num),
-                        trainable = True
-                    )
-                )  # 1, n_gauss
-                sigma_theta.append(
-                    tf.Variable(
-                        (np.ones_like(mu_theta_initial) * self.sigma_theta_init),
-                        name="sigma_theta_{}_{}".format(i, layer_num),
-                        trainable = True
-                    )
-                )  # 1, n_gauss
-                
-                
-                b_conv.append(
-                    tf.Variable(
-                        tf.zeros([self.n_thetas * self.n_rhos]),
-                        name="b_conv_{}_{}".format(i, layer_num),
-                        trainable = True
-                    )
+        for i in range(self.n_feat):
+            mu_rho.append(
+                tf.Variable(mu_rho_initial, name="mu_rho_{}_{}".format(i, layer_num),
+                           trainable = True)
+            )  # 1, n_gauss
+            mu_theta.append(
+                tf.Variable(mu_theta_initial, name="mu_theta_{}_{}".format(i, layer_num),
+                           trainable = True)
+            )  # 1, n_gauss
+            sigma_rho.append(
+                tf.Variable(
+                    np.ones_like(mu_rho_initial) * self.sigma_rho_init,
+                    name="sigma_rho_{}_{}".format(i, layer_num),
+                    trainable = True
                 )
-
-                # Recreating weight every time? - change back?
-                #W_conv = tf.compat.v1.get_variable("W_conv_{}".format(i), shape=[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos], initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"))
-                W_conv.append(
-                    tf.Variable(
-                        initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=[
-                            self.n_thetas * self.n_rhos,
-                            self.n_thetas * self.n_rhos,
-                        ]),
-                        name = "W_conv_{}_{}".format(i, layer_num),
-                        trainable = True
-                    )
+            )  # 1, n_gauss
+            sigma_theta.append(
+                tf.Variable(
+                    (np.ones_like(mu_theta_initial) * self.sigma_theta_init),
+                    name="sigma_theta_{}_{}".format(i, layer_num),
+                    trainable = True
                 )
-            
-            
-            gu_init = tf.keras.initializers.GlorotUniform()
-            zero_init = tf.keras.initializers.Zeros
-            FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
-            FC1_b = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = zero_init, trainable=True, dtype="float32")
-            
-            FC2_W = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
-            FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = zero_init, trainable=True, dtype="float32")
-            
+            )  # 1, n_gauss
+
+
+            b_conv.append(
+                tf.Variable(
+                    tf.zeros(conv_shapes[0][1]),
+                    name="b_conv_{}_{}".format(i, layer_num),
+                    trainable = True
+                )
+            )
+            W_conv.append(
+                tf.Variable(
+                    initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=conv_shapes[0]),
+                    name = "W_conv_{}_{}".format(i, layer_num),
+                    trainable = True
+                )
+            )
+        
+        gu_init = tf.keras.initializers.GlorotUniform()
+        zero_init = tf.keras.initializers.Zeros
+        FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
+        FC1_b = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = zero_init, trainable=True, dtype="float32")
+        
+        FC2_W = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
+        FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = zero_init, trainable=True, dtype="float32")
+        
+        var_dict = {}
+        var_dict['mu_rho'] = mu_rho
+        var_dict['mu_theta'] = mu_theta
+        var_dict['sigma_rho'] = sigma_rho
+        var_dict['sigma_theta'] = sigma_theta
+        var_dict['b_conv'] = b_conv
+        var_dict['W_conv'] = W_conv
+        
+        var_dict['FC1_W'] = FC1_W
+        var_dict['FC1_b'] = FC1_b
+        
+        var_dict['FC2_W'] = FC2_W
+        var_dict['FC2_b'] = FC2_b
+        
+        self.variable_dicts.append(var_dict)
+        
+        
+        i = 0
+        for layer_num in range(1, n_conv_layers):
             var_dict = {}
-            var_dict['mu_rho'] = mu_rho
-            var_dict['mu_theta'] = mu_theta
-            var_dict['sigma_rho'] = sigma_rho
-            var_dict['sigma_theta'] = sigma_theta
-            var_dict['b_conv'] = b_conv
-            var_dict['W_conv'] = W_conv
+            var_dict['mu_rho'] = tf.Variable(mu_rho_initial, name="mu_rho_{}_{}".format(i, layer_num), trainable = True)
+            var_dict['mu_theta'] = tf.Variable(mu_theta_initial, name="mu_theta_{}_{}".format(i, layer_num), trainable = True)
+            var_dict['sigma_rho'] = tf.Variable(np.ones_like(mu_rho_initial) * self.sigma_rho_init, name="sigma_rho_{}_{}".format(i, layer_num), trainable = True)
+            var_dict['sigma_theta'] = tf.Variable((np.ones_like(mu_theta_initial) * self.sigma_theta_init), name="sigma_theta_{}_{}".format(i, layer_num), trainable = True)
             
-            var_dict['FC1_W'] = FC1_W
-            var_dict['FC1_b'] = FC1_b
-            
-            var_dict['FC2_W'] = FC2_W
-            var_dict['FC2_b'] = FC2_b
-            
+            var_dict['b_conv'] = tf.Variable(tf.zeros(conv_shapes[layer_num][1]), name="b_conv_{}_{}".format(i, layer_num), trainable = True)
+            var_dict['W_conv'] = tf.Variable(initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=conv_shapes[layer_num]),
+                                             name = "W_conv_{}_{}".format(i, layer_num)
+                                             trainable = True)
             self.variable_dicts.append(var_dict)
-        
-        
-        
-        self.Map_func = lambda row : self.map_func(row)
-        self.Map_func_sample = lambda row : self.map_func(row, makeSample = True)
-        
+    
     def map_func(self, row, makeSample = False):
         n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
         bigShape = [n_pockets, 200, self.n_feat]
@@ -276,7 +292,6 @@ class ConvLayer(layers.Layer):
     #                tf.TensorSpec(shape=tf.TensorShape([None, minPockets]), dtype=tf.int32, name=None)
     #])
     def call(self, x, sample):
-        #batch_size = x.shape[0]
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
         
         var_dict = self.variable_dicts[0]
@@ -300,7 +315,6 @@ class ConvLayer(layers.Layer):
         for i in range(self.n_feat):
             my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
             #my_input_feat = input_feat[:, :, :, i:i+1]
-
             # W_conv or W_conv[i] ???
             global_desc_1.append(
                 self.inference(
@@ -318,13 +332,37 @@ class ConvLayer(layers.Layer):
             )  # batch_size, n_gauss*1
         
         ret = tf.stack(global_desc_1, axis=2)
-        ret = tf.reshape(ret, [-1, minPockets, self.n_thetas * self.n_rhos * self.n_feat])
+        ret = tf.reshape(ret, self.reshape_shapes[0])
         
         ret = tf.matmul(ret, FC1_W) + FC1_b
         ret = self.relu(ret)
-        
+
         ret = tf.matmul(ret, FC2_W) + FC2_b
         ret = self.relu(ret)
+        
+        for layer_num, var_dict in enumerate(self.n_conv_layers, start=1):
+            mu_rho = var_dict['mu_rho']
+            mu_theta = var_dict['mu_theta']
+            sigma_rho = var_dict['sigma_rho']
+            sigma_theta = var_dict['sigma_theta']
+            b_conv = var_dict['b_conv']
+            W_conv = var_dict['W_conv']
+            
+            ret = self.inference(
+                ret,
+                rho_coords,
+                theta_coords,
+                mask,
+                W_conv,
+                b_conv,
+                mu_rho,
+                sigma_rho,
+                mu_theta,
+                sigma_theta,
+            )  # batch_size, n_gauss*n_gauss
+            # Reduce the dimensionality by averaging over the last dimension
+            ret = tf.reshape(ret, self.reshape_shapes[layer_num])
+            ret = self.reduce_funcs[layer_num](ret)
         
         return ret
     
