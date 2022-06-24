@@ -213,6 +213,20 @@ class ConvLayer(layers.Layer):
                     )
                 )
             
+            w_init = tf.random_normal_initializer()
+            b_init = tf.zeros_initializer()
+            self.FC1_W = tf.Variable(
+                initial_value=w_init(shape=(input_dim, units), dtype="float32"),
+                trainable=True)
+            self.FC1_b = tf.Variable(
+                initial_value=b_init(shape=(units,), dtype="float32"), trainable=True)
+            
+            self.FC2_W = tf.Variable(
+                initial_value=w_init(shape=(input_dim, units), dtype="float32"),
+                trainable=True)
+            self.FC2_b = tf.Variable(
+                initial_value=b_init(shape=(units,), dtype="float32"), trainable=True)
+            
             var_dict = {}
             var_dict['mu_rho'] = mu_rho
             var_dict['mu_theta'] = mu_theta
@@ -220,6 +234,13 @@ class ConvLayer(layers.Layer):
             var_dict['sigma_theta'] = sigma_theta
             var_dict['b_conv'] = b_conv
             var_dict['W_conv'] = W_conv
+            
+            var_dict['FC1_W'] = FC1_W
+            var_dict['FC1_b'] = FC1_b
+            
+            var_dict['FC2_W'] = FC2_W
+            var_dict['FC2_b'] = FC2_b
+            
             self.variable_dicts.append(var_dict)
         
         
