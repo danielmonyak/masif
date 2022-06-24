@@ -81,7 +81,6 @@ class MaSIF_site:
         for k in range(self.n_rotations):
             rho_coords_ = tf.reshape(rho_coords, [-1, 1])  # batch_size*n_vertices
             thetas_coords_ = tf.reshape(theta_coords, [-1, 1])  # batch_size*n_vertices
-
             thetas_coords_ += k * 2 * np.pi / self.n_rotations
             thetas_coords_ = tf.mod(thetas_coords_, 2 * np.pi)
             rho_coords_ = tf.exp(
@@ -93,7 +92,6 @@ class MaSIF_site:
             self.myshape = tf.shape(rho_coords_)
             self.rho_coords_debug = rho_coords_
             self.thetas_coords_debug = thetas_coords_
-
             gauss_activations = tf.multiply(
                 rho_coords_, thetas_coords_
             )  # batch_size*n_vertices, n_gauss
@@ -107,14 +105,12 @@ class MaSIF_site:
                 gauss_activations /= (
                     tf.reduce_sum(gauss_activations, 1, keep_dims=True) + eps
                 )  # batch_size, n_vertices, n_gauss
-
             gauss_activations = tf.expand_dims(
                 gauss_activations, 2
             )  # batch_size, n_vertices, 1, n_gauss,
             input_feat_ = tf.expand_dims(
                 input_feat, 3
             )  # batch_size, n_vertices, n_feat, 1
-
             gauss_desc = tf.multiply(
                 gauss_activations, input_feat_
             )  # batch_size, n_vertices, n_feat, n_gauss,
@@ -122,9 +118,9 @@ class MaSIF_site:
             gauss_desc = tf.reshape(
                 gauss_desc, [n_samples, self.n_thetas * self.n_rhos * n_feat]
             )  # batch_size, self.n_thetas*self.n_rhos*n_feat
-
             conv_feat = tf.matmul(gauss_desc, W_conv) + b_conv  # batch_size, n_gauss
             all_conv_feat.append(conv_feat)
+        
         all_conv_feat = tf.stack(all_conv_feat)
         conv_feat = tf.reduce_max(all_conv_feat, 0)
         conv_feat = tf.nn.relu(conv_feat)
