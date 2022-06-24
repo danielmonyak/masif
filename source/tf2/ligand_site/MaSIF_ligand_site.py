@@ -51,7 +51,7 @@ class MaSIF_ligand_site(Model):
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers)
         
         self.myLayers=[
-            layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
+            #layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
@@ -289,6 +289,7 @@ class ConvLayer(layers.Layer):
                 )  # batch_size, n_gauss*1
 
             ret = tf.stack(self.global_desc_1, axis=2)
+            ret = tf.reshape(ret, [-1, self.n_thetas * self.n_rhos * self.n_feat])
         
         return ret
     
