@@ -310,13 +310,13 @@ class ConvLayer(layers.Layer):
         FC2_b = var_dict['FC2_b']
 
         
-        global_desc_1 = []
+        ret = []
 
         for i in range(self.n_feat):
             my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
             #my_input_feat = input_feat[:, :, :, i:i+1]
             # W_conv or W_conv[i] ???
-            global_desc_1.append(
+            ret.append(
                 self.inference(
                     my_input_feat,
                     rho_coords,
@@ -331,7 +331,7 @@ class ConvLayer(layers.Layer):
                 )
             )  # batch_size, n_gauss*1
         
-        ret = tf.stack(global_desc_1, axis=2)
+        ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
         
         ret = tf.matmul(ret, FC1_W) + FC1_b
