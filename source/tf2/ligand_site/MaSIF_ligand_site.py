@@ -185,7 +185,8 @@ class ConvLayer(layers.Layer):
         b_conv = []
         W_conv = []
         ## mu_rho and mu_theta inital values are used for sigma as well -- check on this
-
+        
+        layer_num = 0
         for i in range(self.n_feat):
             mu_rho.append(
                 tf.Variable(mu_rho_initial, name="mu_rho_{}_{}".format(i, layer_num),
