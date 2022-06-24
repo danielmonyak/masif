@@ -340,7 +340,7 @@ class ConvLayer(layers.Layer):
         ret = tf.matmul(ret, FC2_W) + FC2_b
         ret = self.relu(ret)
         
-        for layer_num, var_dict in enumerate(self.n_conv_layers, start=1):
+        for layer_num, var_dict in enumerate(self.variable_dicts, start=1):
             mu_rho = var_dict['mu_rho']
             mu_theta = var_dict['mu_theta']
             sigma_rho = var_dict['sigma_rho']
