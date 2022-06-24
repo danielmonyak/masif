@@ -230,11 +230,11 @@ class ConvLayer(layers.Layer):
                 initial_value=b_init(shape=(self.n_feat,), dtype="float32"), trainable=True)'''
             gu_init = tf.keras.initializers.GlorotUniform()
             zero_init = tf.keras.initializers.Zeros
-            FC1_W = self.add_weight(shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
-            FC1_b = self.add_weight(shape=(self.n_thetas * self.n_rhos,), initializer = zero_init, trainable=True, dtype="float32")
+            FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
+            FC1_b = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = zero_init, trainable=True, dtype="float32")
             '''
-            FC2_W = self.add_weight(shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
-            FC2_b = self.add_weight(shape=(self.n_feat,), initializer = zero_init, trainable=True, dtype="float32")'''
+            FC2_W = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
+            FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = zero_init, trainable=True, dtype="float32")'''
             
             var_dict = {}
             var_dict['mu_rho'] = mu_rho
