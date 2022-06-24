@@ -49,7 +49,7 @@ class MaSIF_ligand_site(Model):
  
         
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers)
-        
+        '''
         self.myLayers=[
             #layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             
@@ -59,6 +59,11 @@ class MaSIF_ligand_site(Model):
             layers.Dense(64, activation="relu"),
             layers.Dense(30, activation='relu'),
             #layers.Dense(10, activation='relu'),
+            layers.Dense(1)
+        ]'''
+        self.myLayers=[
+            layers.Dense(self.n_feat, activation="relu"),
+            layers.Dense(self.n_thetas, activation="relu"),
             layers.Dense(1)
         ]
         
@@ -151,8 +156,6 @@ class ConvLayer(layers.Layer):
         
         initial_coords = self.compute_initial_coordinates()
         # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
-        w_init = tf.random_normal_initializer()
-        b_init = tf.zeros_initializer()
         
         for layer_num in range(n_conv_layers):
             
@@ -217,17 +220,7 @@ class ConvLayer(layers.Layer):
                     )
                 )
             
-            '''FC1_W = tf.Variable(
-                initial_value=w_init(shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), dtype="float32"),
-                trainable=True)
-            FC1_b = tf.Variable(
-                initial_value=b_init(shape=(self.n_thetas * self.n_rhos,), dtype="float32"), trainable=True)
             
-            FC2_W = tf.Variable(
-                initial_value=w_init(shape=(self.n_thetas * self.n_rhos, self.n_feat), dtype="float32"),
-                trainable=True)
-            FC2_b = tf.Variable(
-                initial_value=b_init(shape=(self.n_feat,), dtype="float32"), trainable=True)'''
             gu_init = tf.keras.initializers.GlorotUniform()
             zero_init = tf.keras.initializers.Zeros
             FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
