@@ -217,7 +217,7 @@ class ConvLayer(layers.Layer):
                     )
                 )
             
-            FC1_W = tf.Variable(
+            '''FC1_W = tf.Variable(
                 initial_value=w_init(shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), dtype="float32"),
                 trainable=True)
             FC1_b = tf.Variable(
@@ -227,7 +227,14 @@ class ConvLayer(layers.Layer):
                 initial_value=w_init(shape=(self.n_thetas * self.n_rhos, self.n_feat), dtype="float32"),
                 trainable=True)
             FC2_b = tf.Variable(
-                initial_value=b_init(shape=(self.n_feat,), dtype="float32"), trainable=True)
+                initial_value=b_init(shape=(self.n_feat,), dtype="float32"), trainable=True)'''
+            gu_init = tf.keras.initializers.GlorotUniform()
+            zero_init = tf.keras.initializers.Zeros
+            FC1_W = self.add_weight(shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
+            FC1_b = self.add_weight(shape=(self.n_thetas * self.n_rhos,), initializer = zero_init, trainable=True, dtype="float32")
+            '''
+            FC2_W = self.add_weight(shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
+            FC2_b = self.add_weight(shape=(self.n_feat,), initializer = zero_init, trainable=True, dtype="float32")'''
             
             var_dict = {}
             var_dict['mu_rho'] = mu_rho
@@ -239,9 +246,9 @@ class ConvLayer(layers.Layer):
             
             var_dict['FC1_W'] = FC1_W
             var_dict['FC1_b'] = FC1_b
-            
+            '''
             var_dict['FC2_W'] = FC2_W
-            var_dict['FC2_b'] = FC2_b
+            var_dict['FC2_b'] = FC2_b'''
             
             self.variable_dicts.append(var_dict)
         
@@ -291,9 +298,9 @@ class ConvLayer(layers.Layer):
         
         FC1_W = var_dict['FC1_W']
         FC1_b = var_dict['FC1_b']
-        
+        '''
         FC2_W = var_dict['FC2_W']
-        FC2_b = var_dict['FC2_b']
+        FC2_b = var_dict['FC2_b']'''
 
         
         global_desc_1 = []
@@ -333,9 +340,9 @@ class ConvLayer(layers.Layer):
         
         ret = tf.matmul(ret, FC1_W) + FC1_b
         ret = self.relu(ret)
-        
+        '''
         ret = tf.matmul(ret, FC2_W) + FC2_b
-        ret = self.relu(ret)
+        ret = self.relu(ret)'''
         
         return ret
     
