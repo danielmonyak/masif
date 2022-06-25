@@ -60,8 +60,8 @@ class MaSIF_ligand_site(Model):
             layers.Dense(30, activation='relu'),
             #layers.Dense(10, activation='relu'),
             layers.Dense(1)
-        ]'''
-        self.myLayers=[
+        ]
+        '''self.myLayers=[
             layers.Dense(self.n_thetas, activation="relu"),
             layers.Dense(1)
         ]'''
