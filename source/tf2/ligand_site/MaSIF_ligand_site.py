@@ -341,28 +341,32 @@ class ConvLayer(layers.Layer):
 
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
-        
+
         ret = tf.matmul(ret, FC1_W) + FC1_b
         ret = self.relu(ret)
         '''
         ret = tf.matmul(ret, FC2_W) + FC2_b
         ret = self.relu(ret)
         '''
+        #####################
         if len(self.variable_dicts) == 1:
             return ret
-        
-        for layer_num, var_dict in enumerate(self.variable_dicts, start=1):
+        ####################
+        for layer_num, var_dict in enumerate(self.variable_dicts):
+            if layer_num == 0:
+                continue
+
             mu_rho = var_dict['mu_rho']
             mu_theta = var_dict['mu_theta']
             sigma_rho = var_dict['sigma_rho']
             sigma_theta = var_dict['sigma_theta']
-            
+
             b_conv = var_dict['b_conv']
             W_conv = var_dict['W_conv']
 
             FC1_W = var_dict['FC1_W']
             FC1_b = var_dict['FC1_b']
-            
+
             ret = self.inference(
                 tf.expand_dims(ret, axis=-1),
                 rho_coords,
