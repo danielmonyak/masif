@@ -245,9 +245,9 @@ class ConvLayer(layers.Layer):
         
         var_dict['FC1_W'] = FC1_W
         var_dict['FC1_b'] = FC1_b
-        
+        '''
         var_dict['FC2_W'] = FC2_W
-        var_dict['FC2_b'] = FC2_b
+        var_dict['FC2_b'] = FC2_b'''
         
         self.variable_dicts.append(var_dict)
         
@@ -305,9 +305,9 @@ class ConvLayer(layers.Layer):
         
         FC1_W = var_dict['FC1_W']
         FC1_b = var_dict['FC1_b']
-        
+        '''
         FC2_W = var_dict['FC2_W']
-        FC2_b = var_dict['FC2_b']
+        FC2_b = var_dict['FC2_b']'''
 
         
         ret = []
@@ -336,10 +336,10 @@ class ConvLayer(layers.Layer):
         
         ret = tf.matmul(ret, FC1_W) + FC1_b
         ret = self.relu(ret)
-        
+        '''
         ret = tf.matmul(ret, FC2_W) + FC2_b
         ret = self.relu(ret)
-        
+        '''
         if len(self.variable_dicts) == 1:
             return ret
         
