@@ -229,11 +229,13 @@ class ConvLayer(layers.Layer):
         
         gu_init = tf.keras.initializers.GlorotUniform()
         zero_init = tf.keras.initializers.Zeros
-        FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
+        FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, 200), initializer = gu_init, trainable=True, dtype="float32")
+        FC1_b = self.add_weight('FC1_b', shape=(200,), initializer = zero_init, trainable=True, dtype="float32")
+        '''FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
         FC1_b = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = zero_init, trainable=True, dtype="float32")
         
         FC2_W = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
-        FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = zero_init, trainable=True, dtype="float32")
+        FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = zero_init, trainable=True, dtype="float32")'''
         
         var_dict = {}
         var_dict['mu_rho'] = mu_rho
@@ -314,8 +316,6 @@ class ConvLayer(layers.Layer):
 
         for i in range(self.n_feat):
             my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
-            #my_input_feat = input_feat[:, :, :, i:i+1]
-            # W_conv or W_conv[i] ???
             ret.append(
                 self.inference(
                     my_input_feat,
@@ -352,7 +352,7 @@ class ConvLayer(layers.Layer):
             W_conv = var_dict['W_conv']
             
             ret = self.inference(
-                ret,
+                tf.expand_dims(ret, axis=-1),
                 rho_coords,
                 theta_coords,
                 mask,
@@ -389,7 +389,7 @@ class ConvLayer(layers.Layer):
         n_samples = tf.shape(input=rho_coords)[1]
         n_vertices = tf.shape(input=rho_coords)[2]
 
-        n_feat = tf.shape(input_feat)[2]
+        #n_feat = tf.shape(input_feat)[2]
         
         all_conv_feat = []
         for k in range(self.n_rotations):
