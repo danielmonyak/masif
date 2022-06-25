@@ -269,9 +269,11 @@ class ConvLayer(layers.Layer):
             var_dict['W_conv'] = tf.Variable(initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=conv_shapes[0]),
                                              name = "W_conv_{}_{}".format(i, layer_num), trainable = True)
             
-            var_dict['FC1_W'] = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, 200), initializer = gu_init, trainable=True, dtype="float32")
+            #################################
+            var_dict['FC1_W'] = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos, 200), initializer = gu_init, trainable=True, dtype="float32")
             var_dict['FC1_b'] = self.add_weight('FC1_b', shape=(200,), initializer = zero_init, trainable=True, dtype="float32")
-        
+            #################################
+            
             self.variable_dicts.append(var_dict)
     
     def map_func(self, row, makeSample = False):
@@ -301,42 +303,42 @@ class ConvLayer(layers.Layer):
     #                tf.TensorSpec(shape=tf.TensorShape([None, minPockets]), dtype=tf.int32, name=None)
     #])
     def call(self, x, sample):
-        input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
-        
-        var_dict = self.variable_dicts[0]
-        
-        mu_rho = var_dict['mu_rho']
-        mu_theta = var_dict['mu_theta']
-        sigma_rho = var_dict['sigma_rho']
-        sigma_theta = var_dict['sigma_theta']
-        b_conv = var_dict['b_conv']
-        W_conv = var_dict['W_conv']
-        
-        FC1_W = var_dict['FC1_W']
-        FC1_b = var_dict['FC1_b']
-        '''
-        FC2_W = var_dict['FC2_W']
-        FC2_b = var_dict['FC2_b']'''
+input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
 
-        
-        ret = []
-        for i in range(self.n_feat):
-            my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
-            ret.append(
-                self.inference(
-                    my_input_feat,
-                    rho_coords,
-                    theta_coords,
-                    mask,
-                    W_conv[i],
-                    b_conv[i],
-                    mu_rho[i],
-                    sigma_rho[i],
-                    mu_theta[i],
-                    sigma_theta[i],
-                )
-            )  # batch_size, n_gauss*1
-        
+var_dict = self.variable_dicts[0]
+
+mu_rho = var_dict['mu_rho']
+mu_theta = var_dict['mu_theta']
+sigma_rho = var_dict['sigma_rho']
+sigma_theta = var_dict['sigma_theta']
+b_conv = var_dict['b_conv']
+W_conv = var_dict['W_conv']
+
+FC1_W = var_dict['FC1_W']
+FC1_b = var_dict['FC1_b']
+'''
+FC2_W = var_dict['FC2_W']
+FC2_b = var_dict['FC2_b']'''
+
+
+ret = []
+for i in range(self.n_feat):
+    my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
+    ret.append(
+        self.inference(
+            my_input_feat,
+            rho_coords,
+            theta_coords,
+            mask,
+            W_conv[i],
+            b_conv[i],
+            mu_rho[i],
+            sigma_rho[i],
+            mu_theta[i],
+            sigma_theta[i],
+        )
+    )  # batch_size, n_gauss*1
+
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
         
