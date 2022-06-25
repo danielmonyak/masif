@@ -376,7 +376,6 @@ class ConvLayer(layers.Layer):
             # Reduce the dimensionality by averaging over the last dimension
             '''ret = tf.reshape(ret, self.reshape_shapes[layer_num])
             ret = self.reduce_funcs[layer_num](ret)'''
-                    ret = tf.stack(ret, axis=2)
             ret = tf.reshape(ret, self.reshape_shapes[0])
 
             ret = tf.matmul(ret, FC1_W) + FC1_b
