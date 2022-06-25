@@ -50,7 +50,7 @@ model = MaSIF_ligand_site(
   params["n_classes"],
   feat_mask=params["feat_mask"],
   keep_prob = 1.0,
-  n_conv_layers = 1
+  n_conv_layers = 2
 )
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
