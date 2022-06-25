@@ -303,41 +303,41 @@ class ConvLayer(layers.Layer):
     #                tf.TensorSpec(shape=tf.TensorShape([None, minPockets]), dtype=tf.int32, name=None)
     #])
     def call(self, x, sample):
-input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
+        input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
 
-var_dict = self.variable_dicts[0]
+        var_dict = self.variable_dicts[0]
 
-mu_rho = var_dict['mu_rho']
-mu_theta = var_dict['mu_theta']
-sigma_rho = var_dict['sigma_rho']
-sigma_theta = var_dict['sigma_theta']
-b_conv = var_dict['b_conv']
-W_conv = var_dict['W_conv']
+        mu_rho = var_dict['mu_rho']
+        mu_theta = var_dict['mu_theta']
+        sigma_rho = var_dict['sigma_rho']
+        sigma_theta = var_dict['sigma_theta']
+        b_conv = var_dict['b_conv']
+        W_conv = var_dict['W_conv']
 
-FC1_W = var_dict['FC1_W']
-FC1_b = var_dict['FC1_b']
-'''
-FC2_W = var_dict['FC2_W']
-FC2_b = var_dict['FC2_b']'''
+        FC1_W = var_dict['FC1_W']
+        FC1_b = var_dict['FC1_b']
+        '''
+        FC2_W = var_dict['FC2_W']
+        FC2_b = var_dict['FC2_b']'''
 
 
-ret = []
-for i in range(self.n_feat):
-    my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
-    ret.append(
-        self.inference(
-            my_input_feat,
-            rho_coords,
-            theta_coords,
-            mask,
-            W_conv[i],
-            b_conv[i],
-            mu_rho[i],
-            sigma_rho[i],
-            mu_theta[i],
-            sigma_theta[i],
-        )
-    )  # batch_size, n_gauss*1
+        ret = []
+        for i in range(self.n_feat):
+            my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
+            ret.append(
+                self.inference(
+                    my_input_feat,
+                    rho_coords,
+                    theta_coords,
+                    mask,
+                    W_conv[i],
+                    b_conv[i],
+                    mu_rho[i],
+                    sigma_rho[i],
+                    mu_theta[i],
+                    sigma_theta[i],
+                )
+            )  # batch_size, n_gauss*1
 
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
