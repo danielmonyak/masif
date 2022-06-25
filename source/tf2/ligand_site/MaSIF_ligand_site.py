@@ -262,9 +262,16 @@ class ConvLayer(layers.Layer):
             var_dict['sigma_rho'] = tf.Variable(np.ones_like(mu_rho_initial) * self.sigma_rho_init, name="sigma_rho_{}_{}".format(i, layer_num), trainable = True)
             var_dict['sigma_theta'] = tf.Variable((np.ones_like(mu_theta_initial) * self.sigma_theta_init), name="sigma_theta_{}_{}".format(i, layer_num), trainable = True)
             
-            var_dict['b_conv'] = tf.Variable(tf.zeros(conv_shapes[layer_num][1]), name="b_conv_{}_{}".format(i, layer_num), trainable = True)
+            '''var_dict['b_conv'] = tf.Variable(tf.zeros(conv_shapes[layer_num][1]), name="b_conv_{}_{}".format(i, layer_num), trainable = True)
             var_dict['W_conv'] = tf.Variable(initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=conv_shapes[layer_num]),
+                                             name = "W_conv_{}_{}".format(i, layer_num), trainable = True)'''
+            var_dict['b_conv'] = tf.Variable(tf.zeros(conv_shapes[0][1]), name="b_conv_{}_{}".format(i, layer_num), trainable = True)
+            var_dict['W_conv'] = tf.Variable(initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=conv_shapes[0]),
                                              name = "W_conv_{}_{}".format(i, layer_num), trainable = True)
+            
+            var_dict['FC1_W'] = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, 200), initializer = gu_init, trainable=True, dtype="float32")
+            var_dict['FC1_b'] = self.add_weight('FC1_b', shape=(200,), initializer = zero_init, trainable=True, dtype="float32")
+        
             self.variable_dicts.append(var_dict)
     
     def map_func(self, row, makeSample = False):
@@ -313,7 +320,6 @@ class ConvLayer(layers.Layer):
 
         
         ret = []
-
         for i in range(self.n_feat):
             my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
             ret.append(
@@ -348,8 +354,12 @@ class ConvLayer(layers.Layer):
             mu_theta = var_dict['mu_theta']
             sigma_rho = var_dict['sigma_rho']
             sigma_theta = var_dict['sigma_theta']
+            
             b_conv = var_dict['b_conv']
             W_conv = var_dict['W_conv']
+
+            FC1_W = var_dict['FC1_W']
+            FC1_b = var_dict['FC1_b']
             
             ret = self.inference(
                 tf.expand_dims(ret, axis=-1),
@@ -364,9 +374,14 @@ class ConvLayer(layers.Layer):
                 sigma_theta,
             )  # batch_size, n_gauss*n_gauss
             # Reduce the dimensionality by averaging over the last dimension
-            ret = tf.reshape(ret, self.reshape_shapes[layer_num])
-            ret = self.reduce_funcs[layer_num](ret)
-        
+            '''ret = tf.reshape(ret, self.reshape_shapes[layer_num])
+            ret = self.reduce_funcs[layer_num](ret)'''
+                    ret = tf.stack(ret, axis=2)
+            ret = tf.reshape(ret, self.reshape_shapes[0])
+
+            ret = tf.matmul(ret, FC1_W) + FC1_b
+            ret = self.relu(ret)
+
         return ret
     
     def inference(
@@ -385,15 +400,15 @@ class ConvLayer(layers.Layer):
         mean_gauss_activation=True,
     ):
         batches = tf.shape(input_feat)[0]
-        
+
         n_samples = tf.shape(input=rho_coords)[1]
         n_vertices = tf.shape(input=rho_coords)[2]
 
         #n_feat = tf.shape(input_feat)[2]
-        
+
         all_conv_feat = []
         for k in range(self.n_rotations):
-            
+
             rho_coords_ = tf.reshape(rho_coords, [batches, -1, 1])  # batch_size*n_vertices
             thetas_coords_ = tf.reshape(theta_coords, [batches, -1, 1])  # batch_size*n_vertices
 
@@ -413,7 +428,7 @@ class ConvLayer(layers.Layer):
                 gauss_activations, [batches, n_samples, n_vertices, -1]
             )  # batch_size, n_vertices, n_gauss
             gauss_activations = tf.multiply(gauss_activations, mask)
-            
+
             if mean_gauss_activation:  # computes mean weights for the different gaussians
                 gauss_activations /= (
                     tf.reduce_sum(input_tensor=gauss_activations, axis=2, keepdims=True) + eps
@@ -422,13 +437,13 @@ class ConvLayer(layers.Layer):
             gauss_activations = tf.expand_dims(
                 gauss_activations, 3
             )  # batch_size, n_vertices, 1, n_gauss,
-            
+
             # check the axis on this
             input_feat_ = tf.expand_dims(
                 input_feat, -1
             )  # batch_size, n_vertices, n_feat, 1
 
-            
+
             gauss_desc = tf.multiply(
                 gauss_activations, input_feat_
             )  # batch_size, n_vertices, n_feat, n_gauss,
@@ -441,6 +456,7 @@ class ConvLayer(layers.Layer):
             all_conv_feat.append(conv_feat)
         all_conv_feat = tf.stack(all_conv_feat)
         conv_feat = tf.reduce_max(all_conv_feat, axis=0)
+        
         conv_feat = tf.nn.relu(conv_feat)
         return conv_feat
 
