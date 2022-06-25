@@ -49,11 +49,11 @@ class MaSIF_ligand_site(Model):
  
         
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers)
-        '''
+        
         self.myLayers=[
             #layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             
-            #layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
+            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             
             layers.Dropout(1 - self.keep_prob),
             layers.Dense(64, activation="relu"),
@@ -64,7 +64,7 @@ class MaSIF_ligand_site(Model):
         self.myLayers=[
             layers.Dense(self.n_thetas, activation="relu"),
             layers.Dense(1)
-        ]
+        ]'''
         
     
     def map_func(self, row):
@@ -378,7 +378,6 @@ class ConvLayer(layers.Layer):
             # Reduce the dimensionality by averaging over the last dimension
             '''ret = tf.reshape(ret, self.reshape_shapes[layer_num])
             ret = self.reduce_funcs[layer_num](ret)'''
-            ret = tf.reshape(ret, self.reshape_shapes[0])
 
             ret = tf.matmul(ret, FC1_W) + FC1_b
             ret = self.relu(ret)
