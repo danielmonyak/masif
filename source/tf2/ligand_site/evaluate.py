@@ -56,11 +56,24 @@ def map_func(row):
 
 sample = tf.map_fn(fn=map_func, elems = y, fn_output_signature = sampleSpec)
 
+def map_func(row):
+  y_pred = row[0]
+  y_true = row[1]
+  mask = tf.boolean_mask(y_pred, y_true)
+  overlap = tf.reduce_sum(mask)
+  recall = overlap/tf.reduce_sum(y_true)
+  precision = overlap/tf.reduce_sum(y_pred)
+return (recall, precision)
+
 dev = '/GPU:3'
 with tf.device(dev):
   y_pred = tf.squeeze(model(X, sample))
   y_pred = tf.cast(y_pred > 0.5, dtype=tf.int64)
   y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
+  input = tf.stack([y_pred, y_true], axis=1)
+  recall, precision = tf.map_fn(fn=map_func, elems = input, fn_output_signature = (tf.TensorSpec(shape=(), dtype=tf.float64), tf.TensorSpec(shape=(), dtype=tf.float64)))
+
+  
 
 bal_acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
 print('Balanced accuracy: ', round(bal_acc, 2))
