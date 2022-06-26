@@ -63,7 +63,7 @@ def map_func(row):
   overlap = tf.reduce_sum(mask)
   recall = overlap/tf.reduce_sum(y_true)
   precision = overlap/tf.reduce_sum(y_pred)
-return (recall, precision)
+  return (recall, precision)
 
 dev = '/GPU:3'
 with tf.device(dev):
@@ -71,12 +71,16 @@ with tf.device(dev):
   y_pred = tf.cast(y_pred > 0.5, dtype=tf.int64)
   y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
   input = tf.stack([y_pred, y_true], axis=1)
-  recall, precision = tf.map_fn(fn=map_func, elems = input, fn_output_signature = (tf.TensorSpec(shape=(), dtype=tf.float64), tf.TensorSpec(shape=(), dtype=tf.float64)))
+  recall_tsr, precision_tsr = tf.map_fn(fn=map_func, elems = input, fn_output_signature = (tf.TensorSpec(shape=(), dtype=tf.float64), tf.TensorSpec(shape=(), dtype=tf.float64)))
 
-  
 
 bal_acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
-print('Balanced accuracy: ', round(bal_acc, 2))
+print('Balanced accuracy:', round(bal_acc, 2))
 
 acc = accuracy_score(flatten(y_true), flatten(y_pred))
-print('Accuracy: ', round(acc, 2))
+print('Accuracy:', round(acc, 2))
+
+recall = tf.reduce_mean(recall_tsr)
+precision = tf.reduce_mean(precision_tsr)
+print('Recall:', recall)
+print('Precision:', precision)
