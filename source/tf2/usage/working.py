@@ -70,14 +70,15 @@ for i, data_element in enumerate(test_data):
   break
 
 
-modelDir = 'kerasModel'
+modelDir = '../ligand_site/kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 
 model = MaSIF_ligand_site(
   params["max_distance"],
   params["n_classes"],
   feat_mask=params["feat_mask"],
-  keep_prob = 1.0
+  keep_prob = 1.0,
+  n_conv_layers = 4
 )
 model.load_weights(ckpPath)
 
