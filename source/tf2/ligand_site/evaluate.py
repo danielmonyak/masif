@@ -81,6 +81,6 @@ acc = accuracy_score(flatten(y_true), flatten(y_pred))
 print('Accuracy:', round(acc, 2))
 
 recall = tf.reduce_mean(recall_tsr)
-precision = tf.reduce_mean(precision_tsr)
+precision = tf.reduce_mean(tf.boolean_mask(precision_tsr, tf.math.is_finite(precision_tsr)))
 print('Recall:', recall)
 print('Precision:', precision)
