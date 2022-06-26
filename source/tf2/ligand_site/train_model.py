@@ -49,7 +49,6 @@ model = MaSIF_ligand_site(
   params["max_distance"],
   params["n_classes"],
   feat_mask=params["feat_mask"],
-  keep_prob = 1.0,
   n_conv_layers = 4
 )
 model.compile(optimizer = model.opt,
