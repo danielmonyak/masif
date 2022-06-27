@@ -19,8 +19,7 @@ genPathOut = os.path.join(outDir, '{}_{}.npy')
 
 dev = '/GPU:1'
 #with tf.device(dev):
-#for dataset in ['train', 'val', 'test']:
-for dataset in ['val', 'test']:
+for dataset in ['train', 'val', 'test']:
   temp_X_files = all_files[np.char.startswith(all_files, dataset + '_X')]
   
   print(dataset)
