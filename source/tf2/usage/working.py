@@ -35,7 +35,7 @@ model = MaSIF_ligand_site(
 model.load_weights(ckpPath)
 
 #pdb = '1RI4_A_'
-pdb = '4YMP_A_'
+pdb = '1DJL_AB_'
 
 target_pdb = pdb.rstrip('_')
 #test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'testing_data_sequenceSplit_30.tfrecord')).map(_parse_function)
