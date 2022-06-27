@@ -39,3 +39,8 @@ source/tf2/*/kerasModel*
 source/tf2/*/*pid*
 source/tf2/usage/results*
 func.py
+data/masif_site/nn_model*
+data/masif_site/*.out
+data/masif_site/*.err
+data/masif_site/*pid*
+data/masif_site/*_files
