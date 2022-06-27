@@ -54,7 +54,7 @@ for gpu in gpus:
 dev = '/GPU:1'
 with tf.device(dev):
     #for dataset in dataset_list.keys():
-    for dataset in ['train', 'val', 'test']:
+    for dataset in ['val', 'test']:
         i = 0
         j = next_epoch
 
