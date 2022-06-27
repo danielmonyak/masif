@@ -42,7 +42,7 @@ model = MaSIF_ligand_site(
 )
 model.load_weights(ckpPath)
 
-def map_func(row):
+def map_func_sample(row):
   pocket_points = tf.where(row != 0)
   pocket_points = tf.random.shuffle(pocket_points)[:int(minPockets/2)]
   pocket_empties = tf.where(row == 0)
@@ -54,7 +54,7 @@ def map_func(row):
     dtype=tf.int32
   )
 
-sample = tf.map_fn(fn=map_func, elems = y, fn_output_signature = sampleSpec)
+sample = tf.map_fn(fn=map_func_sample, elems = y, fn_output_signature = sampleSpec)
 
 '''def map_func(row):
   y_pred = row[0]
