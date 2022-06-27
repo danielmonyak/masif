@@ -5,6 +5,8 @@ import numpy as np
 from IPython.core.debugger import set_trace
 from sklearn.metrics import accuracy_score, roc_auc_score
 
+import tensorflow as tf
+
 # Apply mask to input_feat
 def mask_input_feat(input_feat, mask):
     mymask = np.where(np.array(mask) == 0.0)[0]
