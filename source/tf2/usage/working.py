@@ -109,13 +109,14 @@ print('Balanced accuracy: ', round(acc, 2))
 
 
 
-pred = Predictor(ligand_model_path, ligand_site_ckp_path)
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 pdb_dir = os.path.join(precom_dir, pdb)
 
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
+
+pred = Predictor(ligand_model_path, ligand_site_ckp_path)
 
 xyz_coords = pred.getXYZCoords(pdb_dir)            
 all_ligand_coords = np.load(
