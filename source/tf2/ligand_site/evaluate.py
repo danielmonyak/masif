@@ -83,13 +83,8 @@ with tf.device(dev):
 bal_acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
 print('Balanced accuracy:', round(bal_acc, 2))
 
-acc = accuracy_score(flatten(y_true), flatten(y_pred))
-print('Accuracy:', round(acc, 2))
-
-acc_pockets = tf.reduce_mean(acc_pockets_tsr)
-acc_empties = tf.reduce_mean(acc_empties_tsr)
-print('Accuracy on pocket points:', acc_pockets)
-print('Accuracy on empty pockets:', acc_empties)
+#acc = accuracy_score(flatten(y_true), flatten(y_pred))
+#print('Accuracy:', round(acc, 2))
 
 getMean = lambda x : tf.reduce_mean(tf.boolean_mask(x, tf.math.is_finite(x)))
 recall = getMean(recall_tsr)
