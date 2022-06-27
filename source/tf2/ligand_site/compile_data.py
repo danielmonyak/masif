@@ -21,21 +21,21 @@ dev = '/GPU:1'
 
 with tf.device(dev):
   for dataset in ['train', 'val', 'test']:
-temp_X_files = all_files[np.char.startswith(all_files, dataset + '_X')]
+    temp_X_files = all_files[np.char.startswith(all_files, dataset + '_X')]
 
-print(dataset)
-X_list = []
-y_list = []
-len_list = []
-for j, X_file in enumerate(temp_X_files):
-  print(j)
-  y_file = X_file.replace('X', 'y')
-  X = np.load(os.path.join(datadir, X_file))
-  y = np.load(os.path.join(datadir, y_file))
-  tempLen = tf.shape(X)[1]
-  X_list.append(X)
-  y_list.append(y)
-  len_list.append(tempLen)
+    print(dataset)
+    X_list = []
+    y_list = []
+    len_list = []
+    for j, X_file in enumerate(temp_X_files):
+      print(j)
+      y_file = X_file.replace('X', 'y')
+      X = np.load(os.path.join(datadir, X_file))
+      y = np.load(os.path.join(datadir, y_file))
+      tempLen = tf.shape(X)[1]
+      X_list.append(X)
+      y_list.append(y)
+      len_list.append(tempLen)
 
     #### padding X_list elements so that they all have the same dimension-2 length
     maxLen = max(len_list)
