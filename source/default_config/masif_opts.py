@@ -86,4 +86,5 @@ masif_opts["ligand"]["test_set_out_dir"] = "test_set_predictions/"
 masif_opts['ligand']['minPockets'] = 32
 masif_opts['ligand']['defaultCode'] = -1234567
 masif_opts['ligand']['savedPockets'] = 200
+masif_opts['ligand']['empty_pocket_ratio'] = 10
 masif_opts['ligand']['ligand_list'] = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
