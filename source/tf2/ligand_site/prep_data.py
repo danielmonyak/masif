@@ -79,18 +79,19 @@ with tf.device(dev):
             
             labels = tf.squeeze(labels_raw)
             pocket_points = tf.squeeze(tf.where(labels != 0))
-            npoints = pocket_points.shape[0]
+            npoints = tf.shape(pocket_points)[0]
             if npoints < minPockets:
                 continue
             
             savedPockets_temp = min(savedPockets, npoints)
             
             ##
-            pocket_points = tf.random.shuffle(pocket_points)[:savedPockets_temp]
-            npoints = savedPockets_temp
+            #pocket_points = tf.random.shuffle(pocket_points)[:savedPockets_temp]
+            #npoints = tf.shape(pocket_points)[0]
             ##
+            
             pocket_empties = tf.squeeze(tf.where(labels == 0))
-            empties_sample = tf.random.shuffle(pocket_empties)[:npoints * empty_to_pocket_ratio]
+            empties_sample = tf.random.shuffle(pocket_empties)[:npoints * empty_pocket_ratio]
             sample = tf.concat([pocket_points, empties_sample], axis=0)
             
             y_list.append(tf.gather(labels, sample))
