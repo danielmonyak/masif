@@ -74,22 +74,30 @@ with tf.device(dev):
   y_pred = tf.squeeze(model(X, sample))
   y_pred = tf.cast(y_pred > 0.5, dtype=tf.int64)
   y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
-  input = tf.stack([y_pred, y_true], axis=1)
+'''  input = tf.stack([y_pred, y_true], axis=1)
   spec_float = tf.TensorSpec(shape=(), dtype=tf.float64)
   #spec_int = tf.TensorSpec(shape=(), dtype=tf.int64)
   recall_tsr, precision_tsr, specificity_tsr = tf.map_fn(fn=map_func, elems = input, fn_output_signature = (spec_float, spec_float, spec_float))
 
-
 bal_acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
-print('Balanced accuracy:', round(bal_acc, 2))
 
-#acc = accuracy_score(flatten(y_true), flatten(y_pred))
-#print('Accuracy:', round(acc, 2))
 
 getMean = lambda x : tf.reduce_mean(tf.boolean_mask(x, tf.math.is_finite(x)))
 recall = getMean(recall_tsr).numpy()
 precision = getMean(precision_tsr).numpy()
 specificity = getMean(specificity_tsr).numpy()
+'''
+
+y_true_all = flatten(y_true)
+y_pred_all = flatten(y_pred)
+bal_acc = balanced_accuracy_score(y_true_all, y_pred_all)
+mask = tf.boolean_mask(y_pred_all, y_true_all)
+overlap = tf.reduce_sum(mask)
+recall = overlap/tf.reduce_sum(y_true_all)
+precision = overlap/tf.reduce_sum(y_pred_all)
+specificity = 1 - tf.reduce_mean(tf.cast(tf.boolean_mask(y_pred_all, 1 - y_true_all), dtype=tf.float64))
+
+print('Balanced accuracy:', round(bal_acc, 2))
 print('Recall:', round(recall, 2))
 print('Precision:', round(precision, 2))
 print('Specificity:', round(specificity, 2))
