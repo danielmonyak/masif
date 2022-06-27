@@ -52,7 +52,7 @@ with tf.device(dev):
         try:
             pdb_dir = os.path.join(precom_dir, pdb)
             ligandIdx_pred, pocket_points_pred = pred.predictRaw(pdb_dir)
-            xyz_coords = pred.getXYZCoords(pdb_dir)
+            xyz_coords = Predictor.getXYZCoords(pdb_dir)
             
             all_ligand_coords = np.load(
                 os.path.join(
