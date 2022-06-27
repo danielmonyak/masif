@@ -19,8 +19,8 @@ defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 #savedPockets = params['savedPockets']
 #empty_pocket_ratio = params['empty_pocket_ratio']
-savedPockets = 100
-empty_pocket_ratio = 10
+savedPockets = 150
+empty_pocket_ratio = 7
 
 outdir = '/data02/daniel/masif/datasets/tf2/ligand_site/split'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
