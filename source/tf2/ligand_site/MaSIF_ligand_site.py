@@ -264,7 +264,7 @@ class ConvLayer(layers.Layer):
             var_dict['sigma_theta'] = tf.Variable((np.ones_like(mu_theta_initial) * self.sigma_theta_init), name="sigma_theta_{}_{}".format(i, layer_num), trainable = True)
             
             var_dict['b_conv'] = self.add_weight("b_conv_{}_{}".format(i, layer_num), shape=conv_shapes[layer_num][1], initializer='zeros', trainable = True)
-            var_dict['W_conv'] = self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"),, trainable = True)
+            var_dict['W_conv'] = self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True)
             '''var_dict['b_conv'] = tf.Variable(tf.zeros(conv_shapes[0][1]), name="b_conv_{}_{}".format(i, layer_num), trainable = True)
             var_dict['W_conv'] = tf.Variable(initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=conv_shapes[0]),
                                              name = "W_conv_{}_{}".format(i, layer_num), trainable = True)'''
