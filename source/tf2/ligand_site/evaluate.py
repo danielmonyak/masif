@@ -7,7 +7,7 @@ from IPython.core.debugger import set_trace
 import importlib
 import sys
 from default_config.util import *
-from MaSIF_ligand_site import MaSIF_ligand_site
+from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 from sklearn.metrics import accuracy_score, balanced_accuracy_score
 import tensorflow as tf
 
@@ -71,7 +71,7 @@ sample = tf.map_fn(fn=map_func, elems = y, fn_output_signature = sampleSpec)
 
 dev = '/GPU:3'
 with tf.device(dev):
-  y_pred = tf.squeeze(model(X, sample))
+  y_pred = tf.math.sigmoid(tf.squeeze(model(X, sample)))
   y_pred = tf.cast(y_pred > 0.5, dtype=tf.int64)
   y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
 '''  input = tf.stack([y_pred, y_true], axis=1)
