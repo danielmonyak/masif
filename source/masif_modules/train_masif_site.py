@@ -173,6 +173,10 @@ def train_masif_site(
                     neg_labels = neg_labels[:n]
                     pos_labels = pos_labels[:n]
 
+                print('rho_wrt_center:', rho_wrt_center.shape)
+                print('theta_coords:', theta_coords.shape)
+                print('input_feat:', input_feat.shape)    
+                
                 feed_dict = {
                     learning_obj.rho_coords: rho_wrt_center,
                     learning_obj.theta_coords: theta_wrt_center,
