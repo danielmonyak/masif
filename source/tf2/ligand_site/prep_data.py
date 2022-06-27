@@ -94,7 +94,11 @@ with tf.device(dev):
             ##
             
             pocket_empties = tf.squeeze(tf.where(labels == 0))
-            empties_sample = tf.random.shuffle(pocket_empties)[:npoints * empty_pocket_ratio]
+            ##
+            emptySavedPockets = npoints * empty_pocket_ratio
+            emptySavedPockets_temp = min(emptySavedPockets, tf.shape(pocket_empties)[0])
+            ##
+            empties_sample = tf.random.shuffle(pocket_empties)[:emptySavedPockets_temp]
             sample = tf.concat([pocket_points, empties_sample], axis=0)
             
             y_list.append(tf.gather(labels, sample))
