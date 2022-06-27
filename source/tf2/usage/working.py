@@ -38,7 +38,8 @@ model.load_weights(ckpPath)
 pdb = '4YMP_A'
 
 target_pdb = pdb.rstrip('_')
-test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'testing_data_sequenceSplit_30.tfrecord')).map(_parse_function)
+#test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'testing_data_sequenceSplit_30.tfrecord')).map(_parse_function)
+train_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'training_data_sequenceSplit_30.tfrecord')).map(_parse_function)
 for i, data_element in enumerate(test_data):
   if data_element[5] != target_pdb:
     continue
