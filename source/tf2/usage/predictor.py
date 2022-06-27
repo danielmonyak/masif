@@ -131,7 +131,10 @@ class Predictor:
     )
   
   # Run MaSIF_ligand on pdb, return index of ligand (based on ligand_list in defaul_config/util.py)
-  def predictLigandIdx(self, X):
+  def predictLigandIdx(self, X, threshold=None):
+    if threshold is None:
+      threshold = self.ligand_threshold
+    
     ligand_pred_list = []
     for i in range(self.n_predictions):
       temp_pred = tf.squeeze(self.ligand_model(X))
