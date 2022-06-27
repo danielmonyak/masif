@@ -119,8 +119,8 @@ class MaSIF_site:
             )  # batch_size, n_vertices, n_feat, 1
             
             ####
-            print('input_feat_:', input_feat.shape))
-            print('gauss_activations:', gauss_activations.shape))
+            print('input_feat_:', input_feat.shape)
+            print('gauss_activations:', gauss_activations.shape)
             ####
             
             gauss_desc = tf.multiply(
