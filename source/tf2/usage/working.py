@@ -34,7 +34,8 @@ model = MaSIF_ligand_site(
 )
 model.load_weights(ckpPath)
 
-pdb = '1RI4_A_'
+#pdb = '1RI4_A_'
+pdb = '4YMP_A'
 
 target_pdb = pdb.rstrip('_')
 test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'testing_data_sequenceSplit_30.tfrecord')).map(_parse_function)
@@ -157,7 +158,7 @@ y_gen = np.zeros(pred.n_pockets)
 y_true = y_gen.copy()
 y_true[pocket_points_true] = 1
 y_pred = y_gen
-y_pred[pocket_points_pred] = 1
+y_pred[pocket_points_pred.numpy()] = 1
 
 
 y_true_all = flatten(y_true)
