@@ -11,7 +11,7 @@ import tensorflow as tf
 from default_config.util import *
 from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
-continue_training = True
+continue_training = False
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
