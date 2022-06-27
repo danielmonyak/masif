@@ -109,6 +109,7 @@ print('Balanced accuracy: ', round(acc, 2))
 
 
 
+pred = Predictor(ligand_model_path, ligand_site_ckp_path)
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 pdb_dir = os.path.join(precom_dir, pdb)
@@ -138,9 +139,7 @@ for thresh in [.5, .6, .7, .8, .9, .95, .99]:
   pocket_points_pred = pred.predictPocketPoints()
   print(do(pocket_points_pred))
 
-
-
-
+ 
 
 '''
 #####
