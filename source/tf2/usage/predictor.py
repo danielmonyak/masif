@@ -75,7 +75,10 @@ class Predictor:
     )
   '''
   # Run MaSIF_ligand_site on all points in pdb, return pocket_points
-  def predictPocketPoints(self):
+  def predictPocketPoints(self, threshold = None):
+    if threshold is None:
+      threshold = self.threshold
+    
     ligand_site_pred_list = []
     fullSamples = self.n_pockets // minPockets
     
@@ -105,7 +108,7 @@ class Predictor:
     print('100% of batches completed in {} seconds.'.format(round(after_time - before_time)))
     
     ligand_site_preds = tf.concat(ligand_site_pred_list, axis = 0)
-    pocket_points = tf.where(ligand_site_preds > self.threshold)
+    pocket_points = tf.where(ligand_site_preds > threshold)
     return tf.squeeze(pocket_points)
   
   # Get geometric coordinates of PDB
