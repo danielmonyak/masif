@@ -1,16 +1,8 @@
-print('e')
-
 import os
 import numpy as np
 from sklearn.metrics import balanced_accuracy_score
 from scipy import spatial
-
-print('d')
-
 from default_config.util import *
-
-print('c')
-
 from tf2.usage.predictor import Predictor
 
 continue_running = False
@@ -24,10 +16,8 @@ precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/preco
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
 
-print('a')
-
-thresh = 0.9
-pred = Predictor(ligand_model_path, ligand_site_ckp_path, threshold = thresh)
+thresh = 0.5
+pred = Predictor(ligand_model_path, ligand_site_ckp_path, ligand_threshold = thresh)
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
 fileName = 'test_pdbs_sequence.npy'
@@ -52,7 +42,8 @@ else:
         with open(fi, 'w') as f:
             pass
 
-print('b')
+break_i = 2
+
 n_test = len(pdbs_left)
 dev = '/GPU:0'
 with tf.device(dev):
@@ -74,9 +65,6 @@ with tf.device(dev):
                 )
             ).astype(str)
             
-            #if len(all_ligand_coords) == 0:
-            #    continue
-            
             ligand_coords = all_ligand_coords[0]
             tree = spatial.KDTree(xyz_coords)
             pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
@@ -85,7 +73,6 @@ with tf.device(dev):
             overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
             recall = len(overlap)/len(pocket_points_true)
             precision = len(overlap)/len(pocket_points_pred)
-            #f1 = 2*recall*precision / (recall + precision)
             
             ligand_true = all_ligand_types[0]
             ligandIdx_true = ligand_list.index(ligand_true)
