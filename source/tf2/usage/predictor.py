@@ -109,7 +109,7 @@ class Predictor:
     return tf.squeeze(pocket_points)
   
   # Get geometric coordinates of PDB
-  def getXYZCoords(self, pdb_dir):
+  def getXYZCoords(pdb_dir):
     X = np.load(os.path.join(pdb_dir, "p1_X.npy"))
     Y = np.load(os.path.join(pdb_dir, "p1_Y.npy"))
     Z = np.load(os.path.join(pdb_dir, "p1_Z.npy"))
@@ -159,7 +159,7 @@ class Predictor:
   def predict(self, pdb_dir):
     ligandIdx_pred, pocket_points = self.predictRaw(pdb_dir)
 
-    xyz_coords = self.getXYZCoords(pdb_dir)
+    xyz_coords = Predictor.getXYZCoords(pdb_dir)
     coords_list = xyz_coords[pocket_points]
     ligand_pred = ligand_list[ligandIdx_pred]
     
