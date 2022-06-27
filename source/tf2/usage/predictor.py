@@ -131,7 +131,7 @@ class Predictor:
   def predictLigandIdx(self, X):
     ligand_pred_list = []
     for i in range(self.n_predictions):
-      temp_pred = tf.squeeze(self.ligand_model(X))
+      temp_pred = tf.math.sigmoid(tf.squeeze(self.ligand_model(X)))
       if tf.reduce_max(temp_pred) > self.ligand_threshold:
         ligand_pred_list.append(temp_pred)
     
