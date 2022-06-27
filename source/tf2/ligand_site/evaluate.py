@@ -59,11 +59,15 @@ sample = tf.map_fn(fn=map_func, elems = y, fn_output_signature = sampleSpec)
 def map_func(row):
   y_pred = row[0]
   y_true = row[1]
+  
   mask = tf.boolean_mask(y_pred, y_true)
   overlap = tf.reduce_sum(mask)
   recall = overlap/tf.reduce_sum(y_true)
   precision = overlap/tf.reduce_sum(y_pred)
-  return (recall, precision)
+  specificity = 1 - tf.reduce_mean(tf.cast(tf.boolean_mask(y_pred, 1 - y_true), dtype=tf.float64))
+  
+  #return (recall, precision)
+  return (recall, precision, specificity)
 
 dev = '/GPU:3'
 with tf.device(dev):
@@ -71,18 +75,26 @@ with tf.device(dev):
   y_pred = tf.cast(y_pred > 0.5, dtype=tf.int64)
   y_true = tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1)
   input = tf.stack([y_pred, y_true], axis=1)
-  recall_tsr, precision_tsr = tf.map_fn(fn=map_func, elems = input, fn_output_signature = (tf.TensorSpec(shape=(), dtype=tf.float64), tf.TensorSpec(shape=(), dtype=tf.float64)))
+  spec_float = tf.TensorSpec(shape=(), dtype=tf.float64)
+  #spec_int = tf.TensorSpec(shape=(), dtype=tf.int64)
+  recall_tsr, precision_tsr, specificity_tsr = tf.map_fn(fn=map_func, elems = input, fn_output_signature = (spec_float, spec_float, spec_float))
 
 
 bal_acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
 print('Balanced accuracy:', round(bal_acc, 2))
 
-#acc = accuracy_score(flatten(y_true), flatten(y_pred))
-#print('Accuracy:', round(acc, 2))
+acc = accuracy_score(flatten(y_true), flatten(y_pred))
+print('Accuracy:', round(acc, 2))
 
-#acc_ones = tf.boolean_mask(y_pred, y_true)
+acc_pockets = tf.reduce_mean(acc_pockets_tsr)
+acc_empties = tf.reduce_mean(acc_empties_tsr)
+print('Accuracy on pocket points:', acc_pockets)
+print('Accuracy on empty pockets:', acc_empties)
 
-recall = tf.reduce_mean(recall_tsr)
-precision = tf.reduce_mean(tf.boolean_mask(precision_tsr, tf.math.is_finite(precision_tsr)))
+getMean = lambda x : tf.reduce_mean(tf.boolean_mask(x, tf.math.is_finite(x)))
+recall = getMean(recall_tsr)
+precision = getMean(precision_tsr)
+specificity = getMean(specificity_tsr)
 print('Recall:', recall.numpy())
 print('Precision:', precision.numpy())
+print('Specificity:', specificity.numpy())
