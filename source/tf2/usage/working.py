@@ -22,12 +22,23 @@ savedPockets = params['savedPockets']
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
+modelDir = '../ligand_site/kerasModel'
+ckpPath = os.path.join(modelDir, 'ckp')
+
+model = MaSIF_ligand_site(
+  params["max_distance"],
+  params["n_classes"],
+  feat_mask=params["feat_mask"],
+  keep_prob = 1.0,
+  n_conv_layers = 4
+)
+model.load_weights(ckpPath)
+
 pdb = '1RI4_A_'
 
 target_pdb = pdb.rstrip('_')
 test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'testing_data_sequenceSplit_30.tfrecord')).map(_parse_function)
 for i, data_element in enumerate(test_data):
-  print(i)
   if data_element[5] != target_pdb:
     continue
   
@@ -38,11 +49,13 @@ for i, data_element in enumerate(test_data):
   savedPockets_temp = min(savedPockets, npoints)
   
   ##
-  pocket_points = tf.random.shuffle(pocket_points)[:savedPockets_temp]
-  npoints = savedPockets_temp
+  #pocket_points = tf.random.shuffle(pocket_points)[:savedPockets_temp]
+  #npoints = savedPockets_temp
   ##
   pocket_empties = tf.squeeze(tf.where(labels == 0))
-  empties_sample = tf.random.shuffle(pocket_empties)[:npoints]
+  #empties_sample = tf.random.shuffle(pocket_empties)[:npoints]
+  empties_sample = pocket_empties
+  
   sample = tf.concat([pocket_points, empties_sample], axis=0)
   
   y = tf.expand_dims(tf.gather(labels, sample), axis=0)
@@ -70,20 +83,8 @@ for i, data_element in enumerate(test_data):
   break
 
 
-modelDir = '../ligand_site/kerasModel'
-ckpPath = os.path.join(modelDir, 'ckp')
-
-model = MaSIF_ligand_site(
-  params["max_distance"],
-  params["n_classes"],
-  feat_mask=params["feat_mask"],
-  keep_prob = 1.0,
-  n_conv_layers = 4
-)
-model.load_weights(ckpPath)
-
 def map_func(row):
-  pocket_points = tf.where(row != 0)
+  pocket_points = tf.where(row == 1)
   pocket_points = tf.random.shuffle(pocket_points)[:int(minPockets/2)]
   pocket_empties = tf.where(row == 0)
   pocket_empties = tf.random.shuffle(pocket_empties)[:int(minPockets/2)]
@@ -98,28 +99,30 @@ sample = tf.map_fn(fn=map_func, elems = y, fn_output_signature = sampleSpec)
 
 dev = '/GPU:3'
 with tf.device(dev):
-  y_pred = tf.squeeze(model(X, sample))
+  y_pred = tf.math.sigmoid(tf.squeeze(model(X, sample)))
   y_pred = tf.cast(y_pred > 0.5, dtype=tf.int32)
   y_true = tf.squeeze(tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1))
 
-acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
-print('Balanced accuracy: ', round(acc, 2))
+y_true_all = flatten(y_true)
+y_pred_all = flatten(y_pred)
+bal_acc = balanced_accuracy_score(y_true_all, y_pred_all)
+mask = tf.boolean_mask(y_pred_all, y_true_all)
+overlap = tf.reduce_sum(mask)
+recall = overlap/tf.reduce_sum(y_true_all)
+precision = overlap/tf.reduce_sum(y_pred_all)
+specificity = 1 - tf.reduce_mean(tf.cast(tf.boolean_mask(y_pred_all, 1 - y_true_all), dtype=tf.float64))
 
-
-
+print('Balanced accuracy:', round(bal_acc, 2))
+print('Recall:', round(recall.numpy(), 2))
+print('Precision:', round(precision.numpy(), 2))
+print('Specificity:', round(specificity.numpy(), 2))
 
 
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 pdb_dir = os.path.join(precom_dir, pdb)
 
-ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
-ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
-
-thresh = 0.5
-pred = Predictor(ligand_model_path, ligand_site_ckp_path, threshold = thresh)
-
-xyz_coords = pred.getXYZCoords(pdb_dir)            
+xyz_coords = Predictor.getXYZCoords(pdb_dir)            
 all_ligand_coords = np.load(
     os.path.join(
         ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
@@ -131,8 +134,7 @@ pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
 
 
-
-
+'''
 do = lambda x : pred.predictLigandIdx(pred.getLigandX(x))
 for thresh in [.5, .6, .7, .8, .9, .95, .99]:
   print('threshold:', thresh)
@@ -140,10 +142,16 @@ for thresh in [.5, .6, .7, .8, .9, .95, .99]:
   pred.loadData(pdb_dir)
   pocket_points_pred = pred.predictPocketPoints()
   print(do(pocket_points_pred))
-
- 
-
 '''
+
+ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
+ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
+
+pred = Predictor(ligand_model_path, ligand_site_ckp_path)
+pred.loadData(pdb_dir)
+
+pocket_points_pred = pred.predictPocketPoints(threshold = .5)
+
 #####
 y_gen = np.zeros(pred.n_pockets)
 y_true = y_gen.copy()
@@ -151,39 +159,27 @@ y_true[pocket_points_true] = 1
 y_pred = y_gen
 y_pred[pocket_points_pred] = 1
 
-acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
-print('Balanced accuracy: ', round(acc, 2))
+
+y_true_all = flatten(y_true)
+y_pred_all = flatten(y_pred)
+bal_acc = balanced_accuracy_score(y_true_all, y_pred_all)
+mask = tf.boolean_mask(y_pred_all, y_true_all)
+overlap = tf.reduce_sum(mask)
+recall = overlap/tf.reduce_sum(y_true_all)
+precision = overlap/tf.reduce_sum(y_pred_all)
+specificity = 1 - tf.reduce_mean(tf.cast(tf.boolean_mask(y_pred_all, 1 - y_true_all), dtype=tf.float64))
+
+print('Balanced accuracy:', round(bal_acc, 2))
+print('Recall:', round(recall.numpy(), 2))
+print('Precision:', round(precision.numpy(), 2))
+print('Specificity:', round(specificity.numpy(), 2))
+
 #####
-'''
-'''
+
 X_true = pred.getLigandX(pocket_points_true)
 X_true_pred = pred.predictLigandIdx(X_true)
+print(X_true_pred)
 
 X_pred = pred.getLigandX(pocket_points_pred)
-X_pred_pred = pred.predictLigandIdx(X_pred)
-
-'''
-
-'''
-
-def temp_fn(key):
-  data = pred.data_dict[key]
-  return data.flatten()
-
-flat_list = list(map(temp_fn, data_order))
-X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
-
-y_afc = np.zeros([1, pred.n_pockets])
-y_afc[0, pocket_points_pred] = 1
-
-sample = tf.map_fn(fn=map_func, elems = y_afc, fn_output_signature = sampleSpec)
-
-dev = '/GPU:3'
-with tf.device(dev):
-  y_pred = tf.squeeze(model(X, sample))
-  y_pred = tf.cast(y_pred > 0.5, dtype=tf.int32)
-  y_true = tf.squeeze(tf.gather(params = y_afc, indices = sample, axis = 1, batch_dims = 1))
-
-acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
-print('Balanced accuracy: ', round(acc, 2))
-'''
+X_pred_pred = pred.predictLigandIdx(X_pred, 0.5)
+print(X_pred_pred)
