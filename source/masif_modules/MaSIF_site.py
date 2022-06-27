@@ -72,6 +72,10 @@ class MaSIF_site:
         eps=1e-5,
         mean_gauss_activation=True,
     ):
+        ####
+        print('input_feat:', tf.shape(input_feat))
+        ####
+        
         n_samples = tf.shape(rho_coords)[0]
         n_vertices = tf.shape(rho_coords)[1]
         n_feat = tf.shape(input_feat)[2]
@@ -113,7 +117,12 @@ class MaSIF_site:
             input_feat_ = tf.expand_dims(
                 input_feat, 3
             )  # batch_size, n_vertices, n_feat, 1
-
+            
+            ####
+            print('input_feat_:', tf.shape(input_feat_))
+            print('gauss_activations:', tf.shape(gauss_activations))
+            ####
+            
             gauss_desc = tf.multiply(
                 gauss_activations, input_feat_
             )  # batch_size, n_vertices, n_feat, n_gauss,
