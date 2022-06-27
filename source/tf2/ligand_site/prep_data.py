@@ -17,8 +17,9 @@ next_epoch = 0
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 minPockets = params['minPockets']
-savedPockets = params['savedPockets']
+#savedPockets = params['savedPockets']
 #empty_pocket_ratio = params['empty_pocket_ratio']
+savedPockets = 500
 empty_pocket_ratio = 1
 
 outdir = '/data02/daniel/masif/datasets/tf2/ligand_site/split'
@@ -87,8 +88,8 @@ with tf.device(dev):
             savedPockets_temp = min(savedPockets, npoints)
             
             ##
-            #pocket_points = tf.random.shuffle(pocket_points)[:savedPockets_temp]
-            #npoints = tf.shape(pocket_points)[0]
+            pocket_points = tf.random.shuffle(pocket_points)[:savedPockets_temp]
+            npoints = tf.shape(pocket_points)[0]
             ##
             
             pocket_empties = tf.squeeze(tf.where(labels == 0))
