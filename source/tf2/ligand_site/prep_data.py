@@ -19,7 +19,7 @@ defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 #savedPockets = params['savedPockets']
 #empty_pocket_ratio = params['empty_pocket_ratio']
-savedPockets = 1000
+savedPockets = 500
 empty_pocket_ratio = 1
 
 outdir = '/data02/daniel/masif/datasets/tf2/ligand_site/split'
