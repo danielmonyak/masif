@@ -10,7 +10,6 @@ import tensorflow as tf
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 
-empty_to_pocket_ratio = 5
 epochSize = 100
 
 next_epoch = 0
@@ -19,6 +18,7 @@ params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 savedPockets = params['savedPockets']
+empty_pocket_ratio = params['empty_pocket_ratio']
 
 outdir = '/data02/daniel/masif/datasets/tf2/ligand_site/split'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
