@@ -19,8 +19,8 @@ defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 #savedPockets = params['savedPockets']
 #empty_pocket_ratio = params['empty_pocket_ratio']
-savedPockets = 500
-empty_pocket_ratio = 1
+savedPockets = 200
+empty_pocket_ratio = 8
 
 outdir = '/data02/daniel/masif/datasets/tf2/ligand_site/split'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
@@ -55,9 +55,9 @@ for gpu in gpus:
 
 dev = '/GPU:1'
 with tf.device(dev):
-    for dataset in dataset_list.keys():
-        #for dataset in ['train']:
-        #for dataset in ['val', 'test']:
+    #for dataset in dataset_list.keys():
+    #for dataset in ['train']:
+    for dataset in ['val', 'test', 'train']:
         i = 0
         j = next_epoch
 
