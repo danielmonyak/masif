@@ -174,6 +174,9 @@ def train_masif_site(
                     pos_labels = pos_labels[:n]
 
                 print('rho_wrt_center:', rho_wrt_center.shape)
+                print(tf.shape(rho_wrt_center)[0])
+                print(tf.shape(rho_wrt_center)[1])
+                print(tf.shape(rho_wrt_center)[2])
                 print('theta_wrt_center:', theta_wrt_center.shape)
                 print('input_feat:', input_feat.shape)    
                 
