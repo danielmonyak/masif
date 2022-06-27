@@ -77,10 +77,12 @@ with tf.device(dev):
 bal_acc = balanced_accuracy_score(flatten(y_true), flatten(y_pred))
 print('Balanced accuracy:', round(bal_acc, 2))
 
-acc = accuracy_score(flatten(y_true), flatten(y_pred))
-print('Accuracy:', round(acc, 2))
+#acc = accuracy_score(flatten(y_true), flatten(y_pred))
+#print('Accuracy:', round(acc, 2))
+
+#acc_ones = tf.boolean_mask(y_pred, y_true)
 
 recall = tf.reduce_mean(recall_tsr)
 precision = tf.reduce_mean(tf.boolean_mask(precision_tsr, tf.math.is_finite(precision_tsr)))
-print('Recall:', recall)
-print('Precision:', precision)
+print('Recall:', recall.numpy())
+print('Precision:', precision.numpy())
