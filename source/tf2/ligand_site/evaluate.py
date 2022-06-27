@@ -56,7 +56,7 @@ def map_func(row):
 
 sample = tf.map_fn(fn=map_func, elems = y, fn_output_signature = sampleSpec)
 
-def map_func(row):
+'''def map_func(row):
   y_pred = row[0]
   y_true = row[1]
   
@@ -66,8 +66,8 @@ def map_func(row):
   precision = overlap/tf.reduce_sum(y_pred)
   specificity = 1 - tf.reduce_mean(tf.cast(tf.boolean_mask(y_pred, 1 - y_true), dtype=tf.float64))
   
-  #return (recall, precision)
   return (recall, precision, specificity)
+'''
 
 dev = '/GPU:3'
 with tf.device(dev):
@@ -98,6 +98,6 @@ precision = overlap/tf.reduce_sum(y_pred_all)
 specificity = 1 - tf.reduce_mean(tf.cast(tf.boolean_mask(y_pred_all, 1 - y_true_all), dtype=tf.float64))
 
 print('Balanced accuracy:', round(bal_acc, 2))
-print('Recall:', round(recall, 2))
-print('Precision:', round(precision, 2))
-print('Specificity:', round(specificity, 2))
+print('Recall:', round(recall.numpy(), 2))
+print('Precision:', round(precision.numpy(), 2))
+print('Specificity:', round(specificity.numpy(), 2))
