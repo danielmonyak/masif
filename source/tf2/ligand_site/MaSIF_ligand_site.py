@@ -117,7 +117,7 @@ class MaSIF_ligand_site(Model):
         return {m.name: m.result() for m in self.metrics}
     
     @tf.autograph.experimental.do_not_convert
-    def call(self, x, sample = None):
+    def call(self, x, sample = None, training=False):
         #if sample is None:
         #    sample = tf.zeros([1, minPockets])
         ret = self.myConvLayer(x, sample)
