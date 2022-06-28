@@ -70,6 +70,7 @@ class ConvLayer(layers.Layer):
         ## mu_rho and mu_theta inital values are used for sigma as well -- check on this
         
         testVar = tf.Variable(3, name = 'testVar', trainable = True)
+        testVar2 = self.add_weight(name = 'testVar2', initializer='zeros', trainable = True)
         
         layer_num = 0
         for i in range(self.n_feat):
