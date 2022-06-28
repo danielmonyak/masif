@@ -190,26 +190,24 @@ class ConvLayer(layers.Layer):
         layer_num = 0
         for i in range(self.n_feat):
             mu_rho.append(
-                tf.Variable(mu_rho_initial, name="mu_rho_{}_{}".format(i, layer_num),
-                           trainable = True)
+                #tf.Variable(mu_rho_initial, name="mu_rho_{}_{}".format(i, layer_num), trainable = True)
+                self.add_weight(name="mu_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial),
+                                initializer = ValueInit(mu_rho_initial), trainable = True)
             )  # 1, n_gauss
             mu_theta.append(
-                tf.Variable(mu_theta_initial, name="mu_theta_{}_{}".format(i, layer_num),
-                           trainable = True)
+                #tf.Variable(mu_theta_initial, name="mu_theta_{}_{}".format(i, layer_num), trainable = True)
+                self.add_weight(name="mu_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial),
+                                initializer = ValueInit(mu_theta_initial), trainable = True)
             )  # 1, n_gauss
             sigma_rho.append(
-                tf.Variable(
-                    np.ones_like(mu_rho_initial) * self.sigma_rho_init,
-                    name="sigma_rho_{}_{}".format(i, layer_num),
-                    trainable = True
-                )
+                #tf.Variable(np.ones_like(mu_rho_initial) * self.sigma_rho_init, name="sigma_rho_{}_{}".format(i, layer_num), trainable = True)
+                self.add_weight(name="sigma_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial),
+                                initializer = initializers.Constant(self.sigma_rho_init), trainable = True)
             )  # 1, n_gauss
             sigma_theta.append(
-                tf.Variable(
-                    (np.ones_like(mu_theta_initial) * self.sigma_theta_init),
-                    name="sigma_theta_{}_{}".format(i, layer_num),
-                    trainable = True
-                )
+                #tf.Variable(np.ones_like(mu_theta_initial) * self.sigma_theta_init, name="sigma_theta_{}_{}".format(i, layer_num), trainable = True)
+                self.add_weight(name="sigma_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial),
+                                initializer = initializers.Constant(self.sigma_theta_init), trainable = True)
             )  # 1, n_gauss
 
 
@@ -491,3 +489,9 @@ class ConvLayer(layers.Layer):
         coords = np.concatenate((grid_rho_[None, :], grid_theta_[None, :]), axis=0)
         coords = coords.T  # every row contains the coordinates of a grid intersection
         return coords
+
+class ValueInit(initializers.Initializer):
+  def __init__(self, value):
+    self.value = value
+  def __call__(self, shape, dtype=None, **kwargs):
+    return self.value
