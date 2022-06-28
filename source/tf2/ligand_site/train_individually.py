@@ -37,7 +37,7 @@ ckpPath = os.path.join(modelDir, 'ckp')
 if continue_training:
     model.load_weights(ckpPath)
     last_epoch += 13
-    initValThresh = 0.91657
+    best_acc = 0.91657
 
 num_epochs = 100
 
@@ -62,8 +62,9 @@ def goodLabel(labels):
         return False
     return True
 
-for i in epochs:
-    with tf.device(dev):
+best_acc = 0
+with tf.device(dev):
+    for i in epochs:
         print('Running training data, epoch {}'.format(i))
         for j, data_element in enumerate(train_data):
             print('Train record {}'.format(j))
@@ -85,6 +86,8 @@ for i in epochs:
             model.fit(X, labels, epochs = 1, verbose = 2)
         
         print('Running validation data, epoch {}'.format(i))
+        acc_list = []
+        loss_list = []
         for j, data_element in enumerate(val_data):
             print('Validation record {}'.format(j))
             
@@ -102,5 +105,16 @@ for i in epochs:
             flat_list = list(map(lambda tsr_key : flatten(feed_dict[tsr_key]), data_order))
             
             X = tf.concat(flat_list, axis=0)
-            model.evaluate(X, labels, verbose = 2)
-                
+            loss, acc = model.evaluate(X, labels, verbose = 2)
+            loss_list.append(loss)
+            acc_list.append(acc)
+        acc = sum(acc_list)/len(acc_list)
+        loss = sum(loss_list)/len(loss_list)
+        print('Epoch {} finished\nLoss: {}\nBinary Accuracy: {}', i, loss, acc)
+        
+        if acc > best_acc:
+            print('Validation accuracy improved from {} to {}'.format(best_acc, acc))
+            print('Saving model weights to {}'.format(ckpPath))
+            model.save_weights(ckpPath)
+
+print('Finished {} training epochs!'.format(epochs))
