@@ -22,6 +22,11 @@ savedPockets = params['savedPockets']
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
+
+#pdb = '1RI4_A_'
+pdb = '4YTP_ACBD_'
+
+'''
 modelDir = '../ligand_site/kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 
@@ -34,56 +39,35 @@ model = MaSIF_ligand_site(
 )
 model.load_weights(ckpPath)
 
-#pdb = '1RI4_A_'
-pdb = '4YTP_ACBD_'
-
 target_pdb = pdb.rstrip('_')
 #test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'testing_data_sequenceSplit_30.tfrecord')).map(_parse_function)
 train_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'training_data_sequenceSplit_30.tfrecord')).map(_parse_function)
 
+def goodLabel(labels):
+  n_ligands = labels.shape[1]
+  if n_ligands > 1:
+    return False
+  
+  pocket_points = tf.where(labels != 0)
+  npoints = tf.shape(pocket_points)[0]
+  if npoints < minPockets:
+    return False
+  
+  return True
+
 with tf.device('/GPU:3'):
   for i, data_element in enumerate(train_data):
+    print(i)
     if data_element[5] != target_pdb:
       continue
-
-    labels_raw = tf.cast(data_element[4] > 0, dtype=tf.int32)
-    labels = tf.squeeze(labels_raw)
-    pocket_points = tf.squeeze(tf.where(labels != 0))
-    npoints = pocket_points.shape[0]
-    savedPockets_temp = min(savedPockets, npoints)
-
-    ##
-    #pocket_points = tf.random.shuffle(pocket_points)[:savedPockets_temp]
-    #npoints = savedPockets_temp
-    ##
-    pocket_empties = tf.squeeze(tf.where(labels == 0))
-    #empties_sample = tf.random.shuffle(pocket_empties)[:npoints]
-    empties_sample = pocket_empties
-
-    sample = tf.concat([pocket_points, empties_sample], axis=0)
-
-    y = tf.expand_dims(tf.gather(labels, sample), axis=0)
-
-    input_feat = tf.gather(data_element[0], sample)
-    rho_coords = tf.gather(tf.expand_dims(data_element[1], -1), sample)
-    theta_coords = tf.gather(tf.expand_dims(data_element[2], -1), sample)
-    mask = tf.gather(data_element[3], sample)
-
-    feed_dict = {
-        'input_feat' : input_feat,
-        'rho_coords' : rho_coords,
-        'theta_coords' : theta_coords,
-        'mask' : mask
-    }
-
-    def helperInner(tsr_key):
-        tsr = feed_dict[tsr_key]
-        return tf.reshape(tsr, [-1])
-
-    key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
-    flat_list = list(map(helperInner, key_list))
-    X = tf.expand_dims(tf.concat(flat_list, axis = 0), axis=0)
-
+    
+    labels = data_element[4]
+    if not goodLabel(labels):
+        continue
+    
+    y = tf.transpose(tf.cast(labels > 0, dtype=tf.int32))
+    flat_list = list(map(flatten, data_element[:4]))
+    X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
     break
 
 
@@ -121,7 +105,7 @@ print('Recall:', round(recall.numpy(), 2))
 print('Precision:', round(precision.numpy(), 2))
 print('Specificity:', round(specificity.numpy(), 2))
 
-
+'''
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 pdb_dir = os.path.join(precom_dir, pdb)
@@ -132,6 +116,7 @@ all_ligand_coords = np.load(
         ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
     )
 )
+
 ligand_coords = all_ligand_coords[0]
 tree = spatial.KDTree(xyz_coords)
 pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
