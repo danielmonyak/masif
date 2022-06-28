@@ -74,11 +74,8 @@ class Predictor:
       ragged_rank = 1
     )
   '''
-  # Run MaSIF_ligand_site on all points in pdb, return pocket_points
-  def predictPocketPoints(self, threshold = None):
-    if threshold is None:
-      threshold = self.threshold
-    
+  # Run MaSIF_ligand_site on all points in pdb, return probablity value for each site
+  def getLigandSiteProbs(self):
     ligand_site_pred_list = []
     fullSamples = self.n_pockets // minPockets
 
@@ -107,7 +104,14 @@ class Predictor:
     after_time = process_time()
     print('100% of batches completed in {} seconds.'.format(round(after_time - before_time)))
 
-    ligand_site_preds = tf.concat(ligand_site_pred_list, axis = 0)
+    return tf.concat(ligand_site_pred_list, axis = 0)
+  
+  # Wrapper function for 
+  def predictPocketPoints(self, threshold = None):
+    ligand_site_probs = getLigandSiteProbs()
+    
+    if threshold is None:
+      threshold = self.threshold
     pocket_points = tf.where(ligand_site_preds > threshold)
     return tf.squeeze(pocket_points)
   
