@@ -65,7 +65,7 @@ class ConvLayer(layers.Layer):
                 tf.Variable(mu_rho_initial, name="mu_rho_{}_{}".format(i, layer_num),
                            trainable = True)
             )
-            a = tf.Variable(3, name = 'testVar2_' + i, trainable = True)
+            a = tf.Variable(3, name = f'testVar2_{i}', trainable = True)
             b_conv.append(
                 self.add_weight(
                     "b_conv_{}_{}".format(i, layer_num),
