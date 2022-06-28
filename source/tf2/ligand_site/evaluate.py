@@ -38,7 +38,7 @@ model = MaSIF_ligand_site(
   params["max_distance"],
   params["n_classes"],
   feat_mask=params["feat_mask"],
-  n_conv_layers = 4
+  n_conv_layers = 1
 )
 model.load_weights(ckpPath)
 
