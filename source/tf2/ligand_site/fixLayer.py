@@ -13,8 +13,6 @@ class ValueInit(initializers.Initializer):
   def __call__(self, shape, dtype=None, **kwargs):
     return self.value
 
-  def get_config(self):  # To support serialization
-    return {"mean": self.mean, "stddev": self.stddev}
 class ConvLayer(layers.Layer):
     def __init__(self,
         max_rho,
