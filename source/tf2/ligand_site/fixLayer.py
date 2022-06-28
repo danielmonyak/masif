@@ -57,7 +57,9 @@ class ConvLayer(layers.Layer):
         mu_rho = []
         b_conv = []
         
-        self.testVar = self.add_weight(name="mu_rho", shape=tf.shape(mu_rho_initial), initializer = lambda x : mu_rho_initial, trainable = True)
+        def testFunc(**kwargs):
+            return mu_rho_initial
+        self.testVar = self.add_weight(name="mu_rho", shape=tf.shape(mu_rho_initial), initializer = testFunc, trainable = True)
         
         layer_num = 0
         for i in range(self.n_feat):
