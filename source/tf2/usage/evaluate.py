@@ -120,8 +120,6 @@ with tf.device(dev):
                     ligand_coord_dir, "{}_ligand_types.npy".format(pdb.split("_")[0])
                 )
             ).astype(str)
-            
-            print('c')
         
             ligand_coords = all_ligand_coords[0]
             tree = spatial.KDTree(xyz_coords)
