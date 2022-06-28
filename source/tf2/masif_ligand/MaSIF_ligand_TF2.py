@@ -116,55 +116,39 @@ class ConvLayer(layers.Layer):
         self.sigma_rho = []
         self.sigma_theta = []
         
-        ## mu_rho and mu_theta inital values are used for sigma as well -- check on this
+        self.b_conv = []
+        self.W_conv = []
         
         for i in range(self.n_feat):
             self.mu_rho.append(
-                tf.Variable(mu_rho_initial, name="mu_rho_{}".format(i),
-                           trainable = True)
+                self.add_weight(name="mu_rho_{}".format(i), shape=tf.shape(mu_rho_initial),
+                                initializer = ValueInit(mu_rho_initial), trainable = True)
             )  # 1, n_gauss
             self.mu_theta.append(
-                tf.Variable(mu_theta_initial, name="mu_theta_{}".format(i),
-                           trainable = True)
+                self.add_weight(name="mu_theta_{}".format(i), shape=tf.shape(mu_theta_initial),
+                                initializer = ValueInit(mu_theta_initial), trainable = True)
             )  # 1, n_gauss
             self.sigma_rho.append(
-                tf.Variable(
-                    np.ones_like(mu_rho_initial) * self.sigma_rho_init,
-                    name="sigma_rho_{}".format(i),
-                    trainable = True
-                )
+                self.add_weight(name="sigma_rho_{}".format(i), shape=tf.shape(mu_rho_initial),
+                                initializer = initializers.Constant(self.sigma_rho_init), trainable = True)
             )  # 1, n_gauss
             self.sigma_theta.append(
-                tf.Variable(
-                    (np.ones_like(mu_theta_initial) * self.sigma_theta_init),
-                    name="sigma_theta_{}".format(i),
-                    trainable = True
-                )
+                self.add_weight(name="sigma_theta_{}".format(i), shape=tf.shape(mu_theta_initial),
+                                initializer = initializers.Constant(self.sigma_theta_init), trainable = True)
             )  # 1, n_gauss
-        
-        
-        
-        self.b_conv = []
-        for i in range(self.n_feat):
+            
             self.b_conv.append(
-                tf.Variable(
-                    tf.zeros([self.n_thetas * self.n_rhos]),
-                    name="b_conv_{}".format(i),
+                self.add_weight(
+                    "b_conv_{}".format(i),
+                    shape=[self.n_thetas * self.n_rhos], initializer='zeros',
                     trainable = True
                 )
             )
-        
-        # Recreating weight every time? - change back?
-        self.W_conv = []
-        for i in range(self.n_feat):
-            #W_conv = tf.compat.v1.get_variable("W_conv_{}".format(i), shape=[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos], initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"))
             self.W_conv.append(
-                tf.Variable(
-                    initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=[
-                        self.n_thetas * self.n_rhos,
-                        self.n_thetas * self.n_rhos,
-                    ]),
-                    name = "W_conv_{}".format(i),
+                self.add_weight(
+                    "W_conv_{}".format(i),
+                    shape=[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
+                    initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"),
                     trainable = True
                 )
             )

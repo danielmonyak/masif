@@ -90,7 +90,7 @@ with tf.device(dev):
             
             _=model.fit(X, y, epochs = 1, verbose = 0)
         
-        print('Running validation data, epoch {i}')
+        print(f'Running validation data, epoch {i}')
         acc_list = []
         loss_list = []
         for j, data_element in enumerate(val_data):
