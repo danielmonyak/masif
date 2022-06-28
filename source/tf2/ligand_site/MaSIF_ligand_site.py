@@ -116,7 +116,7 @@ class MaSIF_ligand_site(Model):
         self.compiled_metrics.update_state(y, y_pred)
         return {m.name: m.result() for m in self.metrics}
     
-    @tf.autograph.experimental.do_not_convert
+    #@tf.autograph.experimental.do_not_convert
     def call(self, x, sample = None, training=False):
         #if sample is None:
         #    sample = tf.zeros([1, minPockets])
