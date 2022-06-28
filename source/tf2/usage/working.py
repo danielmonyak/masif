@@ -35,7 +35,7 @@ model = MaSIF_ligand_site(
 model.load_weights(ckpPath)
 
 #pdb = '1RI4_A_'
-pdb = '1DJL_AB_'
+pdb = '4YTP_ACBD_'
 
 target_pdb = pdb.rstrip('_')
 #test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'testing_data_sequenceSplit_30.tfrecord')).map(_parse_function)
@@ -151,8 +151,10 @@ ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_sit
 
 pred = Predictor(ligand_model_path, ligand_site_ckp_path)
 pred.loadData(pdb_dir)
+ligand_site_probs = getLigandSiteProbs()
 
-pocket_points_pred = pred.predictPocketPoints(threshold = .5)
+threshold = 0.5
+pocket_points_pred = tf.squeeze(tf.where(ligand_site_preds > threshold))
 
 #####
 y_gen = np.zeros(pred.n_pockets)
