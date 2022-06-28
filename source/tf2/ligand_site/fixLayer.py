@@ -7,6 +7,14 @@ params = masif_opts["ligand"]
 minPockets = params['minPockets']
 prepSize = 2 * params['savedPockets']
 
+class ValueInit(initializers.Initializer):
+  def __init__(self, value):
+    self.value = value
+  def __call__(self, shape, dtype=None, **kwargs):
+    return self.value
+
+  def get_config(self):  # To support serialization
+    return {"mean": self.mean, "stddev": self.stddev}
 class ConvLayer(layers.Layer):
     def __init__(self,
         max_rho,
@@ -59,7 +67,7 @@ class ConvLayer(layers.Layer):
         
         def testFunc(**kwargs):
             return mu_rho_initial
-        self.testVar = self.add_weight(name="mu_rho", shape=tf.shape(mu_rho_initial), initializer = testFunc, trainable = True)
+        self.testVar = self.add_weight(name="mu_rho", shape=tf.shape(mu_rho_initial), initializer = ValueInit(mu_rho_initial), trainable = True)
         
         layer_num = 0
         for i in range(self.n_feat):
