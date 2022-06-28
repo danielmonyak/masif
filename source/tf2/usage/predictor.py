@@ -108,7 +108,7 @@ class Predictor:
   
   # Wrapper function for 
   def predictPocketPoints(self, threshold = None):
-    ligand_site_probs = getLigandSiteProbs()
+    ligand_site_probs = self.getLigandSiteProbs()
     
     if threshold is None:
       threshold = self.threshold
