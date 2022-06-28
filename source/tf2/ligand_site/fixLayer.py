@@ -7,7 +7,7 @@ params = masif_opts["ligand"]
 minPockets = params['minPockets']
 prepSize = 2 * params['savedPockets']
 
-class ConvLayer(layers.Layer):
+class ConvLayer2(layers.Layer):
     def __init__(self,
         max_rho,
         n_ligands,
