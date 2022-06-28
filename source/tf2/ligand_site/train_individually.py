@@ -69,6 +69,9 @@ with tf.device(dev):
     for i in range(last_epoch, num_epochs):
         print('Running training data, epoch {}'.format(i))
         for j, data_element in enumerate(train_data):
+            #if j == 50:
+            #    break
+                
             print('Train record {}'.format(j))
 
             labels = data_element[4]
@@ -81,30 +84,34 @@ with tf.device(dev):
             flat_list = list(map(flatten, data_element[:4]))
             X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
             
-            model.fit(X, y, epochs = 1, verbose = 2)
+            _=model.fit(X, y, epochs = 1, verbose = 2)
         
         print('Running validation data, epoch {}'.format(i))
         acc_list = []
         loss_list = []
         for j, data_element in enumerate(val_data):
+            #if j == 50:
+            #    break
+
             print('Validation record {}'.format(j))
-            
+
             labels = data_element[4]
             if not goodLabel(labels):
                 print('Skipping this record...')
                 continue
-            
+
             y = tf.transpose(tf.cast(labels > 0, dtype=tf.int32))
-            
+
             flat_list = list(map(flatten, data_element[:4]))
             X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
-            
+
             loss, acc = model.evaluate(X, y, verbose = 2)
             loss_list.append(loss)
             acc_list.append(acc)
+        
         acc = sum(acc_list)/len(acc_list)
         loss = sum(loss_list)/len(loss_list)
-        print('Epoch {} finished\nLoss: {}\nBinary Accuracy: {}', i, loss, acc)
+        print('Epoch {} finished\nLoss: {}\nBinary Accuracy: {}'.format(i, loss, acc))
         
         if acc > best_acc:
             print('Validation accuracy improved from {} to {}'.format(best_acc, acc))
