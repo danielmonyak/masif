@@ -66,7 +66,7 @@ class MaSIF_ligand_site(Model):
             layers.Dense(1)
         ]'''
         
-    
+    @tf.autograph.experimental.do_not_convert
     def map_func(self, row):
         n_pockets = tf.shape(row)[0]
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
@@ -116,6 +116,7 @@ class MaSIF_ligand_site(Model):
         self.compiled_metrics.update_state(y, y_pred)
         return {m.name: m.result() for m in self.metrics}
     
+    @tf.autograph.experimental.do_not_convert
     def call(self, x, sample = None):
         #if sample is None:
         #    sample = tf.zeros([1, minPockets])
@@ -275,6 +276,7 @@ class ConvLayer(layers.Layer):
             #################################
             self.variable_dicts.append(var_dict)
     
+    @tf.autograph.experimental.do_not_convert
     def map_func(self, row, makeSample = False):
         n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
         bigShape = [n_pockets, 200, self.n_feat]
@@ -301,6 +303,7 @@ class ConvLayer(layers.Layer):
     #                tf.RaggedTensorSpec(tf.TensorShape([None, None]), tf.float32, 1, tf.int64),
     #                tf.TensorSpec(shape=tf.TensorShape([None, minPockets]), dtype=tf.int32, name=None)
     #])
+    @tf.autograph.experimental.do_not_convert
     def call(self, x, sample):
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
 
