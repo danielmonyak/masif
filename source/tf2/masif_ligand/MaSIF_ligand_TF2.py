@@ -45,13 +45,13 @@ class MaSIF_ligand(Model):
         
         
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-        self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
+        #self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
+        self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
  
         
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
         
         self.myLayers=[
-            #layers.InputLayer(input_shape = [None], ragged=True),
             layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             CovarLayer(),
@@ -77,8 +77,7 @@ class CovarLayer(layers.Layer):
         ret = tf.matmul(tf.transpose(x, perm=[0, 2, 1]), x)
         scale = tf.cast(tf.shape(x)[1], tf.float32)
         return ret/scale
-    
-    
+
 class ConvLayer(layers.Layer):
     def __init__(self,
         max_rho,
@@ -171,13 +170,12 @@ class ConvLayer(layers.Layer):
     def call(self, x):
         input_feat, rho_coords, theta_coords, mask = self.unpack_x(x)
         
-        self.global_desc_1 = []
+        ret = []
         
         for i in range(self.n_feat):
-            my_input_feat = input_feat[:, :, :, i:i+1]
+            my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
 
-            # W_conv or W_conv[i] ???
-            self.global_desc_1.append(
+            ret.append(
                 self.inference(
                     my_input_feat,
                     rho_coords,
