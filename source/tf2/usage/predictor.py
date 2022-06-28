@@ -100,7 +100,7 @@ class Predictor:
     
     if threshold is None:
       threshold = self.threshold
-    pocket_points = tf.where(ligand_site_preds > threshold)
+    pocket_points = tf.where(ligand_site_probs > threshold)
     return tf.squeeze(pocket_points)
   
   # Get geometric coordinates of PDB
