@@ -54,17 +54,8 @@ class ConvLayer(layers.Layer):
         mu_rho_initial = np.expand_dims(initial_coords[:, 0], 0).astype(
             "float32"
         )
-        mu_theta_initial = np.expand_dims(initial_coords[:, 1], 0).astype(
-            "float32"
-        )
         mu_rho = []
-        mu_theta = []
-        sigma_rho = []
-        sigma_theta = []
-
         b_conv = []
-        W_conv = []
-        ## mu_rho and mu_theta inital values are used for sigma as well -- check on this
         
         self.testVar = tf.Variable(3, name = 'testVar', trainable = True)
         self.testVar2 = self.add_weight(name = 'testVar2', initializer='zeros', trainable = True)
@@ -74,27 +65,7 @@ class ConvLayer(layers.Layer):
             mu_rho.append(
                 tf.Variable(mu_rho_initial, name="mu_rho_{}_{}".format(i, layer_num),
                            trainable = True)
-            )  # 1, n_gauss
-            mu_theta.append(
-                tf.Variable(mu_theta_initial, name="mu_theta_{}_{}".format(i, layer_num),
-                           trainable = True)
-            )  # 1, n_gauss
-            sigma_rho.append(
-                tf.Variable(
-                    np.ones_like(mu_rho_initial) * self.sigma_rho_init,
-                    name="sigma_rho_{}_{}".format(i, layer_num),
-                    trainable = True
-                )
-            )  # 1, n_gauss
-            sigma_theta.append(
-                tf.Variable(
-                    (np.ones_like(mu_theta_initial) * self.sigma_theta_init),
-                    name="sigma_theta_{}_{}".format(i, layer_num),
-                    trainable = True
-                )
-            )  # 1, n_gauss
-
-
+            )
             b_conv.append(
                 self.add_weight(
                     "b_conv_{}_{}".format(i, layer_num),
@@ -102,22 +73,10 @@ class ConvLayer(layers.Layer):
                     trainable = True
                 )
             )
-            W_conv.append(
-                self.add_weight(
-                    "W_conv_{}_{}".format(i, layer_num),
-                    shape=conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"),
-                    trainable = True
-                )
-            )
-            
         
         var_dict = {}
         var_dict['mu_rho'] = mu_rho
-        var_dict['mu_theta'] = mu_theta
-        var_dict['sigma_rho'] = sigma_rho
-        var_dict['sigma_theta'] = sigma_theta
         var_dict['b_conv'] = b_conv
-        var_dict['W_conv'] = W_conv
         
         self.variable_dicts.append(var_dict)
     
