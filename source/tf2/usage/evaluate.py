@@ -58,6 +58,7 @@ n_test = len(pdbs_left)
 
 dev = '/GPU:0'
 with tf.device(dev):
+    '''
     for i, pdb in enumerate(train_list):
         print('{} of {} train pdbs running...'.format(i, n_train))
         try:
@@ -101,7 +102,7 @@ with tf.device(dev):
         with open(lig_true_file, 'a') as f:
             f.write(str(ligandIdx_true) + '\n')
         with open(lig_pred_file, 'a') as f:
-            f.write(str(ligandIdx_pred) + '\n')
+            f.write(str(ligandIdx_pred) + '\n')'''
     for i, pdb in enumerate(pdbs_left):
         print('{} of {} test pdbs running...'.format(i, n_test))
         try:
