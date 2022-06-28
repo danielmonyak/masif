@@ -51,7 +51,7 @@ else:
         with open(fi, 'w') as f:
             pass
 
-break_i = 2
+#break_i = 2
 
 n_train = 5
 n_test = len(pdbs_left)
@@ -121,6 +121,8 @@ with tf.device(dev):
                 )
             ).astype(str)
             
+            print('c')
+        
             ligand_coords = all_ligand_coords[0]
             tree = spatial.KDTree(xyz_coords)
             pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
