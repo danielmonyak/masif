@@ -61,19 +61,7 @@ class Predictor:
       flat_list = list(map(temp_fn, data_order))
       return tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
     self.getDataSample = lambda sample : getDataSampleTemp(sample)
-  '''
-  # Get input to MaSIF_ligand_site model
-  def getLigandSiteX(self):
-    self.n_pockets = self.input_feat.shape[0]
-    
-    flat_list = list(map(getFlatDataFromDict, data_order))
-    return tf.RaggedTensor.from_tensor(
-      tf.expand_dims(
-        tf.concat(flat_list, axis=0),
-        axis=0),
-      ragged_rank = 1
-    )
-  '''
+  
   # Run MaSIF_ligand_site on all points in pdb, return probablity value for each site
   def getLigandSiteProbs(self):
     ligand_site_pred_list = []
