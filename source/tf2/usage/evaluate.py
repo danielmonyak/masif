@@ -20,9 +20,16 @@ thresh = 0.5
 pred = Predictor(ligand_model_path, ligand_site_ckp_path, ligand_threshold = thresh)
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
-fileName = 'test_pdbs_sequence.npy'
-test_list = np.load(os.path.join(listDir, fileName)).astype(str)
+test_file = 'test_pdbs_sequence.npy'
+train_file = 'train_pdbs_sequence.npy'
+
+test_list = np.load(os.path.join(listDir, test_file)).astype(str)
 test_list = np.char.add(test_list, '_')
+
+train_list = np.char.add(
+        np.load(
+            os.path.join(listDir, train_file)
+        ).astype(str), '_')
 
 if not os.path.exists(outdir):
     os.mkdir(outdir)
