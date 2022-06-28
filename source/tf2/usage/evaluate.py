@@ -23,8 +23,10 @@ listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
 test_file = 'test_pdbs_sequence.npy'
 train_file = 'train_pdbs_sequence.npy'
 
-test_list = np.load(os.path.join(listDir, test_file)).astype(str)
-test_list = np.char.add(test_list, '_')
+test_list = np.char.add(
+        np.load(
+                os.path.join(listDir, test_file)
+        ).astype(str), '_')
 
 train_list = np.char.add(
         np.load(
