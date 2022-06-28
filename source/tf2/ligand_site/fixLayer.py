@@ -34,10 +34,7 @@ class ConvLayer2(layers.Layer):
         
         # Variable dict lists
         self.variable_dicts = []
-        self.relu = tf.keras.layers.ReLU()
-        self.Map_func = lambda row : self.map_func(row)
-        self.Map_func_sample = lambda row : self.map_func(row, makeSample = True)
-        
+
         initial_coords = self.compute_initial_coordinates()
         # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
         
