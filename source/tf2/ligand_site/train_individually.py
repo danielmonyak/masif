@@ -19,14 +19,17 @@ for gpu in gpus:
 dev = '/GPU:1'
 cpu = '/CPU:0'
 
-continue_training = False
+#############################################
+continue_training = True
+#############################################
 
 params = masif_opts["ligand"]
 minPockets = params['minPockets']
-dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
-train_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list['train'])).map(_parse_function)
-val_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list['val'])).map(_parse_function)
 
+dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
+getData = lambda dataset : tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
+train_data = getData('train')
+val_data = getData('val')
 
 model = MaSIF_ligand_site(
     params["max_distance"],
@@ -40,43 +43,44 @@ model.compile(optimizer = model.opt,
 )
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
+ckpStatePath = ckpPath + '.pickle'
 
 num_epochs = 100
-last_epoch = 0
 
 if continue_training:
     model.load_weights(ckpPath)
-    last_epoch += 13
-    best_acc = 0.91657
-
+    with open(ckpStatePath, 'rb') as handle:
+        ckpState = pickle.load(handle)
+    last_epoch = ckpState['last_epoch']
+    best_acc = ckpState['best_acc']
+else:
+    last_epoch = 0
+    best_acc = 0
 
 def goodLabel(labels):
     n_ligands = labels.shape[1]
     if n_ligands > 1:
-        print('More than one ligand, check this out...')
+        #print('More than one ligand, check this out...')
         return False
     
     pocket_points = tf.where(labels != 0)
     npoints = tf.shape(pocket_points)[0]
     if npoints < minPockets:
-        print('Only {} pocket_points'.format(npoints))
+        #print(f'Only {npoints} pocket_points')
         return False
     
     return True
 
 best_acc = 0
 with tf.device(dev):
-    for i in range(last_epoch, num_epochs):
-        print('Running training data, epoch {}'.format(i))
+    for i in range(last_epoch + 1, num_epochs):
+        print(f'Running training data, epoch {i}')
         for j, data_element in enumerate(train_data):
-            #if j == 50:
-            #    break
-                
-            print('Train record {}'.format(j))
+            if j % 100 == 0:
+                print(f'Train record {j}')
 
             labels = data_element[4]
             if not goodLabel(labels):
-                print('Skipping this record...')
                 continue
             
             y = tf.transpose(tf.cast(labels > 0, dtype=tf.int32))
@@ -84,20 +88,16 @@ with tf.device(dev):
             flat_list = list(map(flatten, data_element[:4]))
             X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
             
-            _=model.fit(X, y, epochs = 1, verbose = 2)
+            _=model.fit(X, y, epochs = 1, verbose = 0)
         
-        print('Running validation data, epoch {}'.format(i))
+        print('Running validation data, epoch {i}')
         acc_list = []
         loss_list = []
         for j, data_element in enumerate(val_data):
-            #if j == 50:
-            #    break
-
-            print('Validation record {}'.format(j))
+            #print(f'Validation record {j}')
 
             labels = data_element[4]
             if not goodLabel(labels):
-                print('Skipping this record...')
                 continue
 
             y = tf.transpose(tf.cast(labels > 0, dtype=tf.int32))
@@ -105,17 +105,21 @@ with tf.device(dev):
             flat_list = list(map(flatten, data_element[:4]))
             X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
 
-            loss, acc = model.evaluate(X, y, verbose = 2)
+            loss, acc = model.evaluate(X, y, verbose = 0)
             loss_list.append(loss)
             acc_list.append(acc)
         
         acc = sum(acc_list)/len(acc_list)
         loss = sum(loss_list)/len(loss_list)
-        print('Epoch {} finished\nLoss: {}\nBinary Accuracy: {}'.format(i, loss, acc))
+        print(f'Epoch {i} finished\nLoss: {loss}\nBinary Accuracy: {acc}')
         
         if acc > best_acc:
-            print('Validation accuracy improved from {} to {}'.format(best_acc, acc))
-            print('Saving model weights to {}'.format(ckpPath))
+            print(f'Validation accuracy improved from {best_acc} to {acc}')
+            print(f'Saving model weights to {ckpPath}')
+            best_acc = acc
             model.save_weights(ckpPath)
+            ckpState = {'best_acc' : best_acc, 'last_epoch' : i}
+            with open(ckpStatePath, 'wb') as handle:
+                pickle.dump(ckpState, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-print('Finished {} training epochs!'.format(num_epochs))
+print(f'Finished {num_epochs} training epochs!')
