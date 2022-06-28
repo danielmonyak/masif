@@ -53,9 +53,55 @@ else:
 
 break_i = 2
 
+n_train = 5
 n_test = len(pdbs_left)
+
 dev = '/GPU:0'
 with tf.device(dev):
+    for i, pdb in enumerate(train_list):
+        print('{} of {} train pdbs running...'.format(i, n_train))
+        try:
+            pdb_dir = os.path.join(precom_dir, pdb)
+            ligandIdx_pred, pocket_points_pred = pred.predictRaw(pdb_dir)
+            xyz_coords = Predictor.getXYZCoords(pdb_dir)
+            
+            all_ligand_coords = np.load(
+                os.path.join(
+                    ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
+                )
+            )
+            all_ligand_types = np.load(
+                os.path.join(
+                    ligand_coord_dir, "{}_ligand_types.npy".format(pdb.split("_")[0])
+                )
+            ).astype(str)
+            
+            ligand_coords = all_ligand_coords[0]
+            tree = spatial.KDTree(xyz_coords)
+            pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
+            pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
+            
+            overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
+            recall = len(overlap)/len(pocket_points_true)
+            precision = len(overlap)/len(pocket_points_pred)
+            
+            ligand_true = all_ligand_types[0]
+            ligandIdx_true = ligand_list.index(ligand_true)
+        except:
+            continue
+        
+        with open(pdb_file, 'a') as f:
+            f.write(str(pdb) + '\n')
+        
+        with open(recall_file, 'a') as f:
+            f.write(str(recall) + '\n')
+        with open(precision_file, 'a') as f:
+            f.write(str(precision) + '\n')
+        
+        with open(lig_true_file, 'a') as f:
+            f.write(str(ligandIdx_true) + '\n')
+        with open(lig_pred_file, 'a') as f:
+            f.write(str(ligandIdx_pred) + '\n')
     for i, pdb in enumerate(pdbs_left):
         print('{} of {} test pdbs running...'.format(i, n_test))
         try:
