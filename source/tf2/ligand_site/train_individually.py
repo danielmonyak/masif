@@ -12,6 +12,13 @@ from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
+gpus = tf.config.list_physical_devices('GPU')
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)
+
+dev = '/GPU:1'
+cpu = '/CPU:0'
+
 continue_training = False
 
 params = masif_opts["ligand"]
@@ -34,37 +41,32 @@ model.compile(optimizer = model.opt,
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 
+num_epochs = 100
+last_epoch = 0
+
 if continue_training:
     model.load_weights(ckpPath)
     last_epoch += 13
     best_acc = 0.91657
 
-num_epochs = 100
-
-gpus = tf.config.list_physical_devices('GPU')
-for gpu in gpus:
-    tf.config.experimental.set_memory_growth(gpu, True)
-
-dev = '/GPU:1'
-cpu = '/CPU:0'
 
 def goodLabel(labels):
     n_ligands = labels.shape[1]
     if n_ligands > 1:
         print('More than one ligand, check this out...')
         return False
-
-    #labels = tf.squeeze(labels)
-    pocket_points = tf.squeeze(tf.where(labels != 0))
+    
+    pocket_points = tf.where(labels != 0)
     npoints = tf.shape(pocket_points)[0]
     if npoints < minPockets:
         print('Only {} pocket_points'.format(npoints))
         return False
+    
     return True
 
 best_acc = 0
 with tf.device(dev):
-    for i in epochs:
+    for i in range(last_epoch, num_epochs):
         print('Running training data, epoch {}'.format(i))
         for j, data_element in enumerate(train_data):
             print('Train record {}'.format(j))
@@ -74,16 +76,12 @@ with tf.device(dev):
                 print('Skipping this record...')
                 continue
             
-            feed_dict = {
-                'input_feat' : data_element[0],
-                'rho_coords' : tf.expand_dims(data_element[1], -1),
-                'theta_coords' : tf.expand_dims(data_element[2], -1),
-                'mask' : data_element[3]
-            }
-            flat_list = list(map(lambda tsr_key : flatten(feed_dict[tsr_key]), data_order))
+            y = tf.transpose(tf.cast(labels > 0, dtype=tf.int32))
             
-            X = tf.concat(flat_list, axis=0)
-            model.fit(X, labels, epochs = 1, verbose = 2)
+            flat_list = list(map(flatten, data_element[:4]))
+            X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
+            
+            model.fit(X, y, epochs = 1, verbose = 2)
         
         print('Running validation data, epoch {}'.format(i))
         acc_list = []
@@ -96,16 +94,12 @@ with tf.device(dev):
                 print('Skipping this record...')
                 continue
             
-            feed_dict = {
-                'input_feat' : data_element[0],
-                'rho_coords' : tf.expand_dims(data_element[1], -1),
-                'theta_coords' : tf.expand_dims(data_element[2], -1),
-                'mask' : data_element[3]
-            }
-            flat_list = list(map(lambda tsr_key : flatten(feed_dict[tsr_key]), data_order))
+            y = tf.transpose(tf.cast(labels > 0, dtype=tf.int32))
             
-            X = tf.concat(flat_list, axis=0)
-            loss, acc = model.evaluate(X, labels, verbose = 2)
+            flat_list = list(map(flatten, data_element[:4]))
+            X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
+            
+            loss, acc = model.evaluate(X, y, verbose = 2)
             loss_list.append(loss)
             acc_list.append(acc)
         acc = sum(acc_list)/len(acc_list)
@@ -117,4 +111,4 @@ with tf.device(dev):
             print('Saving model weights to {}'.format(ckpPath))
             model.save_weights(ckpPath)
 
-print('Finished {} training epochs!'.format(epochs))
+print('Finished {} training epochs!'.format(num_epochs))
