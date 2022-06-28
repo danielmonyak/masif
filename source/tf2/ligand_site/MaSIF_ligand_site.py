@@ -489,9 +489,3 @@ class ConvLayer(layers.Layer):
         coords = np.concatenate((grid_rho_[None, :], grid_theta_[None, :]), axis=0)
         coords = coords.T  # every row contains the coordinates of a grid intersection
         return coords
-
-class ValueInit(initializers.Initializer):
-  def __init__(self, value):
-    self.value = value
-  def __call__(self, shape, dtype=None, **kwargs):
-    return self.value
