@@ -103,11 +103,11 @@ with tf.device(dev):
             #####
             n_pockets = y_raw.shape[1]
             fullSamples = n_pockets // minPockets
-            for i in range(fullSamples):
-                if i % 10 == 0:
-                    done = 100.0 * i/fullSamples
-                    print('{} of {} batches completed'.format(i, fullSamples))
-                sample = range(minPockets * i, minPockets * (i+1))
+            for k in range(fullSamples):
+                if k % 10 == 0:
+                    done = 100.0 * k/fullSamples
+                    print('{} of {} batches completed'.format(k, fullSamples))
+                sample = range(minPockets * k, minPockets * (k+1))
                 
                 y_temp = tf.gather(y_raw, sample, axis=1)
                 flat_list = list(map(lambda tsr : np.take(tsr, sample, axis=0).flatten(), data_element[:4]))
@@ -115,10 +115,10 @@ with tf.device(dev):
                 
                 _=model.fit(X, y_temp, epochs = 1, verbose = 0)
             
-            i = fullSamples
+            k = fullSamples
             n_leftover = n_pockets % minPockets
-            garbage = tf.range(minPockets * (i-1) + n_leftover, minPockets * i)
-            valid = tf.range(minPockets * i, minPockets * i + n_leftover)
+            garbage = tf.range(minPockets * (k-1) + n_leftover, minPockets * k)
+            valid = tf.range(minPockets * k, minPockets * k + n_leftover)
             sample = tf.concat([garbage, valid], axis=0)
             
             y_temp = tf.gather(y_raw, sample, axis=1)
@@ -172,8 +172,8 @@ with tf.device(dev):
             #####
             n_pockets = y_raw.shape[1]
             fullSamples = n_pockets // minPockets
-            for i in range(fullSamples):
-                sample = range(minPockets * i, minPockets * (i+1))
+            for k in range(fullSamples):
+                sample = range(minPockets * k, minPockets * (k+1))
                 
                 y_temp = tf.gather(y_raw, sample, axis=1)
                 flat_list = list(map(lambda tsr : np.take(tsr, sample, axis=0).flatten(), data_element[:4]))
@@ -183,10 +183,10 @@ with tf.device(dev):
                 loss_list.append(loss)
                 acc_list.append(acc)
             
-            i = fullSamples
+            k = fullSamples
             n_leftover = n_pockets % minPockets
-            garbage = tf.range(minPockets * (i-1) + n_leftover, minPockets * i)
-            valid = tf.range(minPockets * i, minPockets * i + n_leftover)
+            garbage = tf.range(minPockets * (k-1) + n_leftover, minPockets * k)
+            valid = tf.range(minPockets * k, minPockets * k + n_leftover)
             sample = tf.concat([garbage, valid], axis=0)
             
             y_temp = tf.gather(y_raw, sample, axis=1)
