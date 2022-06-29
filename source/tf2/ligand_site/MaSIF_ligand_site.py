@@ -97,6 +97,10 @@ class MaSIF_ligand_site(Model):
         else:
             self.tempGradients = list(map(add, self.tempGradients, gradients))
         
+        ####
+        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
+        ####
+        
         # Update metrics (includes the metric that tracks the loss)
         self.compiled_metrics.update_state(y, y_pred)
         # Return a dict mapping metric names to current value
