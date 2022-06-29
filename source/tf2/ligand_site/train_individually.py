@@ -77,6 +77,7 @@ with tf.device(dev):
     for i in range(last_epoch + 1, num_epochs):
         print(f'Running training data, epoch {i}')
         for j, data_element in enumerate(train_data):
+            print(f'Train record {j}')
             if j == 10:
                 break
             
