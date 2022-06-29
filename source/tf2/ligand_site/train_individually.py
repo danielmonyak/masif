@@ -59,7 +59,7 @@ if continue_training:
     
     print(f'Loaded model from {ckpStatePath}\nLast completed epoch: {last_epoch}\nValidation accuracy: {best_acc}')
 else:
-    last_epoch = 0
+    last_epoch = -1
     best_acc = 0
 
 def goodLabel(labels):
