@@ -82,10 +82,11 @@ with tf.device(dev):
         
         #batch_size = 0
         for j, data_element in enumerate(train_data):
-            if j % 1 == 0:
+            if j % 100 == 0:
                 print(f'Train record {j}')
+                verbosity = 2
                 #print('Time:', round(process_time(), 3))
-
+            
             labels = data_element[4]
             if not goodLabel(labels):
                 continue
@@ -121,7 +122,8 @@ with tf.device(dev):
             flat_list = list(map(lambda tsr : np.take(tsr, sample, axis=0).flatten(), data_element[:4]))
             X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
 
-            _=model.fit(X, y_temp, epochs = 1, verbose = 0)
+            _=model.fit(X, y_temp, epochs = 1, verbose = verbosity)
+            verbosity = 0
             #####
             
             
