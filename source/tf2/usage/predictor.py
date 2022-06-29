@@ -63,7 +63,7 @@ class Predictor:
     self.getDataSample = lambda sample : getDataSampleTemp(sample)
   
   # Run MaSIF_ligand_site on all points in pdb, return probablity value for each site
-  '''def getLigandSiteProbs(self):
+  def getLigandSiteProbs(self):
     ligand_site_pred_list = []
     fullSamples = self.n_pockets // minPockets
 
@@ -82,12 +82,15 @@ class Predictor:
     i = fullSamples
     n_leftover = self.n_pockets % minPockets
     valid = tf.range(minPockets * i, minPockets * i + n_leftover)
-    garbage = tf.zeros([minPockets - n_leftover], dtype=tf.int32)
-    sample = tf.expand_dims(tf.concat([valid, garbage], axis=0), axis=0)
+    #garbage = tf.zeros([minPockets - n_leftover], dtype=tf.int32)
+    #sample = tf.expand_dims(tf.concat([valid, garbage], axis=0), axis=0)
 
+    garbage = tf.range(minPockets * (i-1) + n_leftover, minPockets * i)
+    sample = tf.expand_dims(tf.concat([garbage, valid], axis=0), axis=0)
+    
     temp_X = self.getDataSample(sample)
     temp_pred = tf.math.sigmoid(tf.squeeze(self.ligand_site_model(temp_X, gen_sample)))
-    ligand_site_pred_list.append(temp_pred[:n_leftover])
+    ligand_site_pred_list.append(temp_pred[n_leftover:])
 
     after_time = process_time()
     print('100% of batches completed in {} seconds.'.format(round(after_time - before_time)))
@@ -137,7 +140,7 @@ class Predictor:
     ####
     return tf.gather(ligand_site_probs, order)
     ####
-  
+  '''
   # Wrapper function for 
   def predictPocketPoints(self, threshold = None):
     ligand_site_probs = self.getLigandSiteProbs()
