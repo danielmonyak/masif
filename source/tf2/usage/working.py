@@ -134,14 +134,15 @@ for thresh in [.5, .6, .7, .8, .9, .95, .99]:
 '''
 
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
-ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
+#ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
+ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/usage/kerasModel_ligand_site/ckp'
 
 pred = Predictor(ligand_model_path, ligand_site_ckp_path)
 pred.loadData(pdb_dir)
-ligand_site_probs = getLigandSiteProbs()
+ligand_site_probs = pred.getLigandSiteProbs()
 
 threshold = 0.5
-pocket_points_pred = tf.squeeze(tf.where(ligand_site_preds > threshold))
+pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
 
 #####
 y_gen = np.zeros(pred.n_pockets)
