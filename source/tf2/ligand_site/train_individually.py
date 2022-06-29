@@ -101,7 +101,6 @@ with tf.device(dev):
                 loss = model.compiled_loss(y, y_pred, regularization_losses=model.losses)
             gradients = tape.gradient(loss, model.trainable_variables)
             if batch_size == 1:
-                print('here')
                 tempGradients = gradients.copy()
             else:
                 tempGradients = list(map(add, tempGradients, gradients))
