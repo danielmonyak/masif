@@ -23,8 +23,8 @@ ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
 
-#pdb = '1RI4_A_'
-pdb = '2VRB_AB_'
+pdb = '1RI4_A_'
+#pdb = '2VRB_AB_' # 0.25
 
 '''
 modelDir = '../ligand_site/kerasModel'
