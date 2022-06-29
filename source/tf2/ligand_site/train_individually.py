@@ -23,7 +23,7 @@ dev = '/GPU:1'
 cpu = '/CPU:0'
 
 #############################################
-continue_training = False
+continue_training = True
 #############################################
 
 params = masif_opts["ligand"]
@@ -56,6 +56,8 @@ if continue_training:
         ckpState = pickle.load(handle)
     last_epoch = ckpState['last_epoch']
     best_acc = ckpState['best_acc']
+    
+    print(f'Loaded model from {ckpStatepath}\nLast completed epoch: {last_epoch}\nValidation accuracy: {best_acc}')
 else:
     last_epoch = 0
     best_acc = 0
