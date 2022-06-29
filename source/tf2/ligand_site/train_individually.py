@@ -80,7 +80,7 @@ with tf.device(dev):
         
         batch_size = 0
         for j, data_element in enumerate(train_data):
-            if j % 100 == 0:
+            if j % 10 == 0:
                 print(f'Train record {j}')
 
             labels = data_element[4]
@@ -100,18 +100,25 @@ with tf.device(dev):
                 y_pred = model(X, sample = sample, training=True)
                 loss = model.compiled_loss(y, y_pred, regularization_losses=model.losses)
             gradients = tape.gradient(loss, model.trainable_variables)
-            if batch_size == 1:
+            
+            
+            model.optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+        
+            '''if batch_size == 1:
                 tempGradients = gradients.copy()
             else:
-                tempGradients = list(map(add, tempGradients, gradients))
+                tempGradients = list(map(add, tempGradients, gradients))'''
         
-        gradients = [grad / batch_size for grad in tempGradients]
-        model.optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+        #gradients = [grad / batch_size for grad in tempGradients]
+        #model.optimizer.apply_gradients(zip(gradients, model.trainable_variables))
         
         print(f'Running validation data, epoch {i}')
         acc_list = []
         loss_list = []
         for j, data_element in enumerate(val_data):
+            if j % 10 == 0:
+                print(f'Validation record {j}')
+
             labels = data_element[4]
             if not goodLabel(labels):
                 continue
