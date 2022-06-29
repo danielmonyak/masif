@@ -81,9 +81,9 @@ with tf.device(dev):
         
         #batch_size = 0
         for j, data_element in enumerate(train_data):
-            if j % 10 == 0:
+            if j % 100 == 0:
                 print(f'Train record {j}')
-                print('Time:', round(process_time(), 3))
+                #print('Time:', round(process_time(), 3))
 
             labels = data_element[4]
             if not goodLabel(labels):
