@@ -23,7 +23,7 @@ dev = '/GPU:1'
 cpu = '/CPU:0'
 
 #############################################
-continue_training = True
+continue_training = False
 #############################################
 
 params = masif_opts["ligand"]
