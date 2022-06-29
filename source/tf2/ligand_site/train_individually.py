@@ -75,9 +75,10 @@ def goodLabel(labels):
 
 best_acc = 0
 with tf.device(dev):
-    batch_size = 0
     for i in range(last_epoch + 1, num_epochs):
         print(f'Running training data, epoch {i}')
+        
+        batch_size = 0
         for j, data_element in enumerate(train_data):
             print(f'Train record {j}')
             if j == 10:
