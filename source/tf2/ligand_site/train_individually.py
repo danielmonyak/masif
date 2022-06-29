@@ -112,7 +112,7 @@ with tf.device(dev):
                 _=model.fit(X, y_temp, epochs = 1, verbose = 0)
             
             i = fullSamples
-            n_leftover = self.n_pockets % minPockets
+            n_leftover = n_pockets % minPockets
             garbage = tf.range(minPockets * (i-1) + n_leftover, minPockets * i)
             valid = tf.range(minPockets * i, minPockets * i + n_leftover)
             sample = tf.expand_dims(tf.concat([garbage, valid], axis=0), axis=0)
