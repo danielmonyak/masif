@@ -123,15 +123,6 @@ pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
 
 
-'''
-do = lambda x : pred.predictLigandIdx(pred.getLigandX(x))
-for thresh in [.5, .6, .7, .8, .9, .95, .99]:
-  print('threshold:', thresh)
-  pred = Predictor(ligand_model_path, ligand_site_ckp_path, threshold = .5, ligand_threshold = thresh)
-  pred.loadData(pdb_dir)
-  pocket_points_pred = pred.predictPocketPoints()
-  print(do(pocket_points_pred))
-'''
 
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
 #ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
@@ -142,9 +133,19 @@ pred.loadData(pdb_dir)
 ligand_site_probs = pred.getLigandSiteProbs()
 
 threshold = 0.5
-pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
 
-#####
+########
+for threshold in np.linspace(.1, .9, 9):
+  print('threshold:', threshold)
+  pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
+  overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
+  recall = len(overlap)/len(pocket_points_true)
+  precision = len(overlap)/len(pocket_points_pred)
+  print('Recall:', round(recall.numpy(), 2))
+  print('Precision:', round(precision.numpy(), 2))
+
+########
+'''
 y_gen = np.zeros(pred.n_pockets)
 y_true = y_gen.copy()
 y_true[pocket_points_true] = 1
@@ -165,9 +166,9 @@ print('Balanced accuracy:', round(bal_acc, 2))
 print('Recall:', round(recall.numpy(), 2))
 print('Precision:', round(precision.numpy(), 2))
 print('Specificity:', round(specificity.numpy(), 2))
-
-#####
-
+'''
+########
+'''
 X_true = pred.getLigandX(pocket_points_true)
 X_true_pred = pred.predictLigandIdx(X_true)
 print(X_true_pred)
@@ -175,3 +176,4 @@ print(X_true_pred)
 X_pred = pred.getLigandX(pocket_points_pred)
 X_pred_pred = pred.predictLigandIdx(X_pred, 0.5)
 print(X_pred_pred)
+'''
