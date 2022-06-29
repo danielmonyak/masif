@@ -1,6 +1,7 @@
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 import functools
+from operator import add
 from default_config.util import *
 
 params = masif_opts["ligand"]
@@ -28,6 +29,7 @@ class MaSIF_ligand_site(Model):
         
         ##
         self.keep_prob = keep_prob
+        self.tempGradients = []
         ##
         
         # order of the spectral filters
@@ -61,10 +63,6 @@ class MaSIF_ligand_site(Model):
             #layers.Dense(10, activation='relu'),
             layers.Dense(1)
         ]
-        '''self.myLayers=[
-            layers.Dense(self.n_thetas, activation="relu"),
-            layers.Dense(1)
-        ]'''
         
     #@tf.autograph.experimental.do_not_convert
     def map_func(self, row):
@@ -94,12 +92,22 @@ class MaSIF_ligand_site(Model):
         trainable_vars = self.trainable_variables
         gradients = tape.gradient(loss, trainable_vars)
         
-        # Update weights
-        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
+        if len(self.tempGradients) == 0:
+            self.tempGradients = [tf.zeros_like(var) for var in trainable_var]
+        
+        self.tempGradients = map(add, self.tempGradients, gradients)
+        
         # Update metrics (includes the metric that tracks the loss)
         self.compiled_metrics.update_state(y, y_pred)
         # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
+    
+    def doApplyGradients(self, batch_size):
+        # Update weights
+        gradients = [grad / batch_size for grad in self.tempGradients]
+        self.tempGradients = []
+        trainable_vars = self.trainable_variables
+        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
     
     def test_step(self, data):
         if len(data) == 3:
