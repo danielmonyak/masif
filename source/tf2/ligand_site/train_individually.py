@@ -82,7 +82,7 @@ with tf.device(dev):
         
         #batch_size = 0
         for j, data_element in enumerate(train_data):
-            if j % 100 == 0:
+            if j % 1 == 0:
                 print(f'Train record {j}')
                 #print('Time:', round(process_time(), 3))
 
@@ -92,19 +92,39 @@ with tf.device(dev):
             
             y_raw = tf.transpose(tf.cast(labels > 0, dtype=tf.int32))
             
-            flat_list = list(map(flatten, data_element[:4]))
-            X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
+            #flat_list = list(map(flatten, data_element[:4]))
+            #X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
+            #_=model.fit(X, y_raw, epochs = 1, verbose = 0)
             
             #####
             n_pockets = tf.shape(y_raw)[1]
             fullSamples = n_pockets // minPockets
             for i in range(fullSamples):
+                if i % 10 == 0:
+                    done = 100.0 * i/fullSamples
+                    print('{} of {} batches completed'.format(i, fullSamples))
                 sample = range(minPockets * i, minPockets * (i+1))
-                temp_X = self.getDataSample(sample)
+                
+                y_temp = tf.gather(y_raw, sample, axis=1)
+                flat_list = list(map(lambda tsr : np.take(tsr, sample, axis=0).flatten(), data_element[:4]))
+                X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
+                
+                _=model.fit(X, y_temp, epochs = 1, verbose = 0)
+            
+            i = fullSamples
+            n_leftover = self.n_pockets % minPockets
+            garbage = tf.range(minPockets * (i-1) + n_leftover, minPockets * i)
+            valid = tf.range(minPockets * i, minPockets * i + n_leftover)
+            sample = tf.expand_dims(tf.concat([garbage, valid], axis=0), axis=0)
+            
+            y_temp = tf.gather(y_raw, sample, axis=1)
+            flat_list = list(map(lambda tsr : np.take(tsr, sample, axis=0).flatten(), data_element[:4]))
+            X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
+
+            _=model.fit(X, y_temp, epochs = 1, verbose = 0)
             #####
             
             
-            #_=model.fit(X, y_raw, epochs = 1, verbose = 0)
             #batch_size += 1
             '''
             y, sample = model.make_y(y_raw)
