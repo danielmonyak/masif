@@ -88,15 +88,27 @@ with tf.device(dev):
             if not goodLabel(labels):
                 continue
             
-            y = tf.transpose(tf.cast(labels > 0, dtype=tf.int32))
+            y_raw = tf.transpose(tf.cast(labels > 0, dtype=tf.int32))
             
             flat_list = list(map(flatten, data_element[:4]))
             X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
             
-            _=model.fit(X, y, epochs = 1, verbose = 2)
+            #_=model.fit(X, y_raw, epochs = 1, verbose = 2)
             batch_size += 1
+            
+            y, sample = model.make_y(y_raw)
+            with tf.GradientTape() as tape:
+                y_pred = model(x, sample = sample, training=True)
+                loss = model.compiled_loss(y, y_pred, regularization_losses=model.losses)
+            gradients = tape.gradient(loss, model.trainable_variables)
+            if batch_size == 1:
+                print('here')
+                tempGradients = gradients.copy()
+            else:
+                tempGradients = list(map(add, tempGradients, gradients))
         
-        self.doApplyGradients(batch_size)
+        gradients = [grad / batch_size for grad in tempGradients]
+        model.optimizer.apply_gradients(zip(gradients, model.trainable_variables))
         
         print(f'Running validation data, epoch {i}')
         acc_list = []
