@@ -76,7 +76,6 @@ def goodLabel(labels):
     
     return True
 
-best_acc = 0
 with tf.device(dev):
     for i in range(last_epoch + 1, num_epochs):
         print(f'Running training data, epoch {i}')
