@@ -117,17 +117,24 @@ all_ligand_coords = np.load(
         ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
     )
 )
-
 ligand_coords = all_ligand_coords[0]
 tree = spatial.KDTree(xyz_coords)
 pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
 
 
+all_ligand_types = np.load(
+    os.path.join(
+        ligand_coord_dir, "{}_ligand_types.npy".format(pdb.split("_")[0])
+    )
+).astype(str)
+ligand_true = all_ligand_types[0]
+ligandIdx_true = ligand_list.index(ligand_true)
+
 
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
-#ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
-ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/usage/kerasModel_ligand_site/ckp'
+ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
+#ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/usage/kerasModel_ligand_site/ckp'
 
 pred = Predictor(ligand_model_path, ligand_site_ckp_path)
 pred.loadData(pdb_dir)
@@ -171,7 +178,7 @@ print('Precision:', round(precision.numpy(), 2))
 print('Specificity:', round(specificity.numpy(), 2))
 '''
 ########
-'''
+
 X_true = pred.getLigandX(pocket_points_true)
 X_true_pred = pred.predictLigandIdx(X_true)
 print(X_true_pred)
@@ -179,4 +186,5 @@ print(X_true_pred)
 X_pred = pred.getLigandX(pocket_points_pred)
 X_pred_pred = pred.predictLigandIdx(X_pred, 0.5)
 print(X_pred_pred)
-'''
+
+
