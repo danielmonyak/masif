@@ -95,7 +95,16 @@ with tf.device(dev):
             flat_list = list(map(flatten, data_element[:4]))
             X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
             
-            _=model.fit(X, y_raw, epochs = 1, verbose = 0)
+            #####
+            n_pockets = tf.shape(y_raw)[1]
+            fullSamples = n_pockets // minPockets
+            for i in range(fullSamples):
+                sample = range(minPockets * i, minPockets * (i+1))
+                temp_X = self.getDataSample(sample)
+            #####
+            
+            
+            #_=model.fit(X, y_raw, epochs = 1, verbose = 0)
             #batch_size += 1
             '''
             y, sample = model.make_y(y_raw)
