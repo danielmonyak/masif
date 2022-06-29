@@ -13,6 +13,7 @@ from tf2.read_ligand_tfrecords import _parse_function
 from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
 from operator import add
+from time import process_time
 
 gpus = tf.config.list_physical_devices('GPU')
 for gpu in gpus:
@@ -82,6 +83,7 @@ with tf.device(dev):
         for j, data_element in enumerate(train_data):
             if j % 10 == 0:
                 print(f'Train record {j}')
+                print('Time:', round(process_time, 3))
 
             labels = data_element[4]
             if not goodLabel(labels):
