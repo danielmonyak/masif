@@ -23,8 +23,8 @@ ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
 
-pdb = '1RI4_A_' # 0.1 but not correct
-#pdb = '1FCD_AC_' # 0.25
+#pdb = '1RI4_A_' # 0.1 but not correct
+pdb = '1FCD_AC_' # 0.25
 #pdb = '2VRB_AB_' # 0.25
 
 '''
