@@ -73,6 +73,7 @@ def goodLabel(labels):
 
 best_acc = 0
 with tf.device(dev):
+    batch_size = 0
     for i in range(last_epoch + 1, num_epochs):
         print(f'Running training data, epoch {i}')
         for j, data_element in enumerate(train_data):
@@ -89,6 +90,9 @@ with tf.device(dev):
             X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
             
             _=model.fit(X, y, epochs = 1, verbose = 0)
+            batch_size += 1
+        
+        self.doApplyGradients(batch_size)
         
         print(f'Running validation data, epoch {i}')
         acc_list = []
