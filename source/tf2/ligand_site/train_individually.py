@@ -115,7 +115,7 @@ with tf.device(dev):
             n_leftover = n_pockets % minPockets
             garbage = tf.range(minPockets * (i-1) + n_leftover, minPockets * i)
             valid = tf.range(minPockets * i, minPockets * i + n_leftover)
-            sample = tf.expand_dims(tf.concat([garbage, valid], axis=0), axis=0)
+            sample = tf.concat([garbage, valid], axis=0)
             
             y_temp = tf.gather(y_raw, sample, axis=1)
             flat_list = list(map(lambda tsr : np.take(tsr, sample, axis=0).flatten(), data_element[:4]))
