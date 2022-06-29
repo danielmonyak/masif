@@ -133,16 +133,18 @@ pred.loadData(pdb_dir)
 ligand_site_probs = pred.getLigandSiteProbs()
 
 threshold = 0.5
-
-########
-for threshold in np.linspace(.1, .9, 9):
-  print('threshold:', threshold)
+def summary(threshold):
   pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
   overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
   recall = len(overlap)/len(pocket_points_true)
   precision = len(overlap)/len(pocket_points_pred)
-  print('Recall:', round(recall.numpy(), 2))
-  print('Precision:', round(precision.numpy(), 2))
+  print('Recall:', round(recall, 2))
+  print('Precision:', round(precision, 2))
+
+########
+for threshold in np.linspace(.1, .9, 9):
+  print('\nthreshold:', threshold)
+  summary(threshold)
 
 ########
 '''
