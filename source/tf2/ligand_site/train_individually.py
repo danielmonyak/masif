@@ -98,7 +98,7 @@ with tf.device(dev):
             
             y, sample = model.make_y(y_raw)
             with tf.GradientTape() as tape:
-                y_pred = model(x, sample = sample, training=True)
+                y_pred = model(X, sample = sample, training=True)
                 loss = model.compiled_loss(y, y_pred, regularization_losses=model.losses)
             gradients = tape.gradient(loss, model.trainable_variables)
             if batch_size == 1:
