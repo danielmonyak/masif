@@ -104,9 +104,9 @@ with tf.device(dev):
             n_pockets = y_raw.shape[1]
             fullSamples = n_pockets // minPockets
             for k in range(fullSamples):
-                if k % 10 == 0:
+                '''if k % 10 == 0:
                     done = 100.0 * k/fullSamples
-                    print('{} of {} batches completed'.format(k, fullSamples))
+                    print('{} of {} batches completed'.format(k, fullSamples))'''
                 sample = range(minPockets * k, minPockets * (k+1))
                 
                 y_temp = tf.gather(y_raw, sample, axis=1)
