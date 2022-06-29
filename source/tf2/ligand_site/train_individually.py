@@ -78,7 +78,7 @@ with tf.device(dev):
     for i in range(last_epoch + 1, num_epochs):
         print(f'Running training data, epoch {i}')
         
-        batch_size = 0
+        #batch_size = 0
         for j, data_element in enumerate(train_data):
             if j % 10 == 0:
                 print(f'Train record {j}')
@@ -93,7 +93,7 @@ with tf.device(dev):
             X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
             
             #_=model.fit(X, y_raw, epochs = 1, verbose = 2)
-            batch_size += 1
+            #batch_size += 1
             
             y, sample = model.make_y(y_raw)
             with tf.GradientTape() as tape:
