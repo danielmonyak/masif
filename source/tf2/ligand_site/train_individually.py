@@ -80,10 +80,6 @@ with tf.device(dev):
         
         batch_size = 0
         for j, data_element in enumerate(train_data):
-            print(f'Train record {j}')
-            if j == 10:
-                break
-            
             if j % 100 == 0:
                 print(f'Train record {j}')
 
@@ -117,10 +113,6 @@ with tf.device(dev):
         acc_list = []
         loss_list = []
         for j, data_element in enumerate(val_data):
-            if j == 10:
-                break
-            #print(f'Validation record {j}')
-
             labels = data_element[4]
             if not goodLabel(labels):
                 continue
