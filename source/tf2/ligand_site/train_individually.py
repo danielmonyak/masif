@@ -12,6 +12,8 @@ from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
+from operator import add
+
 gpus = tf.config.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
