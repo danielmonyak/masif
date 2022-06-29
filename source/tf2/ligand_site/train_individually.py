@@ -116,6 +116,8 @@ with tf.device(dev):
         acc_list = []
         loss_list = []
         for j, data_element in enumerate(val_data):
+            if j == 10:
+                break
             #print(f'Validation record {j}')
 
             labels = data_element[4]
