@@ -83,31 +83,20 @@ class MaSIF_ligand_site(Model):
         y, sample = self.make_y(y_raw)
         
         with tf.GradientTape() as tape:
-            y_pred = self(x, sample = sample, training=True)  # Forward pass
-            # Compute the loss value
-            # (the loss function is configured in `compile()`)
+            y_pred = self(x, sample = sample, training=True)
             loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
         # Compute gradients
         trainable_vars = self.trainable_variables
         gradients = tape.gradient(loss, trainable_vars)
         
-        if len(self.tempGradients) == 0:
-            self.tempGradients = gradients.copy()
-        else:
-            self.tempGradients = list(map(add, self.tempGradients, gradients))
+        # Update weights
+        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
         
         # Update metrics (includes the metric that tracks the loss)
         self.compiled_metrics.update_state(y, y_pred)
         # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
-    
-    def doApplyGradients(self, batch_size):
-        # Update weights
-        gradients = [grad / batch_size for grad in self.tempGradients]
-        self.tempGradients = []
-        trainable_vars = self.trainable_variables
-        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
     
     def test_step(self, data):
         if len(data) == 3:
