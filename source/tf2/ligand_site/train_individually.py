@@ -97,7 +97,7 @@ with tf.device(dev):
             #_=model.fit(X, y_raw, epochs = 1, verbose = 0)
             
             #####
-            n_pockets = tf.shape(y_raw)[1]
+            n_pockets = y_raw.shape[1]
             fullSamples = n_pockets // minPockets
             for i in range(fullSamples):
                 if i % 10 == 0:
