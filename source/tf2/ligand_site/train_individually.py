@@ -94,18 +94,16 @@ with tf.device(dev):
             flat_list = list(map(flatten, data_element[:4]))
             X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
             
-            #_=model.fit(X, y_raw, epochs = 1, verbose = 2)
+            _=model.fit(X, y_raw, epochs = 1, verbose = 0)
             #batch_size += 1
-            
+            '''
             y, sample = model.make_y(y_raw)
             with tf.GradientTape() as tape:
                 y_pred = model(X, sample = sample, training=True)
                 loss = model.compiled_loss(y, y_pred, regularization_losses=model.losses)
             gradients = tape.gradient(loss, model.trainable_variables)
-            
-            
             model.optimizer.apply_gradients(zip(gradients, model.trainable_variables))
-        
+            '''
             '''if batch_size == 1:
                 tempGradients = gradients.copy()
             else:
