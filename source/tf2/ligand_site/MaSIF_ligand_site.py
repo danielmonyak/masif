@@ -93,9 +93,9 @@ class MaSIF_ligand_site(Model):
         gradients = tape.gradient(loss, trainable_vars)
         
         if len(self.tempGradients) == 0:
-            self.tempGradients = [tf.zeros_like(var) for var in trainable_var]
-        
-        self.tempGradients = map(add, self.tempGradients, gradients)
+            self.tempGradients = gradients.copy()
+        else:
+            self.tempGradients = list(map(add, self.tempGradients, gradients))
         
         # Update metrics (includes the metric that tracks the loss)
         self.compiled_metrics.update_state(y, y_pred)
