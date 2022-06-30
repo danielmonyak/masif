@@ -90,7 +90,7 @@ class Predictor:
     
     temp_X = self.getDataSample(sample)
     temp_pred = tf.math.sigmoid(tf.squeeze(self.ligand_site_model(temp_X, gen_sample)))
-    ligand_site_pred_list.append(temp_pred[n_leftover:])
+    ligand_site_pred_list.append(temp_pred[-n_leftover:])
 
     after_time = process_time()
     print('100% of batches completed in {} seconds.'.format(round(after_time - before_time)))
