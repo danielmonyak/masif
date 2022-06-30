@@ -158,7 +158,7 @@ def summary(threshold):
   
   #f1 = precision*recall/(precision+recall)
   X_pred = pred.getLigandX(pocket_points_pred)
-  ligand_probs_mean = pred.predictLigandIdx(X_pred)
+  ligand_probs_mean = pred.predictLigandProbs(X_pred)
   max_prob = tf.reduce_max(ligand_probs_mean)
   print('max_prob')
   return max_prob
