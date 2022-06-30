@@ -154,16 +154,15 @@ def summary(threshold):
   recall = len(overlap)/len(pocket_points_true)
   precision = len(overlap)/len(pocket_points_pred)
   print('Recall:', round(recall, 2))
-  print('Precision:', round(precision, 2), '\n')
+  print('Precision:', round(precision, 2))
   
   #f1 = precision*recall/(precision+recall)
   X_pred = pred.getLigandX(pocket_points_pred)
   ligand_probs_mean = pred.predictLigandProbs(X_pred)
   max_prob = tf.reduce_max(ligand_probs_mean)
-  print('max_prob:', max_prob)
+  print('max_prob:', round(max_prob.numpy(), 2), '\n')
   return max_prob
-  
-  
+
 
 ########
 print()
