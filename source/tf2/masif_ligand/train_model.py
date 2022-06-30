@@ -15,7 +15,7 @@ import tensorflow as tf
 #lr = 1e-3
 # Try this learning rate after
 
-continue_training = False
+continue_training = True
 dev = '/GPU:3'
 
 params = masif_opts["ligand"]
@@ -69,8 +69,8 @@ with strategy.scope():
   )  
   if continue_training:
     model.load_weights(ckpPath)
-    last_epoch = 120
-    initValThresh = 0.8
+    last_epoch = 162
+    initValThresh = 0.71963
 
   history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs - last_epoch,
