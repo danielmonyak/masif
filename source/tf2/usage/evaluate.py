@@ -42,12 +42,14 @@ precision_file = os.path.join(outdir, 'precision.txt')
 lig_true_file = os.path.join(outdir, 'lig_true.txt')
 lig_pred_file = os.path.join(outdir, 'lig_pred.txt')
 
+all_files = [pdb_file, recall_file, precision_file, lig_true_file, lig_pred_file]
+
 if continue_running:
     pdbs_done = np.loadtxt(pdb_file, dtype=str)
     pdbs_left = test_list[~np.isin(test_list, pdbs_done)]
 else:
     pdbs_left = test_list
-    for fi in [pdb_file, recall_file, precision_file, lig_true_file, lig_pred_file]:
+    for fi in all_files:
         with open(fi, 'w') as f:
             pass
 
@@ -62,7 +64,6 @@ with tf.device(dev):
         print('{} of {} test pdbs running...'.format(i, n_test))
         try:
             pdb_dir = os.path.join(precom_dir, pdb)
-            ligandIdx_pred, pocket_points_pred = pred.predictRaw(pdb_dir)
             xyz_coords = Predictor.getXYZCoords(pdb_dir)
             
             all_ligand_coords = np.load(
@@ -80,15 +81,53 @@ with tf.device(dev):
             tree = spatial.KDTree(xyz_coords)
             pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
             pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
-            
-            overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
-            recall = len(overlap)/len(pocket_points_true)
-            precision = len(overlap)/len(pocket_points_pred)
-            
-            ligand_true = all_ligand_types[0]
-            ligandIdx_true = ligand_list.index(ligand_true)
         except:
             continue
+            
+        #ligandIdx_pred, pocket_points_pred = pred.predictRaw(pdb_dir)
+        
+        ##############################
+        pred.loadData(pdb_dir)
+        ligand_site_probs = pred.getLigandSiteProbs()
+        score_best = 0
+        threshold_best = 0
+        for threshold in np.linspace(.1, .9, 9):
+            pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
+
+            npoints = len(pocket_points_pred)
+            if npoints < 2 * minPockets:
+                continue
+
+            X_pred = pred.getLigandX(pocket_points_pred)
+            ligand_probs_mean = pred.predictLigandProbs(X_pred)
+            max_prob = tf.reduce_max(ligand_probs_mean)
+            score = max_prob/(1 + abs(.5 - threshold))
+
+            if max_prob > 0.5 and score > score_best:
+                score_best = score
+                threshold_best = threshold
+
+        if not threshold_best:
+            threshold_best = 0.5
+            for fi in all_files[1:]:
+                with open(fi, 'a') as f:
+                    f.write('NO THRESHOLD WAS GOOD ENOUGH TO GIVE A PREDICTION WITH CONFIDENCE\n')
+            with open(pdb_file, 'a') as f:
+                f.write(str(pdb) + '\n')
+            continue
+
+        pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold_best))
+        X_pred = pred.getLigandX(pocket_points_pred)
+        ligandIdx_pred = pred.predictLigandIdx(X_pred, 0.5)            
+        ##############################
+
+        overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
+        recall = len(overlap)/len(pocket_points_true)
+        precision = len(overlap)/len(pocket_points_pred)
+
+        ligand_true = all_ligand_types[0]
+        ligandIdx_true = ligand_list.index(ligand_true)
+        
         
         with open(pdb_file, 'a') as f:
             f.write(str(pdb) + '\n')
