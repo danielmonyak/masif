@@ -155,22 +155,25 @@ def summary(threshold):
   recall = len(overlap)/len(pocket_points_true)
   precision = len(overlap)/len(pocket_points_pred)
   print('Recall:', round(recall, 2))
-  print('Precision:', round(precision, 2))
+  print('Precision:', round(precision, 2), '\n')
   
   f1 = precision*recall/(precision+recall)
   return f1
   
 
 ########
+print()
+
 f1_best = 0
 for threshold in np.linspace(.1, .9, 9):
-  print('\nthreshold:', threshold)
+  print('threshold:', threshold)
   f1 = summary(threshold)
   if f1 > f1_best:
     f1_best = f1
     threshold_best = threshold
 
 print('threshold_best:', threshold_best)
+print()
 pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold_best))
 ########
 
@@ -195,6 +198,7 @@ print('Recall:', round(recall.numpy(), 2))
 print('Precision:', round(precision.numpy(), 2))
 print('Specificity:', round(specificity.numpy(), 2))
 
+print()
 ########
 
 X_true = pred.getLigandX(pocket_points_true)
