@@ -170,25 +170,25 @@ class Predictor:
     )
   
   # Run MaSIF_ligand on pdb, return prob of each ligand (based on ligand_list in defaul_config/util.py)
-  def predictLigandIdx(self, X, threshold=None):
+  def predictLigandProbs(self, X, threshold=None):
     if threshold is None:
       threshold = self.ligand_threshold
     
-    ligand_pred_list = []
+    ligand_prob_list = []
     for i in range(self.n_predictions):
-      temp_pred = tf.squeeze(self.ligand_model(X))
-      if tf.reduce_max(temp_pred) > self.ligand_threshold:
-        ligand_pred_list.append(temp_pred)
+      temp_prob = tf.squeeze(self.ligand_model(X))
+      if tf.reduce_max(temp_prob) > self.ligand_threshold:
+        ligand_prob_list.append(temp_prob)
     
-    ligand_preds = tf.stack(ligand_pred_list, axis=0)
-    return np.mean(ligand_preds, axis=0)
+    ligand_probs = tf.stack(ligand_prob_list, axis=0)
+    return tf.reduce_mean(ligand_probs, axis=0)
   
   def predictLigandIdx(self, X, threshold=None):
     if threshold is None:
       threshold = self.ligand_threshold
       
-    ligand_preds_mean = self.predictLigandIdx(X, threshold)
-    return ligand_preds_mean.argmax()
+    ligand_probs_mean = self.predictLigandIdx(X, threshold)
+    return tf.math.argmax(ligand_probs_mean)
     
   
   # Run input through both models, return index of ligand prediction, pocket_points
