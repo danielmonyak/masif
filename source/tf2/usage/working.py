@@ -22,7 +22,7 @@ savedPockets = params['savedPockets']
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
-
+'''
 #pdb = '1RI4_A_' # 0.1 but not correct
 #pdb = '1FCD_AC_' # 0.25
 #pdb = '2VRB_AB_' # 0.25
@@ -37,7 +37,10 @@ else:
   pdb_idx = 0
   possible_pdbs = possible_test_pdbs
 
-pdb = possible_pdbs[pdb_idx]
+pdb = possible_pdbs[pdb_idx]'''
+
+pdb = sys.argv[1]
+
 print('pdb:', pdb)
 
 '''
