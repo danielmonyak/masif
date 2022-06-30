@@ -24,8 +24,16 @@ ligand_list = params['ligand_list']
 
 
 #pdb = '1RI4_A_' # 0.1 but not correct
-pdb = '1FCD_AC_' # 0.25
+#pdb = '1FCD_AC_' # 0.25
 #pdb = '2VRB_AB_' # 0.25
+possible_pdbs = ['1RI4_A_', '1FCD_AC_', '2VRB_AB_']
+
+if len(sys.argv) > 1:
+  pdb_idx = int(sys.argv[1])
+else:
+  pdb_idx = 0
+
+pdb = possible_pdbs[pdb_idx]
 
 '''
 modelDir = '../ligand_site/kerasModel'
