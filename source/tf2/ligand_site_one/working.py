@@ -16,9 +16,6 @@ from tf2.usage.predictor import Predictor
 
 
 params = masif_opts["ligand"]
-defaultCode = params['defaultCode']
-minPockets = params['minPockets']
-savedPockets = params['savedPockets']
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
@@ -43,86 +40,6 @@ pdb = sys.argv[1]
 
 print('pdb:', pdb)
 
-'''
-modelDir = '../ligand_site/kerasModel'
-ckpPath = os.path.join(modelDir, 'ckp')
-
-model = MaSIF_ligand_site(
-  params["max_distance"],
-  params["n_classes"],
-  feat_mask=params["feat_mask"],
-  keep_prob = 1.0,
-  n_conv_layers = 1
-)
-model.load_weights(ckpPath)
-
-target_pdb = pdb.rstrip('_')
-#test_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'testing_data_sequenceSplit_30.tfrecord')).map(_parse_function)
-train_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], 'training_data_sequenceSplit_30.tfrecord')).map(_parse_function)
-
-def goodLabel(labels):
-  n_ligands = labels.shape[1]
-  if n_ligands > 1:
-    return False
-  
-  pocket_points = tf.where(labels != 0)
-  npoints = tf.shape(pocket_points)[0]
-  if npoints < minPockets:
-    return False
-  
-  return True
-
-with tf.device('/GPU:3'):
-  for i, data_element in enumerate(train_data):
-    print(i)
-    if data_element[5] != target_pdb:
-      continue
-    
-    labels = data_element[4]
-    if not goodLabel(labels):
-        continue
-    
-    y = tf.transpose(tf.cast(labels > 0, dtype=tf.int32))
-    flat_list = list(map(flatten, data_element[:4]))
-    X = tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
-    break
-
-
-def map_func(row):
-  pocket_points = tf.where(row == 1)
-  pocket_points = tf.random.shuffle(pocket_points)[:int(minPockets/2)]
-  pocket_empties = tf.where(row == 0)
-  pocket_empties = tf.random.shuffle(pocket_empties)[:int(minPockets/2)]
-  return tf.cast(
-    tf.squeeze(
-      tf.concat([pocket_points, pocket_empties], axis = 0)
-    ),
-    dtype=tf.int32
-  )
-
-sample = tf.map_fn(fn=map_func, elems = y, fn_output_signature = sampleSpec)
-
-dev = '/GPU:3'
-with tf.device(dev):
-  y_pred = tf.math.sigmoid(tf.squeeze(model(X, sample)))
-  y_pred = tf.cast(y_pred > 0.5, dtype=tf.int32)
-  y_true = tf.squeeze(tf.gather(params = y, indices = sample, axis = 1, batch_dims = 1))
-
-y_true_all = flatten(y_true)
-y_pred_all = flatten(y_pred)
-bal_acc = balanced_accuracy_score(y_true_all, y_pred_all)
-mask = tf.boolean_mask(y_pred_all, y_true_all)
-overlap = tf.reduce_sum(mask)
-recall = overlap/tf.reduce_sum(y_true_all)
-precision = overlap/tf.reduce_sum(y_pred_all)
-specificity = 1 - tf.reduce_mean(tf.cast(tf.boolean_mask(y_pred_all, 1 - y_true_all), dtype=tf.float64))
-
-print('Balanced accuracy:', round(bal_acc, 2))
-print('Recall:', round(recall.numpy(), 2))
-print('Precision:', round(precision.numpy(), 2))
-print('Specificity:', round(specificity.numpy(), 2))
-
-'''
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 pdb_dir = os.path.join(precom_dir, pdb)
