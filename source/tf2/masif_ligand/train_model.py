@@ -76,6 +76,6 @@ with tf.device(dev):
     validation_data = (val_X, val_y),
     callbacks = [saveCheckpoints],
     verbose = 2,
-    use_multiprocessing = True
+    use_multiprocessing = False
   )
 
