@@ -70,12 +70,13 @@ saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
 )
 
 num_epochs = 200
-with tf.device(dev):
+#with tf.device(dev):
+with strategy.scope():
   history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs - last_epoch,
     validation_data = (val_X, val_y),
     callbacks = [saveCheckpoints],
     verbose = 2,
-    use_multiprocessing = False
+    use_multiprocessing = True
   )
 
