@@ -12,13 +12,12 @@ from sklearn.metrics import confusion_matrix
 import pickle
 import tensorflow as tf
 
-lr = 1e-3
+#lr = 1e-3
+# Try this learning rate after
 
 continue_training = False
 
 params = masif_opts["ligand"]
-defaultCode = params['defaultCode']
-
 
 datadir = '/data02/daniel/masif/datasets/tf2'
 genPath = os.path.join(datadir, '{}_{}.npy')
@@ -38,8 +37,7 @@ model = MaSIF_ligand(
   params["max_distance"],
   params["n_classes"],
   feat_mask=params["feat_mask"],
-  keep_prob = 1.0,
-  learning_rate = lr
+  keep_prob = 1.0
 )
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
@@ -74,7 +72,6 @@ saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
 
 num_epochs = 200
 with tf.device(dev):
-#with strategy.scope():
   history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs - last_epoch,
     validation_data = (val_X, val_y),
@@ -82,8 +79,3 @@ with tf.device(dev):
     verbose = 2,
     use_multiprocessing = True
   )
-
-'''
-with open(os.path.join(modelDir, 'train_history'), 'wb') as file_pi:
-  pickle.dump(history.history, file_pi)
-'''
