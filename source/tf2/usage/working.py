@@ -158,7 +158,7 @@ def summary(threshold):
   
   if len(pocket_points_pred) < minPockets:
     print(f'Less than {minPockets} pocket points were predicted...\n')
-    return 0
+    return 0, 0
   
   overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
   recall = len(overlap)/len(pocket_points_true)
@@ -175,7 +175,7 @@ def summary(threshold):
   score = max_prob/(1 + abs(.5 - threshold))
   print('score:', round(score.numpy(), 2), '\n')
   
-  return (max_prob, score)
+  return max_prob, score
 
 
 ########
