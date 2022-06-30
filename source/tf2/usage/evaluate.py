@@ -118,7 +118,7 @@ with tf.device(dev):
 
         pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold_best))
         X_pred = pred.getLigandX(pocket_points_pred)
-        ligandIdx_pred = pred.predictLigandIdx(X_pred, 0.5)            
+        ligandIdx_pred = pred.predictLigandIdx(X_pred, 0.5).numpy()           
         ##############################
 
         overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
