@@ -52,7 +52,7 @@ modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 ckpStatePath = ckpPath + '.pickle'
 
-num_epochs = 100
+num_epochs = 5
 
 if continue_training:
     model.load_weights(ckpPath)
@@ -78,24 +78,20 @@ def goodLabel(labels):
     
     return True
 
-batch_threshold = 1e6
+batch_threshold = 1e5
 
 with tf.device(dev):
     for i in range(last_epoch + 1, num_epochs):
-        if i == 1:
-            break
-            
+        
         print(f'Running training data, epoch {i}')
         
         batch_size = 0
         X_list = []
         y_list = []
         for j, data_element in enumerate(train_data):
-            if j == 10:
-                break
-            
-            if j % 1 == 0:
-                print(f'Validation record {j}')
+            if j % 10 == 0:
+                print(f'Train record {j}')
+                print(f'Current batch size: {batch_size}')
                 
             labels = data_element[4]
             if not goodLabel(labels):
@@ -135,11 +131,9 @@ with tf.device(dev):
         X_list = []
         y_list = []
         for j, data_element in enumerate(val_data):
-            if j == 10:
-                break
-                
-            if j % 1 == 0:
+            if j % 10 == 0:
                 print(f'Validation record {j}')
+                print(f'Current batch size: {batch_size}')
 
             labels = data_element[4]
             if not goodLabel(labels):
@@ -174,7 +168,7 @@ with tf.device(dev):
         
         acc = sum(acc_list)/len(acc_list)
         loss = sum(loss_list)/len(loss_list)
-        print(f'Epoch {i} finished\nLoss: {loss}\nBinary Accuracy: {acc}')
+        print(f'Epoch {i} finished\nLoss: {round(loss, 2)}\nBinary Accuracy: {round(acc, 2)}')
         
         if acc > best_acc:
             print(f'Validation accuracy improved from {best_acc} to {acc}')
