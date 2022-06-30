@@ -21,8 +21,3 @@ class ValueInit(tf.keras.initializers.Initializer):
   def __call__(self, shape, dtype=None, **kwargs):
     return self.value
 
-def printd(var):
-  #try:
-  print(var + ':', eval(var))
-  #except:
-  #  print('Must pass a string representing a valid variable or expression.')
