@@ -190,7 +190,7 @@ class ConvLayer(layers.Layer):
                 )
             )  # batch_size, n_gauss*1
 
-        return tf.stack(self.global_desc_1, axis=2)
+        return tf.stack(ret, axis=2)
     
     def inference(
         self,
