@@ -8,24 +8,20 @@ from IPython.core.debugger import set_trace
 import pickle
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras import layers, Sequential, Model
 from default_config.util import *
-from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
 continue_training = False
 
 params = masif_opts["ligand"]
-defaultCode = params['defaultCode']
 
-datadir = '/data02/daniel/masif/datasets/tf2/ligand_site'
+datadir = '/data02/daniel/masif/datasets/tf2/ligand_site_one'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
 train_X = np.load(genPath.format('train', 'X'))
 train_y = np.load(genPath.format('train', 'y'))
 val_X = np.load(genPath.format('val', 'X'))
 val_y = np.load(genPath.format('val', 'y'))
-
-if defaultCode > 0:
-  sys.exit("defaultCode will be erased...")
 
 ##
 def binarize_y(y):
@@ -36,23 +32,19 @@ train_y = binarize_y(train_y)
 val_y = binarize_y(val_y)
 ##
 
-cpu = '/CPU:0'
-with tf.device(cpu):
-  train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
-  train_y = tf.RaggedTensor.from_tensor(train_y, padding=defaultCode)
-  val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
-  val_y = tf.RaggedTensor.from_tensor(val_y, padding=defaultCode)
+model = Sequential([
+  layers.Dense(1, activation="relu"),
+  layers.Flatten(),
+  layers.Dense(64, activation="relu"),
+  layers.Dense(20, activation='relu'),
+  layers.Dense(1)
+])
 
+opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
 
-
-model = MaSIF_ligand_site(
-  params["max_distance"],
-  params["n_classes"],
-  feat_mask=params["feat_mask"],
-  n_conv_layers = 1
-)
-model.compile(optimizer = model.opt,
-  loss = model.loss_fn,
+model.compile(optimizer = opt,
+  loss = loss_fn,
   metrics=['binary_accuracy']
 )
 
