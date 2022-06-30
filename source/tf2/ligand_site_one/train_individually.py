@@ -107,7 +107,7 @@ with tf.device(dev):
             X_list.append(X_temp)
             y_list.append(y_temp)
 
-            batch_size += len(X)
+            batch_size += len(X_temp)
             if batch_size > batch_threshold:
                 print('a')
                 X = tf.concat(X_list, axis=0)
@@ -151,7 +151,7 @@ with tf.device(dev):
             X_list.append(X_temp)
             y_list.append(y_temp)
             
-            batch_size += len(X)
+            batch_size += len(X_temp)
             if batch_size > batch_threshold:
                 X = tf.concat(X_list, axis=0)
                 y = tf.concat(y_list, axis=0)
