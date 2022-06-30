@@ -169,6 +169,7 @@ def summary(threshold):
 print()
 
 max_prob_best = 0.5
+threshold_best = 0
 for threshold in np.linspace(.1, .9, 9):
   print('threshold:', threshold)
   max_prob = summary(threshold)
@@ -178,6 +179,10 @@ for threshold in np.linspace(.1, .9, 9):
 
 print('threshold_best:', threshold_best)
 print()
+if not threshold_best:
+  threshold_best = 0.5
+  print('NO THRESHOLD WAS GOOD ENUGH TO GIVE A PREDICTION WITH CONFIDENCE')
+
 pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold_best))
 ########
 '''
