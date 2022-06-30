@@ -19,7 +19,7 @@ continue_training = False
 
 params = masif_opts["ligand"]
 
-datadir = '/data02/daniel/masif/datasets/tf2'
+datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
 train_X = np.load(genPath.format('train', 'X'))
