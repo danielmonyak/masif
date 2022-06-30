@@ -187,7 +187,7 @@ class Predictor:
     if threshold is None:
       threshold = self.ligand_threshold
       
-    ligand_probs_mean = self.predictLigandIdx(X, threshold)
+    ligand_probs_mean = self.predictLigandProbs(X, threshold)
     return tf.math.argmax(ligand_probs_mean)
     
   
