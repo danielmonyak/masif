@@ -199,10 +199,10 @@ print('Specificity:', round(specificity.numpy(), 2))
 
 X_true = pred.getLigandX(pocket_points_true)
 X_true_pred = pred.predictLigandIdx(X_true)
-print(X_true_pred)
+print('X_true_pred:', X_true_pred)
 
 X_pred = pred.getLigandX(pocket_points_pred)
 X_pred_pred = pred.predictLigandIdx(X_pred, 0.5)
-print(X_pred_pred)
+print('X_pred_pred:', X_pred_pred)
 
-
+print('ligandIdx_true:', ligandIdx_true)
