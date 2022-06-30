@@ -22,4 +22,7 @@ class ValueInit(tf.keras.initializers.Initializer):
     return self.value
 
 def printd(var):
-  print(var + ':', eval(var))
+  try:
+    print(var + ':', eval(var))
+  except:
+    print('Must pass a string representing a valid variable or expression.')
