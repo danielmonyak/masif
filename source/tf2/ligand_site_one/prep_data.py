@@ -10,31 +10,13 @@ import tensorflow as tf
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 
-epochSize = 100
-
-next_epoch = 0
-
 params = masif_opts["ligand"]
-defaultCode = params['defaultCode']
-minPockets = params['minPockets']
-#savedPockets = params['savedPockets']
-#empty_pocket_ratio = params['empty_pocket_ratio']
-savedPockets = 150
-empty_pocket_ratio = 7
 
-outdir = '/data02/daniel/masif/datasets/tf2/ligand_site/split'
+outdir = '/data02/daniel/masif/datasets/tf2/ligand_site_one'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 if not os.path.exists(outdir):
     os.mkdir(outdir)
-
-def helper(feed_dict):
-    def helperInner(tsr_key):
-        tsr = feed_dict[tsr_key]
-        return flatten(tsr)
-    key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
-    flat_list = list(map(helperInner, key_list))
-    return tf.concat(flat_list, axis = 0)
 
 def compile_and_save(feed_list, y_list, dataset, j):
     tsr_list = list(map(helper, feed_list))
@@ -46,17 +28,13 @@ def compile_and_save(feed_list, y_list, dataset, j):
 
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 
-#gpus = tf.config.list_logical_devices('GPU')
 gpus = tf.config.list_physical_devices('GPU')
-#strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
-
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
 
 dev = '/GPU:1'
 with tf.device(dev):
     for dataset in dataset_list.keys():
-        #for dataset in ['train']:
         i = 0
         j = next_epoch
 
