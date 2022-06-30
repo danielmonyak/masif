@@ -152,7 +152,7 @@ def summary(threshold):
   pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
   
   if len(pocket_points_pred) < minPockets:
-    print('Less than {minPockets] pocket points were predicted...')
+    print(f'Less than {minPockets} pocket points were predicted...')
     return 0
   
   overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
