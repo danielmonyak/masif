@@ -170,10 +170,10 @@ for threshold in np.linspace(.1, .9, 9):
     f1_best = f1
     threshold_best = threshold
 
-printd('threshold_best')
+print('threshold_best:', threshold_best)
 pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold_best))
 ########
-'''
+
 y_gen = np.zeros(pred.n_pockets)
 y_true = y_gen.copy()
 y_true[pocket_points_true] = 1
@@ -194,7 +194,7 @@ print('Balanced accuracy:', round(bal_acc, 2))
 print('Recall:', round(recall.numpy(), 2))
 print('Precision:', round(precision.numpy(), 2))
 print('Specificity:', round(specificity.numpy(), 2))
-'''
+
 ########
 
 X_true = pred.getLigandX(pocket_points_true)
