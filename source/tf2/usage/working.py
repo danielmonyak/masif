@@ -38,6 +38,7 @@ else:
   possible_pdbs = possible_test_pdbs
 
 pdb = possible_pdbs[pdb_idx]
+print('pdb:', pdb)
 
 '''
 modelDir = '../ligand_site/kerasModel'
