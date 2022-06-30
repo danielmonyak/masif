@@ -20,3 +20,6 @@ class ValueInit(tf.keras.initializers.Initializer):
     self.value = value
   def __call__(self, shape, dtype=None, **kwargs):
     return self.value
+
+def printd(var):
+  print(var + ':', eval(var))
