@@ -170,20 +170,26 @@ def summary(threshold):
   X_pred = pred.getLigandX(pocket_points_pred)
   ligand_probs_mean = pred.predictLigandProbs(X_pred)
   max_prob = tf.reduce_max(ligand_probs_mean)
-  print('max_prob:', round(max_prob.numpy(), 2), '\n')
-  return max_prob
+  print('\nmax_prob:', round(max_prob.numpy(), 2))
+  
+  score = max_prob/(1 + abs(.5 - threshold))
+  print('score:', round(score.numpy(), 2), '\n')
+  
+  return (max_prob, score)
 
 
 ########
 print()
 
-max_prob_best = 0.5
+#max_prob_best = 0.5
+score_best = 0
 threshold_best = 0
 for threshold in np.linspace(.1, .9, 9):
   print('threshold:', threshold)
-  max_prob = summary(threshold)
-  if max_prob > max_prob_best:
-    max_prob_best = max_prob
+  max_prob, score = summary(threshold)
+  if max_prob > 0.5 and score > score_best:
+    #max_prob_best = max_prob
+    score_best = score
     threshold_best = threshold
 
 print('threshold_best:', threshold_best)
