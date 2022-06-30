@@ -43,7 +43,7 @@ model.compile(optimizer = model.opt,
   loss = model.loss_fn,
   metrics = ['categorical_accuracy']
 )
-
+'''
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 
@@ -79,3 +79,4 @@ with tf.device(dev):
     verbose = 2,
     use_multiprocessing = True
   )
+'''
