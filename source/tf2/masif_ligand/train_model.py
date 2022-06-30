@@ -34,27 +34,12 @@ with tf.device('/CPU:0'):
   train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
   val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
 
-model = MaSIF_ligand(
-  params["max_distance"],
-  params["n_classes"],
-  feat_mask=params["feat_mask"],
-  keep_prob = 1.0
-)
-model.compile(optimizer = model.opt,
-  loss = model.loss_fn,
-  metrics = ['categorical_accuracy']
-)
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 
 last_epoch = 0
 initValThresh = None
-
-if continue_training:
-  model.load_weights(ckpPath)
-  last_epoch = 120
-  initValThresh = 0.8
 
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
@@ -72,6 +57,21 @@ saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
 num_epochs = 200
 #with tf.device(dev):
 with strategy.scope():
+  model = MaSIF_ligand(
+    params["max_distance"],
+    params["n_classes"],
+    feat_mask=params["feat_mask"],
+    keep_prob = 1.0
+  )
+  model.compile(optimizer = model.opt,
+    loss = model.loss_fn,
+    metrics = ['categorical_accuracy']
+  )  
+  if continue_training:
+    model.load_weights(ckpPath)
+    last_epoch = 120
+    initValThresh = 0.8
+
   history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs - last_epoch,
     validation_data = (val_X, val_y),
