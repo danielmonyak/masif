@@ -157,26 +157,30 @@ def summary(threshold):
   print('Recall:', round(recall, 2))
   print('Precision:', round(precision, 2), '\n')
   
-  f1 = precision*recall/(precision+recall)
-  return f1
+  #f1 = precision*recall/(precision+recall)
+  ligand_probs_mean = self.predictLigandIdx(X)
+  max_prob = tf.reduce_max(ligand_probs_mean)
+  print('max_prob')
+  return max_prob
+  
   
 
 ########
 print()
 
-f1_best = 0
+max_prob_best = 0.5
 for threshold in np.linspace(.1, .9, 9):
   print('threshold:', threshold)
-  f1 = summary(threshold)
-  if f1 > f1_best:
-    f1_best = f1
+  max_prob = summary(threshold)
+  if max_prob > max_prob_best:
+    max_prob_best = max_prob
     threshold_best = threshold
 
 print('threshold_best:', threshold_best)
 print()
 pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold_best))
 ########
-
+'''
 y_gen = np.zeros(pred.n_pockets)
 y_true = y_gen.copy()
 y_true[pocket_points_true] = 1
@@ -199,6 +203,7 @@ print('Precision:', round(precision.numpy(), 2))
 print('Specificity:', round(specificity.numpy(), 2))
 
 print()
+'''
 ########
 
 X_true = pred.getLigandX(pocket_points_true)
