@@ -26,7 +26,7 @@ ligand_list = params['ligand_list']
 #pdb = '1RI4_A_' # 0.1 but not correct
 #pdb = '1FCD_AC_' # 0.25
 #pdb = '2VRB_AB_' # 0.25
-possible_pdbs = ['1RI4_A_', '1FCD_AC_', '2VRB_AB_']
+possible_pdbs = ['2VRB_AB_', '1FCD_AC_', '1FNN_A_', '1RI4_A_', '4PGH_AB_']
 
 if len(sys.argv) > 1:
   pdb_idx = int(sys.argv[1])
