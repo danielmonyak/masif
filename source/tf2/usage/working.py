@@ -148,9 +148,9 @@ ligand_true = all_ligand_types[0]
 ligandIdx_true = ligand_list.index(ligand_true)
 
 
-ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
+#ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
+ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
-#ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/usage/kerasModel_ligand_site/ckp'
 
 pred = Predictor(ligand_model_path, ligand_site_ckp_path)
 pred.loadData(pdb_dir)
