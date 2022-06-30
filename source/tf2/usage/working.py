@@ -162,11 +162,9 @@ def summary(threshold):
   if len(pocket_points_pred.shape) == 0:
     print('No pocket points were predicted...\n')
     return 0, 0
-  if len(pocket_points_pred) < minPockets:
-    print(f'Less than {minPockets} pocket points were predicted...\n')
-    return 0, 0
-  elif len(pocket_points_pred) < 2 * minPockets:
-    print(f'Less than {2 * minPockets} pocket points were predicted...\n')
+  npoints = len(pocket_points_pred)
+  if npoints < 2 * minPockets:
+    print(f'Only {npoints} pocket points were predicted...\n')
     return 0, 0
   
   overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
