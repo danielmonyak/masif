@@ -148,7 +148,6 @@ pred = Predictor(ligand_model_path, ligand_site_ckp_path)
 pred.loadData(pdb_dir)
 ligand_site_probs = pred.getLigandSiteProbs()
 
-threshold = 0.5
 def summary(threshold):
   pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
   overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
@@ -158,7 +157,8 @@ def summary(threshold):
   print('Precision:', round(precision, 2), '\n')
   
   #f1 = precision*recall/(precision+recall)
-  ligand_probs_mean = self.predictLigandIdx(X)
+  X_pred = pred.getLigandX(pocket_points_pred)
+  ligand_probs_mean = pred.predictLigandIdx(X_pred)
   max_prob = tf.reduce_max(ligand_probs_mean)
   print('max_prob')
   return max_prob
