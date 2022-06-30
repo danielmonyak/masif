@@ -26,12 +26,16 @@ ligand_list = params['ligand_list']
 #pdb = '1RI4_A_' # 0.1 but not correct
 #pdb = '1FCD_AC_' # 0.25
 #pdb = '2VRB_AB_' # 0.25
-possible_pdbs = ['2VRB_AB_', '1FCD_AC_', '1FNN_A_', '1RI4_A_', '4PGH_AB_']
+possible_test_pdbs = ['2VRB_AB_', '1FCD_AC_', '1FNN_A_', '1RI4_A_', '4PGH_AB_']
+possible_train_pdbs = ['3O7W_A_', '4YTP_ACBD_', '4YMP_A_', '4IVM_B_', '3FMO_AB_']
+pos_list = {'test' : possible_test_pdbs, 'train' : possible_train_pdbs}
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 2:
   pdb_idx = int(sys.argv[1])
+  possible_pdbs = pos_list[sys.argv[2]]
 else:
   pdb_idx = 0
+  possible_pdbs = possible_test_pdbs
 
 pdb = possible_pdbs[pdb_idx]
 
