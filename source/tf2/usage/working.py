@@ -159,11 +159,13 @@ ligand_site_probs = pred.getLigandSiteProbs()
 def summary(threshold):
   pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
   
-  npoints = len(pocket_points_pred)
-  if npoints < minPockets:
+  if len(pocket_points_pred.shape) == 0:
+    print('No pocket points were predicted...\n')
+    return 0, 0
+  if len(pocket_points_pred) < minPockets:
     print(f'Less than {minPockets} pocket points were predicted...\n')
     return 0, 0
-  elif npoints < 2 * minPockets:
+  elif len(pocket_points_pred) < 2 * minPockets:
     print(f'Less than {2 * minPockets} pocket points were predicted...\n')
     return 0, 0
   
