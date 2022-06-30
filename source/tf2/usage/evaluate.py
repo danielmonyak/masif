@@ -97,8 +97,7 @@ with tf.device(dev):
         for threshold in np.linspace(.1, .9, 9):
             pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
 
-            npoints = len(pocket_points_pred)
-            if npoints < 2 * minPockets:
+            if (len(pocket_points_pred.shape) == 0) or (len(pocket_points_pred) < 2 * minPockets):
                 continue
 
             X_pred = pred.getLigandX(pocket_points_pred)
