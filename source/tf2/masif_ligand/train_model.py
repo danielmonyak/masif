@@ -16,6 +16,7 @@ import tensorflow as tf
 # Try this learning rate after
 
 continue_training = False
+dev = '/GPU:3'
 
 params = masif_opts["ligand"]
 
@@ -43,7 +44,7 @@ model.compile(optimizer = model.opt,
   loss = model.loss_fn,
   metrics = ['categorical_accuracy']
 )
-'''
+
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 
@@ -59,8 +60,6 @@ if continue_training:
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
-
-dev = '/GPU:2'
 
 saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
   ckpPath,
@@ -79,4 +78,4 @@ with tf.device(dev):
     verbose = 2,
     use_multiprocessing = True
   )
-'''
+
