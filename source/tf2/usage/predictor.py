@@ -169,7 +169,7 @@ class Predictor:
       ragged_rank = 1
     )
   
-  # Run MaSIF_ligand on pdb, return index of ligand (based on ligand_list in defaul_config/util.py)
+  # Run MaSIF_ligand on pdb, return prob of each ligand (based on ligand_list in defaul_config/util.py)
   def predictLigandIdx(self, X, threshold=None):
     if threshold is None:
       threshold = self.ligand_threshold
@@ -181,11 +181,15 @@ class Predictor:
         ligand_pred_list.append(temp_pred)
     
     ligand_preds = tf.stack(ligand_pred_list, axis=0)
-    ligand_preds_mean = np.mean(ligand_preds, axis=0)
-    
-    print('ligand_preds_mean:', ligand_preds_mean)
-    
+    return np.mean(ligand_preds, axis=0)
+  
+  def predictLigandIdx(self, X, threshold=None):
+    if threshold is None:
+      threshold = self.ligand_threshold
+      
+    ligand_preds_mean = self.predictLigandIdx(X, threshold)
     return ligand_preds_mean.argmax()
+    
   
   # Run input through both models, return index of ligand prediction, pocket_points
   def predictRaw(self, pdb_dir):
