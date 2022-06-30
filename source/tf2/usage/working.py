@@ -160,7 +160,7 @@ def summary(threshold):
   X_pred = pred.getLigandX(pocket_points_pred)
   ligand_probs_mean = pred.predictLigandProbs(X_pred)
   max_prob = tf.reduce_max(ligand_probs_mean)
-  print('max_prob')
+  print('max_prob:', max_prob)
   return max_prob
   
   
@@ -208,10 +208,10 @@ print()
 
 X_true = pred.getLigandX(pocket_points_true)
 X_true_pred = pred.predictLigandIdx(X_true)
-print('X_true_pred:', X_true_pred)
+print('X_true_pred:', X_true_pred.numpy())
 
 X_pred = pred.getLigandX(pocket_points_pred)
 X_pred_pred = pred.predictLigandIdx(X_pred, 0.5)
-print('\nX_pred_pred:', X_pred_pred)
+print('\nX_pred_pred:', X_pred_pred.numpy())
 
 print('\nligandIdx_true:', ligandIdx_true)
