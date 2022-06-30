@@ -7,12 +7,13 @@ import seaborn as sns
 
 dir = 'results'
 
-arr_list = ['lig_true', 'lig_pred', 'recall', 'precision']
+arr_list = ['pdbs', 'lig_true', 'lig_pred', 'recall', 'precision']
+dtype_list = [str, float, float, float, float]
 
 input_dict = {}
-for arr in arr_list:
+for i, arr in enumerate(arr_list):
   path = os.path.join(dir, arr + '.txt')
-  input_dict[arr] = np.loadtxt(path, dtype=float)
+  input_dict[arr] = np.loadtxt(path, dtype=dtype_list[i])
 
 df = pd.DataFrame(input_dict)
 
