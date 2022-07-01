@@ -73,8 +73,7 @@ def goodLabel(labels):
     
     return True
 
-batch_threshold = 0
-#batch_threshold = 1e6
+batch_threshold = 1e4
 
 before_time = process_time()
 
@@ -93,10 +92,10 @@ with tf.device(dev):
         
         y_list = []
         for j, data_element in enumerate(train_data):
-            if j == 10:
-                break
+            if j % 10 == 0 and j > 0:
+                print(f'Saving model weights to {ckpPath}')
+                model.save_weights(ckpPath)
             
-            #if j % 10 == 0:
             print(f'Train record {j}')
             
             labels = data_element[4]
@@ -160,9 +159,6 @@ with tf.device(dev):
         
         y_list = []
         for j, data_element in enumerate(val_data):
-            if j == 10:
-                break
-                
             #if j % 10 == 0:
             print(f'Validation record {j}')
 
