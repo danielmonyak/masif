@@ -121,10 +121,13 @@ with tf.device(dev):
                 y = tf.concat(y_list, axis=0)
                 _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 10.0})
                 batch_size = 0
-                X_list = []
+                input_feat_list = []
+                rho_coords_list = []
+                theta_coords_list = []
+                mask_list = []
                 y_list = []
 
-        if len(X_list) > 0:
+        if len(y_list) > 0:
             print('b')
             input_feat = tf.concat(input_feat_list, axis=0)
             rho_coords = tf.concat(rho_coords_list, axis=0)
@@ -185,10 +188,13 @@ with tf.device(dev):
                 acc_list.append(acc)
                 
                 batch_size = 0
-                X_list = []
+                input_feat_list = []
+                rho_coords_list = []
+                theta_coords_list = []
+                mask_list = []
                 y_list = []
             
-        if len(X_list) > 0:
+        if len(y_list) > 0:
             print('b')
             input_feat = tf.concat(input_feat_list, axis=0)
             rho_coords = tf.concat(rho_coords_list, axis=0)
