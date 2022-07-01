@@ -29,7 +29,7 @@ model.compile(optimizer = model.opt,
 input_feat_empty = tf.zeros([1, 200, 5])
 coords_empty = tf.zeros([1, 200])
 mask_empty = tf.zeros([1, 200, 1])
-X_empty = [input_feat_empty, rest_empty, rest_empty, mask_empty]
+X_empty = [input_feat_empty, coords_empty, coords_empty, mask_empty]
 _=model(X_empty)
 
 model.load_weights(ckpPath)
