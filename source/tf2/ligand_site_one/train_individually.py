@@ -78,7 +78,7 @@ def goodLabel(labels):
     
     return True
 
-batch_threshold = 1e5
+batch_threshold = 5e4
 
 with tf.device(dev):
     for i in range(last_epoch + 1, num_epochs):
