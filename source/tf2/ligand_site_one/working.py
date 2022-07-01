@@ -66,6 +66,7 @@ ligandIdx_true = ligand_list.index(ligand_true)
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
 
 pred = Predictor(ligand_model_path = ligand_model_path)
+pred.loadData(pdb_dir)
 
 ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
 ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
