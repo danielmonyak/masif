@@ -22,7 +22,6 @@ strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
 dev = '/GPU:2'
 
-'''
 #pdb = '1RI4_A_' # 0.1 but not correct
 #pdb = '1FCD_AC_' # 0.25
 #pdb = '2VRB_AB_' # 0.25
@@ -37,10 +36,10 @@ else:
   pdb_idx = 0
   possible_pdbs = possible_test_pdbs
 
-pdb = possible_pdbs[pdb_idx]'''
+pdb = possible_pdbs[pdb_idx]
 
 #pdb = sys.argv[1]
-pdb = '1RI4_A_'
+#pdb = '3O7W_A_'
 
 print('pdb:', pdb)
 
@@ -86,50 +85,39 @@ X = (input_feat, rho_coords, theta_coords, mask)
 ligand_site_probs = tf.math.sigmoid(ligand_site_model.predict(X))
 pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > .5)))
 
+overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
+recall = len(overlap)/len(pocket_points_true)
+precision = len(overlap)/len(pocket_points_pred)
+
+print('Recall:', round(recall, 2))
+print('Precision:', round(precision, 2))
+
 
 def summary(threshold):
-  pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
+  pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > threshold)))
   
-  if len(pocket_points_pred.shape) == 0:
-    print('No pocket points were predicted...\n')
-    return 0, 0
   npoints = len(pocket_points_pred)
-  if npoints < 2 * minPockets:
-    print(f'Only {npoints} pocket points were predicted...\n')
-    return 0, 0
+  if len(pocket_points_pred) == 0:
+    print('No pocket points were predicted...\n')
+    return
+  print(f'{npoints} pocket points were predicted...')
   
   overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
   recall = len(overlap)/len(pocket_points_true)
   precision = len(overlap)/len(pocket_points_pred)
   print('Recall:', round(recall, 2))
-  print('Precision:', round(precision, 2))
-  
-  #f1 = precision*recall/(precision+recall)
-  X_pred = pred.getLigandX(pocket_points_pred)
-  ligand_probs_mean = pred.predictLigandProbs(X_pred)
-  max_prob = tf.reduce_max(ligand_probs_mean)
-  print('\nmax_prob:', round(max_prob.numpy(), 2))
-  
-  score = max_prob/(1 + abs(.5 - threshold))
-  print('score:', round(score.numpy(), 2), '\n')
-  
-  return max_prob, score
+  print('Precision:', round(precision, 2), '\n')
 
 
 ########
 print()
 
 #max_prob_best = 0.5
-score_best = 0
-threshold_best = 0
 for threshold in np.linspace(.1, .9, 9):
   print('threshold:', threshold)
-  max_prob, score = summary(threshold)
-  if max_prob > 0.5 and score > score_best:
-    #max_prob_best = max_prob
-    score_best = score
-    threshold_best = threshold
+  summary(threshold)
 
+'''
 print('threshold_best:', threshold_best)
 print()
 if not threshold_best:
@@ -137,6 +125,7 @@ if not threshold_best:
   print('NO THRESHOLD WAS GOOD ENUGH TO GIVE A PREDICTION WITH CONFIDENCE')
 
 pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold_best))
+'''
 ########
 '''
 y_gen = np.zeros(pred.n_pockets)
@@ -163,7 +152,7 @@ print('Specificity:', round(specificity.numpy(), 2))
 print()
 '''
 ########
-
+'''
 X_true = pred.getLigandX(pocket_points_true)
 X_true_pred = pred.predictLigandIdx(X_true)
 print('X_true_pred:', X_true_pred.numpy())
@@ -174,3 +163,4 @@ print('\nX_pred_pred:', X_pred_pred.numpy())
 
 print('\nligandIdx_true:', ligandIdx_true)
 
+'''
