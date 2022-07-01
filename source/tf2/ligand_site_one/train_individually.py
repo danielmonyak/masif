@@ -37,12 +37,8 @@ model = MaSIF_ligand_site(
     params["n_classes"],
     feat_mask=params["feat_mask"]
 )
-
-opt = tf.keras.optimizers.Adam()
-loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
-
-model.compile(optimizer = self.opt,
-  loss = self.loss_fn,
+model.compile(optimizer = model.opt,
+  loss = model.loss_fn,
   metrics=['binary_accuracy']
 )
 
@@ -84,7 +80,12 @@ with tf.device(dev):
         print(f'Running training data, epoch {i}')
         
         batch_size = 0
-        X_list = []
+        #X_list = []
+        input_feat_list = []
+        rho_coords_list = []
+        theta_coords_list = []
+        mask_list = []
+        
         y_list = []
         for j, data_element in enumerate(train_data):
             if j % 10 == 0:
@@ -96,16 +97,26 @@ with tf.device(dev):
                 continue
 
             y_temp = tf.cast(labels > 0, dtype=tf.int32)
-            for 
-            X_temp = tf.concat([flatten(tsr) for tsr in data_element[:4]], axis = 0)
-
-            X_list.append(X_temp)
             y_list.append(y_temp)
+            
+            #X_temp = tf.concat([flatten(tsr) for tsr in data_element[:4]], axis = 0)
+            #X_list.append(X_temp)
+            
+            input_feat_list.append(data_element[0])
+            rho_coords_list.append(data_element[1])
+            theta_coords_list.append(data_element[2])
+            mask_list.append(data_element[3])
+            
 
             batch_size += len(X_temp)
             if batch_size > batch_threshold:
                 print('a')
-                X = tf.concat(X_list, axis=0)
+                #X = tf.concat(X_list, axis=0)
+                input_feat = tf.concat(input_feat_list, axis=0)
+                rho_coords = tf.concat(rho_coords_list, axis=0)
+                theta_coords = tf.concat(theta_coords_list, axis=0)
+                mask = tf.concat(mask_list, axis=0)
+                
                 y = tf.concat(y_list, axis=0)
                 _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 10.0})
                 batch_size = 0
