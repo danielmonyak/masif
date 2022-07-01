@@ -73,7 +73,7 @@ def goodLabel(labels):
     
     return True
 
-batch_threshold = 0
+batch_threshold = 1e6
 
 before_time = process_time()
 
