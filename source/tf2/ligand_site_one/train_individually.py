@@ -54,7 +54,7 @@ num_epochs = 5
 
 if continue_training:
     model.load_weights(ckpPath)
-    print(f'Loaded model from {ckpStatePath}')
+    print(f'Loaded model from {ckpPath}')
 
 if read_metrics:
     with open(ckpStatePath, 'rb') as handle:
