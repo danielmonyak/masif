@@ -8,6 +8,9 @@ inputFeatSpec = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
 restSpec = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
 sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
 
+inputFeatSpecTsr = tf.TensorSpec(shape=[200, 5], dtype=tf.float32)
+restSpecTsr = tf.RaggedTensorSpec(shape=[200, 1], dtype=tf.float32)
+
 prodFunc = lambda a,b : a*b
 makeRagged = lambda tsr: tf.RaggedTensor.from_tensor(tsr, ragged_rank = 2)
 
