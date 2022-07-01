@@ -9,9 +9,7 @@ import numpy as np
 from scipy import spatial
 from sklearn.metrics import accuracy_score, balanced_accuracy_score
 import tensorflow as tf
-from tf2.read_ligand_tfrecords import _parse_function
 from default_config.util import *
-from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 from tf2.usage.predictor import Predictor
 
 
@@ -66,12 +64,15 @@ ligandIdx_true = ligand_list.index(ligand_true)
 
 
 #ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
-ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
-ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
+#ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
 
-pred = Predictor(ligand_model_path, ligand_site_ckp_path)
-pred.loadData(pdb_dir)
-ligand_site_probs = pred.getLigandSiteProbs()
+ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
+ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
+
+X = np.load(
+  os.path.join(pdb_dir, "p1_input_feat.npy")
+)
+ligand_site_probs = tf.math.sigmoid(ligand_site_model(X))
 
 def summary(threshold):
   pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
