@@ -8,6 +8,7 @@ import tensorflow as tf
 from default_config.util import *
 from tensorflow.keras import layers, Sequential, Model
 from default_config.util import *
+from MaSIF_ligand_site_one import MaSIF_ligand_site
 
 params = masif_opts["ligand"]
 
@@ -15,16 +16,21 @@ modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 modelPath = os.path.join(modelDir, 'savedModel')
 
-model = Sequential([
-  layers.Dense(1, activation="relu"),
-  layers.Flatten(),
-  layers.Dense(64, activation="relu"),
-  layers.Dense(20, activation='relu'),
-  layers.Dense(1)
-])
+model = MaSIF_ligand_site(
+    params["max_distance"],
+    params["n_classes"],
+    feat_mask=params["feat_mask"]
+)
+model.compile(optimizer = model.opt,
+  loss = model.loss_fn,
+  metrics=['binary_accuracy']
+)
 
-input_shape = [None, 200, 5]
-model.build(input_shape)
+input_feat_empty = tf.zeros([1, 200, 5])
+coords_empty = tf.zeros([1, 200])
+mask_empty = tf.zeros([1, 200, 1])
+X_empty = [input_feat_empty, rest_empty, rest_empty, mask_empty]
+_=model(X_empty)
 
 model.load_weights(ckpPath)
 model.save(modelPath)
