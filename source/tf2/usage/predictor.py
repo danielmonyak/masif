@@ -26,11 +26,13 @@ class Predictor:
     ligand_site_model.load_weights(ligand_site_ckp_path)
     return ligand_site_model
     
-  def __init__(self, ligand_model_path, ligand_site_ckp_path, n_predictions = 100, threshold = 0.5, ligand_threshold = 0):
+  def __init__(self, ligand_model_path = None, ligand_site_ckp_path, n_predictions = 100, threshold = 0.5, ligand_threshold = 0):
     # Load MaSIF_ligand and MaSIF_ligand_site models
     # MaSIF_ligand_site model comes from saved checkpoint
-    self.ligand_model = tf.keras.models.load_model(ligand_model_path)
-    self.ligand_site_model = self.getLigandSiteModel(ligand_site_ckp_path)
+    if not ligand_model_path is None:
+      self.ligand_model = tf.keras.models.load_model(ligand_model_path)
+    if not ligand_site_ckp_path is None:
+      self.ligand_site_model = self.getLigandSiteModel(ligand_site_ckp_path)
     
     self.n_predictions = n_predictions
     self.threshold = threshold
