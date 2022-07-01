@@ -76,15 +76,6 @@ mask = np.expand_dims(np.load(os.path.join(pdb_dir, "p1_mask.npy")), axis=-1)
 
 X = (input_feat, rho_coords, theta_coords, mask)
 ligand_site_probs = tf.math.sigmoid(ligand_site_model.predict(X))
-pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > .5)))
-
-overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
-recall = len(overlap)/len(pocket_points_true)
-precision = len(overlap)/len(pocket_points_pred)
-
-print('Recall:', round(recall, 2))
-print('Precision:', round(precision, 2))
-
 
 def summary(threshold):
   pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > threshold)))
