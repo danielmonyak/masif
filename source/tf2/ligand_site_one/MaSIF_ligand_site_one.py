@@ -5,8 +5,10 @@ from operator import add
 from default_config.util import *
 
 params = masif_opts["ligand"]
-minPockets = params['minPockets']
-prepSize = 2 * params['savedPockets']
+
+bigShape = [200, self.n_feat]
+smallShape = [200, 1]
+bigIdx = tf.cast(functools.reduce(prodFunc, bigShape), dtype = tf.int32)
 
 class MaSIF_ligand_site(Model):
     """
@@ -46,78 +48,22 @@ class MaSIF_ligand_site(Model):
         
         
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-        #self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = False)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
  
-        
-        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers)
+        myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers)
         
         self.myLayers=[
-            #layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
-            
-            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
-            
-            layers.Dropout(1 - self.keep_prob),
-            #layers.Dense(64, activation="relu"),
-            layers.Dense(30, activation='relu'),
-            #layers.Dense(10, activation='relu'),
+            myConvLayer,
+            layers.Dense(1, activation="relu"),
+            layers.Flatten(),
+            layers.Dense(64, activation="relu"),
+            layers.Dense(20, activation='relu'),
             layers.Dense(1)
         ]
-        
-    #@tf.autograph.experimental.do_not_convert
-    def map_func(self, row):
-        n_pockets = tf.shape(row)[0]
-        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        return sample
-    def make_y(self, y_raw):
-        sample = tf.map_fn(fn=self.map_func, elems = y_raw, fn_output_signature = sampleSpec)
-        return (tf.gather(params = y_raw, indices = sample, axis = 1, batch_dims = 1), sample)
-    
-    def train_step(self, data):
-        if len(data) == 3:
-            x, y_raw, class_weight = data
-        else:
-            x, y_raw = data
-            class_weight = None
-        
-        y, sample = self.make_y(y_raw)
-        
-        with tf.GradientTape() as tape:
-            y_pred = self(x, sample = sample, training=True)
-            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
-
-        # Compute gradients
-        trainable_vars = self.trainable_variables
-        gradients = tape.gradient(loss, trainable_vars)
-        
-        # Update weights
-        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
-        
-        # Update metrics (includes the metric that tracks the loss)
-        self.compiled_metrics.update_state(y, y_pred)
-        # Return a dict mapping metric names to current value
-        return {m.name: m.result() for m in self.metrics}
-    
-    def test_step(self, data):
-        if len(data) == 3:
-            x, y_raw, class_weight = data
-        else:
-            x, y_raw = data
-            class_weight = None
-        
-        y, sample = self.make_y(y_raw)
-        
-        y_pred = self(x, sample = sample, training=False)
-        self.compiled_loss(y, y_pred, regularization_losses=self.losses)
-
-        self.compiled_metrics.update_state(y, y_pred)
-        return {m.name: m.result() for m in self.metrics}
     
     #@tf.autograph.experimental.do_not_convert
-    def call(self, x, sample = None, training=False):
-        #if sample is None:
-        #    sample = tf.zeros([1, minPockets])
-        ret = self.myConvLayer(x, sample)
+    def call(self, x, training=False):
+        ret = x
         for l in self.myLayers:
             ret = l(ret)
         return ret
@@ -272,35 +218,15 @@ class ConvLayer(layers.Layer):
             self.variable_dicts.append(var_dict)
     
     #@tf.autograph.experimental.do_not_convert
-    def map_func(self, row, makeSample = False):
-        n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
-        bigShape = [n_pockets, 200, self.n_feat]
-        smallShape = [n_pockets, 200, 1]
-        idx = tf.cast(functools.reduce(prodFunc, bigShape), dtype = tf.int32)
-        input_feat = tf.reshape(row[:idx], bigShape)
-        rest = tf.reshape(row[idx:], [3] + smallShape)
-        data_list = [makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
-        if not makeSample:
-            return data_list
-        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        return [data_list, sample]
-
-    def unpack_x(self, x, sample):
-        if sample is None:
-            data_list, sample = tf.map_fn(fn=self.Map_func_sample, elems = x,
-                                              fn_output_signature = [[inputFeatSpec, restSpec, restSpec, restSpec], sampleSpec])
-        else:
-            data_list = tf.map_fn(fn=self.Map_func, elems = x,
-                                          fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])
-        return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
+    def map_func(self, row, makeSample):
+        input_feat = tf.reshape(row[:bigIdx], bigShape)
+        rest = tf.reshape(row[bigIdx:], [3] + smallShape)
+        return [input_feat, rest[0], rest[1], rest[2]]
     
-    #@tf.function(input_signature=[
-    #                tf.RaggedTensorSpec(tf.TensorShape([None, None]), tf.float32, 1, tf.int64),
-    #                tf.TensorSpec(shape=tf.TensorShape([None, minPockets]), dtype=tf.int32, name=None)
-    #])
     #@tf.autograph.experimental.do_not_convert
     def call(self, x, sample):
-        input_feat, rho_coords, theta_coords, mask = self.unpack_x(x, sample)
+        input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.Map_func, elems = x,
+                              fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])
 
         var_dict = self.variable_dicts[0]
 
