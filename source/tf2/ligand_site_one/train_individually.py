@@ -76,11 +76,12 @@ batch_threshold = 1e4
 
 with tf.device(dev):
     for i in range(last_epoch + 1, num_epochs):
+        if i == 1:
+            break
         
         print(f'Running training data, epoch {i}')
         
         batch_size = 0
-        #X_list = []
         input_feat_list = []
         rho_coords_list = []
         theta_coords_list = []
@@ -88,6 +89,9 @@ with tf.device(dev):
         
         y_list = []
         for j, data_element in enumerate(train_data):
+            if j == 10:
+                break
+                
             if j % 10 == 0:
                 print(f'Train record {j}')
                 print(f'Current batch size: {batch_size}')
@@ -99,24 +103,21 @@ with tf.device(dev):
             y_temp = tf.cast(labels > 0, dtype=tf.int32)
             y_list.append(y_temp)
             
-            #X_temp = tf.concat([flatten(tsr) for tsr in data_element[:4]], axis = 0)
-            #X_list.append(X_temp)
-            
             input_feat_list.append(data_element[0])
             rho_coords_list.append(data_element[1])
             theta_coords_list.append(data_element[2])
             mask_list.append(data_element[3])
             
 
-            batch_size += len(X_temp)
+            batch_size += len(y_temp)
             if batch_size > batch_threshold:
                 print('a')
-                #X = tf.concat(X_list, axis=0)
                 input_feat = tf.concat(input_feat_list, axis=0)
                 rho_coords = tf.concat(rho_coords_list, axis=0)
                 theta_coords = tf.concat(theta_coords_list, axis=0)
                 mask = tf.concat(mask_list, axis=0)
                 
+                X = (input_feat, rho_coords, theta_coords, mask)
                 y = tf.concat(y_list, axis=0)
                 _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 10.0})
                 batch_size = 0
@@ -125,7 +126,12 @@ with tf.device(dev):
 
         if len(X_list) > 0:
             print('b')
-            X = tf.concat(X_list, axis=0)
+            input_feat = tf.concat(input_feat_list, axis=0)
+            rho_coords = tf.concat(rho_coords_list, axis=0)
+            theta_coords = tf.concat(theta_coords_list, axis=0)
+            mask = tf.concat(mask_list, axis=0)
+
+            X = (input_feat, rho_coords, theta_coords, mask)
             y = tf.concat(y_list, axis=0)
             _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 10.0})
         
@@ -138,9 +144,16 @@ with tf.device(dev):
         loss_list = []
         
         batch_size = 0
-        X_list = []
+        input_feat_list = []
+        rho_coords_list = []
+        theta_coords_list = []
+        mask_list = []
+        
         y_list = []
         for j, data_element in enumerate(val_data):
+            if j == 10:
+                break
+                
             if j % 10 == 0:
                 print(f'Validation record {j}')
                 print(f'Current batch size: {batch_size}')
@@ -150,15 +163,23 @@ with tf.device(dev):
                 continue
 
             y_temp = tf.cast(labels > 0, dtype=tf.int32)
-            X_temp = tf.constant(data_element[0])
-
-            X_list.append(X_temp)
             y_list.append(y_temp)
             
-            batch_size += len(X_temp)
+            input_feat_list.append(data_element[0])
+            rho_coords_list.append(data_element[1])
+            theta_coords_list.append(data_element[2])
+            mask_list.append(data_element[3])
+            
+            batch_size += len(y_temp)
             if batch_size > batch_threshold:
-                X = tf.concat(X_list, axis=0)
+                input_feat = tf.concat(input_feat_list, axis=0)
+                rho_coords = tf.concat(rho_coords_list, axis=0)
+                theta_coords = tf.concat(theta_coords_list, axis=0)
+                mask = tf.concat(mask_list, axis=0)
+                
+                X = (input_feat, rho_coords, theta_coords, mask)
                 y = tf.concat(y_list, axis=0)
+                
                 loss, acc = model.evaluate(X, y, verbose = 0)            
                 loss_list.append(loss)
                 acc_list.append(acc)
@@ -169,8 +190,14 @@ with tf.device(dev):
             
         if len(X_list) > 0:
             print('b')
-            X = tf.concat(X_list, axis=0)
+            input_feat = tf.concat(input_feat_list, axis=0)
+            rho_coords = tf.concat(rho_coords_list, axis=0)
+            theta_coords = tf.concat(theta_coords_list, axis=0)
+            mask = tf.concat(mask_list, axis=0)
+
+            X = (input_feat, rho_coords, theta_coords, mask)
             y = tf.concat(y_list, axis=0)
+            
             loss, acc = model.evaluate(X, y, verbose = 0)            
             loss_list.append(loss)
             acc_list.append(acc)
