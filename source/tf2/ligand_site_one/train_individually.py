@@ -108,7 +108,7 @@ with tf.device(dev):
                 print('a')
                 X = tf.concat(X_list, axis=0)
                 y = tf.concat(y_list, axis=0)
-                _=model.fit(X, y, epochs = 1, verbose = 2)
+                _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 10.0})
                 batch_size = 0
                 X_list = []
                 y_list = []
@@ -117,7 +117,7 @@ with tf.device(dev):
             print('b')
             X = tf.concat(X_list, axis=0)
             y = tf.concat(y_list, axis=0)
-            _=model.fit(X, y, epochs = 1, verbose = 2)
+            _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 10.0})
         
         #############################################################
         ###################    VALIDATION DATA    ###################         
