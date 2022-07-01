@@ -163,8 +163,8 @@ with tf.device(dev):
             if j == 10:
                 break
                 
-            if j % 10 == 0:
-                print(f'Validation record {j}')
+            #if j % 10 == 0:
+            print(f'Validation record {j}')
 
             labels = data_element[4]
             if not goodLabel(labels):
