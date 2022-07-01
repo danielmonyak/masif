@@ -6,9 +6,6 @@ from default_config.util import *
 
 params = masif_opts["ligand"]
 
-bigShape = [200, self.n_feat]
-smallShape = [200, 1]
-bigIdx = tf.cast(functools.reduce(prodFunc, bigShape), dtype = tf.int32)
 
 class MaSIF_ligand_site(Model):
     """
@@ -28,11 +25,6 @@ class MaSIF_ligand_site(Model):
     ):
         ## Call super - model initializer
         super(MaSIF_ligand_site, self).__init__()
-        
-        ##
-        self.keep_prob = keep_prob
-        self.tempGradients = []
-        ##
         
         # order of the spectral filters
         self.max_rho = max_rho
@@ -92,6 +84,11 @@ class ConvLayer(layers.Layer):
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
         
+        ####
+        self.bigShape = [200, self.n_feat]
+        self.smallShape = [200, 1]
+        self.bigIdx = tf.cast(functools.reduce(prodFunc, bigShape), dtype = tf.int32)
+        ####
         
         # Variable dict lists
         self.variable_dicts = []
@@ -219,8 +216,8 @@ class ConvLayer(layers.Layer):
     '''
     #@tf.autograph.experimental.do_not_convert
     def map_func(self, row, makeSample):
-        input_feat = tf.reshape(row[:bigIdx], bigShape)
-        rest = tf.reshape(row[bigIdx:], [3] + smallShape)
+        input_feat = tf.reshape(row[:self.bigIdx], self.bigShape)
+        rest = tf.reshape(row[self.bigIdx:], [3] + self.smallShape)
         return [input_feat, rest[0], rest[1], rest[2]]
     '''
     #@tf.autograph.experimental.do_not_convert
