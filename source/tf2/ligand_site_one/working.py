@@ -84,7 +84,7 @@ mask = np.expand_dims(np.load(os.path.join(pdb_dir, "p1_mask.npy")), axis=-1)
 
 X = (input_feat, rho_coords, theta_coords, mask)
 ligand_site_probs = tf.math.sigmoid(ligand_site_model.predict(X))
-pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > threshold)))
+pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > .5)))
 
 
 def summary(threshold):
