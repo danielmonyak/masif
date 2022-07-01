@@ -434,7 +434,7 @@ class ConvLayer(layers.Layer):
 
             if mean_gauss_activation:  # computes mean weights for the different gaussians
                 gauss_activations /= (
-                    tf.reduce_sum(input_tensor=gauss_activations, axis=2, keepdims=True) + eps
+                    tf.reduce_sum(input_tensor=gauss_activations, axis=3, keepdims=True) + eps
                 )  # batch_size, n_vertices, n_gauss
 
             gauss_activations = tf.expand_dims(
