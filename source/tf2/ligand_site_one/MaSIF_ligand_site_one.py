@@ -85,9 +85,9 @@ class ConvLayer(layers.Layer):
         self.n_feat = int(sum(feat_mask))
         
         ####
-        self.bigShape = [200, self.n_feat]
-        self.smallShape = [200, 1]
-        self.bigIdx = tf.cast(functools.reduce(prodFunc, bigShape), dtype = tf.int32)
+        #self.bigShape = [200, self.n_feat]
+        #self.smallShape = [200, 1]
+        #self.bigIdx = tf.cast(functools.reduce(prodFunc, bigShape), dtype = tf.int32)
         ####
         
         # Variable dict lists
