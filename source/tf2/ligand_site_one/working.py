@@ -16,12 +16,6 @@ params = masif_opts["ligand"]
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
-gpus = tf.config.experimental.list_logical_devices('GPU')
-gpus_str = [g.name for g in gpus]
-strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
-
-dev = '/GPU:2'
-
 #pdb = '1RI4_A_' # 0.1 but not correct
 #pdb = '1FCD_AC_' # 0.25
 #pdb = '2VRB_AB_' # 0.25
@@ -73,7 +67,6 @@ ligandIdx_true = ligand_list.index(ligand_true)
 
 ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
 
-#with tf.device(dev):
 ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
   
 input_feat = np.load(os.path.join(pdb_dir, "p1_input_feat.npy"))
