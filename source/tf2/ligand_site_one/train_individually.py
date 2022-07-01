@@ -1,4 +1,3 @@
-# Header variables and parameters.
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
@@ -12,6 +11,8 @@ from tensorflow.keras import layers, Sequential, Model
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from MaSIF_ligand_site_one import MaSIF_ligand_site
+
+from time import process_time
 
 gpus = tf.config.list_physical_devices('GPU')
 for gpu in gpus:
@@ -72,7 +73,9 @@ def goodLabel(labels):
     
     return True
 
-batch_threshold = 1e4
+batch_threshold = 0
+
+before_time = process_time()
 
 with tf.device(dev):
     for i in range(last_epoch + 1, num_epochs):
@@ -89,6 +92,9 @@ with tf.device(dev):
         
         y_list = []
         for j, data_element in enumerate(train_data):
+            if j == 10:
+                break
+            
             #if j % 10 == 0:
             print(f'Train record {j}')
             #print(f'Current batch size: {batch_size}')
@@ -228,3 +234,6 @@ with tf.device(dev):
                 pickle.dump(ckpState, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 print(f'Finished {num_epochs} training epochs!')
+after_time = process_time()
+
+print(f'Total time: {round(after_time - before_time)}')
