@@ -22,7 +22,10 @@ dev = '/GPU:1'
 cpu = '/CPU:0'
 
 #############################################
-continue_training = False
+continue_training = True
+read_metrics = False
+
+lastSample = 90
 #############################################
 
 params = masif_opts["ligand"]
@@ -51,12 +54,14 @@ num_epochs = 5
 
 if continue_training:
     model.load_weights(ckpPath)
+    print(f'Loaded model from {ckpStatePath}')
+
+if read_metrics:
     with open(ckpStatePath, 'rb') as handle:
         ckpState = pickle.load(handle)
     last_epoch = ckpState['last_epoch']
     best_acc = ckpState['best_acc']
-    
-    print(f'Loaded model from {ckpStatePath}\nLast completed epoch: {last_epoch}\nValidation accuracy: {best_acc}')
+    print(f'Last completed epoch: {last_epoch}\nValidation accuracy: {best_acc}')
 else:
     last_epoch = -1
     best_acc = 0
@@ -92,6 +97,9 @@ with tf.device(dev):
         
         y_list = []
         for j, data_element in enumerate(train_data):
+            if j < lastSample:
+                continue
+            
             if j % 10 == 0 and j > 0:
                 print(f'Saving model weights to {ckpPath}')
                 model.save_weights(ckpPath)
@@ -122,7 +130,7 @@ with tf.device(dev):
                 
                 X = (input_feat, rho_coords, theta_coords, mask)
                 y = tf.concat(y_list, axis=0)
-                _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 10.0})
+                _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 5.0})
                 batch_size = 0
                 input_feat_list = []
                 rho_coords_list = []
@@ -141,7 +149,7 @@ with tf.device(dev):
 
             X = (input_feat, rho_coords, theta_coords, mask)
             y = tf.concat(y_list, axis=0)
-            _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 10.0})
+            _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 5.0})
         
         #############################################################
         ###################    VALIDATION DATA    ###################         
