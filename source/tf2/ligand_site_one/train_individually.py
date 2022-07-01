@@ -89,13 +89,10 @@ with tf.device(dev):
         
         y_list = []
         for j, data_element in enumerate(train_data):
-            if j == 10:
-                break
-                
-            if j % 10 == 0:
-                print(f'Train record {j}')
-                print(f'Current batch size: {batch_size}')
-                
+            #if j % 10 == 0:
+            print(f'Train record {j}')
+            #print(f'Current batch size: {batch_size}')
+            
             labels = data_element[4]
             if not goodLabel(labels):
                 continue
@@ -112,6 +109,7 @@ with tf.device(dev):
             batch_size += len(y_temp)
             if batch_size > batch_threshold:
                 print('a')
+                print(f'Current batch size: {batch_size}')
                 input_feat = tf.concat(input_feat_list, axis=0)
                 rho_coords = tf.concat(rho_coords_list, axis=0)
                 theta_coords = tf.concat(theta_coords_list, axis=0)
@@ -129,6 +127,8 @@ with tf.device(dev):
 
         if len(y_list) > 0:
             print('b')
+            print(f'Current batch size: {batch_size}')
+            
             input_feat = tf.concat(input_feat_list, axis=0)
             rho_coords = tf.concat(rho_coords_list, axis=0)
             theta_coords = tf.concat(theta_coords_list, axis=0)
@@ -175,6 +175,9 @@ with tf.device(dev):
             
             batch_size += len(y_temp)
             if batch_size > batch_threshold:
+                print('a')
+                print(f'Current batch size: {batch_size}')
+                
                 input_feat = tf.concat(input_feat_list, axis=0)
                 rho_coords = tf.concat(rho_coords_list, axis=0)
                 theta_coords = tf.concat(theta_coords_list, axis=0)
@@ -196,6 +199,8 @@ with tf.device(dev):
             
         if len(y_list) > 0:
             print('b')
+            print(f'Current batch size: {batch_size}')
+            
             input_feat = tf.concat(input_feat_list, axis=0)
             rho_coords = tf.concat(rho_coords_list, axis=0)
             theta_coords = tf.concat(theta_coords_list, axis=0)
