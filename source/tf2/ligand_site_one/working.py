@@ -73,18 +73,20 @@ ligandIdx_true = ligand_list.index(ligand_true)
 #ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
 
 ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
-with tf.device(dev):
-  ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
-  
-  input_feat = np.load(os.path.join(pdb_dir, "p1_input_feat.npy"))
-  rho_coords = np.load(os.path.join(pdb_dir, "p1_rho_wrt_center.npy"))
-  theta_coords = np.load(os.path.join(pdb_dir, "p1_theta_wrt_center.npy"))
-  mask = np.expand_dims(np.load(os.path.join(pdb_dir, "p1_mask.npy")), axis=-1)
-  
-  X = [input_feat, rho_coords, theta_coords, mask]
-  ligand_site_probs = tf.math.sigmoid(ligand_site_model(X))
 
-'''
+#with tf.device(dev):
+ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
+  
+input_feat = np.load(os.path.join(pdb_dir, "p1_input_feat.npy"))
+rho_coords = np.load(os.path.join(pdb_dir, "p1_rho_wrt_center.npy"))
+theta_coords = np.load(os.path.join(pdb_dir, "p1_theta_wrt_center.npy"))
+mask = np.expand_dims(np.load(os.path.join(pdb_dir, "p1_mask.npy")), axis=-1)
+
+X = (input_feat, rho_coords, theta_coords, mask)
+ligand_site_probs = tf.math.sigmoid(ligand_site_model.predict(X))
+pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > threshold)))
+
+
 def summary(threshold):
   pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
   
@@ -136,7 +138,7 @@ if not threshold_best:
 
 pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold_best))
 ########
-
+'''
 y_gen = np.zeros(pred.n_pockets)
 y_true = y_gen.copy()
 y_true[pocket_points_true] = 1
@@ -159,7 +161,7 @@ print('Precision:', round(precision.numpy(), 2))
 print('Specificity:', round(specificity.numpy(), 2))
 
 print()
-
+'''
 ########
 
 X_true = pred.getLigandX(pocket_points_true)
@@ -171,4 +173,4 @@ X_pred_pred = pred.predictLigandIdx(X_pred, 0.5)
 print('\nX_pred_pred:', X_pred_pred.numpy())
 
 print('\nligandIdx_true:', ligandIdx_true)
-'''
+
