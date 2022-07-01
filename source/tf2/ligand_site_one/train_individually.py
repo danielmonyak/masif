@@ -73,7 +73,8 @@ def goodLabel(labels):
     
     return True
 
-batch_threshold = 1e6
+batch_threshold = 0
+#batch_threshold = 1e6
 
 before_time = process_time()
 
@@ -92,7 +93,7 @@ with tf.device(dev):
         
         y_list = []
         for j, data_element in enumerate(train_data):
-            if j == 10:
+            if j == 3:
                 break
             
             #if j % 10 == 0:
@@ -160,7 +161,7 @@ with tf.device(dev):
         
         y_list = []
         for j, data_element in enumerate(val_data):
-            if j == 10:
+            if j == 3:
                 break
                 
             if j % 10 == 0:
