@@ -46,10 +46,9 @@ class MaSIF_ligand_site(Model):
         
         self.myLayers=[
             myConvLayer,
-            layers.Dense(1, activation="relu"),
-            layers.Flatten(),
-            layers.Dense(64, activation="relu"),
-            layers.Dense(20, activation='relu'),
+            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
+            layers.Dense(30, activation='relu'),
+            layers.Dense(10, activation='relu'),
             layers.Dense(1)
         ]
     
@@ -93,8 +92,6 @@ class ConvLayer(layers.Layer):
         # Variable dict lists
         self.variable_dicts = []
         self.relu = tf.keras.layers.ReLU()
-        self.Map_func = lambda row : self.map_func(row)
-        self.Map_func_sample = lambda row : self.map_func(row, makeSample = True)
         
         initial_coords = self.compute_initial_coordinates()
         # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
@@ -103,10 +100,10 @@ class ConvLayer(layers.Layer):
                        [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
                        [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
                        [self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos]]
-        self.reshape_shapes = [[-1, minPockets, self.n_thetas * self.n_rhos * self.n_feat],
-                               [-1, minPockets, self.n_feat, self.n_thetas * self.n_rhos],
-                               [-1, minPockets, self.n_feat, self.n_thetas * self.n_rhos],
-                               [-1, minPockets, self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos]]
+        self.reshape_shapes = [[-1, self.n_thetas * self.n_rhos * self.n_feat],
+                               [-1, self.n_feat, self.n_thetas * self.n_rhos],
+                               [-1, self.n_feat, self.n_thetas * self.n_rhos],
+                               [-1, self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos]]
         self.reduce_funcs = [None,
                              lambda x : tf.reduce_mean(x, axis=-1),
                              lambda x : tf.reduce_mean(x, axis=-1),
@@ -222,7 +219,7 @@ class ConvLayer(layers.Layer):
     '''
     #@tf.autograph.experimental.do_not_convert
     def call(self, x):
-        '''input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.Map_func, elems = x,
+        '''input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.map_func, elems = x,
                               fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])'''
         input_feat, rho_coords, theta_coords, mask = x
 
@@ -326,18 +323,14 @@ class ConvLayer(layers.Layer):
         eps=1e-5,
         mean_gauss_activation=True,
     ):
-        batches = tf.shape(input_feat)[0]
-
-        n_samples = tf.shape(input=rho_coords)[1]
-        n_vertices = tf.shape(input=rho_coords)[2]
-
-        #n_feat = tf.shape(input_feat)[2]
+        n_samples = tf.shape(input=rho_coords)[0]
+        n_vertices = tf.shape(input=rho_coords)[1]
 
         all_conv_feat = []
         for k in range(self.n_rotations):
 
-            rho_coords_ = tf.reshape(rho_coords, [batches, -1, 1])  # batch_size*n_vertices
-            thetas_coords_ = tf.reshape(theta_coords, [batches, -1, 1])  # batch_size*n_vertices
+            rho_coords_ = tf.reshape(rho_coords, [-1, 1])  # batch_size*n_vertices
+            thetas_coords_ = tf.reshape(theta_coords, [-1, 1])  # batch_size*n_vertices
 
             thetas_coords_ += k * 2 * np.pi / self.n_rotations
             thetas_coords_ = tf.math.mod(thetas_coords_, 2 * np.pi)
@@ -352,7 +345,7 @@ class ConvLayer(layers.Layer):
                 rho_coords_, thetas_coords_
             )  # batch_size*n_vertices, n_gauss
             gauss_activations = tf.reshape(
-                gauss_activations, [batches, n_samples, n_vertices, -1]
+                gauss_activations, [n_samples, n_vertices, -1]
             )  # batch_size, n_vertices, n_gauss
             gauss_activations = tf.multiply(gauss_activations, mask)
 
@@ -362,7 +355,7 @@ class ConvLayer(layers.Layer):
                 )  # batch_size, n_vertices, n_gauss
 
             gauss_activations = tf.expand_dims(
-                gauss_activations, 3
+                gauss_activations, 2
             )  # batch_size, n_vertices, 1, n_gauss,
 
             # check the axis on this
@@ -374,9 +367,9 @@ class ConvLayer(layers.Layer):
             gauss_desc = tf.multiply(
                 gauss_activations, input_feat_
             )  # batch_size, n_vertices, n_feat, n_gauss,
-            gauss_desc = tf.reduce_sum(gauss_desc, axis=2)  # batch_size, n_feat, n_gauss,
+            gauss_desc = tf.reduce_sum(gauss_desc, axis=1)  # batch_size, n_feat, n_gauss,
             gauss_desc = tf.reshape(
-                gauss_desc, [batches, n_samples, self.n_thetas * self.n_rhos]
+                gauss_desc, [n_samples, self.n_thetas * self.n_rhos]
             )  # batch_size, 80
 
             conv_feat = tf.matmul(gauss_desc, W_conv) + b_conv  # batch_size, 80
