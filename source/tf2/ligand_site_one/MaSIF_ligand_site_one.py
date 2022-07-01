@@ -216,17 +216,18 @@ class ConvLayer(layers.Layer):
             var_dict['FC1_b'] = self.add_weight('FC1_b', shape=(200,), initializer = zero_init, trainable=True, dtype="float32")'''
             #################################
             self.variable_dicts.append(var_dict)
-    
+    '''
     #@tf.autograph.experimental.do_not_convert
     def map_func(self, row, makeSample):
         input_feat = tf.reshape(row[:bigIdx], bigShape)
         rest = tf.reshape(row[bigIdx:], [3] + smallShape)
         return [input_feat, rest[0], rest[1], rest[2]]
-    
+    '''
     #@tf.autograph.experimental.do_not_convert
-    def call(self, x, sample):
-        input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.Map_func, elems = x,
-                              fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])
+    def call(self, x):
+        '''input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.Map_func, elems = x,
+                              fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])'''
+        input_feat, rho_coords, theta_coords, mask = x
 
         var_dict = self.variable_dicts[0]
 
