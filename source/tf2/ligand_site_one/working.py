@@ -77,7 +77,7 @@ theta_coords = np.load(os.path.join(pdb_dir, "p1_theta_wrt_center.npy"))
 mask = np.expand_dims(np.load(os.path.join(pdb_dir, "p1_mask.npy")), axis=-1)
 
 X = (input_feat, rho_coords, theta_coords, mask)
-ligand_site_probs = tf.math.sigmoid(ligand_site_model.predict(X))
+ligand_site_probs = tf.sigmoid(ligand_site_model.predict(X))
 
 def summary(threshold):
   pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > threshold)))
@@ -96,8 +96,12 @@ def summary(threshold):
   #f1 = precision*recall/(precision+recall)
   X_pred = pred.getLigandX(pocket_points_pred)
   ligand_probs_mean = pred.predictLigandProbs(X_pred, 0.5)
+  
+  ligandIdx_pred = tf.argmax(ligand_probs_mean)
+  print('\ligandIdx_pred:', ligandIdx_pred)
+  
   max_prob = tf.reduce_max(ligand_probs_mean)
-  print('\nmax_prob:', round(max_prob.numpy(), 2))
+  print('max_prob:', round(max_prob.numpy(), 2))
   
   score = max_prob/(1 + abs(.5 - threshold))
   print('score:', round(score.numpy(), 2), '\n')
