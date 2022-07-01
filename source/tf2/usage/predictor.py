@@ -26,7 +26,7 @@ class Predictor:
     ligand_site_model.load_weights(ligand_site_ckp_path)
     return ligand_site_model
     
-  def __init__(self, ligand_model_path = None, ligand_site_ckp_path, n_predictions = 100, threshold = 0.5, ligand_threshold = 0):
+  def __init__(self, ligand_model_path = None, ligand_site_ckp_path = None, n_predictions = 100, threshold = 0.5, ligand_threshold = 0):
     # Load MaSIF_ligand and MaSIF_ligand_site models
     # MaSIF_ligand_site model comes from saved checkpoint
     if not ligand_model_path is None:
