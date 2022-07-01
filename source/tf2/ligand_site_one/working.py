@@ -63,10 +63,11 @@ ligandIdx_true = ligand_list.index(ligand_true)
 
 
 #ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
-#ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
+ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
+
+pred = Predictor(ligand_model_path = ligand_model_path)
 
 ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
-
 ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
   
 input_feat = np.load(os.path.join(pdb_dir, "p1_input_feat.npy"))
@@ -80,28 +81,42 @@ ligand_site_probs = tf.math.sigmoid(ligand_site_model.predict(X))
 def summary(threshold):
   pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > threshold)))
   
-  npoints = len(pocket_points_pred)
-  if len(pocket_points_pred) == 0:
-    print('No pocket points were predicted...\n')
-    return
-  print(f'{npoints} pocket points were predicted...')
+  if npoints < 2 * minPockets:
+    print(f'Only {npoints} pocket points were predicted...\n')
+    return 0, 0
   
   overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
   recall = len(overlap)/len(pocket_points_true)
   precision = len(overlap)/len(pocket_points_pred)
   print('Recall:', round(recall, 2))
-  print('Precision:', round(precision, 2), '\n')
+  print('Precision:', round(precision, 2))
+  
+  #f1 = precision*recall/(precision+recall)
+  X_pred = pred.getLigandX(pocket_points_pred)
+  ligand_probs_mean = pred.predictLigandProbs(X_pred)
+  max_prob = tf.reduce_max(ligand_probs_mean)
+  print('\nmax_prob:', round(max_prob.numpy(), 2))
+  
+  score = max_prob/(1 + abs(.5 - threshold))
+  print('score:', round(score.numpy(), 2), '\n')
+  
+  return max_prob, score
 
 
 ########
 print()
 
 #max_prob_best = 0.5
+score_best = 0
+threshold_best = 0
 for threshold in np.linspace(.1, .9, 9):
   print('threshold:', threshold)
-  summary(threshold)
+  max_prob, score = summary(threshold)
+  if max_prob > 0.5 and score > score_best:
+    #max_prob_best = max_prob
+    score_best = score
+    threshold_best = threshold
 
-'''
 print('threshold_best:', threshold_best)
 print()
 if not threshold_best:
@@ -109,7 +124,6 @@ if not threshold_best:
   print('NO THRESHOLD WAS GOOD ENUGH TO GIVE A PREDICTION WITH CONFIDENCE')
 
 pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold_best))
-'''
 ########
 '''
 y_gen = np.zeros(pred.n_pockets)
@@ -136,7 +150,7 @@ print('Specificity:', round(specificity.numpy(), 2))
 print()
 '''
 ########
-'''
+
 X_true = pred.getLigandX(pocket_points_true)
 X_true_pred = pred.predictLigandIdx(X_true)
 print('X_true_pred:', X_true_pred.numpy())
@@ -147,4 +161,3 @@ print('\nX_pred_pred:', X_pred_pred.numpy())
 
 print('\nligandIdx_true:', ligandIdx_true)
 
-'''
