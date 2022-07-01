@@ -125,7 +125,7 @@ if not threshold_best:
   threshold_best = 0.5
   print('NO THRESHOLD WAS GOOD ENUGH TO GIVE A PREDICTION WITH CONFIDENCE')
 
-pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > threshold)))
+pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > threshold_best)))
 ########
 '''
 y_gen = np.zeros(pred.n_pockets)
