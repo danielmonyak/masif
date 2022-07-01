@@ -81,6 +81,7 @@ ligand_site_probs = tf.math.sigmoid(ligand_site_model.predict(X))
 def summary(threshold):
   pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > threshold)))
   
+  npoints = len(pocket_points_pred)
   if npoints < 2 * minPockets:
     print(f'Only {npoints} pocket points were predicted...\n')
     return 0, 0
