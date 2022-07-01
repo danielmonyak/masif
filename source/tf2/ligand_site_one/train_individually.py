@@ -11,7 +11,7 @@ import tensorflow as tf
 from tensorflow.keras import layers, Sequential, Model
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
-
+from MaSIF_ligand_site_one import MaSIF_ligand_site
 
 gpus = tf.config.list_physical_devices('GPU')
 for gpu in gpus:
@@ -32,19 +32,17 @@ train_data = getData('train')
 val_data = getData('val')
 
 
-model = Sequential([
-  layers.Dense(1, activation="relu"),
-  layers.Flatten(),
-  layers.Dense(64, activation="relu"),
-  layers.Dense(20, activation='relu'),
-  layers.Dense(1)
-])
+model = MaSIF_ligand_site(
+    params["max_distance"],
+    params["n_classes"],
+    feat_mask=params["feat_mask"]
+)
 
 opt = tf.keras.optimizers.Adam()
 loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
 
-model.compile(optimizer = opt,
-  loss = loss_fn,
+model.compile(optimizer = self.opt,
+  loss = self.loss_fn,
   metrics=['binary_accuracy']
 )
 
@@ -78,7 +76,7 @@ def goodLabel(labels):
     
     return True
 
-batch_threshold = 5e4
+batch_threshold = 1e4
 
 with tf.device(dev):
     for i in range(last_epoch + 1, num_epochs):
@@ -98,7 +96,8 @@ with tf.device(dev):
                 continue
 
             y_temp = tf.cast(labels > 0, dtype=tf.int32)
-            X_temp = tf.constant(data_element[0])
+            for 
+            X_temp = tf.concat([flatten(tsr) for tsr in data_element[:4]], axis = 0)
 
             X_list.append(X_temp)
             y_list.append(y_temp)
