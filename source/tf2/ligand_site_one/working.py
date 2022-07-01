@@ -16,6 +16,11 @@ params = masif_opts["ligand"]
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
+gpus = tf.config.list_physical_devices('GPU')
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)
+
+strategy = tf.distribute.MirroredStrategy([gpu.name for gpu in tf.config.list_logical_devices('GPU')])
 dev = '/GPU:2'
 
 '''
