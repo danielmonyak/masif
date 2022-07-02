@@ -25,7 +25,7 @@ cpu = '/CPU:0'
 continue_training = True
 read_metrics = False
 
-lastSample = 620
+lastSample = 630
 #############################################
 
 params = masif_opts["ligand"]
