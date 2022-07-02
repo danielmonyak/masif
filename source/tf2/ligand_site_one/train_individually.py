@@ -25,16 +25,15 @@ cpu = '/CPU:0'
 continue_training = True
 read_metrics = False
 
-nextSample = 630
+starting_sample = 645
 #############################################
 
 params = masif_opts["ligand"]
 
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 getData = lambda dataset : tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
-train_data = iter(getData('train'))
-val_data = iter(getData('val'))
-
+train_data = getData('train')
+val_data = getData('val')
 
 model = MaSIF_ligand_site(
     params["max_distance"],
@@ -85,6 +84,16 @@ def goodLabel(labels):
     return True
 
 with tf.device(dev):
+    
+    train_iterator = iter(train_data)
+    val_iterator = iter(val_data)
+
+    train_j = 0
+    val_j = 0
+    while train_j < starting_sample:
+        data_element = train_iterator.get_next()
+        train_j += 1
+    
     for i in range(100):
         print(f'Running training data, epoch {i}')
         
@@ -93,13 +102,15 @@ with tf.device(dev):
         #############################################################
         finished_samples = 0
         
-        train_j = 0
-        while train_j < nextSample:
-            data_element = train_data.get_next()
-            train_j += 1
         
         while finished_samples < train_samples_threshold:
-            data_element = train_data.get_next()
+            try:
+                data_element = train_iterator.get_next()
+            except:
+                train_iterator = iter(train_data)
+                train_j = 0
+                continue
+                
             print(f'Train record {train_j}')
 
             labels = data_element[4]
@@ -124,10 +135,15 @@ with tf.device(dev):
         acc_list = []
         loss_list = []
 
-        val_j = 0
         
         while finished_samples < val_samples_threshold:
-            data_element = val_data.get_next()
+            try:
+                data_element = val_iterator.get_next()
+            except:
+                val_iterator = iter(val_data)
+                val_j = 0
+                continue
+            
             print(f'Validation record {val_j}')
 
             labels = data_element[4]
@@ -142,7 +158,7 @@ with tf.device(dev):
             acc_list.append(acc)
 
             finished_samples += y.shape[0]
-            val_j += y.shape[0]
+            val_j += 1
         
         #############################################################
         #############    EVALUATING VALIDATION DATA    ##############
