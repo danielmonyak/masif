@@ -65,7 +65,7 @@ if read_metrics:
         ckpState = pickle.load(handle)
     i = ckpState['last_epoch']
     best_acc = ckpState['best_acc']
-    print(f'Last completed epoch: {last_epoch}\nValidation accuracy: {best_acc}')
+    print(f'Last completed epoch: {i}\nValidation accuracy: {best_acc}')
 else:
     i = 0
     best_acc = 0
