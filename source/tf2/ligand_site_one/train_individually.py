@@ -25,15 +25,15 @@ cpu = '/CPU:0'
 continue_training = True
 read_metrics = False
 
-lastSample = 590
+lastSample = 620
 #############################################
 
 params = masif_opts["ligand"]
 
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 getData = lambda dataset : tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
-train_data = getData('train')
-val_data = getData('val')
+train_data = iter(getData('train'))
+val_data = iter(getData('val'))
 
 
 model = MaSIF_ligand_site(
@@ -50,9 +50,13 @@ modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 ckpStatePath = ckpPath + '.pickle'
 
-num_epochs = 5
-train_samples_threshold = 2e5
-val_samples_threshold = 5e4
+#############################################
+#############################################
+num_epochs = 5                  #############
+train_samples_threshold = 2e5   #############
+val_samples_threshold = 5e4     #############
+#############################################
+#############################################
 
 if continue_training:
     model.load_weights(ckpPath)
@@ -81,63 +85,78 @@ def goodLabel(labels):
     return True
 
 with tf.device(dev):
-    for i in range(last_epoch + 1, num_epochs):
+    for i in range(100):
         print(f'Running training data, epoch {i}')
         
+        #############################################################
+        ###################     TRAINING DATA     ###################
+        #############################################################
         finished_samples = 0
-        for j, data_element in enumerate(train_data):
-            if j < lastSample:
-                continue
-            
-            print(f'Train record {j}')
-            
+        
+        train_j = 0
+        while train_j < nextSample:
+            data_element = train_data.get_next()
+            train_j += 1
+        
+        while finished_samples < train_samples_threshold:
+            data_element = train_data.get_next()
+            print(f'Train record {train_j}')
+
             labels = data_element[4]
             if not goodLabel(labels):
                 continue
 
             y = tf.cast(labels > 0, dtype=tf.int32)
-            X = tuple(data_element[:4])
+            X = data_element[:4]
             _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 5.0})
-            
+
             finished_samples += y.shape[0]
+            train_j += 1
             
-            if finished_samples > train_samples_threshold:
-                finished_samples = 0
-                #############################################################
-                ###################    VALIDATION DATA    ###################         
-                #############################################################
+            
+        #############################################################
+        ###################    VALIDATION DATA    ###################
+        #############################################################
+        print(f'Testing model on validation data after training on {finished_samples} samples')
         
-                print(f'Testing model on validation data after training on {finished_samples} samples')
-                acc_list = []
-                loss_list = []
+        finished_samples = 0
+        
+        acc_list = []
+        loss_list = []
 
-                for j, data_element in enumerate(val_data):
-                    print(f'Validation record {j}')
+        val_j = 0
+        
+        while finished_samples < val_samples_threshold:
+            data_element = val_data.get_next()
+            print(f'Validation record {val_j}')
 
-                    labels = data_element[4]
-                    if not goodLabel(labels):
-                        continue
+            labels = data_element[4]
+            if not goodLabel(labels):
+                continue
 
-                    y = tf.cast(labels > 0, dtype=tf.int32)
-                    X = tuple(data_element[:4])
+            y = tf.cast(labels > 0, dtype=tf.int32)
+            X = data_element[:4]
+            
+            loss, acc = model.evaluate(X, y, verbose = 0)            
+            loss_list.append(loss)
+            acc_list.append(acc)
 
-                    loss, acc = model.evaluate(X, y, verbose = 0)            
-                    loss_list.append(loss)
-                    acc_list.append(acc)
+            finished_samples += y.shape[0]
+            val_j += y.shape[0]
+        
+        #############################################################
+        #############    EVALUATING VALIDATION DATA    ##############
+        #############################################################
+        
+        acc = sum(acc_list)/len(acc_list)
+        loss = sum(loss_list)/len(loss_list)
+        print(f'Finished evaluating {finished_samples} validation samples\nLoss: {round(loss, 2)}\nBinary Accuracy: {round(acc, 2)}')
 
-                    finished_samples += y.shape[0]
-                    
-                    if finished_samples > val_samples_threshold:
-                        finished_samples = 0
-                        acc = sum(acc_list)/len(acc_list)
-                        loss = sum(loss_list)/len(loss_list)
-                        print(f'Epoch {i} finished\nLoss: {round(loss, 2)}\nBinary Accuracy: {round(acc, 2)}')
-
-                        if acc > best_acc:
-                            print(f'Validation accuracy improved from {best_acc} to {acc}')
-                            print(f'Saving model weights to {ckpPath}')
-                            best_acc = acc
-                            model.save_weights(ckpPath)
-                            ckpState = {'best_acc' : best_acc, 'last_epoch' : i}
-                            with open(ckpStatePath, 'wb') as handle:
-                                pickle.dump(ckpState, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        if acc > best_acc:
+            print(f'Validation accuracy improved from {best_acc} to {acc}')
+            print(f'Saving model weights to {ckpPath}')
+            best_acc = acc
+            model.save_weights(ckpPath)
+            ckpState = {'best_acc' : best_acc, 'last_epoch' : i}
+            with open(ckpStatePath, 'wb') as handle:
+                pickle.dump(ckpState, handle, protocol=pickle.HIGHEST_PROTOCOL)
