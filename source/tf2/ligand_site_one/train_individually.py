@@ -25,7 +25,7 @@ cpu = '/CPU:0'
 continue_training = True
 read_metrics = False
 
-lastSample = 90
+lastSample = 590
 #############################################
 
 params = masif_opts["ligand"]
@@ -51,6 +51,8 @@ ckpPath = os.path.join(modelDir, 'ckp')
 ckpStatePath = ckpPath + '.pickle'
 
 num_epochs = 5
+train_samples_threshold = 2e5
+val_samples_threshold = 5e4
 
 if continue_training:
     model.load_weights(ckpPath)
@@ -78,31 +80,14 @@ def goodLabel(labels):
     
     return True
 
-batch_threshold = 1e4
-
-before_time = process_time()
-
 with tf.device(dev):
     for i in range(last_epoch + 1, num_epochs):
-        if i == 1:
-            break
-        
         print(f'Running training data, epoch {i}')
         
-        batch_size = 0
-        input_feat_list = []
-        rho_coords_list = []
-        theta_coords_list = []
-        mask_list = []
-        
-        y_list = []
+        finished_samples = 0
         for j, data_element in enumerate(train_data):
             if j < lastSample:
                 continue
-            
-            if j % 10 == 0 and j > 0:
-                print(f'Saving model weights to {ckpPath}')
-                model.save_weights(ckpPath)
             
             print(f'Train record {j}')
             
@@ -110,133 +95,49 @@ with tf.device(dev):
             if not goodLabel(labels):
                 continue
 
-            y_temp = tf.cast(labels > 0, dtype=tf.int32)
-            y_list.append(y_temp)
-            
-            input_feat_list.append(data_element[0])
-            rho_coords_list.append(data_element[1])
-            theta_coords_list.append(data_element[2])
-            mask_list.append(data_element[3])
-            
-
-            batch_size += len(y_temp)
-            if batch_size > batch_threshold:
-                print('a')
-                print(f'Current batch size: {batch_size}')
-                input_feat = tf.concat(input_feat_list, axis=0)
-                rho_coords = tf.concat(rho_coords_list, axis=0)
-                theta_coords = tf.concat(theta_coords_list, axis=0)
-                mask = tf.concat(mask_list, axis=0)
-                
-                X = (input_feat, rho_coords, theta_coords, mask)
-                y = tf.concat(y_list, axis=0)
-                _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 5.0})
-                batch_size = 0
-                input_feat_list = []
-                rho_coords_list = []
-                theta_coords_list = []
-                mask_list = []
-                y_list = []
-
-        if len(y_list) > 0:
-            print('b')
-            print(f'Current batch size: {batch_size}')
-            
-            input_feat = tf.concat(input_feat_list, axis=0)
-            rho_coords = tf.concat(rho_coords_list, axis=0)
-            theta_coords = tf.concat(theta_coords_list, axis=0)
-            mask = tf.concat(mask_list, axis=0)
-
-            X = (input_feat, rho_coords, theta_coords, mask)
-            y = tf.concat(y_list, axis=0)
+            y = tf.cast(labels > 0, dtype=tf.int32)
+            X = tuple(data_element[:4])
             _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 5.0})
+            
+            finished_samples += y.shape[0]
+            
+            if finished_samples > train_samples_threshold:
+                finished_samples = 0
+                #############################################################
+                ###################    VALIDATION DATA    ###################         
+                #############################################################
         
-        #############################################################
-        ###################    VALIDATION DATA    ###################         
-        #############################################################
-        
-        print(f'Running validation data, epoch {i}')
-        acc_list = []
-        loss_list = []
-        
-        batch_size = 0
-        input_feat_list = []
-        rho_coords_list = []
-        theta_coords_list = []
-        mask_list = []
-        
-        y_list = []
-        for j, data_element in enumerate(val_data):
-            #if j % 10 == 0:
-            print(f'Validation record {j}')
+                print(f'Testing model on validation data after training on {finished_samples} samples')
+                acc_list = []
+                loss_list = []
 
-            labels = data_element[4]
-            if not goodLabel(labels):
-                continue
+                for j, data_element in enumerate(val_data):
+                    print(f'Validation record {j}')
 
-            y_temp = tf.cast(labels > 0, dtype=tf.int32)
-            y_list.append(y_temp)
-            
-            input_feat_list.append(data_element[0])
-            rho_coords_list.append(data_element[1])
-            theta_coords_list.append(data_element[2])
-            mask_list.append(data_element[3])
-            
-            batch_size += len(y_temp)
-            if batch_size > batch_threshold:
-                print('a')
-                print(f'Current batch size: {batch_size}')
-                
-                input_feat = tf.concat(input_feat_list, axis=0)
-                rho_coords = tf.concat(rho_coords_list, axis=0)
-                theta_coords = tf.concat(theta_coords_list, axis=0)
-                mask = tf.concat(mask_list, axis=0)
-                
-                X = (input_feat, rho_coords, theta_coords, mask)
-                y = tf.concat(y_list, axis=0)
-                
-                loss, acc = model.evaluate(X, y, verbose = 0)            
-                loss_list.append(loss)
-                acc_list.append(acc)
-                
-                batch_size = 0
-                input_feat_list = []
-                rho_coords_list = []
-                theta_coords_list = []
-                mask_list = []
-                y_list = []
-            
-        if len(y_list) > 0:
-            print('b')
-            print(f'Current batch size: {batch_size}')
-            
-            input_feat = tf.concat(input_feat_list, axis=0)
-            rho_coords = tf.concat(rho_coords_list, axis=0)
-            theta_coords = tf.concat(theta_coords_list, axis=0)
-            mask = tf.concat(mask_list, axis=0)
+                    labels = data_element[4]
+                    if not goodLabel(labels):
+                        continue
 
-            X = (input_feat, rho_coords, theta_coords, mask)
-            y = tf.concat(y_list, axis=0)
-            
-            loss, acc = model.evaluate(X, y, verbose = 0)            
-            loss_list.append(loss)
-            acc_list.append(acc)
-            
-        
-        acc = sum(acc_list)/len(acc_list)
-        loss = sum(loss_list)/len(loss_list)
-        print(f'Epoch {i} finished\nLoss: {round(loss, 2)}\nBinary Accuracy: {round(acc, 2)}')
-        
-        if acc > best_acc:
-            print(f'Validation accuracy improved from {best_acc} to {acc}')
-            print(f'Saving model weights to {ckpPath}')
-            best_acc = acc
-            model.save_weights(ckpPath)
-            ckpState = {'best_acc' : best_acc, 'last_epoch' : i}
-            with open(ckpStatePath, 'wb') as handle:
-                pickle.dump(ckpState, handle, protocol=pickle.HIGHEST_PROTOCOL)
+                    y = tf.cast(labels > 0, dtype=tf.int32)
+                    X = tuple(data_element[:4])
 
-print(f'Finished {num_epochs} training epochs!')
-after_time = process_time()
+                    loss, acc = model.evaluate(X, y, verbose = 0)            
+                    loss_list.append(loss)
+                    acc_list.append(acc)
 
-print(f'Total time: {round(after_time - before_time)}')
+                    finished_samples += y.shape[0]
+                    
+                    if finished_samples > val_samples_threshold:
+                        finished_samples = 0
+                        acc = sum(acc_list)/len(acc_list)
+                        loss = sum(loss_list)/len(loss_list)
+                        print(f'Epoch {i} finished\nLoss: {round(loss, 2)}\nBinary Accuracy: {round(acc, 2)}')
+
+                        if acc > best_acc:
+                            print(f'Validation accuracy improved from {best_acc} to {acc}')
+                            print(f'Saving model weights to {ckpPath}')
+                            best_acc = acc
+                            model.save_weights(ckpPath)
+                            ckpState = {'best_acc' : best_acc, 'last_epoch' : i}
+                            with open(ckpStatePath, 'wb') as handle:
+                                pickle.dump(ckpState, handle, protocol=pickle.HIGHEST_PROTOCOL)
