@@ -11,8 +11,7 @@ from tensorflow.keras import layers, Sequential, Model
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from MaSIF_ligand_site_one import MaSIF_ligand_site
-
-from time import process_time
+import random
 
 gpus = tf.config.list_physical_devices('GPU')
 for gpu in gpus:
@@ -23,7 +22,7 @@ cpu = '/CPU:0'
 
 #############################################
 continue_training = True
-read_metrics = False
+read_metrics = True
 
 starting_sample = 645
 #############################################
@@ -64,11 +63,11 @@ if continue_training:
 if read_metrics:
     with open(ckpStatePath, 'rb') as handle:
         ckpState = pickle.load(handle)
-    last_epoch = ckpState['last_epoch']
+    i = ckpState['last_epoch']
     best_acc = ckpState['best_acc']
     print(f'Last completed epoch: {last_epoch}\nValidation accuracy: {best_acc}')
 else:
-    last_epoch = -1
+    i = 0
     best_acc = 0
 
 def goodLabel(labels):
@@ -94,14 +93,12 @@ with tf.device(dev):
         data_element = train_iterator.get_next()
         train_j += 1
     
-    for i in range(100):
-        print(f'Running training data, epoch {i}')
-        
+    print(f'Running training data, epoch {i}')
+    while i < num_epochs:
         #############################################################
         ###################     TRAINING DATA     ###################
         #############################################################
         finished_samples = 0
-        
         
         while finished_samples < train_samples_threshold:
             try:
@@ -109,6 +106,8 @@ with tf.device(dev):
             except:
                 train_iterator = iter(train_data)
                 train_j = 0
+                i += 1
+                print(f'Running training data, epoch {i}')
                 continue
                 
             print(f'Train record {train_j}')
@@ -135,7 +134,6 @@ with tf.device(dev):
         acc_list = []
         loss_list = []
 
-        
         while finished_samples < val_samples_threshold:
             try:
                 data_element = val_iterator.get_next()
@@ -169,10 +167,12 @@ with tf.device(dev):
         print(f'Finished evaluating {finished_samples} validation samples\nLoss: {round(loss, 2)}\nBinary Accuracy: {round(acc, 2)}')
 
         if acc > best_acc:
-            print(f'Validation accuracy improved from {best_acc} to {acc}')
-            print(f'Saving model weights to {ckpPath}')
             best_acc = acc
             model.save_weights(ckpPath)
             ckpState = {'best_acc' : best_acc, 'last_epoch' : i}
             with open(ckpStatePath, 'wb') as handle:
                 pickle.dump(ckpState, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            print(f'Validation accuracy improved from {best_acc} to {acc}')
+            print(f'Saving model weights to {ckpPath}')
+        else:
+            print(f'Validation accuracy did not improve from {best_acc}')
