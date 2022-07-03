@@ -50,9 +50,9 @@ class Predictor:
     self.theta_coords = np.load(
         os.path.join(pdb_dir, "p1_theta_wrt_center.npy")
     )
-    self.mask = np.load(
+    self.mask = np.expand_dims(np.load(
       os.path.join(pdb_dir, "p1_mask.npy")
-    )
+    ), axis=-1)
     self.n_pockets = self.mask.shape[0]
     
     self.data_dict = {'input_feat' : self.input_feat, 'rho_coords' : self.rho_coords,
