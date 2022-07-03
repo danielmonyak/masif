@@ -88,7 +88,7 @@ def summary(threshold):
     print(f'Only {npoints} pocket points were predicted...\n')
     return 0, 0
   
-  print(f'Only {npoints} pocket points were predicted...\n')
+  print(f'{npoints} pocket points were predicted...\n')
   
   overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
   recall = len(overlap)/len(pocket_points_true)
