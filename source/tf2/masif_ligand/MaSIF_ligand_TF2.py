@@ -61,7 +61,8 @@ class MaSIF_ligand(Model):
             #
             layers.Dense(30, activation="relu", kernel_regularizer=regularizers.L1(0.001)),
             #
-            layers.Dense(self.n_ligands, activation="softmax")
+            #layers.Dense(self.n_ligands, activation="softmax")
+            layers.Dense(self.n_ligands)
         ]
     
     def call(self, x):
