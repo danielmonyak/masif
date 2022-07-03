@@ -15,7 +15,7 @@ import tensorflow as tf
 #lr = 1e-3
 # Try this learning rate after
 
-continue_training = True
+continue_training = False
 dev = '/GPU:3'
 
 params = masif_opts["ligand"]
@@ -60,8 +60,7 @@ with strategy.scope():
   model = MaSIF_ligand(
     params["max_distance"],
     params["n_classes"],
-    feat_mask=params["feat_mask"],
-    keep_prob = 1.0
+    feat_mask=params["feat_mask"]
   )
   model.compile(optimizer = model.opt,
     loss = model.loss_fn,
