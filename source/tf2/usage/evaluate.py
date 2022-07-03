@@ -16,10 +16,10 @@ precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/preco
 
 #ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
-ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
 
-thresh = 0.5
-pred = Predictor(ligand_model_path, ligand_site_ckp_path, ligand_threshold = thresh)
+ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
+
+pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path = ligand_site_model_path)
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
 test_file = 'test_pdbs_sequence.npy'
@@ -84,6 +84,8 @@ with tf.device(dev):
             tree = spatial.KDTree(xyz_coords)
             pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
             pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
+        
+            npoints_true = len(pocket_points_true)
         except:
             continue
             
@@ -91,23 +93,32 @@ with tf.device(dev):
         
         ##############################
         pred.loadData(pdb_dir)
-        ligand_site_probs = pred.getLigandSiteProbs()
-        score_best = 0
+        X = (pred.input_feat, pred.rho_coords, pred.theta_coords, pred.mask)
+        ligand_site_probs = tf.sigmoid(pred.ligand_site_model.predict(X))
+
+        #ligand_site_probs = pred.getLigandSiteProbs()
+        #score_best = 0
+        ptsDif_best = npoints_true
         threshold_best = 0
         for threshold in np.linspace(.1, .9, 9):
-            pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold))
-
-            if (len(pocket_points_pred.shape) == 0) or (len(pocket_points_pred) < 2 * minPockets):
+            pocket_points_pred = flatten(tf.where(tf.squeeze(ligand_site_probs > threshold)))
+            npoints = len(pocket_points_pred)
+            if npoints < 2 * minPockets:
                 continue
-
-            X_pred = pred.getLigandX(pocket_points_pred)
-            ligand_probs_mean = pred.predictLigandProbs(X_pred)
-            max_prob = tf.reduce_max(ligand_probs_mean)
-            score = max_prob/(1 + abs(.5 - threshold))
-
-            if max_prob > 0.5 and score > score_best:
-                score_best = score
+            
+            ptsDif = abs(npoints - npoints_true)
+            if ptsDif < ptsDif_best:
+                ptsDif_best = ptsDif
                 threshold_best = threshold
+            #X_pred = pred.getLigandX(pocket_points_pred)
+            #ligand_probs_mean = pred.predictLigandProbs(X_pred)
+            #max_prob = tf.reduce_max(ligand_probs_mean)
+            #score = max_prob/(1 + abs(.5 - threshold))
+            #if max_prob > 0.5 and score > score_best:
+            #    score_best = score
+            #    threshold_best = threshold
+        
+        
 
         if not threshold_best:
             threshold_best = 0.5
@@ -118,7 +129,7 @@ with tf.device(dev):
                 f.write(str(pdb) + '\n')
             continue
 
-        pocket_points_pred = tf.squeeze(tf.where(ligand_site_probs > threshold_best))
+        pocket_points_pred = flatten(tf.where(tf.squeeze(ligand_site_probs > threshold_best)))
         X_pred = pred.getLigandX(pocket_points_pred)
         ligandIdx_pred = pred.predictLigandIdx(X_pred, 0.5).numpy()           
         ##############################
