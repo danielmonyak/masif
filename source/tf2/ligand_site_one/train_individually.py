@@ -114,6 +114,7 @@ with tf.device(dev):
 
             labels = data_element[4]
             if not goodLabel(labels):
+                train_j += 1
                 continue
 
             y = tf.cast(labels > 0, dtype=tf.int32)
@@ -122,7 +123,6 @@ with tf.device(dev):
 
             finished_samples += y.shape[0]
             train_j += 1
-            
             
         #############################################################
         ###################    VALIDATION DATA    ###################
