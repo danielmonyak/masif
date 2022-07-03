@@ -44,14 +44,6 @@ gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str[2:])
 
-saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
-  ckpPath,
-  monitor = 'val_categorical_accuracy',
-  save_best_only = True,
-  verbose = 1,
-  initial_value_threshold = initValThresh
-)
-
 num_epochs = 200
 #with tf.device(dev):
 with strategy.scope():
@@ -72,6 +64,14 @@ with strategy.scope():
     last_epoch = 0
     initValThresh = 0
 
+  saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
+    ckpPath,
+    monitor = 'val_categorical_accuracy',
+    save_best_only = True,
+    verbose = 1,
+    initial_value_threshold = initValThresh
+  )
+    
   history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs,
     intial_epoch = last_epoch,
