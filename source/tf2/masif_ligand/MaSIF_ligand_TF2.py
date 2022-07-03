@@ -45,7 +45,6 @@ class MaSIF_ligand(Model):
         
         
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-        #self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
         self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
  
         
@@ -57,11 +56,11 @@ class MaSIF_ligand(Model):
             CovarLayer(),
             layers.Flatten(),
             layers.Dropout(1 - self.keep_prob),
-            layers.Dense(64, activation="relu", kernel_regularizer=regularizers.L1(0.001)),
+            layers.Dense(64, activation="relu"),
+            #layers.Dense(64, activation="relu", kernel_regularizer=regularizers.L1(0.001)),
             #
-            layers.Dense(30, activation="relu", kernel_regularizer=regularizers.L1(0.001)),
+            #layers.Dense(30, activation="relu", kernel_regularizer=regularizers.L1(0.001)),
             #
-            #layers.Dense(self.n_ligands, activation="softmax")
             layers.Dense(self.n_ligands)
         ]
     
