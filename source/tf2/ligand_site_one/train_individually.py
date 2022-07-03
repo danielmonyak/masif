@@ -21,9 +21,9 @@ cpu = '/CPU:0'
 
 #############################################
 continue_training = True
-read_metrics = True
+read_metrics = False
 
-starting_sample = 645
+starting_sample = 0
 #############################################
 
 params = masif_opts["ligand"]
@@ -73,6 +73,11 @@ else:
     i = 0
     best_acc = 0
 
+############################### GET RID OF THIS IN THE FUTURE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+i = 2
+print(f'Resuming epoch {i} of training')
+############################### GET RID OF THIS IN THE FUTURE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
 def goodLabel(labels):
     n_ligands = labels.shape[1]
     if n_ligands > 1:
