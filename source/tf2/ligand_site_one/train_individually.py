@@ -7,10 +7,9 @@ from IPython.core.debugger import set_trace
 import pickle
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras import layers, Sequential, Model
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
-from MaSIF_ligand_site_one import MaSIF_ligand_site
+from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
 import random
 
 gpus = tf.config.list_physical_devices('GPU')
@@ -39,9 +38,14 @@ model = MaSIF_ligand_site(
     params["n_classes"],
     feat_mask=params["feat_mask"]
 )
+
+binAcc_thresh_dict = {True : 0.0, False : 0.5}
+from_logits = model.loss_fn.get_config()['from_logits']
+binAcc = tf.keras.metrics.BinaryAccuracy(threshold = binAcc_thresh_dict[from_logits])
+
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=['binary_accuracy']
+  metrics=[binAcc]
 )
 
 modelDir = 'kerasModel'
@@ -110,7 +114,7 @@ with tf.device(dev):
                 print(f'Running training data, epoch {i}')
                 continue
                 
-            print(f'Train record {train_j}')
+            print(f'Epoch {i}, train record {train_j}')
 
             labels = data_element[4]
             if not goodLabel(labels):
@@ -167,12 +171,12 @@ with tf.device(dev):
         print(f'Finished evaluating {finished_samples} validation samples\nLoss: {round(loss, 2)}\nBinary Accuracy: {round(acc, 2)}')
 
         if acc > best_acc:
+            print(f'Validation accuracy improved from {best_acc} to {acc}')
+            print(f'Saving model weights to {ckpPath}')
             best_acc = acc
             model.save_weights(ckpPath)
             ckpState = {'best_acc' : best_acc, 'last_epoch' : i}
             with open(ckpStatePath, 'wb') as handle:
                 pickle.dump(ckpState, handle, protocol=pickle.HIGHEST_PROTOCOL)
-            print(f'Validation accuracy improved from {best_acc} to {acc}')
-            print(f'Saving model weights to {ckpPath}')
         else:
             print(f'Validation accuracy did not improve from {best_acc}')
