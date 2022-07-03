@@ -74,7 +74,7 @@ with strategy.scope():
     
   history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs,
-    intial_epoch = last_epoch,
+    initial_epoch = last_epoch,
     validation_data = (val_X, val_y),
     callbacks = [saveCheckpoints],
     verbose = 2,
