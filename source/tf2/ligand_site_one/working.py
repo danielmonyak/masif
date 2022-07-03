@@ -52,7 +52,8 @@ tree = spatial.KDTree(xyz_coords)
 pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
 
-print(f'{len(pocket_points_true)} true pocket points')
+npoints_true = len(pocket_points_true)
+print(f'{npoints_true} true pocket points')
 
 all_ligand_types = np.load(
     os.path.join(
@@ -96,33 +97,40 @@ def summary(threshold):
   print('Recall:', round(recall, 2))
   print('Precision:', round(precision, 2))
   
-  #f1 = precision*recall/(precision+recall)
   X_pred = pred.getLigandX(pocket_points_pred)
   ligand_probs_mean = pred.predictLigandProbs(X_pred, 0.5)
   
   ligandIdx_pred = tf.argmax(ligand_probs_mean)
   print('\nligandIdx_pred:', ligandIdx_pred.numpy())
   
-  max_prob = tf.reduce_max(ligand_probs_mean)
-  print('max_prob:', round(max_prob.numpy(), 2))
+  #max_prob = tf.reduce_max(ligand_probs_mean)
+  #print('max_prob:', round(max_prob.numpy(), 2))
+  #
+  #score = max_prob/(1 + abs(.5 - threshold))
+  #print('score:', round(score.numpy(), 2), '\n')
+  #return max_prob, score
   
-  score = max_prob/(1 + abs(.5 - threshold))
-  print('score:', round(score.numpy(), 2), '\n')
-  
-  return max_prob, score
+  return abs(npoints - npoints_true)
 
 
 ########
 print()
 
-score_best = 0
+#score_best = 0
+ptsDif_best = npoints_true
 threshold_best = 0
 for threshold in np.linspace(.1, .9, 9):
   print('threshold:', threshold)
-  max_prob, score = summary(threshold)
-  if max_prob > 0.5 and score > score_best:
-    score_best = score
-    threshold_best = threshold
+  
+  ptsDif = abs(npoints - npoints_true)
+  ptsDif = summary(threshold)
+  if ptsDif < ptsDif_best:
+      ptsDif_best = ptsDif
+      threshold_best = threshold
+  #max_prob, score = summary(threshold)
+  #if max_prob > 0.5 and score > score_best:
+  #  score_best = score
+  #  threshold_best = threshold
 
 print('threshold_best:', threshold_best)
 print()
