@@ -87,7 +87,7 @@ def summary(threshold):
   npoints = len(pocket_points_pred)
   if npoints < 2 * minPockets:
     print(f'Only {npoints} pocket points were predicted...\n')
-    return 0, 0
+    return npoints_true
   
   print(f'{npoints} pocket points were predicted...\n')
   
