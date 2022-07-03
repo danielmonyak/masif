@@ -122,7 +122,6 @@ threshold_best = 0
 for threshold in np.linspace(.1, .9, 9):
   print('threshold:', threshold)
   
-  ptsDif = abs(npoints - npoints_true)
   ptsDif = summary(threshold)
   if ptsDif < ptsDif_best:
       ptsDif_best = ptsDif
