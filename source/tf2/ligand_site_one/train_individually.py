@@ -39,9 +39,8 @@ model = MaSIF_ligand_site(
     feat_mask=params["feat_mask"]
 )
 
-binAcc_thresh_dict = {True : 0.0, False : 0.5}
 from_logits = model.loss_fn.get_config()['from_logits']
-binAcc = tf.keras.metrics.BinaryAccuracy(threshold = binAcc_thresh_dict[from_logits])
+binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
 
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
