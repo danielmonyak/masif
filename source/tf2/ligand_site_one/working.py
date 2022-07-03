@@ -52,6 +52,7 @@ tree = spatial.KDTree(xyz_coords)
 pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
 
+print(f'{len(pocket_points_true)} true pocket points\n')
 
 all_ligand_types = np.load(
     os.path.join(
@@ -87,9 +88,11 @@ def summary(threshold):
     print(f'Only {npoints} pocket points were predicted...\n')
     return 0, 0
   
+  print(f'Only {npoints} pocket points were predicted...\n')
+  
   overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
   recall = len(overlap)/len(pocket_points_true)
-  precision = len(overlap)/len(pocket_points_pred)
+  precision = len(overlap)/npoints
   print('Recall:', round(recall, 2))
   print('Precision:', round(precision, 2))
   
