@@ -80,7 +80,7 @@ X = (input_feat, rho_coords, theta_coords, mask)
 ligand_site_probs = tf.sigmoid(pred.ligand_site_model.predict(X))
 
 def summary(threshold):
-  pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > threshold)))
+  pocket_points_pred = flatten(tf.where(tf.squeeze(ligand_site_probs > threshold)))
   
   npoints = len(pocket_points_pred)
   if npoints < 2 * minPockets:
