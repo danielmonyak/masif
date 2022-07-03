@@ -52,7 +52,7 @@ tree = spatial.KDTree(xyz_coords)
 pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
 
-print(f'{len(pocket_points_true)} true pocket points\n')
+print(f'{len(pocket_points_true)} true pocket points')
 
 all_ligand_types = np.load(
     os.path.join(
