@@ -15,7 +15,7 @@ import tensorflow as tf
 #lr = 1e-3
 # Try this learning rate after
 
-continue_training = True
+continue_training = False
 dev = '/GPU:3'
 cpu = '/CPU:0'
 
