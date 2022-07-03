@@ -55,8 +55,8 @@ saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
 )
 
 num_epochs = 200
-with tf.device(dev):
-  #with strategy.scope():
+#with tf.device(dev):
+with strategy.scope():
   model = MaSIF_ligand(
     params["max_distance"],
     params["n_classes"],
