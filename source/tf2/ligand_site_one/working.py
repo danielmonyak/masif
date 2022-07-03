@@ -65,11 +65,11 @@ ligandIdx_true = ligand_list.index(ligand_true)
 #ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
 
-pred = Predictor(ligand_model_path = ligand_model_path)
+ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
+
+pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path = ligand_site_model_path)
 pred.loadData(pdb_dir)
 
-ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
-ligand_site_model = tf.keras.models.load_model(ligand_site_model_path)
   
 input_feat = np.load(os.path.join(pdb_dir, "p1_input_feat.npy"))
 rho_coords = np.load(os.path.join(pdb_dir, "p1_rho_wrt_center.npy"))
@@ -77,7 +77,7 @@ theta_coords = np.load(os.path.join(pdb_dir, "p1_theta_wrt_center.npy"))
 mask = np.expand_dims(np.load(os.path.join(pdb_dir, "p1_mask.npy")), axis=-1)
 
 X = (input_feat, rho_coords, theta_coords, mask)
-ligand_site_probs = tf.sigmoid(ligand_site_model.predict(X))
+ligand_site_probs = tf.sigmoid(pred.ligand_site_model.predict(X))
 
 def summary(threshold):
   pocket_points_pred = tf.squeeze(tf.where(tf.squeeze(ligand_site_probs > threshold)))
@@ -112,14 +112,12 @@ def summary(threshold):
 ########
 print()
 
-#max_prob_best = 0.5
 score_best = 0
 threshold_best = 0
 for threshold in np.linspace(.1, .9, 9):
   print('threshold:', threshold)
   max_prob, score = summary(threshold)
   if max_prob > 0.5 and score > score_best:
-    #max_prob_best = max_prob
     score_best = score
     threshold_best = threshold
 
