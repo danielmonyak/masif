@@ -135,7 +135,7 @@ print('threshold_best:', threshold_best)
 print()
 if not threshold_best:
   threshold_best = 0.5
-  print('NO THRESHOLD WAS GOOD ENUGH TO GIVE A PREDICTION WITH CONFIDENCE')
+  sys.exit('NO THRESHOLD WAS GOOD ENOUGH TO GIVE A PREDICTION WITH CONFIDENCE')
 
 pocket_points_pred = flatten(tf.where(tf.squeeze(ligand_site_probs > threshold_best)))
 ########
