@@ -19,20 +19,28 @@ modelDir = 'kerasModel'
 modelPath = os.path.join(modelDir, 'savedModel')
 model = tf.keras.models.load_model(modelPath)
 
-datadir = '/data02/daniel/masif/datasets/tf2'
-test_X_raw = np.load(os.path.join(datadir, 'test_X.npy'))
-test_y = np.load(os.path.join(datadir, 'test_y.npy'))
+datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
+genPath = os.path.join(datadir, '{}_{}.npy')
+
+train_X = np.load(genPath.format('train', 'X'))
+train_y = np.load(genPath.format('train', 'y'))
+val_X = np.load(genPath.format('val', 'X'))
+val_y = np.load(genPath.format('val', 'y'))
+test_X = np.load(genPath.format('test', 'X'))
+test_y = np.load(genPath.format('test', 'y'))
 
 defaultCode = 123.45679
+dev = '/GPU:3'
+cpu = '/CPU:0'
 
-with tf.device('/CPU:0'):
-  test_X = tf.RaggedTensor.from_tensor(test_X_raw, padding=defaultCode)
+with tf.device(cpu):
+  train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
+  val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
+  test_X = tf.RaggedTensor.from_tensor(test_X, padding=defaultCode)
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
-
-dev = '/GPU:3'
 
 with strategy.scope():
   print('train')
