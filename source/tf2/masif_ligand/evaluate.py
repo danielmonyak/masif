@@ -65,7 +65,7 @@ for i in range(len(preds_tsr)):
   y_pred.append(mode(preds_tsr[i].numpy()).mode)
 
 '''
-y_pred_probs = tf.reduce_mean(pred_tsr, axis=-1)
+y_pred_probs = tf.reduce_mean(probs_tsr, axis=-1)
 y_pred = tf.argmax(y_pred_probs, axis = 1)
 '''
 
