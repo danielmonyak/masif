@@ -44,11 +44,11 @@ strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
 with strategy.scope():
   print('train')
-  train_res = model.evaluate(train_X, train_y)
+  train_res = model.evaluate(train_X, train_y, verbose=2)
   print('val')
-  val_res = model.evaluate(val_X, val_y)
+  val_res = model.evaluate(val_X, val_y, verbose=2)
   print('test')
-  test_res = model.evaluate(test_X, test_y)
+  test_res = model.evaluate(test_X, test_y, verbose=2)
   y_pred_probs = model.predict(test_X)
 
 y_true = test_y.argmax(axis = 1)
