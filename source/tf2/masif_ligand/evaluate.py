@@ -8,8 +8,9 @@ import importlib
 import sys
 from default_config.util import *
 from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import balanced_accuracy_score, roc_auc_score
 import tensorflow as tf
+from scipy.stats import mode
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -22,37 +23,53 @@ model = tf.keras.models.load_model(modelPath)
 datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
-train_X = np.load(genPath.format('train', 'X'))
+'''train_X = np.load(genPath.format('train', 'X'))
 train_y = np.load(genPath.format('train', 'y'))
 val_X = np.load(genPath.format('val', 'X'))
-val_y = np.load(genPath.format('val', 'y'))
+val_y = np.load(genPath.format('val', 'y'))'''
 test_X = np.load(genPath.format('test', 'X'))
 test_y = np.load(genPath.format('test', 'y'))
 
 defaultCode = 123.45679
-dev = '/GPU:3'
+gpu = '/GPU:3'
 cpu = '/CPU:0'
 
 with tf.device(cpu):
-  train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
-  val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
+  #train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
+  #val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
   test_X = tf.RaggedTensor.from_tensor(test_X, padding=defaultCode)
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str[1:])
 
-with strategy.scope():
-  print('train')
+with tf.device(gpu):
+  '''print('train')
   train_res = model.evaluate(train_X, train_y, verbose=2)
   print('val')
-  val_res = model.evaluate(val_X, val_y, verbose=2)
-  print('test')
-  test_res = model.evaluate(test_X, test_y, verbose=2)
-  y_pred_probs = model.predict(test_X)
+  val_res = model.evaluate(val_X, val_y, verbose=2)'''
+  n_pred = 50
+  print(f'Making {n_pred} predictions for each test protein...')
+  pred_list = []
+  for i in range(n_pred):
+    print(i)
+    #test_res = model.evaluate(test_X, test_y, verbose=2)
+    y_pred_probs_temp = tf.nn.softmax(model.predict(test_X))
+    pred_list.append(y_pred_probs)
+
+probs_tsr = tf.stack(pred_list, axis=-1)
+
+preds_tsr = tf.argmax(probs_tsr, axis=1)
+y_pred = []
+for i in range(len(preds_tsr)):
+  y_pred.append(mode(preds_tsr[i].numpy()).mode)
+
+'''
+y_pred_probs = tf.reduce_mean(pred_tsr, axis=-1)
+y_pred = tf.argmax(y_pred_probs, axis = 1)
+'''
 
 y_true = test_y.argmax(axis = 1)
-y_pred = y_pred_probs.argmax(axis = 1)
 
 balanced_acc = balanced_accuracy_score(y_true, y_pred)
 roc_auc = roc_auc_score(y_true, y_pred_probs, multi_class = 'ovr', labels = np.arange(7))
