@@ -1,8 +1,8 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
-from default_config.masif_opts import masif_opts
-from MaSIF_ligand_TF2 import MaSIF_ligand
+from default_config.util import *
+from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 import tensorflow as tf
 import numpy as np
 
@@ -18,11 +18,11 @@ model = MaSIF_ligand(
   feat_mask=params["feat_mask"]
 )
 model.compile(optimizer = model.opt,
-  loss = model.loss_fn,
-  metrics=['accuracy']
-)
+              loss = model.loss_fn,
+              metrics = ['categorical_accuracy']
+             )
 
-datadir = '/data02/daniel/masif/datasets/tf2'
+datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
 test_X = np.load(os.path.join(datadir, 'test_X.npy'))
 
 
