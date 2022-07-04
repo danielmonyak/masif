@@ -7,7 +7,7 @@ from IPython.core.debugger import set_trace
 import importlib
 import sys
 from default_config.util import *
-from MaSIF_ligand_site import MaSIF_ligand_site
+from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 from sklearn.metrics import accuracy_score
 import tensorflow as tf
 
