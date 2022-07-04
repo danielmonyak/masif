@@ -50,14 +50,14 @@ with tf.device(gpu):
   val_res = model.evaluate(val_X, val_y, verbose=2)'''
   n_pred = 50
   print(f'Making {n_pred} predictions for each test protein...')
-  pred_list = []
+  probs_list = []
   for i in range(n_pred):
     print(i)
     #test_res = model.evaluate(test_X, test_y, verbose=2)
     y_pred_probs_temp = tf.nn.softmax(model.predict(test_X))
-    pred_list.append(y_pred_probs)
+    probs_list.append(y_pred_probs_temp)
 
-probs_tsr = tf.stack(pred_list, axis=-1)
+probs_tsr = tf.stack(probs_list, axis=-1)
 
 preds_tsr = tf.argmax(probs_tsr, axis=1)
 y_pred = []
