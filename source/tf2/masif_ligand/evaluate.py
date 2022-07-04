@@ -58,7 +58,7 @@ with tf.device(gpu):
     probs_list.append(y_pred_probs_temp)
 
 probs_tsr = tf.stack(probs_list, axis=-1)
-
+'''
 preds_tsr = tf.argmax(probs_tsr, axis=1)
 y_pred = []
 for i in range(len(preds_tsr)):
@@ -67,7 +67,7 @@ for i in range(len(preds_tsr)):
 '''
 y_pred_probs = tf.reduce_mean(probs_tsr, axis=-1)
 y_pred = tf.argmax(y_pred_probs, axis = 1)
-'''
+
 
 y_true = test_y.argmax(axis = 1)
 
