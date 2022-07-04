@@ -34,6 +34,8 @@ defaultCode = 123.45679
 gpu = '/GPU:3'
 cpu = '/CPU:0'
 
+n_pred = 100
+
 with tf.device(cpu):
   #train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
   #val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
@@ -48,7 +50,6 @@ with tf.device(gpu):
   train_res = model.evaluate(train_X, train_y, verbose=2)
   print('val')
   val_res = model.evaluate(val_X, val_y, verbose=2)'''
-  n_pred = 50
   print(f'Making {n_pred} predictions for each test protein...')
   probs_list = []
   for i in range(n_pred):
