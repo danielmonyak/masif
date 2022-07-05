@@ -138,7 +138,7 @@ with tf.device(dev):
             X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
             _=model.fit(X_samp, y_samp, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 20.0})
 
-            finished_samples += y.shape[0]
+            finished_samples += sample.shape[0]
             train_j += 1
             
         #############################################################
