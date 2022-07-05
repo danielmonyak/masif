@@ -20,7 +20,7 @@ dev = '/GPU:1'
 cpu = '/CPU:0'
 
 #############################################
-continue_training = True
+continue_training = False
 read_metrics = False
 
 starting_sample = 0
@@ -51,6 +51,8 @@ modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 ckpStatePath = ckpPath + '.pickle'
 
+modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
+
 #############################################
 #############################################
 num_epochs = 5                  #############
@@ -73,11 +75,6 @@ else:
     i = 0
     best_acc = 0
 
-############################### GET RID OF THIS IN THE FUTURE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-i = 2
-print(f'Resuming epoch {i} of training')
-############################### GET RID OF THIS IN THE FUTURE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    
 def goodLabel(labels):
     n_ligands = labels.shape[1]
     if n_ligands > 1:
@@ -127,7 +124,7 @@ with tf.device(dev):
 
             y = tf.cast(labels > 0, dtype=tf.int32)
             X = data_element[:4]
-            _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 5.0})
+            _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 10.0})
 
             finished_samples += y.shape[0]
             train_j += 1
@@ -184,3 +181,6 @@ with tf.device(dev):
                 pickle.dump(ckpState, handle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
             print(f'Validation accuracy did not improve from {best_acc}')
+
+model.save(modelPath_endTraining)
+            
