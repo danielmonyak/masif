@@ -71,5 +71,5 @@ pockets_frac_mean = np.mean(pockets_frac_arr)
 with open('stats.txt', 'w') as f:
     f.write(f'Average number of total points: {total_pts_mean}\n')
     f.write(f'Average number of pocket points: {n_pockets_mean}\n')
-    f.write(f'Average fraction of points that are pocket points: {pockets_frac_mean}\n')
+    f.write(f'Average fraction of points that are pocket points: {round(pockets_frac_mean, 3)}\n')
 
