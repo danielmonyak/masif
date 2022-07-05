@@ -7,8 +7,10 @@ import seaborn as sns
 
 dir = 'results'
 
-arr_list = ['pdbs', 'lig_true', 'lig_pred', 'recall', 'precision']
-dtype_list = [str, float, float, float, float]
+#arr_list = ['pdbs', 'lig_true', 'lig_pred', 'recall', 'precision']
+#dtype_list = [str, float, float, float, float]
+arr_list = ['lig_true', 'lig_pred', 'recall', 'precision']
+dtype_list = [float, float, float, float]
 
 input_dict = {}
 for i, arr in enumerate(arr_list):
