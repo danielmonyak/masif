@@ -62,14 +62,14 @@ with tf.device(dev):
 
 total_pts_arr = np.array(total_pts_list)
 n_pockets_arr = np.array(n_pockets_list)
-pockets_frac_arr = n_pockets/total_pts
+pockets_frac_arr = n_pockets_arr/total_pts_arr
 
 total_pts_mean = np.mean(total_pts_arr)
 n_pockets_mean = np.mean(n_pockets_arr)
 pockets_frac_mean = np.mean(pockets_frac_arr)
 
 with open('stats.txt', 'w') as f:
-    f.write(f'Average number of total points: {total_pts_mean}')
-    f.write(f'Average number of pocket points: {n_pockets_mean}')
-    f.write(f'Average fraction of points that are pocket points: {pockets_frac_mean}')
+    f.write(f'Average number of total points: {total_pts_mean}\n')
+    f.write(f'Average number of pocket points: {n_pockets_mean}\n')
+    f.write(f'Average fraction of points that are pocket points: {pockets_frac_mean}\n')
 
