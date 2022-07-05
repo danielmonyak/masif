@@ -62,8 +62,8 @@ n_test = len(pdbs_left)
 
 dev = '/GPU:0'
 with tf.device(dev):
-    #for i, pdb in enumerate(pdbs_left):
-    for i, pdb in enumerate(train_list):
+    for i, pdb in enumerate(pdbs_left):
+        #for i, pdb in enumerate(train_list):
         print('{} of {} test pdbs running...'.format(i, n_test))
         try:
             pdb_dir = os.path.join(precom_dir, pdb)
