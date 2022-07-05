@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 from sklearn.metrics import balanced_accuracy_score
 from scipy import spatial
@@ -28,12 +29,20 @@ train_file = 'train_pdbs_sequence.npy'
 test_list = np.char.add(
         np.load(
                 os.path.join(listDir, test_file)
-        ).astype(str), '_')
+        ).astype(str),
+        '_')
 
 train_list = np.char.add(
         np.load(
             os.path.join(listDir, train_file)
-        ).astype(str), '_')
+        ).astype(str),
+        '_')
+
+arg_dict = {'train' : train_list, 'test' : test_list}
+try:
+    pdbs_list = arg_dict[sys.argv[1]]
+except:
+    sys.exit('Must pass "train" or "test" as an argument...')
 
 if not os.path.exists(outdir):
     os.mkdir(outdir)
@@ -62,9 +71,8 @@ n_test = len(pdbs_left)
 
 dev = '/GPU:0'
 with tf.device(dev):
-    for i, pdb in enumerate(pdbs_left):
-        #for i, pdb in enumerate(train_list):
-        print('{} of {} test pdbs running...'.format(i, n_test))
+    for i, pdb in enumerate(pdbs_list):
+        print(f'{i} of {n_test} {sys.argv[1]} pdbs running...')
         try:
             pdb_dir = os.path.join(precom_dir, pdb)
             xyz_coords = Predictor.getXYZCoords(pdb_dir)

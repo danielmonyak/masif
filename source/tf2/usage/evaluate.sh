@@ -5,6 +5,6 @@ masif_root=$(git rev-parse --show-toplevel)
 masif_source=$masif_root/source
 export PYTHONPATH=$PYTHONPATH:$masif_source
 
-python evaluate.py > evaluate.out 2> evaluate.err &
+python evaluate.py $1 > evaluate.out 2> evaluate.err &
 echo $! > evaluate.pid
 disown -h $!
