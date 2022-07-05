@@ -101,7 +101,7 @@ def summary(threshold):
   ligand_probs_mean = pred.predictLigandProbs(X_pred, 0.5)
   
   ligandIdx_pred = tf.argmax(ligand_probs_mean)
-  print('\nligandIdx_pred:', ligandIdx_pred.numpy())
+  print('\nligandIdx_pred:', ligandIdx_pred.numpy(), '\n')
   
   #max_prob = tf.reduce_max(ligand_probs_mean)
   #print('max_prob:', round(max_prob.numpy(), 2))
