@@ -42,8 +42,6 @@ with tf.device(dev):
     train_iterator = iter(train_data)
     i = 0
     while True:
-        if i == 10:
-            break
         try:
             print(i)
             i += 1
