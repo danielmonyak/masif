@@ -44,6 +44,7 @@ with tf.device(dev):
     while True:
         try:
             print(i)
+            i += 1
             data_element = train_iterator.get_next()
         except:
             break
