@@ -124,7 +124,7 @@ with tf.device(dev):
 
             y = tf.cast(labels > 0, dtype=tf.int32)
             X = data_element[:4]
-            _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 10.0})
+            _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 20.0})
 
             finished_samples += y.shape[0]
             train_j += 1
