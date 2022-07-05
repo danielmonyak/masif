@@ -122,9 +122,21 @@ with tf.device(dev):
                 train_j += 1
                 continue
 
+            pocket_points = tf.where(tf.squeeze(labels > 0))
+            npoints = tf.shape(pocket_points)[0]
+            
+            empty_points = tf.where(tf.squeeze(labels == 0))
+            empty_sample = tf.random.shuffle(empty_points)[:npoints]
+            
+            sample = flatten(tf.concat([pocket_points, empty_sample], axis=0))
+            
+
             y = tf.cast(labels > 0, dtype=tf.int32)
             X = data_element[:4]
-            _=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 20.0})
+            
+            y_samp = tf.gather(y, sample)
+            X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
+            _=model.fit(X_samp, y_samp, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 20.0})
 
             finished_samples += y.shape[0]
             train_j += 1
