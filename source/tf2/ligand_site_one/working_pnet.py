@@ -17,6 +17,7 @@ params = masif_opts["ligand"]
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
+binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
 pdb = sys.argv[1]
 if len(sys.argv) > 2:
@@ -61,7 +62,7 @@ pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path =
 pred.loadData(pdb_dir)
 
 ########################
-pnet_coords = np.loadtxt(f'/home/daniel.monyak/software/PUResNet/output_folders/{pdb.rstrip("_")}/pocket{pocket}.txt', dtype=float)
+pnet_coords = np.loadtxt(f'{binding_dir}/{pdb.rstrip("_")}/pocket{pocket}.txt', dtype=float)
 pocket_points_pred = tree.query_ball_point(pnet_coords, 3.0)
 pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
 
