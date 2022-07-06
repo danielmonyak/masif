@@ -19,8 +19,13 @@ ligand_list = params['ligand_list']
 
 
 pdb = sys.argv[1]
+if len(sys.argv) > 2:
+    pocket = sys.argv[2]
+else:
+    pocket = 0
 
 print('pdb:', pdb)
+print('pocket:', pocket)
 
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
@@ -56,7 +61,7 @@ pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path =
 pred.loadData(pdb_dir)
 
 ########################
-pnet_coords = np.loadtxt(f'/home/daniel.monyak/software/PUResNet/output_folders/{pdb.rstrip("_")}/pocket0.txt', dtype=float)
+pnet_coords = np.loadtxt(f'/home/daniel.monyak/software/PUResNet/output_folders/{pdb.rstrip("_")}/pocket{pocket}.txt', dtype=float)
 pocket_points_pred = tree.query_ball_point(pnet_coords, 3.0)
 pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
 
