@@ -60,6 +60,15 @@ pocket_points_pred = tree.query_ball_point(pnet_coords, 3.0)
 pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
 ########################
 
+npoints = len(pocket_points_pred)
+print(f'{npoints} predicted pocket points')
+
+overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
+recall = len(overlap)/npoints_true
+precision = len(overlap)/npoints
+print('Recall:', round(recall, 2))
+print('Precision:', round(precision, 2))
+
 
 
 X_true = pred.getLigandX(pocket_points_true)
