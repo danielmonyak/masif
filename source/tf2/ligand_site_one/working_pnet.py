@@ -20,13 +20,13 @@ ligand_list = params['ligand_list']
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
 pdb = sys.argv[1]
-if len(sys.argv) > 2:
+'''if len(sys.argv) > 2:
     pocket = sys.argv[2]
 else:
     pocket = 0
-
+'''
 print('pdb:', pdb)
-print('pocket:', pocket)
+#print('pocket:', pocket)
 
 
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
@@ -62,30 +62,17 @@ pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path =
 pred.loadData(pdb_dir)
 
 ########################
-pnet_coords = np.loadtxt(f'{binding_dir}/{pdb.rstrip("_")}/pocket{pocket}.txt', dtype=float)
-pocket_points_pred = tree.query_ball_point(pnet_coords, 3.0)
-pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
+pdb_dir = os.path.join(binding_dir, pdb.rstrip("_"))
+files = os.listdir(pdb_dir)
+n_pockets = np.sum(np.char.endswith(files, '.txt'))
 
-'''
-cos_part = np.identity(2)
-sin_part = np.array([[0, -1], [1, 0]])
-for theta in np.linspace(0, 2*math.pi, 100):
-    print(f'theta: {theta}')
-    rot_mat = math.cos(theta) * cos_part + math.sin(theta) * sin_part
-    coords_new = np.concatenate([np.matmul(rot_mat, pnet_coords[:, :2].T).T, np.expand_dims(pnet_coords[:, 2], axis=-1)], axis=1)
-    
-    pocket_points_pred = tree.query_ball_point(coords_new, 3.0)
-    pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
-    
-    npoints = len(pocket_points_pred)
-    
-    overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
-    if len(overlap) > 0:
-        recall = len(overlap)/npoints_true
-        precision = len(overlap)/npoints
-        print('Recall:', round(recall, 2))
-        print('Precision:', round(precision, 2), '\n')
-'''
+pocket_points_pred = []
+for pocket in range(n_pockets):
+    pnet_coords = np.loadtxt(os.path.join(pdb_dir, f'pocket{pocket}.txt'), dtype=float)
+    pp_pred_temp = tree.query_ball_point(pnet_coords, 3.0)
+    pp_pred_temp = list(set([pp for p in pp_pred_temp for pp in p]))
+    pocket_points_pred.extend(pp_pred_temp)
+
 ########################
 
 npoints = len(pocket_points_pred)
