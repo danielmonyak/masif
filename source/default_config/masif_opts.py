@@ -65,7 +65,7 @@ masif_opts["site"]["feat_mask"] = [1.0] * 5
 
 # Neural network ligand application specific parameters.
 masif_opts["ligand"] = {}
-masif_opts["ligand"]["assembly_dir"] = "/data02/daniel/masif/data_preparation/00b-pdbs_assembly"
+masif_opts["ligand"]["assembly_dir"] = os.path.join(basedir, "/data_preparation/00b-pdbs_assembly")
 masif_opts["ligand"]["ligand_coords_dir"] = "/data02/daniel/masif/data_preparation/00c-ligand_coords"
 masif_opts["ligand"][
     "masif_precomputation_dir"
