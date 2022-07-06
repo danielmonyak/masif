@@ -1,4 +1,5 @@
 import tempfile
+import os
 
 basedir = "/data02/daniel/masif/masif_ligand/"
 
