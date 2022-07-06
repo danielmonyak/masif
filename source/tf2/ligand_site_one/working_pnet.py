@@ -55,7 +55,7 @@ pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path =
 pred.loadData(pdb_dir)
 
 ########################
-pnet_coords = np.loadtxt(f'/home/daniel.monyak/software/PUResNet/output_folders/{pdb.split('_')[0]}/pocket0.txt', dtype=float)
+pnet_coords = np.loadtxt(f'/home/daniel.monyak/software/PUResNet/output_folders/{pdb.split("_")[0]}/pocket0.txt', dtype=float)
 pocket_points_pred = tree.query_ball_point(pnet_coords, 3.0)
 pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
 ########################
