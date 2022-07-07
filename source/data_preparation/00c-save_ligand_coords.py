@@ -18,13 +18,10 @@ if not os.path.exists(masif_opts["ligand"]["ligand_coords_dir"]):
         pass
 
 # Ligands of interest
-ligands = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
+ligands = masif_opts['ligand']['ligand_list']
 
-######## Edited by Daniel Monyak
-#structure_ligands_type = []
-#structure_ligands_coords = []
-ligand_dict = {}
-
+structure_ligands_type = []
+structure_ligands_coords = []
 try:
     structure = PDB(
         os.path.join(masif_opts["ligand"]["assembly_dir"], "{}.pdb".format(pdb_id))
@@ -35,17 +32,8 @@ for chain in structure.chains:
     for het in chain.heteroatoms:
         # Check all ligands in structure and save coordinates if they are of interest
         if het.type in ligands:
-            # Edited by Daniel Monyak
-            if het.type in ligand_dict:
-                ligand_dict[het.type].append(het.all_coordinates)
-            else:
-                ligand_dict[het.type] = [het.all_coordinates]
-                #structure_ligands_type.append(het.type)
-                #structure_ligands_coords.append(het.all_coordinates)
-
-structure_ligands_type = list(ligand_dict.keys())
-structure_ligands_coords = list(map(lambda ligand_type : np.concatenate(ligand_dict[ligand_type], axis = 0), structure_ligands_type))                
-########
+            structure_ligands_type.append(het.type)
+            structure_ligands_coords.append(het.all_coordinates)
 
 np.save(
     os.path.join(
