@@ -2,7 +2,6 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
-
 import numpy as np
 from IPython.core.debugger import set_trace
 import importlib
@@ -63,7 +62,6 @@ for dataset in ['val']:
             npoints = pocket_points.shape[0]
             if npoints < minPockets:
                 continue
-            sample = pocket_points
 
             feed_dict = {
                 'input_feat' : tf.gather(data_element[0], pocket_points, axis = 0),
