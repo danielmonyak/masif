@@ -19,16 +19,12 @@ ligand_list = params['ligand_list']
 
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
-pdb = sys.argv[1]
-'''if len(sys.argv) > 2:
-    pocket = sys.argv[2]
-else:
-    pocket = 0
-'''
+#pdb = sys.argv[1]
+pdb='7T7A_A'
+
 print('pdb:', pdb)
 #print('pocket:', pocket)
 
-pdb='7T7A_A'
 
 pdb_dir = os.path.join(params['masif_precomputation_dir'], pdb)
 
