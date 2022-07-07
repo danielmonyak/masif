@@ -19,10 +19,7 @@ outdir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 def helper(feed_dict):
-    def helperInner(tsr_key):
-        tsr = feed_dict[tsr_key]
-        return flatten(tsr)
-    flat_list = list(map(helperInner, data_order))
+    flat_list = list(map(lambda tsr_key : flatten(feed_dict[tsr_key]), data_order))
     return tf.concat(flat_list, axis = 0)
 
 def compile_and_save(feed_list, y_list, dataset):
@@ -44,10 +41,9 @@ for dataset in dataset_list.keys():
 
     temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
     temp_iterator = iter(temp_data)
-    for data_element in temp_data:
-        data_element = temp_iterator.get_next_as_optional()
-        if not data_element:
-            
+    optional = temp_iterator.get_next_as_optional()
+    while optional.has_value():
+        data_element = optional.get_value()
         
         print('{} record {}'.format(dataset, i))
         
@@ -76,7 +72,8 @@ for dataset in dataset_list.keys():
             y_list.append(pocket_labels)
         
         i += 1
-
+        optional = temp_iterator.get_next_as_optional()
+        
     compile_and_save(feed_list, y_list, dataset)
 
 print('Finished!')
