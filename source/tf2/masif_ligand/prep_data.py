@@ -34,8 +34,7 @@ def compile_and_save(feed_list, y_list, dataset):
 
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 
-#for dataset in dataset_list.keys():
-for dataset in ['val']:
+for dataset in dataset_list.keys():
     i = 0
     
     feed_list = []
