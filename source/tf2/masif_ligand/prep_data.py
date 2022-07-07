@@ -52,9 +52,9 @@ for dataset in ['val']:
         
         labels = data_element[4]
         n_ligands = labels.shape[1]
-        for i in range(n_ligands):
-            pocket_points = flatten(tf.where(labels[:, i] != 0))
-            label = np.max(labels[:, i]) - 1
+        for j in range(n_ligands):
+            pocket_points = flatten(tf.where(labels[:, j] != 0))
+            label = np.max(labels[:, j]) - 1
             
             print(f'Ligand: {label}')
             
