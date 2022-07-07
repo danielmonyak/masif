@@ -7,34 +7,34 @@ import numpy as np
 from IPython.core.debugger import set_trace
 import importlib
 import sys
-from default_config.masif_opts import masif_opts
-from read_ligand_tfrecords import _parse_function
+from default_config.util import *
+from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 
-outdir = '/data02/daniel/masif/datasets/tf2/new'
+outdir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 def helper(feed_dict):
     def helperInner(tsr_key):
         tsr = feed_dict[tsr_key]
-        return tf.reshape(tsr, [-1])
-    key_list = ['input_feat', 'rho_coords', 'theta_coords', 'mask']
-    flat_list = list(map(helperInner, key_list))
+        return flatten(tsr)
+    flat_list = list(map(helperInner, data_order))
     return tf.concat(flat_list, axis = 0)
 
 def compile_and_save(feed_list, y_list, dataset):
     tsr_list = list(map(helper, feed_list))
-    X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
-    y = tf.stack(y_list, axis = 0)
+    with tf.device('/CPU:0'):
+        X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
+        y = tf.stack(y_list, axis = 0)
     np.save(genOutPath.format(dataset, 'X'), X)
     np.save(genOutPath.format(dataset, 'y'), y)
 
+
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
-#dataset_list = {'train' : training_data, 'val' : validation_data, 'test' : testing_data}
 
 for dataset in dataset_list.keys():
     i = 0
@@ -46,30 +46,29 @@ for dataset in dataset_list.keys():
     for data_element in temp_data:
         print('{} record {}'.format(dataset, i))
         
-        random_ligand = 0
         labels = data_element[4]
         n_ligands = labels.shape[1]
-        pocket_points = tf.reshape(tf.where(labels[:, random_ligand] != 0), [-1, ])
-        label = np.max(labels[:, random_ligand]) - 1
-        pocket_labels = np.zeros(7, dtype=np.float32)
-        pocket_labels[label] = 1.0
-        npoints = pocket_points.shape[0]
-        if npoints < minPockets:
-            continue
-        sample = pocket_points
-        
-        feed_dict = {
-            'input_feat' : tf.gather(data_element[0], sample, axis = 0),
-            'rho_coords' : np.expand_dims(data_element[1], -1)[
-                sample, :, :
-            ],
-            'theta_coords' : np.expand_dims(data_element[2], -1)[
-                sample, :, :
-            ],
-            'mask' : tf.gather(data_element[3], sample, axis = 0)
-        }
-        feed_list.append(feed_dict)
-        y_list.append(pocket_labels)
+        for i in range(n_ligands):
+            pocket_points = flatten(tf.where(labels[:, i] != 0))
+            label = np.max(labels[:, i]) - 1
+            
+            print(f'Ligand: {label}')
+            
+            pocket_labels = np.zeros(7, dtype=np.float32)
+            pocket_labels[label] = 1.0
+            npoints = pocket_points.shape[0]
+            if npoints < minPockets:
+                continue
+            sample = pocket_points
+
+            feed_dict = {
+                'input_feat' : tf.gather(data_element[0], pocket_points, axis = 0),
+                'rho_coords' : tf.gather(data_element[1], pocket_points, axis = 0),
+                'theta_coords' : tf.gather(data_element[2], pocket_points, axis = 0),
+                'mask' : tf.gather(data_element[3], pocket_points, axis = 0)
+            }
+            feed_list.append(feed_dict)
+            y_list.append(pocket_labels)
         
         i += 1
 
