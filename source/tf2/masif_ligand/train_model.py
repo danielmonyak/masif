@@ -20,6 +20,7 @@ dev = '/GPU:3'
 cpu = '/CPU:0'
 
 params = masif_opts["ligand"]
+defaultCode = params['defaultCode']
 
 datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
 genPath = os.path.join(datadir, '{}_{}.npy')
@@ -29,7 +30,7 @@ train_y = np.load(genPath.format('train', 'y'))
 val_X = np.load(genPath.format('val', 'X'))
 val_y = np.load(genPath.format('val', 'y'))
 
-defaultCode = 123.45679
+#defaultCode = 123.45679
 
 with tf.device(cpu):
   train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
