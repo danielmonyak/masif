@@ -45,3 +45,4 @@ data/masif_site/*.err
 data/masif_site/*pid*
 data/masif_site/*_files
 source/tf2/usage/masif_ligand_model
+data/masif_ligand/shoc2
