@@ -16,6 +16,8 @@ defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 
 outdir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
+if not os.path.exists(outdir):
+    os.mkdir(outdir)
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 def helper(feed_dict):
