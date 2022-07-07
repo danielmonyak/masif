@@ -87,13 +87,13 @@ def summary(threshold):
     return npoints_true
   
   print(f'{npoints} pocket points were predicted...\n')
-  
+  '''
   overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
   recall = len(overlap)/len(pocket_points_true)
   precision = len(overlap)/npoints
   print('Recall:', round(recall, 2))
   print('Precision:', round(precision, 2))
-  
+  '''
   X_pred = pred.getLigandX(pocket_points_pred)
   ligand_probs_mean = pred.predictLigandProbs(X_pred, 0.5)
   
