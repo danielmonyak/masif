@@ -11,7 +11,7 @@ from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 #lr = 1e-3
 # Try this learning rate after
 
-continue_training = False
+continue_training = True
 dev = '/GPU:3'
 cpu = '/CPU:0'
 
