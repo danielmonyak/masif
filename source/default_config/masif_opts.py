@@ -67,16 +67,14 @@ masif_opts["site"]["feat_mask"] = [1.0] * 5
 # Neural network ligand application specific parameters.
 masif_opts["ligand"] = {}
 masif_opts["ligand"]["assembly_dir"] = os.path.join(basedir, "data_preparation/00b-pdbs_assembly")
-masif_opts["ligand"]["ligand_coords_dir"] = "/data02/daniel/masif/data_preparation/00c-ligand_coords"
-masif_opts["ligand"][
-    "masif_precomputation_dir"
-] = "/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation/"
+masif_opts["ligand"]["ligand_coords_dir"] = os.path.join(basedir, "data_preparation/00c-ligand_coords"
+masif_opts["ligand"]["masif_precomputation_dir"] = os.path.join(basedir, "data_preparation/04a-precomputation_12A/precomputation/"
 masif_opts["ligand"]["max_shape_size"] = 200
 masif_opts["ligand"]["feat_mask"] = [1.0] * 5
 masif_opts["ligand"]["train_fract"] = 0.9 * 0.8
 masif_opts["ligand"]["val_fract"] = 0.1 * 0.8
 masif_opts["ligand"]["test_fract"] = 0.2
-masif_opts["ligand"]["tfrecords_dir"] = "/data02/daniel/masif/data_preparation/tfrecords"
+masif_opts["ligand"]["tfrecords_dir"] = os.path.join(basedir, "data_preparation/tfrecords"
 masif_opts["ligand"]["max_distance"] = 12.0
 masif_opts["ligand"]["n_classes"] = 7
 masif_opts["ligand"]["feat_mask"] = [1.0, 1.0, 1.0, 1.0, 1.0]
