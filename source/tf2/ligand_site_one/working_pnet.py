@@ -2,7 +2,6 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
 import sys
-from IPython.core.debugger import set_trace
 import importlib
 import numpy as np
 from scipy import spatial
@@ -30,6 +29,7 @@ pdb_dir = os.path.join(params['masif_precomputation_dir'], pdb)
 
 xyz_coords = Predictor.getXYZCoords(pdb_dir)
 tree = spatial.KDTree(xyz_coords)
+
 ####################
 all_ligand_coords = np.load(
     os.path.join(
@@ -50,8 +50,8 @@ all_ligand_types = np.load(
 ).astype(str)
 ligand_true = all_ligand_types[0]
 ligandIdx_true = ligand_list.index(ligand_true)
-#####################
 
+#####################
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
 ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
 
@@ -70,11 +70,10 @@ for pocket in range(n_pockets):
     pp_pred_temp = list(set([pp for p in pp_pred_temp for pp in p]))
     pocket_points_pred.extend(pp_pred_temp)
 
-########################
-
 npoints = len(pocket_points_pred)
 print(f'{npoints} predicted pocket points')
 
+########################
 overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
 recall = len(overlap)/npoints_true
 precision = len(overlap)/npoints
@@ -82,14 +81,13 @@ print('Recall:', round(recall, 2))
 print('Precision:', round(precision, 2))
 
 ######################
-
-
-X_true = pred.getLigandX(pocket_points_true)
-X_true_pred = pred.predictLigandIdx(X_true)
-print('X_true_pred:', X_true_pred.numpy())
-
 X_pred = pred.getLigandX(pocket_points_pred)
 X_pred_pred = pred.predictLigandIdx(X_pred, 0.5)
 print('\nX_pred_pred:', X_pred_pred.numpy())
+
+######################
+X_true = pred.getLigandX(pocket_points_true)
+X_true_pred = pred.predictLigandIdx(X_true)
+print('X_true_pred:', X_true_pred.numpy())
 
 print('\nligandIdx_true:', ligandIdx_true)
