@@ -2,15 +2,13 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
-import numpy as np
 from IPython.core.debugger import set_trace
 import importlib
 import sys
-from default_config.masif_opts import masif_opts
-from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
-from sklearn.metrics import confusion_matrix
-import pickle
+import numpy as np
 import tensorflow as tf
+from default_config.util import *
+from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 
 #lr = 1e-3
 # Try this learning rate after
@@ -29,8 +27,6 @@ train_X = np.load(genPath.format('train', 'X'))
 train_y = np.load(genPath.format('train', 'y'))
 val_X = np.load(genPath.format('val', 'X'))
 val_y = np.load(genPath.format('val', 'y'))
-
-#defaultCode = 123.45679
 
 with tf.device(cpu):
   train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
@@ -59,8 +55,8 @@ with strategy.scope():
   )  
   if continue_training:
     model.load_weights(ckpPath)
-    last_epoch = 150
-    initValThresh = 0
+    last_epoch = 18
+    initValThresh = 0.71429
   else:
     last_epoch = 0
     initValThresh = 0
