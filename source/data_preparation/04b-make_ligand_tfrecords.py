@@ -7,7 +7,8 @@ from scipy import spatial
 from default_config.masif_opts import masif_opts
 
 params = masif_opts["ligand"]
-ligands = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
+ligands = params['ligand_list']
+
 # List all structures that have been preprocessed
 precomputed_pdbs = glob.glob(
     os.path.join(params["masif_precomputation_dir"], "*", "p1_X.npy")
@@ -19,7 +20,8 @@ selected_pdbs = np.load(os.path.join("lists", "selected_pdb_ids_30.npy"))
 selected_pdbs = selected_pdbs.astype(str)
 all_pdbs = [p for p in precomputed_pdbs if p.split("_")[0] in selected_pdbs]
 
-labels_dict = {"ADP": 1, "COA": 2, "FAD": 3, "HEM": 4, "NAD": 5, "NAP": 6, "SAM": 7}
+#labels_dict = {"ADP": 1, "COA": 2, "FAD": 3, "HEM": 4, "NAD": 5, "NAP": 6, "SAM": 7}
+labels_dict = dict(zip(ligands, range(1, len(ligands)+1)))
 
 # Structures are randomly assigned to train, validation and test sets
 shuffle(all_pdbs)
