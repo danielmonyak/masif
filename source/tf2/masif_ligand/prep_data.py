@@ -43,7 +43,12 @@ for dataset in dataset_list.keys():
     y_list = []
 
     temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
+    temp_iterator = iter(temp_data)
     for data_element in temp_data:
+        data_element = temp_iterator.get_next_as_optional()
+        if not data_element:
+            
+        
         print('{} record {}'.format(dataset, i))
         
         labels = data_element[4]
