@@ -119,4 +119,5 @@ for dataset in dataset_list.keys():
         npoints_pred_list.append(npoints_pred)
 
 columns = ['pdb_list', 'dataset_list', 'recall_list', 'precision_list', 'ligandIdx_true_list', 'true_pts_ligandIdx_pred_list', 'pred_pts_ligandIdx_pred_list', 'npoints_true', 'npoints_pred']
-ret_dict = pd.DataFrame(dict(zip([col.partition('_')[:-2] for col in columns], [eval(col) for col in columns])))
+results = pd.DataFrame(dict(zip([col.partition('_')[:-2] for col in columns], [eval(col) for col in columns])))
+df.to_csv('results.csv', index=False)
