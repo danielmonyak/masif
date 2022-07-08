@@ -37,7 +37,7 @@ ckpPath = os.path.join(modelDir, 'ckp')
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
-strategy = tf.distribute.MirroredStrategy(gpus_str[2:])
+strategy = tf.distribute.MirroredStrategy([gpus_str[1],gpus_str[3]])
 
 num_epochs = 200
 #with tf.device(dev):

@@ -34,7 +34,7 @@ defaultCode = params['defaultCode']
 gpu = '/GPU:3'
 cpu = '/CPU:0'
 
-n_pred = 100
+n_pred = 20
 
 with tf.device(cpu):
   #train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
