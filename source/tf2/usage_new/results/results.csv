@@ -1,0 +1,4 @@
+pdb,true_pocket,pred_pocket,dataset,recall,precision,ligandIdx_true,true_pts_ligandIdx_pred,pred_pts_ligandIdx_pred,npoints_true,npoints_pred
+4X7G_A_,0,0,train,0.8725490196078431,0.2894308943089431,5,0,0,204,615
+3PVZ_AB_,0,0,train,0.9816176470588235,0.521484375,4,2,2,272,512
+4RLR_A_,0,0,train,0.916,0.7411003236245954,3,3,3,250,309
