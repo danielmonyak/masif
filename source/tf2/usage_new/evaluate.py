@@ -39,8 +39,6 @@ npoints_pred_list = []
 
 BIG_pdb_list = []
 BIG_dataset_list = []
-BIG_recall_list = []
-BIG_precision_list = []
 BIG_n_pockets_true = []
 BIG_n_pockets_pred = []
 BIG_matched = []
@@ -98,9 +96,9 @@ for dataset in dataset_dict.keys():
             print('Zero pockets were predicted...')
             BIG_pdb_list.append(pdb)
             BIG_dataset_list.append(dataset)
-            BIG_recall_list.append(0)
-            BIG_precision_list.append(0)
-            
+            BIG_n_pockets_true.append(n_pockets_true)
+            BIG_n_pockets_pred.append(0)
+            BIG_matched.append(0)
             continue
 
         n_pockets_pred = np.sum(np.char.endswith(files, '.txt'))
@@ -181,8 +179,6 @@ for dataset in dataset_dict.keys():
         
         BIG_pdb_list.append(pdb)
         BIG_dataset_list.append(dataset)
-        BIG_recall_list.append(matched/n_pockets_true)
-        BIG_precision_list.append(matched/n_pockets_pred)
         BIG_n_pockets_true.append(n_pockets_true)
         BIG_n_pockets_pred.append(n_pockets_pred)
         BIG_matched.append(matched)
@@ -191,6 +187,6 @@ columns = ['pdb_list', 'true_pocket_list', 'pred_pocket_list', 'dataset_list', '
 results = pd.DataFrame(dict(zip([col.partition('_list')[0] for col in columns], [eval(col) for col in columns])))
 results.to_csv('results.csv', index=False)
 
-BIG_columns = ['BIG_pdb_list', 'BIG_dataset_list', 'BIG_recall_list', 'BIG_precision_list', 'BIG_n_pockets_true', 'BIG_n_pockets_pred', 'BIG_matched']
+BIG_columns = ['BIG_pdb_list', 'BIG_dataset_list', 'BIG_n_pockets_true', 'BIG_n_pockets_pred', 'BIG_matched']
 BIG_results = pd.DataFrame(dict(zip([col.partition('_list')[0].partition('BIG_')[-1] for col in BIG_columns], [eval(col) for col in BIG_columns])))
 BIG_results.to_csv('BIG_results.csv', index=False)
