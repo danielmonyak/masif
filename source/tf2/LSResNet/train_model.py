@@ -2,15 +2,12 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
 import sys
-import importlib
-from IPython.core.debugger import set_trace
 import pickle
 import numpy as np
 import tensorflow as tf
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
-import random
 
 gpus = tf.config.list_physical_devices('GPU')
 for gpu in gpus:
