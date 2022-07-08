@@ -43,11 +43,20 @@ BIG_n_pockets_true = []
 BIG_n_pockets_pred = []
 BIG_matched = []
 
+columns = ['pdb_list', 'true_pocket_list', 'pred_pocket_list', 'dataset_list', 'recall_list', 'precision_list', 'ligandIdx_true_list', 'true_pts_ligandIdx_pred_list', 'pred_pts_ligandIdx_pred_list', 'npoints_true_list', 'npoints_pred_list']
+BIG_columns = ['BIG_pdb_list', 'BIG_dataset_list', 'BIG_n_pockets_true', 'BIG_n_pockets_pred', 'BIG_matched']
+
+outdir = 'results'
+if not os.path.exists(outdir):
+    os.mkdir(outdir)
+
 dataset_dict = {'train' : train_list, 'test' : test_list, 'val' : val_list}
 
 for dataset in dataset_dict.keys():
     data = dataset_dict[dataset]
     n_data = len(data)
+    
+    j = 0
     for i, pdb in enumerate(data):
         print(f'\n{i} of {n_data} {dataset} pdbs running...')
         print(pdb, "\n")
@@ -82,6 +91,7 @@ for dataset in dataset_dict.keys():
             pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
             
             if len(pocket_points_true) == 0:
+                print(f'\tLigand has no pocket points...')
                 continue
 
             pp_true_list.append(pocket_points_true)
@@ -144,12 +154,16 @@ for dataset in dataset_dict.keys():
             recall = len(overlap)/npoints_true
             precision = len(overlap)/npoints_pred
             
-            true_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_true)).numpy()
-            pred_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_pred)).numpy()
+            try:
+                true_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_true)).numpy()
+                pred_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_pred)).numpy()
+            except:
+                print('Something went wrong with ligand prediction...')
+                continue
             
             ligand_true = all_ligand_types[ppt_idx_best]
             ligandIdx_true = ligand_list.index(ligand_true)
-
+            
             ###############
             print(f'Predicted pocket: {pocket}')
             print(f'True pocket: {ppt_idx_best}')
@@ -182,11 +196,19 @@ for dataset in dataset_dict.keys():
         BIG_n_pockets_true.append(n_pockets_true)
         BIG_n_pockets_pred.append(n_pockets_pred)
         BIG_matched.append(matched)
+        
+        if (i > 0) and (i % 100)
+            results = pd.DataFrame(dict(zip([col.partition('_list')[0] for col in columns], [eval(col) for col in columns])))
+            results.to_csv(os.path.join(outdir, 'results.csv'), index=False)
 
-columns = ['pdb_list', 'true_pocket_list', 'pred_pocket_list', 'dataset_list', 'recall_list', 'precision_list', 'ligandIdx_true_list', 'true_pts_ligandIdx_pred_list', 'pred_pts_ligandIdx_pred_list', 'npoints_true_list', 'npoints_pred_list']
+            BIG_results = pd.DataFrame(dict(zip([col.partition('_list')[0].partition('BIG_')[-1] for col in BIG_columns], [eval(col) for col in BIG_columns])))
+            BIG_results.to_csv(os.path.join(outdir, 'BIG_results.csv'), index=False)
+
+
 results = pd.DataFrame(dict(zip([col.partition('_list')[0] for col in columns], [eval(col) for col in columns])))
-results.to_csv('results.csv', index=False)
+results.to_csv(os.path.join(outdir, 'results.csv'), index=False)
 
-BIG_columns = ['BIG_pdb_list', 'BIG_dataset_list', 'BIG_n_pockets_true', 'BIG_n_pockets_pred', 'BIG_matched']
 BIG_results = pd.DataFrame(dict(zip([col.partition('_list')[0].partition('BIG_')[-1] for col in BIG_columns], [eval(col) for col in BIG_columns])))
-BIG_results.to_csv('BIG_results.csv', index=False)
+BIG_results.to_csv(os.path.join(outdir, 'BIG_results.csv'), index=False)
+
+print('Finished!')
