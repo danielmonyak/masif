@@ -37,10 +37,13 @@ pred_pts_ligandIdx_pred_list = []
 npoints_true_list = []
 npoints_pred_list = []
 
-BIG_recall_list = []
-BIG_precision_list = []
 BIG_pdb_list = []
 BIG_dataset_list = []
+BIG_recall_list = []
+BIG_precision_list = []
+BIG_n_pockets_true = []
+BIG_n_pockets_pred = []
+BIG_matched = []
 
 dataset_dict = {'train' : train_list, 'test' : test_list, 'val' : val_list}
 
@@ -180,11 +183,14 @@ for dataset in dataset_dict.keys():
         BIG_dataset_list.append(dataset)
         BIG_recall_list.append(matched/n_pockets_true)
         BIG_precision_list.append(matched/n_pockets_pred)
+        BIG_n_pockets_true.append(n_pockets_true)
+        BIG_n_pockets_pred.append(n_pockets_pred)
+        BIG_n_pockets_matched.append(matched)
 
 columns = ['pdb_list', 'true_pocket_list', 'pred_pocket_list', 'dataset_list', 'recall_list', 'precision_list', 'ligandIdx_true_list', 'true_pts_ligandIdx_pred_list', 'pred_pts_ligandIdx_pred_list', 'npoints_true_list', 'npoints_pred_list']
 results = pd.DataFrame(dict(zip([col.partition('_list')[0] for col in columns], [eval(col) for col in columns])))
 results.to_csv('results.csv', index=False)
 
-BIG_columns = ['BIG_pdb_list', 'BIG_dataset_list', 'BIG_recall_list', 'BIG_precision_list']
+BIG_columns = ['BIG_pdb_list', 'BIG_dataset_list', 'BIG_recall_list', 'BIG_precision_list', 'BIG_n_pockets_true', 'BIG_n_pockets_pred', 'BIG_n_pockets_matched']
 BIG_results = pd.DataFrame(dict(zip([col.partition('_list')[0].partition('BIG_')[-1] for col in BIG_columns], [eval(col) for col in BIG_columns])))
 BIG_results.to_csv('BIG_results.csv', index=False)
