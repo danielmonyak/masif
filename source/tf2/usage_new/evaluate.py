@@ -14,151 +14,101 @@ ligand_list = params['ligand_list']
 
 ligand_coord_dir = params["ligand_coords_dir"]
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
+binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
-#ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
-ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
-
-ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
-
-pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path = ligand_site_model_path)
+pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel')
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
-test_file = 'test_pdbs_sequence.npy'
 train_file = 'train_pdbs_sequence.npy'
+val_file = 'val_pdbs_sequence.npy'
+test_file = 'test_pdbs_sequence.npy'
 
-test_list = np.char.add(
-        np.load(
-                os.path.join(listDir, test_file)
-        ).astype(str),
-        '_')
+train_list = np.char.add(np.load(os.path.join(listDir, train_file)).astype(str), '_')
+val_list = np.char.add(np.load(os.path.join(listDir, val_file)).astype(str), '_')
+test_list = np.char.add(np.load(os.path.join(listDir, test_file)).astype(str), '_')
 
-train_list = np.char.add(
-        np.load(
-            os.path.join(listDir, train_file)
-        ).astype(str),
-        '_')
 
-arg_dict = {'train' : train_list, 'test' : test_list}
-try:
-    pdbs_list = arg_dict[sys.argv[1]]
-except:
-    sys.exit('Must pass "train" or "test" as an argument...')
+pdb_list = []
+dataset_list = []
+recall_list = []
+precision_list = []
+ligandIdx_true_list = []
+true_pts_ligandIdx_pred_list = []
+pred_pts_ligandIdx_pred_list = []
 
-if not os.path.exists(outdir):
-    os.mkdir(outdir)
+dataset_list = {'train' : train_list, 'test' : test_list, 'val' : val_list}
 
-pdb_file = os.path.join(outdir, 'pdbs.txt')
-recall_file = os.path.join(outdir, 'recall.txt')
-precision_file = os.path.join(outdir, 'precision.txt')
-lig_true_file = os.path.join(outdir, 'lig_true.txt')
-lig_pred_file = os.path.join(outdir, 'lig_pred.txt')
-
-all_files = [pdb_file, recall_file, precision_file, lig_true_file, lig_pred_file]
-
-if continue_running:
-    pdbs_done = np.loadtxt(pdb_file, dtype=str)
-    pdbs_left = test_list[~np.isin(test_list, pdbs_done)]
-else:
-    pdbs_left = test_list
-    for fi in all_files:
-        with open(fi, 'w') as f:
-            pass
-
-#break_i = 2
-
-n_train = 5
-n_test = len(pdbs_left)
-
-dev = '/GPU:0'
-with tf.device(dev):
-    for i, pdb in enumerate(pdbs_list):
-        print(f'{i} of {n_test} {sys.argv[1]} pdbs running...')
+for dataset in dataset_list.keys():
+    n_data = len(data)
+    for i, pdb in enumerate(dataset_list[dataset]):
+        print(f'{i} of {n_data} {dataset} pdbs running...')
         try:
             pdb_dir = os.path.join(precom_dir, pdb)
             xyz_coords = Predictor.getXYZCoords(pdb_dir)
-            
+
             all_ligand_coords = np.load(
                 os.path.join(
                     ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
                 )
             )
+            ligand_coords = all_ligand_coords[0]
+            tree = spatial.KDTree(xyz_coords)
+            pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
+            pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
+
+            npoints_true = len(pocket_points_true)
+
+            if npoints_true > 0:
+                print('Zero true pocket points...')
+                continue
+
             all_ligand_types = np.load(
                 os.path.join(
                     ligand_coord_dir, "{}_ligand_types.npy".format(pdb.split("_")[0])
                 )
             ).astype(str)
-        
-            ligand_coords = all_ligand_coords[0]
-            tree = spatial.KDTree(xyz_coords)
-            pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
-            pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
-        
-            npoints_true = len(pocket_points_true)
+            ligand_true = all_ligand_types[0]
+            ligandIdx_true = ligand_list.index(ligand_true)
         except:
             continue
-            
-        #ligandIdx_pred, pocket_points_pred = pred.predictRaw(pdb_dir)
-        
-        ##############################
+
         pred.loadData(pdb_dir)
-        X = (pred.input_feat, pred.rho_coords, pred.theta_coords, pred.mask)
-        ligand_site_probs = tf.sigmoid(pred.ligand_site_model.predict(X))
+        true_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_true))
 
-        #ligand_site_probs = pred.getLigandSiteProbs()
-        #score_best = 0
-        ptsDif_best = npoints_true
-        threshold_best = 0
-        for threshold in np.linspace(.1, .9, 9):
-            pocket_points_pred = flatten(tf.where(tf.squeeze(ligand_site_probs > threshold)))
-            npoints = len(pocket_points_pred)
-            if npoints < 2 * minPockets:
-                continue
-            
-            ptsDif = abs(npoints - npoints_true)
-            if ptsDif < ptsDif_best:
-                ptsDif_best = ptsDif
-                threshold_best = threshold
-            #X_pred = pred.getLigandX(pocket_points_pred)
-            #ligand_probs_mean = pred.predictLigandProbs(X_pred)
-            #max_prob = tf.reduce_max(ligand_probs_mean)
-            #score = max_prob/(1 + abs(.5 - threshold))
-            #if max_prob > 0.5 and score > score_best:
-            #    score_best = score
-            #    threshold_best = threshold
-        
-        
+        ####################
+        pdb_pnet_dir = os.path.join(binding_dir, pdb.rstrip("_"))
+        files = os.listdir(pdb_pnet_dir)
+        n_pockets = np.sum(np.char.endswith(files, '.txt'))
 
-        if not threshold_best:
-            threshold_best = 0.5
-            for fi in all_files[1:]:
-                with open(fi, 'a') as f:
-                    f.write('NO THRESHOLD WAS GOOD ENOUGH TO GIVE A PREDICTION WITH CONFIDENCE\n')
-            with open(pdb_file, 'a') as f:
-                f.write(str(pdb) + '\n')
-            continue
+        pocket_points_pred = []
+        for pocket in range(n_pockets):
+            pnet_coords = np.loadtxt(os.path.join(pdb_pnet_dir, f'pocket{pocket}.txt'), dtype=float)
+            pp_pred_temp = tree.query_ball_point(pnet_coords, 3.0)
+            pp_pred_temp = list(set([pp for p in pp_pred_temp for pp in p]))
+            pocket_points_pred.extend(pp_pred_temp)
 
-        pocket_points_pred = flatten(tf.where(tf.squeeze(ligand_site_probs > threshold_best)))
-        X_pred = pred.getLigandX(pocket_points_pred)
-        ligandIdx_pred = pred.predictLigandIdx(X_pred, 0.5).numpy()           
-        ##############################
+        npoints_pred = len(pocket_points_pred)
 
+        pred_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_pred))
+
+        ####################
         overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
-        recall = len(overlap)/len(pocket_points_true)
-        precision = len(overlap)/len(pocket_points_pred)
+        recall = len(overlap)/npoints_true
+        precision = len(overlap)/npoints_pred
 
-        ligand_true = all_ligand_types[0]
-        ligandIdx_true = ligand_list.index(ligand_true)
-        
-        
-        with open(pdb_file, 'a') as f:
-            f.write(str(pdb) + '\n')
-        
-        with open(recall_file, 'a') as f:
-            f.write(str(recall) + '\n')
-        with open(precision_file, 'a') as f:
-            f.write(str(precision) + '\n')
-        
-        with open(lig_true_file, 'a') as f:
-            f.write(str(ligandIdx_true) + '\n')
-        with open(lig_pred_file, 'a') as f:
-            f.write(str(ligandIdx_pred) + '\n')
+        ###############
+        print(pdb)
+        print(f'Recall: {recall}')
+        print(f'Precision: {precision}')
+        print(f'True ligand: {ligandIdx_true}')
+        print(f'Prediction from true pocket points: {true_pts_ligandIdx_pred}')
+        print(f'Prediction from predicted pocket points: {pred_pts_ligandIdx_pred}')
+
+
+        pdb_list.append(pdb)
+        dataset_list.append(dataset)
+        recall_list.append(recall)
+        precision_list.append(precision)
+        ligandIdx_true_list.append(ligandIdx_true)
+        true_pts_ligandIdx_pred_list.append(true_pts_ligandIdx_pred)
+        pred_pts_ligandIdx_pred_list.append(pred_pts_ligandIdx_pred)
