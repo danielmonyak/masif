@@ -51,7 +51,7 @@ for dataset in dataset_dict.keys():
     data = dataset_dict[dataset]
     n_data = len(data)
     for i, pdb in enumerate(data):
-        print(f'{i} of {n_data} {dataset} pdbs running...')
+        print(f'\n{i} of {n_data} {dataset} pdbs running...')
         print(pdb, "\n")
         try:
             all_ligand_coords = np.load(
@@ -132,7 +132,7 @@ for dataset in dataset_dict.keys():
                     ppt_idx_best = ppt_idx
             
             if f1_highest == 0:
-                unmatched += 1
+                #unmatched += 1
                 continue
                 
             matched += 1
