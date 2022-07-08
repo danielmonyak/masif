@@ -30,7 +30,7 @@ val_y = np.load(genPath.format('val', 'y'))'''
 test_X = np.load(genPath.format('test', 'X'))
 test_y = np.load(genPath.format('test', 'y'))
 
-defaultCode = 123.45679
+defaultCode = params['defaultCode']
 gpu = '/GPU:3'
 cpu = '/CPU:0'
 
