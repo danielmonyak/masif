@@ -85,11 +85,19 @@ for dataset in dataset_dict.keys():
 
             pp_true_list.append(pocket_points_true)
         
+        if len(pp_true_list) == 0:
+            print('Zero true pockets...')
+        
         ####################
         pdb_pnet_dir = os.path.join(binding_dir, pdb.rstrip("_"))
         files = os.listdir(pdb_pnet_dir)
         if len(files) == 0:
             print('Zero pockets were predicted...')
+            BIG_pdb_list.append(pdb)
+            BIG_dataset_list.append(dataset)
+            BIG_recall_list.append(0)
+            BIG_precision_list.append(0)
+            
             continue
 
         n_pockets_pred = np.sum(np.char.endswith(files, '.txt'))
