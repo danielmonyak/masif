@@ -55,23 +55,21 @@ class MaSIF_ligand(Model):
             #
             layers.BatchNormalization(),
             #
-            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
+            layers.ReLU(),
+            layers.Dense(self.n_thetas * self.n_rhos),
             #
             layers.BatchNormalization(),
+            layers.ReLU(),
             #
             CovarLayer(),
             layers.Flatten(),
             layers.Dropout(1 - self.keep_prob),
             #
+            #layers.BatchNormalization(),
+            #
+            layers.Dense(64),
             layers.BatchNormalization(),
-            #
-            layers.Dense(64, activation="relu"),
-            #layers.Dense(64, activation="relu", kernel_regularizer=regularizers.L1(0.001)),
-            #
-            #layers.Dense(30, activation="relu", kernel_regularizer=regularizers.L1(0.001)),
-            #
-            layers.BatchNormalization(),
-            #
+            layers.ReLU(),
             layers.Dense(self.n_ligands)
         ]
     
@@ -273,7 +271,7 @@ class ConvLayer(layers.Layer):
             all_conv_feat.append(conv_feat)
         all_conv_feat = tf.stack(all_conv_feat)
         conv_feat = tf.reduce_max(input_tensor=all_conv_feat, axis=0)
-        conv_feat = tf.nn.relu(conv_feat)
+        #conv_feat = tf.nn.relu(conv_feat)
         return conv_feat
 
     
