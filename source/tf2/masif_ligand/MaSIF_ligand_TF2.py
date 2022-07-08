@@ -52,14 +52,22 @@ class MaSIF_ligand(Model):
         
         self.myLayers=[
             layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
+            #
+            layers.BatchNormalization(),
+            #
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             CovarLayer(),
             layers.Flatten(),
             layers.Dropout(1 - self.keep_prob),
+            #
+            layers.BatchNormalization()
+            #
             layers.Dense(64, activation="relu"),
             #layers.Dense(64, activation="relu", kernel_regularizer=regularizers.L1(0.001)),
             #
             #layers.Dense(30, activation="relu", kernel_regularizer=regularizers.L1(0.001)),
+            #
+            layers.BatchNormalization(),
             #
             layers.Dense(self.n_ligands)
         ]
