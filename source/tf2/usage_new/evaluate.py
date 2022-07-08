@@ -1,6 +1,7 @@
 import os
 import sys
 import numpy as np
+import pandas
 from sklearn.metrics import balanced_accuracy_score
 from scipy import spatial
 from default_config.util import *
@@ -35,6 +36,8 @@ precision_list = []
 ligandIdx_true_list = []
 true_pts_ligandIdx_pred_list = []
 pred_pts_ligandIdx_pred_list = []
+npoints_true_list = []
+npoints_true_pred = []
 
 dataset_list = {'train' : train_list, 'test' : test_list, 'val' : val_list}
 
@@ -112,3 +115,8 @@ for dataset in dataset_list.keys():
         ligandIdx_true_list.append(ligandIdx_true)
         true_pts_ligandIdx_pred_list.append(true_pts_ligandIdx_pred)
         pred_pts_ligandIdx_pred_list.append(pred_pts_ligandIdx_pred)
+        npoints_true_list.append(npoints_true)
+        npoints_pred_list.append(npoints_pred)
+
+columns = ['pdb_list', 'dataset_list', 'recall_list', 'precision_list', 'ligandIdx_true_list', 'true_pts_ligandIdx_pred_list', 'pred_pts_ligandIdx_pred_list', 'npoints_true', 'npoints_pred']
+ret_dict = pd.DataFrame(dict(zip([col.partition('_')[:-2] for col in columns], [eval(col) for col in columns])))
