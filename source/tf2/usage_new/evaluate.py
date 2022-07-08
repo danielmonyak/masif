@@ -197,7 +197,7 @@ for dataset in dataset_dict.keys():
         BIG_n_pockets_pred.append(n_pockets_pred)
         BIG_matched.append(matched)
         
-        if (i > 0) and (i % 100)
+        if (i > 0) and (i % 100):
             results = pd.DataFrame(dict(zip([col.partition('_list')[0] for col in columns], [eval(col) for col in columns])))
             results.to_csv(os.path.join(outdir, 'results.csv'), index=False)
 
