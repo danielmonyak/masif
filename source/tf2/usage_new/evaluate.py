@@ -102,7 +102,7 @@ for dataset in dataset_dict.keys():
 
         n_pockets_pred = np.sum(np.char.endswith(files, '.txt'))
         
-        unmatched = 0
+        #unmatched = 0
         matched = 0
         
         for pocket in range(n_pockets_pred):
@@ -117,10 +117,14 @@ for dataset in dataset_dict.keys():
             f1_highest = 0
             for ppt_idx, pocket_points_true in enumerate(pp_true_list):
                 overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
+                if len(overlap) == 0:
+                    continue
+                    
+                npoints_true = len(pocket_points_true)
                 recall = len(overlap)/npoints_true
                 precision = len(overlap)/npoints_pred
                 f1 = 2*precision*recall/(precision+recall)
-                if f1 > f1_highest:
+                if recall > 0.5 and f1 > f1_highest:
                     f1_highest = f1
                     ppt_idx_best = ppt_idx
             
@@ -166,7 +170,7 @@ for dataset in dataset_dict.keys():
             npoints_true_list.append(npoints_true)
             npoints_pred_list.append(npoints_pred)
             
-        missed = len(pp_true_list)
+        #missed = len(pp_true_list)
         
         #print(f'{unmatched} unmatched predicted pockets')
         #print(f'{missed} missed true pockets')
