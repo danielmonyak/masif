@@ -1,3 +1,0 @@
-pdb,dataset,recall,precision,ligandIdx_true,true_pts_ligandIdx_pred,pred_pts_ligandIdx_pred,npoints_true,npoints_pred
-5CE3_AB_,train,0.0,,0,0,0,158,459
-4X7G_A_,train,0.8725490196078431,0.2894308943089431,5,0,0,204,615
