@@ -8,6 +8,7 @@ import tensorflow as tf
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
+from predictor import Predictor
 
 gpus = tf.config.list_physical_devices('GPU')
 for gpu in gpus:
@@ -15,6 +16,8 @@ for gpu in gpus:
 
 dev = '/GPU:1'
 cpu = '/CPU:0'
+
+precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 
 #############################################
 continue_training = False
@@ -119,24 +122,19 @@ with tf.device(dev):
                 train_j += 1
                 continue
 
-            pocket_points = tf.where(tf.squeeze(labels > 0))
-            npoints = tf.shape(pocket_points)[0]
+            pdb = data_element[5]
+            pdb_dir = os.path.join(precom_dir, pdb)
+            xyz_coords = Predictor.getXYZCoords(pdb_dir)
             
-            empty_points = tf.where(tf.squeeze(labels == 0))
-            empty_sample = tf.random.shuffle(empty_points)[:npoints]
-            
-            sample = flatten(tf.concat([pocket_points, empty_sample], axis=0))
-            
-
             y = tf.cast(labels > 0, dtype=tf.int32)
-            X = data_element[:4]
+            X = (data_element[:4], xyz_coords)
             
             y_samp = tf.gather(y, sample)
             X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
             
-            #_=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 20.0})
-            _=model.fit(X_samp, y_samp, epochs = 1, verbose = 2)
-
+            _=model.fit(X, y, epochs = 1, verbose = 2)
+            #class_weight = {0 : 1.0, 1 : 20.0}
+            
             finished_samples += sample.shape[0]
             train_j += 1
             
