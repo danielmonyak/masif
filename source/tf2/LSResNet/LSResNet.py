@@ -1,6 +1,7 @@
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 from tensorflow.keras.regularizers import L2
+from tensorflow.keras import backend as K
 import functools
 from operator import add
 from default_config.util import *
@@ -55,6 +56,11 @@ class MaSIF_ligand_site(Model):
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Dense(self.n_feat, activation="relu"),
         ]
+        
+        if K.image_data_format()=='channels_last':
+            bn_axis=4
+        else:
+            bn_axis=1
         self.convBlock=[
             [layers.Conv3D(filters1, kernel_size=1, strides=strides, kernel_regularizer=L2(1e-4)),
             layers.BatchNormalization(axis=bn_axis),
