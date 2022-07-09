@@ -44,27 +44,32 @@ class MaSIF_ligand_site(Model):
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
  
+        self.ReLU = layers.ReLU()
+        self.Add = layers.Add()
+        
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers)
         self.denseReduce = [
             layers.BatchNormalization(),
-            layers.ReLU(),
+            self.ReLU,
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Dense(self.n_feat, activation="relu"),
         ]
         self.convBlock=[
-            layers.Convolution3D(filters1,kernel_size=1,strides=strides,name=conv_name_base + '2a',kernel_regularizer=l2(1e-4))(input_tensor)
-            layers.BatchNormalization(axis=bn_axis, name=bn_name_base + '2a')(x)
-            layers.Activation('relu')(x)
-            layers.Convolution3D(filters2,kernel_size=3,padding='same', name=conv_name_base + '2b',kernel_regularizer=l2(1e-4))(x)
-            layers.BatchNormalization(axis=bn_axis, name=bn_name_base + '2b')(x)
-            layers.Activation('relu')(x)
-            layers.Convolution3D(filters3,kernel_size=1,name=conv_name_base + '2c',kernel_regularizer=l2(1e-4))(x)
-            layers.BatchNormalization(axis=bn_axis, name=bn_name_base + '2c')(x)
-            residue=Convolution3D(filters3,kernel_size=1,strides=strides,name=conv_name_base + '1',kernel_regularizer=l2(1e-4))(input_tensor)
-            residue=BatchNormalization(axis=bn_axis, name=bn_name_base + '1')(residue)
-            x=Add()([x,residue])
-            x=Activation('relu')(x)
+            [layers.Convolution3D(filters1, kernel_size=1, strides=strides, kernel_regularizer=l2(1e-4)),
+            layers.BatchNormalization(axis=bn_axis),
+            self.ReLU,
+             
+            layers.Convolution3D(filters2, kernel_size=3 ,padding='same', kernel_regularizer=l2(1e-4)),
+            layers.BatchNormalization(axis=bn_axis),
+            self.ReLU,
+             
+            layers.Convolution3D(filters3, kernel_size=1, kernel_regularizer=l2(1e-4)),
+            layers.BatchNormalization(axis=bn_axis)],
+            
+            [layers.Convolution3D(filters3, kernel_size=1, strides=strides, kernel_regularizer=l2(1e-4)),
+            layers.BatchNormalization(axis=bn_axis)],
         ]
+        self.conv
     
     #@tf.autograph.experimental.do_not_convert
     def call(self, x, training=False):
@@ -78,7 +83,11 @@ class MaSIF_ligand_site(Model):
                                  max_dist=self.max_dist,
                                  grid_resolution=resolution)
         
-        ret = self.convBlock(ret)
+        ret1 = self.convBlock[0](ret)
+        residue = self.convBlock[1](ret)
+        ret = self.Add([ret1, residue])
+        ret = self.Relu(ret)
+        
         return ret
 
 class ConvLayer(layers.Layer):
