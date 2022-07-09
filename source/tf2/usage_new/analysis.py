@@ -7,15 +7,20 @@ outdir = 'results'
 results = pd.read_csv(os.path.join(outdir, 'results.csv'))
 BIG_results = pd.read_csv(os.path.join(outdir, 'BIG_results.csv'))
 
-print('Accuracy from predicted points: ', round((results['pred_pts_ligandIdx_pred'] == results['ligandIdx_true']).mean(), 2))
-print('Accuracy from true points: ', round((results['true_pts_ligandIdx_pred'] == results['ligandIdx_true']).mean(), 2))
-print('Matching accuracy between predicted and true points: ', round((results['true_pts_ligandIdx_pred'] == results['pred_pts_ligandIdx_pred']).mean(), 2))
-
-
-print()
-
 BIG_results['precision'] = BIG_results['matched']/BIG_results['n_pockets_pred']
 BIG_results['recall'] = BIG_results['matched']/BIG_results['n_pockets_true']
 
-print('Recall of pockets: ', round(BIG_results['recall'].mean(), 2))
-print('Precision of pocket predictions: ', round(BIG_results['precision'].mean(), 2))
+for tup in [('all', results.index, BIG_results.index), ('test', results['dataset']=='test', BIG_results['dataset']=='test')]:
+    print(tup[0], '\n')
+    
+    temp_results = results.loc[tup[1]]
+    temp_BIG_results = BIG_results.loc[tup[2]]
+    
+    print('Accuracy from predicted points: ', round((temp_results['pred_pts_ligandIdx_pred'] == temp_results['ligandIdx_true']).mean(), 2))
+    print('Accuracy from true points: ', round((temp_results['true_pts_ligandIdx_pred'] == temp_results['ligandIdx_true']).mean(), 2))
+    print('Matching accuracy between predicted and true points: ', round((temp_results['true_pts_ligandIdx_pred'] == temp_results['pred_pts_ligandIdx_pred']).mean(), 2))
+
+    print()
+
+    print('Recall of pockets: ', round(temp_BIG_results['recall'].mean(), 2))
+    print('Precision of pocket predictions: ', round(temp_BIG_results['precision'].mean(), 2), '\n\n')
