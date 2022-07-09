@@ -1,0 +1,22 @@
+import numpy as np
+import pandas as pd
+import os
+
+outdir = 'results'
+
+results = pd.read_csv(os.path.join(outdir, 'results.csv'))
+BIG_results = pd.read_csv(os.path.join(outdir, 'BIG_results.csv'))
+
+for 
+    print('Accuracy from predicted points: ', round((temp_results['pred_pts_ligandIdx_pred'] == results['ligandIdx_true']).mean(), 2))
+    print('Accuracy from true points: ', round((results['true_pts_ligandIdx_pred'] == results['ligandIdx_true']).mean(), 2))
+    print('Matching accuracy between predicted and true points: ', round((results['true_pts_ligandIdx_pred'] == results['pred_pts_ligandIdx_pred']).mean(), 2))
+
+
+print()
+
+BIG_results['precision'] = BIG_results['matched']/BIG_results['n_pockets_pred']
+BIG_results['recall'] = BIG_results['matched']/BIG_results['n_pockets_true']
+
+print('Recall of pockets: ', round(BIG_results['recall'].mean(), 2))
+print('Precision of pocket predictions: ', round(BIG_results['precision'].mean(), 2))
