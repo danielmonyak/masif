@@ -61,6 +61,11 @@ class MaSIF_ligand_site(Model):
             bn_axis=4
         else:
             bn_axis=1
+
+        f=18
+        filters = [f, f, f ]
+        filters1,filters2,filters3=filters
+        
         self.convBlock=[
             [layers.Conv3D(filters1, kernel_size=1, strides=strides, kernel_regularizer=L2(1e-4)),
             layers.BatchNormalization(axis=bn_axis),
@@ -74,9 +79,8 @@ class MaSIF_ligand_site(Model):
             layers.BatchNormalization(axis=bn_axis)],
             
             [layers.Conv3D(filters3, kernel_size=1, strides=strides, kernel_regularizer=L2(1e-4)),
-            layers.BatchNormalization(axis=bn_axis)],
+            layers.BatchNormalization(axis=bn_axis)]
         ]
-        self.conv
     
     #@tf.autograph.experimental.do_not_convert
     def call(self, x, training=False):
