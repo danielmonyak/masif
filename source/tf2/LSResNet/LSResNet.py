@@ -1,5 +1,6 @@
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
+from tensorflow.keras.regularizers import L2
 import functools
 from operator import add
 from default_config.util import *
@@ -55,18 +56,18 @@ class MaSIF_ligand_site(Model):
             layers.Dense(self.n_feat, activation="relu"),
         ]
         self.convBlock=[
-            [layers.Convolution3D(filters1, kernel_size=1, strides=strides, kernel_regularizer=l2(1e-4)),
+            [layers.Conv3D(filters1, kernel_size=1, strides=strides, kernel_regularizer=L2(1e-4)),
             layers.BatchNormalization(axis=bn_axis),
             self.ReLU,
              
-            layers.Convolution3D(filters2, kernel_size=3 ,padding='same', kernel_regularizer=l2(1e-4)),
+            layers.Conv3D(filters2, kernel_size=3 ,padding='same', kernel_regularizer=L2(1e-4)),
             layers.BatchNormalization(axis=bn_axis),
             self.ReLU,
              
-            layers.Convolution3D(filters3, kernel_size=1, kernel_regularizer=l2(1e-4)),
+            layers.Conv3D(filters3, kernel_size=1, kernel_regularizer=L2(1e-4)),
             layers.BatchNormalization(axis=bn_axis)],
             
-            [layers.Convolution3D(filters3, kernel_size=1, strides=strides, kernel_regularizer=l2(1e-4)),
+            [layers.Conv3D(filters3, kernel_size=1, strides=strides, kernel_regularizer=L2(1e-4)),
             layers.BatchNormalization(axis=bn_axis)],
         ]
         self.conv
