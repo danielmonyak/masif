@@ -55,8 +55,17 @@ class MaSIF_ligand_site(Model):
     
     #@tf.autograph.experimental.do_not_convert
     def call(self, x, training=False):
-        ret = self.myConvLayer(x)
+        xyz_coords = x[1]
+        ret = self.myConvLayer(x[0])
+        for l in self.denseReduce:
+            ret = l(ret)
         
+        scale = 0.5
+        resolution = 1. / self.scale
+        max_dist = 35
+        ret = tfbio.data.make_grid(xyz_coords, ret,
+                                 max_dist=max_dist,
+                                 grid_resolution=resolution)
         return ret
 
 class ConvLayer(layers.Layer):
