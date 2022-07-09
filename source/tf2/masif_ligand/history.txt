@@ -28,3 +28,5 @@
 52/52 - 74s - loss: 1.4010 - categorical_accuracy: 0.7658 - val_loss: 1.7096 - val_categorical_accuracy: 0.6931
 52/52 - 74s - loss: 1.3648 - categorical_accuracy: 0.7815 - val_loss: 1.6496 - val_categorical_accuracy: 0.6984
 52/52 - 74s - loss: 1.3999 - categorical_accuracy: 0.7821 - val_loss: 1.8731 - val_categorical_accuracy: 0.6402
+52/52 - 74s - loss: 1.4404 - categorical_accuracy: 0.7598 - val_loss: 1.5997 - val_categorical_accuracy: 0.7407
+52/52 - 75s - loss: 1.3649 - categorical_accuracy: 0.7858 - val_loss: 1.6011 - val_categorical_accuracy: 0.6984
