@@ -22,7 +22,8 @@ class MaSIF_ligand(Model):
         learning_rate=1e-4,
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
-        keep_prob = 1.0
+        keep_prob = 1.0,
+        l1_val = 0.01
     ):
         ## Call super - model initializer
         super(MaSIF_ligand, self).__init__()
@@ -67,7 +68,7 @@ class MaSIF_ligand(Model):
             #
             #layers.BatchNormalization(),
             #
-            layers.Dense(64, kernel_regularizer=regularizers.L1(0.01)),
+            layers.Dense(64, kernel_regularizer=regularizers.L1(l1_val)),
             layers.BatchNormalization(),
             layers.ReLU(),
             layers.Dense(self.n_ligands)
