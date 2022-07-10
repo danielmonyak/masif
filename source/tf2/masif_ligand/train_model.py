@@ -11,6 +11,8 @@ from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 #lr = 1e-3
 # Try this learning rate after
 
+l1_val = 0.01
+
 continue_training = False
 dev = '/GPU:3'
 cpu = '/CPU:0'
@@ -45,7 +47,8 @@ with strategy.scope():
   model = MaSIF_ligand(
     params["max_distance"],
     params["n_classes"],
-    feat_mask=params["feat_mask"]
+    feat_mask=params["feat_mask"],
+    l1_val = l1_val
   )
   model.compile(optimizer = model.opt,
     loss = model.loss_fn,
