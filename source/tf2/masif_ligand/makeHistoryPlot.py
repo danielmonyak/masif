@@ -1,8 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import sys
 
-factor = 2
+if len(sys.argv) > 1:
+	factor = int(sys.argv[1])
+else:
+	factor = 2
 
 acc = np.loadtxt('accuracy.txt')
 val_acc = np.loadtxt('val_accuracy.txt')
@@ -10,7 +14,7 @@ val_acc = np.loadtxt('val_accuracy.txt')
 arr = np.stack([acc, val_acc])
 plot_arr = np.reshape(arr, [arr.shape[0], factor, -1]).mean(axis=1)
 
-rg = range(0, len(acc), 2)
+rg = range(0, len(acc), factor)
 sns.lineplot(x=rg, y=plot_arr[0])
 sns.lineplot(x=rg, y=plot_arr[1])
 
