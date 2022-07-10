@@ -33,7 +33,7 @@ with tf.device(cpu):
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
-
+modelPath = os.path.join(modelDir, 'savedModel')
 
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
@@ -76,3 +76,4 @@ with strategy.scope():
     use_multiprocessing = True
   )
 
+model.save(modelPath)
