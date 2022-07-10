@@ -8,6 +8,8 @@ if len(sys.argv) > 1:
 else:
 	factor = 2
 
+print(f'Using factor {factor}')
+
 acc = np.loadtxt('accuracy.txt')
 val_acc = np.loadtxt('val_accuracy.txt')
 
