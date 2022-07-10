@@ -48,6 +48,6 @@ source/tf2/usage/masif_ligand_model
 data/masif_ligand/shoc2
 source/tf2/usage_new/results.csv
 source/tf2/masif_ligand/*loss.txt
-source/tf2/masif_ligand/history*.txt
-source/tf2/masif_ligand/*accuracy.txt
+source/tf2/masif_ligand/*history*
+source/tf2/masif_ligand/*accuracy*
 source/tf2/masif_ligand/0.*
