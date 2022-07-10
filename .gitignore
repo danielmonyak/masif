@@ -50,3 +50,4 @@ source/tf2/usage_new/results.csv
 source/tf2/masif_ligand/*loss.txt
 source/tf2/masif_ligand/history*.txt
 source/tf2/masif_ligand/*accuracy.txt
+source/tf2/masif_ligand/0.*
