@@ -6,7 +6,7 @@ import sys
 if len(sys.argv) > 1:
 	factor = int(sys.argv[1])
 else:
-	factor = 2
+	factor = 1
 
 print(f'Using factor {factor}')
 
