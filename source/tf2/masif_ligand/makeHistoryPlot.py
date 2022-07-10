@@ -2,18 +2,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
-#loss = np.loadtxt('loss.txt')
-#val_loss = np.loadtxt('val_loss.txt')
-
-#rg = range(len(loss))
-#sns.lineplot(x=rg, y=loss)
-#sns.lineplot(x=rg, y=val_loss)
+factor = 2
 
 acc = np.loadtxt('accuracy.txt')
 val_acc = np.loadtxt('val_accuracy.txt')
 
-rg = range(len(acc))
-sns.lineplot(x=rg, y=acc)
-sns.lineplot(x=rg, y=val_acc)
+arr = np.stack([acc, val_acc])
+plot_arr = np.reshape(arr, [arr.shape[0], factor, -1]).mean(axis=1)
+
+rg = range(0, len(acc), 2)
+sns.lineplot(x=rg, y=plot_arr[0])
+sns.lineplot(x=rg, y=plot_arr[1])
 
 plt.savefig('history.png')
