@@ -135,6 +135,10 @@ class LSResNet(Model):
         
         xyz_coords = tf.gather(packed, tf.range(3), axis=-1)
         y_raw = tf.expand_dims(tf.gather(packed, 3, axis=-1), axis=-1)
+        
+        print(f'y_raw: {y_raw.shape}')
+        print(f'xyz_coords: {xyz_coords.shape}')
+        
         y = tfbio.data.make_grid(xyz_coords, y_raw, max_dist=self.max_dist, grid_resolution=resolution)
         return tf.squeeze(y, axis=0)
     
