@@ -8,7 +8,7 @@ import tensorflow as tf
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from tf2.LSResNet.LSResNet import LSResNet
-from predictor import Predictor
+from tf2.usage.predictor import Predictor
 
 gpus = tf.config.list_physical_devices('GPU')
 for gpu in gpus:
@@ -17,7 +17,7 @@ for gpu in gpus:
 dev = '/GPU:1'
 cpu = '/CPU:0'
 
-precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
+precom_dir = '/data02/daniel/masif/masif_ligand/data_preparation/04a-precomputation_12A/precomputation'
 
 #############################################
 continue_training = False
@@ -33,7 +33,7 @@ getData = lambda dataset : tf.data.TFRecordDataset(os.path.join(params["tfrecord
 train_data = getData('train')
 val_data = getData('val')
 
-model = MaSIF_ligand_site(
+model = LSResNet(
     params["max_distance"],
     params["n_classes"],
     feat_mask=params["feat_mask"]
@@ -122,15 +122,17 @@ with tf.device(dev):
                 train_j += 1
                 continue
 
-            pdb = data_element[5]
+            pdb = data_element[5].numpy().decode('ascii') + '_'
             pdb_dir = os.path.join(precom_dir, pdb)
             xyz_coords = Predictor.getXYZCoords(pdb_dir)
             
             y = tf.cast(labels > 0, dtype=tf.int32)
             X = (data_element[:4], xyz_coords)
             
+            sample = tf.range(10)
+            
             y_samp = tf.gather(y, sample)
-            X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
+            X_samp = (tuple(tf.gather(tsr, sample) for tsr in X[0]), tf.gather(X[1], sample))
             
             _=model.fit(X, y, epochs = 1, verbose = 2)
             #class_weight = {0 : 1.0, 1 : 20.0}
