@@ -150,7 +150,7 @@ class LSResNet(Model):
         print(f'packed: {packed.shape}')
         
         return tf.map_fn(fn=self.map_func, elems = packed, fn_output_signature = tf.TensorSpec(shape=[36,36,36,1], dtype=tf.float32))
-    
+    '''
     def train_step(self, data):
         X_packed, y_raw = data
         
@@ -167,7 +167,7 @@ class LSResNet(Model):
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
         self.compiled_metrics.update_state(y, y_pred)
         
-        return {m.name: m.result() for m in self.metrics}
+        return {m.name: m.result() for m in self.metrics}'''
     
 class ConvLayer(layers.Layer):
     def __init__(self,
