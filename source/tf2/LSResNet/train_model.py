@@ -126,7 +126,7 @@ with tf.device(dev):
             pdb_dir = os.path.join(precom_dir, pdb)
             xyz_coords = Predictor.getXYZCoords(pdb_dir)
             
-            y_raw = tf.cast(labels > 0, dtype=tf.int32)
+            y_raw = tf.expand_dims(tf.cast(labels > 0, dtype=tf.int32), axis=0)
             X_packed = (data_element[:4], xyz_coords)
             
             #sample = tf.range(10)
