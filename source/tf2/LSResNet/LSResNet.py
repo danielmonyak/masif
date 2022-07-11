@@ -134,9 +134,12 @@ class LSResNet(Model):
         print(f'y_raw: {y_raw.shape}')
         print(f'xyz_coords: {xyz_coords.shape}')
         resolution = 1. / self.scale
-        return tfbio.data.make_grid(xyz_coords, y_raw,
-                                    max_dist=self.max_dist,
-                                    grid_resolution=resolution)
+        grid_list = []
+        for i in range(tf.shape(y_raw)[0])
+            grid_list.append(tfbio.data.make_grid(xyz_coords[i], y_raw[i],
+                                        max_dist=self.max_dist,
+                                        grid_resolution=resolution))
+        return tf.concat(grid_list, axis=0)
     
     def train_step(self, data):
         X_packed, y_raw = data
