@@ -69,8 +69,12 @@ class MaSIF_ligand(Model):
             #layers.BatchNormalization(),
             #
             layers.Dense(64, kernel_regularizer=regularizers.L1(l1_val)),
-            layers.BatchNormalization(),
+            #layers.BatchNormalization(),
             layers.ReLU(),
+            
+            layers.Dense(30),
+            layers.ReLU(),
+            
             layers.Dense(self.n_ligands)
         ]
     
