@@ -10,6 +10,8 @@ from tf2.read_ligand_tfrecords import _parse_function
 from tf2.LSResNet.LSResNet import LSResNet
 from tf2.usage.predictor import Predictor
 
+import tfbio.data
+
 gpus = tf.config.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
@@ -127,16 +129,13 @@ with tf.device(dev):
             xyz_coords = tf.expand_dims(Predictor.getXYZCoords(pdb_dir), axis=0)
             X = tuple(tf.expand_dims(tsr, axis=0) for tsr in data_element[:4])
             
-            y_raw = tf.expand_dims(tf.cast(labels > 0, dtype=tf.int32), axis=0)
+            y_raw = tf.cast(labels > 0, dtype=tf.int32)
+            resolution = 1. / model.scale
+            y = tfbio.data.make_grid(xyz_coords[0], y_raw, max_dist=self.max_dist, grid_resolution=resolution)
+            
             X_packed = (X, xyz_coords)
             
-            #sample = tf.range(10)
-            #y_raw_samp = tf.gather(y, sample)
-            #X_samp = (tuple(tf.gather(tsr, sample) for tsr in X[0]), tf.gather(X[1], sample))
-            #_=model.fit(X_samp, y_raw_samp, epochs = 1, verbose = 2)
-            #class_weight = {0 : 1.0, 1 : 20.0}
-            
-            _=model.fit(X_packed, y_raw, verbose = 2)
+            _=model.fit(X_packed, y, verbose = 2)
             
             finished_samples += sample.shape[0]
             train_j += 1
