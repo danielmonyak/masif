@@ -92,17 +92,14 @@ class LSResNet(Model):
         
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1, kernel_regularizer=L2(1e-4), activation='sigmoid')
     
-    #@tf.autograph.experimental.do_not_convert
-    def call(self, X_packed, training=False):
-        X, xyz_coords = X_packed
-        
-        n_pockets = tf.shape(X[0])[1]
+    def runConv(self, X):
+        n_pockets = tf.shape(X)[0]
         rg = range(0, n_pockets, self.conv_batch_size)
         ret_list = []
         for i in range(len(rg)-1):
             print(i)
             sample = tf.range(rg[i], rg[i+1])
-            X_samp = tuple(tf.gather(tsr, sample, axis=1) for tsr in X)
+            X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
             ret = self.myConvLayer(X_samp)
             ret_list.append(ret)
         sample = tf.range(rg[-1], n_pockets)
@@ -110,10 +107,14 @@ class LSResNet(Model):
             X_samp = tuple(tf.gather(tsr, sample, axis=1) for tsr in X)
             ret = self.myConvLayer(X_samp)
             ret_list.append(ret)
+        return tf.concat(ret_list, axis=0)
         
-        ret = tf.concat(ret_list, axis=1)
+    def call(self, X_packed, training=False):
+        X, xyz_coords = X_packed
         
+        ret = tf.map_fn(fn=self.runConv, elems = X, fn_output_signature = tf.TensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat], dtype=tf.float32))
         #ret = self.myConvLayer(X)
+        
         ret = runLayers(self.denseReduce, ret)
         
         resolution = 1. / self.scale
