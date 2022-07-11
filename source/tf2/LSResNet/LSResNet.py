@@ -273,13 +273,13 @@ class ConvLayer(layers.Layer):
                 )
             )
     
-    def call(self, x):
+    '''def call(self, x):
         return tf.map_fn(fn=self.call_wrapped, elems = x, fn_output_signature = tf.TensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat],
                                                                                                    dtype=tf.float32))
         #return tf.map_fn(fn=self.call_wrapped, elems = x, fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat],
         #                                                                                           dtype=tf.float32, ragged_rank=1, row_splits_dtype=tf.float32))
-    
-    def call_wrapped(self, x):
+    '''
+    def call(self, x):
         input_feat = tf.gather(x, tf.range(5), axis=-1)
         rho_coords = tf.gather(x, 5, axis=-1)
         theta_coords = tf.gather(x, 6, axis=-1)
