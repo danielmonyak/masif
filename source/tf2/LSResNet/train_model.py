@@ -127,7 +127,7 @@ with tf.device(dev):
             xyz_coords = Predictor.getXYZCoords(pdb_dir)
             
             y_raw = tf.cast(labels > 0, dtype=tf.int32)
-            X = (data_element[:4], xyz_coords)
+            X_packed = (data_element[:4], xyz_coords)
             
             #sample = tf.range(10)
             #y_raw_samp = tf.gather(y, sample)
@@ -135,7 +135,7 @@ with tf.device(dev):
             #_=model.fit(X_samp, y_raw_samp, epochs = 1, verbose = 2)
             #class_weight = {0 : 1.0, 1 : 20.0}
             
-            _=model.fit(X, y_raw, epochs = 1, verbose = 2)
+            _=model.fit(X_packed, y_raw, epochs = 1, verbose = 2)
             
             finished_samples += sample.shape[0]
             train_j += 1
