@@ -259,6 +259,8 @@ class ConvLayer(layers.Layer):
             )
     
     def call(self, x):
+        x = x[0]
+        
         input_feat, rho_coords, theta_coords, mask = x
 
         ret = []
