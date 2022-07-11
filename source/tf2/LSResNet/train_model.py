@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
-from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
+from tf2.LSResNet.LSResNet import LSResNet
 from predictor import Predictor
 
 gpus = tf.config.list_physical_devices('GPU')
