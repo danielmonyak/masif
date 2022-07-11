@@ -124,10 +124,11 @@ with tf.device(dev):
 
             pdb = data_element[5].numpy().decode('ascii') + '_'
             pdb_dir = os.path.join(precom_dir, pdb)
-            xyz_coords = Predictor.getXYZCoords(pdb_dir)
+            xyz_coords = tf.expand_dims(Predictor.getXYZCoords(pdb_dir), axis=0)
+            X = tuple(tf.expand_dims(tsr, axis=0) for tsr in data_element[:4])
             
             y_raw = tf.expand_dims(tf.cast(labels > 0, dtype=tf.int32), axis=0)
-            X_packed = (data_element[:4], xyz_coords)
+            X_packed = (X, xyz_coords)
             
             #sample = tf.range(10)
             #y_raw_samp = tf.gather(y, sample)
