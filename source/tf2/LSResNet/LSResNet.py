@@ -9,7 +9,7 @@ from default_config.util import *
 params = masif_opts["ligand"]
 
 
-class MaSIF_ligand_site(Model):
+class LSResNet(Model):
     """
     The neural network model.
     """ 
@@ -26,7 +26,7 @@ class MaSIF_ligand_site(Model):
         n_conv_layers = 1
     ):
         ## Call super - model initializer
-        super(MaSIF_ligand_site, self).__init__()
+        super(LSResNet, self).__init__()
         
         # order of the spectral filters
         self.max_rho = max_rho
