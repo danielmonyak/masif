@@ -135,7 +135,7 @@ class LSResNet(Model):
         print(f'xyz_coords: {xyz_coords.shape}')
         resolution = 1. / self.scale
         grid_list = []
-        for i in range(tf.shape(y_raw)[0])
+        for i in range(tf.shape(y_raw)[0]):
             grid_list.append(tfbio.data.make_grid(xyz_coords[i], y_raw[i],
                                         max_dist=self.max_dist,
                                         grid_resolution=resolution))
