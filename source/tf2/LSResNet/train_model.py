@@ -126,16 +126,16 @@ with tf.device(dev):
             pdb_dir = os.path.join(precom_dir, pdb)
             xyz_coords = Predictor.getXYZCoords(pdb_dir)
             
-            y = tf.cast(labels > 0, dtype=tf.int32)
+            y_raw = tf.cast(labels > 0, dtype=tf.int32)
             X = (data_element[:4], xyz_coords)
             
-            sample = tf.range(10)
-            
-            y_samp = tf.gather(y, sample)
-            X_samp = (tuple(tf.gather(tsr, sample) for tsr in X[0]), tf.gather(X[1], sample))
-            
-            _=model.fit(X, y, epochs = 1, verbose = 2)
+            #sample = tf.range(10)
+            #y_raw_samp = tf.gather(y, sample)
+            #X_samp = (tuple(tf.gather(tsr, sample) for tsr in X[0]), tf.gather(X[1], sample))
+            #_=model.fit(X_samp, y_raw_samp, epochs = 1, verbose = 2)
             #class_weight = {0 : 1.0, 1 : 20.0}
+            
+            _=model.fit(X, y_raw, epochs = 1, verbose = 2)
             
             finished_samples += sample.shape[0]
             train_j += 1
