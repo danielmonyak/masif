@@ -139,12 +139,12 @@ class LSResNet(Model):
                                     grid_resolution=resolution)
     
     def train_step(self, data):
-        x, y_raw = data
+        X_packed, y_raw = data
         
-        y = self.make_y(y_raw, x[1])
+        y = self.make_y(y_raw, X_packed[1])
         
         with tf.GradientTape() as tape:
-            y_pred = self(x, training=True)  # Forward pass
+            y_pred = self(X_packed, training=True)  # Forward pass
             loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
         trainable_vars = self.trainable_variables
