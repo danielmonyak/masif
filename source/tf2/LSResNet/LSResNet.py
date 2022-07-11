@@ -91,9 +91,26 @@ class LSResNet(Model):
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1, kernel_regularizer=L2(1e-4), activation='sigmoid')
     
     #@tf.autograph.experimental.do_not_convert
-    def call(self, x, training=False):
-        xyz_coords = x[1]
-        ret = self.myConvLayer(x[0])
+    def call(self, X_packed, training=False):
+        X, xyz_coords = X_packed
+        
+        n_pockets = X[0].shape[0]
+        rg = range(0, n_pockets, 10000)
+        ret_list = []
+        for i in range(len(rg)-1):
+            sample = tf.range(rg[i], rg[i+1])
+            X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
+            ret = self.myConvLayer(X_samp)
+            ret_list.append(ret)
+        sample = tf.range(rg[-1], n_pockets)
+        if sample.shape[0] != 0:
+            X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
+            ret = self.myConvLayer(X_samp)
+            ret_list.append(ret)
+        
+        ret = tf.concat(ret_list, axis=0)
+        
+        #ret = self.myConvLayer(X)
         ret = runLayers(self.denseReduce, ret)
         
         resolution = 1. / self.scale
