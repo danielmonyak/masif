@@ -131,6 +131,8 @@ class LSResNet(Model):
         return ret
 
     def make_y(self, y_raw, xyz_coords):
+        print(f'y_raw: {y_raw.shape}')
+        print(f'xyz_coords: {xyz_coords.shape}')
         resolution = 1. / self.scale
         return tfbio.data.make_grid(xyz_coords, y_raw,
                                     max_dist=self.max_dist,
