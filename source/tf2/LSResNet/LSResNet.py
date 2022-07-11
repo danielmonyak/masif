@@ -117,7 +117,7 @@ class LSResNet(Model):
         ret = runLayers(self.denseReduce, ret)
         
         resolution = 1. / self.scale
-        ret = tfbio.data.make_grid(xyz_coords, ret,
+        ret = tfbio.data.make_grid(xyz_coords[0], ret[0],
                                    max_dist=self.max_dist,
                                    grid_resolution=resolution)
         
