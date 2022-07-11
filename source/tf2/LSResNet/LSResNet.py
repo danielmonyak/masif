@@ -139,7 +139,7 @@ class LSResNet(Model):
         print(f'y_raw: {y_raw.shape}')
         print(f'xyz_coords: {xyz_coords.shape}')
         
-        y = tfbio.data.make_grid(xyz_coords, y_raw, max_dist=self.max_dist, grid_resolution=resolution)
+        y = tfbio.data.make_grid(xyz_coords.numpy(), y_raw.numpy(), max_dist=self.max_dist, grid_resolution=resolution)
         return tf.squeeze(y, axis=0)
     
     def make_y(self, y_raw, xyz_coords):
