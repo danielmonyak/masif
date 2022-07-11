@@ -145,7 +145,7 @@ class LSResNet(Model):
         packed = tf.concat([xyz_coords, tf.cast(y_raw, dtype=tf.float64)], axis=-1)
         print(f'packed: {packed.shape}')
         
-        return tf.map_fn(fn=map_func, elems = packed, fn_output_signature = tf.TensorSpec(shape=[36,36,36,1], dtype=tf.float32))
+        return tf.map_fn(fn=self.map_func, elems = packed, fn_output_signature = tf.TensorSpec(shape=[36,36,36,1], dtype=tf.float32))
     
     def train_step(self, data):
         X_packed, y_raw = data
