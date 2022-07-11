@@ -65,6 +65,7 @@ class LSResNet(Model):
         f=18
         filters = [f, f, f ]
         filters1,filters2,filters3=filters
+        strides = (1,1,1)
         
         self.convBlock=[
             [layers.Conv3D(filters1, kernel_size=1, strides=strides, kernel_regularizer=L2(1e-4)),
