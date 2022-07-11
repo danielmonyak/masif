@@ -279,12 +279,12 @@ class ConvLayer(layers.Layer):
         #return tf.map_fn(fn=self.call_wrapped, elems = x, fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat],
         #                                                                                           dtype=tf.float32, ragged_rank=1, row_splits_dtype=tf.float32))
     
-    def call_wrapped(self, x):
+    def call_wrapped(self, X):
         input_feat = tf.gather(X, tf.range(5), axis=-1)
         rho_coords = tf.gather(X, 5, axis=-1)
         theta_coords = tf.gather(X, 6, axis=-1)
         mask = tf.expand_dims(tf.gather(X, 7, axis=-1), axis=-1)
-        #input_feat, rho_coords, theta_coords, mask = x
+        #input_feat, rho_coords, theta_coords, mask = X
 
         ret = []
         for i in range(self.n_feat):
