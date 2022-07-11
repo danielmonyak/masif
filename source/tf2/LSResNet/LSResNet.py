@@ -273,8 +273,10 @@ class ConvLayer(layers.Layer):
             )
     
     def call(self, x):
-        x = x[0]
-        
+        return tf.map_fn(fn=self.call_wrapped, elems = x, fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat],
+                                                                                                    dtype=tf.float32, ragged_rank=1))
+    
+    def call_wrapped(self, x):
         input_feat, rho_coords, theta_coords, mask = x
 
         ret = []
