@@ -135,7 +135,7 @@ with tf.device(dev):
             #_=model.fit(X_samp, y_raw_samp, epochs = 1, verbose = 2)
             #class_weight = {0 : 1.0, 1 : 20.0}
             
-            _=model.fit(X_packed, y_raw, epochs = 1, verbose = 2)
+            _=model.fit(X_packed, y_raw, verbose = 2)
             
             finished_samples += sample.shape[0]
             train_j += 1
