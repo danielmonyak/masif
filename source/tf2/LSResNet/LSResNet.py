@@ -98,8 +98,8 @@ class LSResNet(Model):
         
         resolution = 1. / self.scale
         ret = tfbio.data.make_grid(xyz_coords, ret,
-                                 max_dist=self.max_dist,
-                                 grid_resolution=resolution)
+                                   max_dist=self.max_dist,
+                                   grid_resolution=resolution)
         
         ret1 = runLayers(self.convBlock[0], ret)
         residue = runLayers(self.convBlock[1], ret)
@@ -110,6 +110,29 @@ class LSResNet(Model):
         
         return ret
 
+    def make_y(self, y_raw, xyz_coords):
+        resolution = 1. / self.scale
+        return tfbio.data.make_grid(xyz_coords, y_raw,
+                                    max_dist=self.max_dist,
+                                    grid_resolution=resolution)
+    
+    def train_step(self, data):
+        x, y_raw = data
+        
+        y = self.make_y(y_raw, x[1])
+        
+        with tf.GradientTape() as tape:
+            y_pred = self(x, training=True)  # Forward pass
+            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+
+        trainable_vars = self.trainable_variables
+        gradients = tape.gradient(loss, trainable_vars)
+        
+        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
+        self.compiled_metrics.update_state(y, y_pred)
+        
+        return {m.name: m.result() for m in self.metrics}
+    
 class ConvLayer(layers.Layer):
     def __init__(self,
         max_rho,
