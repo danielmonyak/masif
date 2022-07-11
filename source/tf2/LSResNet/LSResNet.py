@@ -130,21 +130,28 @@ class LSResNet(Model):
         
         return ret
 
+    def map_func(self, packed):
+        resolution = 1. / self.scale
+        
+        xyz_coords = tf.gather(packed, tf.range(3), axis=-1)
+        y_raw = tf.expand_dims(tf.gather(packed, 3, axis=-1), axis=-1)
+        y = tfbio.data.make_grid(xyz_coords, y_raw, max_dist=self.max_dist, grid_resolution=resolution)
+        return tf.squeeze(y, axis=0)
+    
     def make_y(self, y_raw, xyz_coords):
         print(f'y_raw: {y_raw.shape}')
         print(f'xyz_coords: {xyz_coords.shape}')
-        resolution = 1. / self.scale
-        grid_list = []
-        for i in range(tf.shape(y_raw)[0]):
-            grid_list.append(tfbio.data.make_grid(xyz_coords[i], y_raw[i],
-                                        max_dist=self.max_dist,
-                                        grid_resolution=resolution))
-        return tf.concat(grid_list, axis=0)
+        
+        packed = tf.concat([xyz_coords, tf.cast(y_raw, dtype=tf.float64)], axis=-1)
+        print(f'packed: {packed.shape}')
+        
+        return tf.map_fn(fn=map_func, elems = packed, fn_output_signature = tf.TensorSpec(shape=[36,36,36,1], dtype=tf.float32))
     
     def train_step(self, data):
         X_packed, y_raw = data
         
-        y = self.make_y(y_raw, X_packed[1])
+        xyz_coords = X_packed[1]
+        y = self.make_y(y_raw, xyz_coords)
         
         with tf.GradientTape() as tape:
             y_pred = self(X_packed, training=True)  # Forward pass
