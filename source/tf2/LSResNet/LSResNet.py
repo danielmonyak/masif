@@ -1,4 +1,4 @@
-import tfbio
+import tfbio.data
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 from tensorflow.keras.regularizers import L2
@@ -9,6 +9,10 @@ from default_config.util import *
 
 params = masif_opts["ligand"]
 
+def runLayers(layers, x):
+    for l in layers:
+        x = l(x)
+    return x
 
 class LSResNet(Model):
     """
@@ -63,7 +67,7 @@ class LSResNet(Model):
         else:
             bn_axis=1
 
-        f=18
+        f=5
         filters = [f, f, f ]
         filters1,filters2,filters3=filters
         strides = (1,1,1)
@@ -83,23 +87,26 @@ class LSResNet(Model):
             [layers.Conv3D(filters3, kernel_size=1, strides=strides, kernel_regularizer=L2(1e-4)),
             layers.BatchNormalization(axis=bn_axis)]
         ]
+        
+        self.lastConvLayer = layers.Conv3D(1, kernel_size=1, kernel_regularizer=L2(1e-4), activation='sigmoid')
     
     #@tf.autograph.experimental.do_not_convert
     def call(self, x, training=False):
         xyz_coords = x[1]
         ret = self.myConvLayer(x[0])
-        for l in self.denseReduce:
-            ret = l(ret)
+        ret = runLayers(self.denseReduce, ret)
         
         resolution = 1. / self.scale
         ret = tfbio.data.make_grid(xyz_coords, ret,
                                  max_dist=self.max_dist,
                                  grid_resolution=resolution)
         
-        ret1 = self.convBlock[0](ret)
-        residue = self.convBlock[1](ret)
-        ret = self.Add([ret1, residue])
-        ret = self.Relu(ret)
+        ret1 = runLayers(self.convBlock[0], ret)
+        residue = runLayers(self.convBlock[1], ret)
+        ret = tf.add(ret1, residue)
+        ret = tf.nn.relu(ret)
+        
+        ret = self.lastConvLayer(ret)
         
         return ret
 
