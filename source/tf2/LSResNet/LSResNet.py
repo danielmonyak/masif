@@ -96,22 +96,22 @@ class LSResNet(Model):
     def call(self, X_packed, training=False):
         X, xyz_coords = X_packed
         
-        n_pockets = X[0].shape[0]
+        n_pockets = tf.shape(X[0])[1]
         rg = range(0, n_pockets, self.conv_batch_size)
         ret_list = []
         for i in range(len(rg)-1):
             print(i)
             sample = tf.range(rg[i], rg[i+1])
-            X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
+            X_samp = tuple(tf.gather(tsr, sample, axis=1) for tsr in X)
             ret = self.myConvLayer(X_samp)
             ret_list.append(ret)
         sample = tf.range(rg[-1], n_pockets)
         if sample.shape[0] != 0:
-            X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
+            X_samp = tuple(tf.gather(tsr, sample, axis=1) for tsr in X)
             ret = self.myConvLayer(X_samp)
             ret_list.append(ret)
         
-        ret = tf.concat(ret_list, axis=0)
+        ret = tf.concat(ret_list, axis=1)
         
         #ret = self.myConvLayer(X)
         ret = runLayers(self.denseReduce, ret)
@@ -274,7 +274,7 @@ class ConvLayer(layers.Layer):
     
     def call(self, x):
         return tf.map_fn(fn=self.call_wrapped, elems = x, fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat],
-                                                                                                    dtype=tf.float32, ragged_rank=2))
+                                                                                                    dtype=tf.float32, ragged_rank=1))
     
     def call_wrapped(self, x):
         input_feat, rho_coords, theta_coords, mask = x
