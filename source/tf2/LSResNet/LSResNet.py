@@ -28,7 +28,8 @@ class LSResNet(Model):
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
-        n_conv_layers = 1
+        n_conv_layers = 1,
+        conv_batch_size = 1000
     ):
         ## Call super - model initializer
         super(LSResNet, self).__init__()
@@ -47,6 +48,7 @@ class LSResNet(Model):
         
         self.scale = 0.5
         self.max_dist = 35
+        self.conv_batch_size = conv_batch_size
         
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
@@ -95,7 +97,7 @@ class LSResNet(Model):
         X, xyz_coords = X_packed
         
         n_pockets = X[0].shape[0]
-        rg = range(0, n_pockets, 10000)
+        rg = range(0, n_pockets, self.conv_batch_size)
         ret_list = []
         for i in range(len(rg)-1):
             sample = tf.range(rg[i], rg[i+1])
