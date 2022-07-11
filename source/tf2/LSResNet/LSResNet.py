@@ -99,12 +99,12 @@ class LSResNet(Model):
         for i in range(len(rg)-1):
             print(i)
             sample = tf.range(rg[i], rg[i+1])
-            X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
+            X_samp = tf.gather(X, sample, axis=0)
             ret = self.myConvLayer(X_samp)
             ret_list.append(ret)
         sample = tf.range(rg[-1], n_pockets)
         if sample.shape[0] != 0:
-            X_samp = tuple(tf.gather(tsr, sample, axis=1) for tsr in X)
+            X_samp = tf.gather(X, sample, axis=0)
             ret = self.myConvLayer(X_samp)
             ret_list.append(ret)
         return tf.concat(ret_list, axis=0)
@@ -280,7 +280,11 @@ class ConvLayer(layers.Layer):
         #                                                                                           dtype=tf.float32, ragged_rank=1, row_splits_dtype=tf.float32))
     
     def call_wrapped(self, x):
-        input_feat, rho_coords, theta_coords, mask = x
+        input_feat = tf.gather(X, tf.range(5), axis=-1)
+        rho_coords = tf.gather(X, 5, axis=-1)
+        theta_coords = tf.gather(X, 6, axis=-1)
+        mask = tf.expand_dims(tf.gather(X, 7, axis=-1), axis=-1)
+        #input_feat, rho_coords, theta_coords, mask = x
 
         ret = []
         for i in range(self.n_feat):
