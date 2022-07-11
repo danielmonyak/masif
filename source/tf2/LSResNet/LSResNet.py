@@ -1,3 +1,4 @@
+import tfbio
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 from tensorflow.keras.regularizers import L2
@@ -72,7 +73,7 @@ class LSResNet(Model):
             layers.BatchNormalization(axis=bn_axis),
             self.ReLU,
              
-            layers.Conv3D(filters2, kernel_size=3 ,padding='same', kernel_regularizer=L2(1e-4)),
+            layers.Conv3D(filters2, kernel_size=3, padding='same', kernel_regularizer=L2(1e-4)),
             layers.BatchNormalization(axis=bn_axis),
             self.ReLU,
              
