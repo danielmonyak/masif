@@ -100,6 +100,7 @@ class LSResNet(Model):
         rg = range(0, n_pockets, self.conv_batch_size)
         ret_list = []
         for i in range(len(rg)-1):
+            print(i)
             sample = tf.range(rg[i], rg[i+1])
             X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
             ret = self.myConvLayer(X_samp)
