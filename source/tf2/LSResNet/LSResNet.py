@@ -279,12 +279,12 @@ class ConvLayer(layers.Layer):
         #return tf.map_fn(fn=self.call_wrapped, elems = x, fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat],
         #                                                                                           dtype=tf.float32, ragged_rank=1, row_splits_dtype=tf.float32))
     
-    def call_wrapped(self, X):
-        input_feat = tf.gather(X, tf.range(5), axis=-1)
-        rho_coords = tf.gather(X, 5, axis=-1)
-        theta_coords = tf.gather(X, 6, axis=-1)
-        mask = tf.expand_dims(tf.gather(X, 7, axis=-1), axis=-1)
-        #input_feat, rho_coords, theta_coords, mask = X
+    def call_wrapped(self, x):
+        input_feat = tf.gather(x, tf.range(5), axis=-1)
+        rho_coords = tf.gather(x, 5, axis=-1)
+        theta_coords = tf.gather(x, 6, axis=-1)
+        mask = tf.expand_dims(tf.gather(x, 7, axis=-1), axis=-1)
+        #input_feat, rho_coords, theta_coords, mask = x
 
         ret = []
         for i in range(self.n_feat):
@@ -324,8 +324,9 @@ class ConvLayer(layers.Layer):
         eps=1e-5,
         mean_gauss_activation=True,
     ):
-        n_samples = tf.shape(input=rho_coords)[0]
-        n_vertices = tf.shape(input=rho_coords)[1]
+        print(tf.shape(rho_coords))
+        n_samples = tf.shape(rho_coords)[0]
+        n_vertices = tf.shape(rho_coords)[1]
 
         all_conv_feat = []
         for k in range(self.n_rotations):
