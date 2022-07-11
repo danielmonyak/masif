@@ -93,7 +93,7 @@ class LSResNet(Model):
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1, kernel_regularizer=L2(1e-4), activation='sigmoid')
     
     def runConv(self, X):
-        n_pockets = tf.shape(X)[0]
+        n_pockets = tf.shape(X[0])[0]
         rg = range(0, n_pockets, self.conv_batch_size)
         ret_list = []
         for i in range(len(rg)-1):
