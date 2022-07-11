@@ -324,7 +324,6 @@ class ConvLayer(layers.Layer):
         eps=1e-5,
         mean_gauss_activation=True,
     ):
-        print(tf.shape(rho_coords))
         n_samples = tf.shape(rho_coords)[0]
         n_vertices = tf.shape(rho_coords)[1]
 
