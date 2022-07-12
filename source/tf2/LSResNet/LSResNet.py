@@ -165,25 +165,26 @@ class LSResNet(Model):
         packed = tf.concat([xyz_coords, tf.cast(y_raw, dtype=tf.float64)], axis=-1)
         print(f'packed: {packed.shape}')
         
-        return tf.map_fn(fn=self.map_func, elems = packed, fn_output_signature = tf.TensorSpec(shape=[36,36,36,1], dtype=tf.float32))
+        return tf.map_fn(fn=self.map_func, elems = packed, fn_output_signature = tf.TensorSpec(shape=[36,36,36,1], dtype=tf.float32))'''
     
     def train_step(self, data):
-        X_packed, y_raw = data
+        X_packed, y = data
         
-        xyz_coords = X_packed[1]
-        y = self.make_y(y_raw, xyz_coords)
         
         with tf.GradientTape() as tape:
             y_pred = self(X_packed, training=True)  # Forward pass
+            print('computing loss now')
             loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
+        print('computing gradient now')
         trainable_vars = self.trainable_variables
         gradients = tape.gradient(loss, trainable_vars)
         
+        print('applying gradient now')
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
         self.compiled_metrics.update_state(y, y_pred)
         
-        return {m.name: m.result() for m in self.metrics}'''
+        return {m.name: m.result() for m in self.metrics}
     
 class ConvLayer(layers.Layer):
     def __init__(self,
