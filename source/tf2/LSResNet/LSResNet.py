@@ -427,10 +427,10 @@ class MakeGrid(layers.Layer):
         
         super(MakeGrid, self).__init__()
     def call(self, coords, features):
-        c_shape = tf.shape(coords)
-        f_shape = tf.shape(features)
+        batches = tf.shape(coords)[0]
+        c_shape = coords.shape
+        f_shape = features.shape
         N = c_shape[1]
-        batches = f_shape[0]
         num_features = f_shape[2]
         
         print(f'num_features: {num_features}')
