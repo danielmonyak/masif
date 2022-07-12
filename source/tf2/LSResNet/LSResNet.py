@@ -433,6 +433,7 @@ class MakeGrid(layers.Layer):
         batches = f_shape[0]
         num_features = f_shape[2]
         
+        print(f'num_features: {num_features}')
         '''
         print(c_shape)
         if tf.shape(c_shape) != 3 or c_shape[2] != 3:
