@@ -128,7 +128,7 @@ class LSResNet(Model):
                                    max_dist=self.max_dist,
                                    grid_resolution=resolution)'''
         ret = self.myMakeGrid(xyz_coords, ret)
-        
+        '''
         ret1 = runLayers(self.convBlock[0], ret)
         residue = runLayers(self.convBlock[1], ret)
         
@@ -137,7 +137,7 @@ class LSResNet(Model):
         
         print('relu')
         ret = tf.nn.relu(ret)
-        
+        '''
         print('last conv layer')
         
         ret = self.lastConvLayer(ret)
