@@ -456,6 +456,6 @@ class MakeGrid(layers.Layer):
     
     def getGrid(self, packed):
         grid, grid_coords_IN, features_IN = packed
-        for (x, y, z), f in zip(grid_coords_IN, features_IN)):
+        for (x, y, z), f in zip(grid_coords_IN, features_IN):
             grid[x, y, z] += f
         return grid
