@@ -96,7 +96,9 @@ class LSResNet(Model):
             layers.BatchNormalization(axis=bn_axis)]
         ]
         
-        self.lastConvLayer = layers.Conv3D(1, kernel_size=1, kernel_regularizer=L2(1e-4), activation='sigmoid')
+        self.lastConvLayer = layers.Conv3D(1, kernel_size=1, kernel_regularizer=L2(1e-4))
+    
+        self.testDense = layers.Dense(1)
     
     def runConv(self, x):
         n_pockets = tf.shape(x)[0]
@@ -123,23 +125,17 @@ class LSResNet(Model):
         
         ret = runLayers(self.denseReduce, ret)
         
+        #############################
+        return self.testDense(ret)
+        #############################
         
-        '''ret = tfbio.data.make_grid(xyz_coords[0], ret[0],
-                                   max_dist=self.max_dist,
-                                   grid_resolution=resolution)'''
         ret = self.myMakeGrid(xyz_coords, ret)
-        '''
+        
         ret1 = runLayers(self.convBlock[0], ret)
         residue = runLayers(self.convBlock[1], ret)
         
-        print('adding')
         ret = tf.add(ret1, residue)
-        
-        print('relu')
         ret = tf.nn.relu(ret)
-        '''
-        print('last conv layer')
-        
         ret = self.lastConvLayer(ret)
         
         print('done with forward prop')
