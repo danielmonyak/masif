@@ -434,13 +434,28 @@ class MakeGrid(layers.Layer):
         if tf.shape(f_shape) != 3 or num_features != N:
             raise ValueError('features must be an array of floats of shape (None, N, F)')
         
+        batches = c_shape[0]
+        
         grid_coords = (coords + self.max_dist) / self.grid_resolution
         grid_coords = tf.cast(tf.round(grid_coords), dtype=tf.int32)
 
-        in_box = tf.reduce_all((grid_coords >= 0) & (grid_coords < self.box_size), axis=2)
-        grid = tf.zeros((1, self.box_size, self.box_size, self.box_size, num_features),
+        in_box = tf.squeeze(tf.reduce_all((grid_coords >= 0) & (grid_coords < self.box_size), axis=2))
+        grid = tf.zeros((batches, self.box_size, self.box_size, self.box_size, num_features),
                         dtype=tf.float32)
-        for (x, y, z), f in zip(tf.boolean_mask(grid_coords, in_box), tf.boolean_mask(features, in_box)):
-            grid[0, x, y, z] += f
+        grid_coords_IN = tf.boolean_mask(grid_coords, in_box, axis=1)
+        features_IN = tf.boolean_mask(features, in_box, axis=1)
+        
+        packed = (grid, grid_coords_IN, features_IN)
+        
+        #for (_, x, y, z), f in zip(grid_coords_IN, features_IN)):
+        #    grid[0, x, y, z] += f
 
+        grid = tf.map_fn(fn=self.getGrid, elems = packed, fn_output_signature = tf.TensorSpec(shape=tf.shape(grid)[1:], dtype=tf.float32))
+        
+        return grid
+    
+    def getGrid(self, packed):
+        grid, grid_coords_IN, features_IN = packed
+        for (x, y, z), f in zip(grid_coords_IN, features_IN)):
+            grid[x, y, z] += f
         return grid
