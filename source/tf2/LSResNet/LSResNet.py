@@ -13,6 +13,7 @@ params = masif_opts["ligand"]
 def runLayers(layers, x):
     for l in layers:
         print(l.name)
+        print(tf.shape(x))
         x = l(x)
     return x
 
