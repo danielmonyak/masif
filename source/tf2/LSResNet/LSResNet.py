@@ -411,7 +411,7 @@ class ConvLayer(layers.Layer):
         return coords
 
 class MakeGrid(layers.Layer):
-    def __init__(max_dist=10.0, grid_resolution=1.0):
+    def __init__(self, max_dist=10.0, grid_resolution=1.0):
         if not isinstance(grid_resolution, float):
             raise TypeError('grid_resolution must be float')
         if grid_resolution <= 0:
