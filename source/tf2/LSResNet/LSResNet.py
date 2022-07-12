@@ -429,7 +429,6 @@ class MakeGrid(layers.Layer):
         N = c_shape[1]
         num_features = f_shape[2]
         
-        print(f'num_features: {num_features}')
         '''
         print(c_shape)
         if tf.shape(c_shape) != 3 or c_shape[2] != 3:
