@@ -455,8 +455,8 @@ class MakeGrid(layers.Layer):
         
         tensor=grid
         updates=features_IN
-        indices = tf.concat([tf.zeros([batches, tf.shape(grid_coords_IN)[1], 1], dtype=tf.int32), grid_coords_IN], axis=-1)
-        grid = tf.tensor_scatter_nd_add(tensor=grid, indices, updates=features_IN)
+        idx = tf.concat([tf.zeros([batches, tf.shape(grid_coords_IN)[1], 1], dtype=tf.int32), grid_coords_IN], axis=-1)
+        grid = tf.tensor_scatter_nd_add(tensor=grid, indices=idx, updates=features_IN)
         
         return grid
     
