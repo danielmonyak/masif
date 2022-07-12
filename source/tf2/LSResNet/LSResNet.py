@@ -65,6 +65,9 @@ class LSResNet(Model):
             layers.Dense(self.n_feat, activation="relu"),
         ]
         
+        resolution = 1. / self.scale
+        self.myMakeGrid = MakeGrid(max_dist=self.max_dist, grid_resolution=resolution)
+        
         if K.image_data_format()=='channels_last':
             bn_axis=4
         else:
@@ -118,10 +121,11 @@ class LSResNet(Model):
         
         ret = runLayers(self.denseReduce, ret)
         
-        resolution = 1. / self.scale
-        ret = tfbio.data.make_grid(xyz_coords[0], ret[0],
+        
+        '''ret = tfbio.data.make_grid(xyz_coords[0], ret[0],
                                    max_dist=self.max_dist,
-                                   grid_resolution=resolution)
+                                   grid_resolution=resolution)'''
+        ret = self.myMakeGrid(xyz_coords, ret)
         
         ret1 = runLayers(self.convBlock[0], ret)
         residue = runLayers(self.convBlock[1], ret)
@@ -445,23 +449,9 @@ class MakeGrid(layers.Layer):
         grid_coords_IN = tf.boolean_mask(grid_coords, in_box, axis=1)
         features_IN = tf.boolean_mask(features, in_box, axis=1)
         
-        packed = (grid, grid_coords_IN, features_IN)
+        #### Cannot handle multiple batches at once!!!!!!!!!!!!!!!!!!!!!
         
-        #for (_, x, y, z), f in zip(grid_coords_IN, features_IN)):
-        #    grid[0, x, y, z] += f
-
-        #grid = tf.map_fn(fn=self.getGrid, elems = packed, fn_output_signature = tf.TensorSpec(shape=tf.shape(grid)[1:], dtype=tf.float32))
-        
-        
-        tensor=grid
-        updates=features_IN
         idx = tf.concat([tf.zeros([batches, tf.shape(grid_coords_IN)[1], 1], dtype=tf.int32), grid_coords_IN], axis=-1)
-        grid = tf.tensor_scatter_nd_add(tensor=grid, indices=idx, updates=features_IN)
+        grid = tf.scatter_nd(indices=idx, updates=features_IN, shape=(batches, self.box_size, self.box_size, self.box_size, num_features))
         
-        return grid
-    
-    def getGrid(self, packed):
-        grid, grid_coords_IN, features_IN = packed
-        for (x, y, z), f in zip(grid_coords_IN, features_IN):
-            grid[x, y, z] += f
         return grid
