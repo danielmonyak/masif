@@ -75,6 +75,9 @@ class MaSIF_ligand(Model):
             layers.Dense(30),
             layers.ReLU(),
             
+            layers.Dense(10),
+            layers.ReLU(),
+
             layers.Dense(self.n_ligands)
         ]
     
