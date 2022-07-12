@@ -424,6 +424,7 @@ class MakeGrid(layers.Layer):
         super(MakeGrid, self).__init__()
     def call(self, coords, features):
         c_shape = tf.shape(coords)
+        print(c_shape)
         if tf.shape(c_shape) != 3 or c_shape[2] != 3:
             raise ValueError('coords must be an array of floats of shape (None, N, 3)')
         
