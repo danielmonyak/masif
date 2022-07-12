@@ -404,3 +404,32 @@ class ConvLayer(layers.Layer):
         coords = np.concatenate((grid_rho_[None, :], grid_theta_[None, :]), axis=0)
         coords = coords.T  # every row contains the coordinates of a grid intersection
         return coords
+
+class MakeGrid(layers.Layer):
+    def __init__(grid_resolution=1.0, max_dist=10.0):
+        if not isinstance(grid_resolution, float):
+            raise TypeError('grid_resolution must be float')
+        if grid_resolution <= 0:
+            raise ValueError('grid_resolution must be positive')
+
+        if not isinstance(max_dist, float):
+            raise TypeError('max_dist must be float')
+        if max_dist <= 0:
+            raise ValueError('max_dist must be positive')
+        
+        self.grid_resolution = grid_resolution
+        self.max_dist = max_dist
+        
+        super(MakeGrid, self).__init__()
+    def call(self, coords, features):
+        c_shape = coords.shape
+        if len(c_shape) != 2 or c_shape[1] != 3:
+            raise ValueError('coords must be an array of floats of shape (N, 3)')
+        
+        N = len(coords)
+        f_shape = features.shape
+        if len(f_shape) != 2 or f_shape[0] != N:
+            raise ValueError('features must be an array of floats of shape (N, F)')
+        
+        num_features = f_shape[1]
+        
