@@ -439,13 +439,18 @@ class MakeGrid(layers.Layer):
         grid_coords = (coords + self.max_dist) / self.grid_resolution
         grid_coords = tf.cast(tf.round(grid_coords), dtype=tf.int32)
 
-        in_box = tf.squeeze(tf.reduce_all(tf.logical_and(tf.greater_equal(grid_coords, 0), tf.less(grid_coords, self.box_size)), axis=2))
-        grid_coords_IN = tf.boolean_mask(grid_coords, in_box, axis=1)
-        features_IN = tf.boolean_mask(features, in_box, axis=1)
+        #in_box = tf.squeeze(tf.reduce_all(tf.logical_and(tf.greater_equal(grid_coords, 0), tf.less(grid_coords, self.box_size)), axis=2))
+        #grid_coords_IN = tf.boolean_mask(grid_coords, in_box, axis=1)
+        #features_IN = tf.boolean_mask(features, in_box, axis=1)
+        #idx = tf.concat([tf.zeros([batches, tf.shape(grid_coords_IN)[1], 1], dtype=tf.int32), grid_coords_IN], axis=-1)
+        
+        in_box = tf.reduce_all(tf.logical_and(tf.greater_equal(grid_coords, 0), tf.less(grid_coords, self.box_size)), axis=2)
+        grid_coords_IN = tf.boolean_mask(grid_coords, in_box)
+        features_IN = tf.boolean_mask(features, in_box)
         
         #### Cannot handle multiple batches at once!!!!!!!!!!!!!!!!!!!!!
         
-        idx = tf.concat([tf.zeros([batches, tf.shape(grid_coords_IN)[1], 1], dtype=tf.int32), grid_coords_IN], axis=-1)
+        idx = tf.concat([tf.zeros([tf.shape(grid_coords_IN)[0], 1], dtype=tf.int32), grid_coords_IN], axis=-1)
         grid = tf.scatter_nd(indices=idx, updates=features_IN, shape=(batches, self.box_size, self.box_size, self.box_size, num_features))
         
         return grid
