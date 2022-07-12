@@ -107,15 +107,9 @@ with tf.device(dev):
         #############################################################
         finished_samples = 0
         
-        while finished_samples < train_samples_threshold:
-            try:
-                data_element = train_iterator.get_next()
-            except:
-                train_iterator = iter(train_data)
-                train_j = 0
-                i += 1
-                print(f'Running training data, epoch {i}')
-                continue
+        optional = temp_iterator.get_next_as_optional()
+        while optional.has_value():
+            data_element = optional.get_value()
                 
             print(f'Epoch {i}, train record {train_j}')
 
@@ -143,58 +137,9 @@ with tf.device(dev):
             finished_samples += sample.shape[0]
             train_j += 1
             
-        #############################################################
-        ###################    VALIDATION DATA    ###################
-        #############################################################
-        print(f'Testing model on validation data after training on {finished_samples} samples')
-        
-        finished_samples = 0
-        
-        acc_list = []
-        loss_list = []
-
-        while finished_samples < val_samples_threshold:
-            try:
-                data_element = val_iterator.get_next()
-            except:
-                val_iterator = iter(val_data)
-                val_j = 0
-                continue
+            optional = temp_iterator.get_next_as_optional()
             
-            print(f'Validation record {val_j}')
-
-            labels = data_element[4]
-            if not goodLabel(labels):
-                continue
-
-            y = tf.cast(labels > 0, dtype=tf.int32)
-            X = data_element[:4]
-            
-            loss, acc = model.evaluate(X, y, verbose = 0)            
-            loss_list.append(loss)
-            acc_list.append(acc)
-
-            finished_samples += y.shape[0]
-            val_j += 1
+        model.save_weights(ckpPath)
         
-        #############################################################
-        #############    EVALUATING VALIDATION DATA    ##############
-        #############################################################
-        
-        acc = sum(acc_list)/len(acc_list)
-        loss = sum(loss_list)/len(loss_list)
-        print(f'Finished evaluating {finished_samples} validation samples\nLoss: {round(loss, 2)}\nBinary Accuracy: {round(acc, 2)}')
-
-        if acc > best_acc:
-            print(f'Validation accuracy improved from {best_acc} to {acc}')
-            print(f'Saving model weights to {ckpPath}')
-            best_acc = acc
-            model.save_weights(ckpPath)
-            ckpState = {'best_acc' : best_acc, 'last_epoch' : i}
-            with open(ckpStatePath, 'wb') as handle:
-                pickle.dump(ckpState, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        else:
-            print(f'Validation accuracy did not improve from {best_acc}')
-
 model.save(modelPath_endTraining)
             
