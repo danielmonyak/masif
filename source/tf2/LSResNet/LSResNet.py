@@ -98,7 +98,7 @@ class LSResNet(Model):
         
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1, kernel_regularizer=L2(1e-4))
     
-        self.testDense = layers.Dense(1)
+        self.testDense = layers.Dense(1, activation='sigmoid')
     
     def runConv(self, x):
         n_pockets = tf.shape(x)[0]
