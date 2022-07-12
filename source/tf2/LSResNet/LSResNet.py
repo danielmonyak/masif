@@ -12,6 +12,7 @@ params = masif_opts["ligand"]
 
 def runLayers(layers, x):
     for l in layers:
+        print(l.name)
         x = l(x)
     return x
 
