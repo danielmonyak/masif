@@ -98,7 +98,7 @@ class LSResNet(Model):
         
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1, kernel_regularizer=L2(1e-4))
     
-        self.testDense = layers.Dense(1, activation='sigmoid')
+        #self.testDense = layers.Dense(1, activation='sigmoid')
     
     def runConv(self, x):
         n_pockets = tf.shape(x)[0]
@@ -126,16 +126,16 @@ class LSResNet(Model):
         ret = runLayers(self.denseReduce, ret)
         
         #############################
-        return self.testDense(ret)
+        #return self.testDense(ret)
         #############################
         
         ret = self.myMakeGrid(xyz_coords, ret)
-        
+        '''
         ret1 = runLayers(self.convBlock[0], ret)
         residue = runLayers(self.convBlock[1], ret)
         
         ret = tf.add(ret1, residue)
-        ret = tf.nn.relu(ret)
+        ret = tf.nn.relu(ret)'''
         ret = self.lastConvLayer(ret)
         
         print('done with forward prop')
@@ -165,7 +165,6 @@ class LSResNet(Model):
     
     def train_step(self, data):
         X_packed, y = data
-        
         
         with tf.GradientTape() as tape:
             y_pred = self(X_packed, training=True)  # Forward pass
@@ -285,12 +284,6 @@ class ConvLayer(layers.Layer):
                 )
             )
     
-    '''def call(self, x):
-        return tf.map_fn(fn=self.call_wrapped, elems = x, fn_output_signature = tf.TensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat],
-                                                                                                   dtype=tf.float32))
-        #return tf.map_fn(fn=self.call_wrapped, elems = x, fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat],
-        #                                                                                           dtype=tf.float32, ragged_rank=1, row_splits_dtype=tf.float32))
-    '''
     def call(self, x):
         input_feat = tf.gather(x, tf.range(5), axis=-1)
         rho_coords = tf.gather(x, 5, axis=-1)
