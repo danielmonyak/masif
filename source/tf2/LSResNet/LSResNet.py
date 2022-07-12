@@ -6,6 +6,7 @@ from tensorflow.keras import backend as K
 import functools
 from operator import add
 from default_config.util import *
+import math
 
 params = masif_opts["ligand"]
 
@@ -130,7 +131,7 @@ class LSResNet(Model):
         ret = self.lastConvLayer(ret)
         
         return ret
-
+    '''
     def map_func(self, packed):
         resolution = 1. / self.scale
         
@@ -151,7 +152,7 @@ class LSResNet(Model):
         print(f'packed: {packed.shape}')
         
         return tf.map_fn(fn=self.map_func, elems = packed, fn_output_signature = tf.TensorSpec(shape=[36,36,36,1], dtype=tf.float32))
-    '''
+    
     def train_step(self, data):
         X_packed, y_raw = data
         
@@ -417,19 +418,29 @@ class MakeGrid(layers.Layer):
         if max_dist <= 0:
             raise ValueError('max_dist must be positive')
         
-        self.grid_resolution = grid_resolution
-        self.max_dist = max_dist
+        self.grid_resolution = tf.constant(grid_resolution, dtype=tf.float32)
+        self.max_dist = tf.constant(max_dist, dtype=tf.float32)
+        self.box_size = tf.cast(tf.math.ceil(2 * max_dist / grid_resolution + 1), dtype=tf.int32)
         
         super(MakeGrid, self).__init__()
     def call(self, coords, features):
-        c_shape = coords.shape
-        if len(c_shape) != 2 or c_shape[1] != 3:
-            raise ValueError('coords must be an array of floats of shape (N, 3)')
+        c_shape = tf.shape(coords)
+        if tf.shape(c_shape) != 3 or c_shape[2] != 3:
+            raise ValueError('coords must be an array of floats of shape (None, N, 3)')
         
-        N = len(coords)
+        N = c_shape[1]
         f_shape = features.shape
-        if len(f_shape) != 2 or f_shape[0] != N:
-            raise ValueError('features must be an array of floats of shape (N, F)')
-        
         num_features = f_shape[1]
+        if tf.shape(f_shape) != 3 or num_features != N:
+            raise ValueError('features must be an array of floats of shape (None, N, F)')
         
+        grid_coords = (coords + self.max_dist) / self.grid_resolution
+        grid_coords = tf.cast(tf.round(grid_coords), dtype=tf.int32)
+
+        in_box = tf.reduce_all((grid_coords >= 0) & (grid_coords < self.box_size), axis=2)
+        grid = tf.zeros((1, self.box_size, self.box_size, self.box_size, num_features),
+                        dtype=tf.float32)
+        for (x, y, z), f in zip(tf.boolean_mask(grid_coords, in_box), tf.boolean_mask(features, in_box)):
+            grid[0, x, y, z] += f
+
+        return grid
