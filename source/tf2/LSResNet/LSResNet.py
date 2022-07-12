@@ -412,13 +412,8 @@ class ConvLayer(layers.Layer):
 
 class MakeGrid(layers.Layer):
     def __init__(self, max_dist=10.0, grid_resolution=1.0):
-        if not isinstance(grid_resolution, float):
-            raise TypeError('grid_resolution must be float')
         if grid_resolution <= 0:
             raise ValueError('grid_resolution must be positive')
-
-        if not isinstance(max_dist, float):
-            raise TypeError('max_dist must be float')
         if max_dist <= 0:
             raise ValueError('max_dist must be positive')
         
