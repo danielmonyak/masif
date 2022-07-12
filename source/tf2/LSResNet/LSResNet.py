@@ -74,13 +74,15 @@ class LSResNet(Model):
         else:
             bn_axis=1
 
+        print(f'bn_axis: {bn_axis}')
+            
         f=5
         filters = [f, f, f ]
         filters1,filters2,filters3=filters
         strides = (1,1,1)
         
         self.convBlock=[
-            [layers.Conv3D(filters1, kernel_size=1, strides=strides, kernel_regularizer=L2(1e-4)),
+            [layers.Conv3D(filters1, kernel_size=1, strides=strides, kernel_regularizer=L2(1e-4), data_format=K.image_data_format()),
             layers.BatchNormalization(axis=bn_axis),
             self.ReLU,
              
