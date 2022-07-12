@@ -440,8 +440,6 @@ class MakeGrid(layers.Layer):
         grid_coords = tf.cast(tf.round(grid_coords), dtype=tf.int32)
 
         in_box = tf.squeeze(tf.reduce_all((grid_coords >= 0) & (grid_coords < self.box_size), axis=2))
-        #grid = tf.zeros((batches, self.box_size, self.box_size, self.box_size, num_features),
-        #                dtype=tf.float32)
         grid_coords_IN = tf.boolean_mask(grid_coords, in_box, axis=1)
         features_IN = tf.boolean_mask(features, in_box, axis=1)
         
