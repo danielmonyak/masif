@@ -450,7 +450,13 @@ class MakeGrid(layers.Layer):
         #for (_, x, y, z), f in zip(grid_coords_IN, features_IN)):
         #    grid[0, x, y, z] += f
 
-        grid = tf.map_fn(fn=self.getGrid, elems = packed, fn_output_signature = tf.TensorSpec(shape=tf.shape(grid)[1:], dtype=tf.float32))
+        #grid = tf.map_fn(fn=self.getGrid, elems = packed, fn_output_signature = tf.TensorSpec(shape=tf.shape(grid)[1:], dtype=tf.float32))
+        
+        
+        tensor=grid
+        updates=features_IN
+        indices = tf.concat([tf.zeros([batches, tf.shape(grid_coords_IN)[1], 1], dtype=tf.int32), grid_coords_IN], axis=-1)
+        grid = tf.tensor_scatter_nd_add(tensor=grid, indices, updates=features_IN)
         
         return grid
     
