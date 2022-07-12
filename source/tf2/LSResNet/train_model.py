@@ -134,7 +134,7 @@ with tf.device(dev):
             
             y_raw = tf.cast(labels > 0, dtype=tf.int32)
             resolution = 1. / model.scale
-            y = tfbio.data.make_grid(xyz_coords[0], y_raw, max_dist=self.max_dist, grid_resolution=resolution)
+            y = tfbio.data.make_grid(xyz_coords[0], y_raw, max_dist=model.max_dist, grid_resolution=resolution)
             
             X_packed = (X, xyz_coords)
             
