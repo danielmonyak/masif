@@ -126,7 +126,7 @@ with tf.device(dev):
 
             pdb = data_element[5].numpy().decode('ascii') + '_'
             pdb_dir = os.path.join(precom_dir, pdb)
-            xyz_coords = tf.expand_dims(Predictor.getXYZCoords(pdb_dir), axis=0)
+            xyz_coords = tf.cast(tf.expand_dims(Predictor.getXYZCoords(pdb_dir), axis=0), dtype=tf.float32)
             
             #X = tuple(tf.expand_dims(tsr, axis=0) for tsr in data_element[:4])
             coords = [tf.expand_dims(tsr, axis=-1) for tsr in data_element[1:3]]
