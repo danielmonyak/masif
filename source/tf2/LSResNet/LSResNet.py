@@ -12,8 +12,6 @@ params = masif_opts["ligand"]
 
 def runLayers(layers, x):
     for l in layers:
-        print(l.name)
-        print(x.shape)
         x = l(x)
     return x
 
@@ -133,10 +131,18 @@ class LSResNet(Model):
         
         ret1 = runLayers(self.convBlock[0], ret)
         residue = runLayers(self.convBlock[1], ret)
+        
+        print('adding')
         ret = tf.add(ret1, residue)
+        
+        print('relu')
         ret = tf.nn.relu(ret)
         
+        print('last conv layer')
+        
         ret = self.lastConvLayer(ret)
+        
+        print('done with forward prop')
         
         return ret
     '''
