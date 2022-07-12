@@ -424,17 +424,17 @@ class MakeGrid(layers.Layer):
         super(MakeGrid, self).__init__()
     def call(self, coords, features):
         c_shape = tf.shape(coords)
+        f_shape = tf.shape(features)
         N = c_shape[1]
-        f_shape = features.shape
+        batches = f_shape[0]
+        num_features = f_shape[2]
+        
         '''
         print(c_shape)
         if tf.shape(c_shape) != 3 or c_shape[2] != 3:
             raise ValueError('coords must be an array of floats of shape (None, N, 3)')
         if tf.shape(f_shape) != 3 or f_shape[1] != N:
             raise ValueError('features must be an array of floats of shape (None, N, F)')'''
-        
-        batches = f_shape[0]
-        num_features = f_shape[2]
         
         grid_coords = (coords + self.max_dist) / self.grid_resolution
         grid_coords = tf.cast(tf.round(grid_coords), dtype=tf.int32)
