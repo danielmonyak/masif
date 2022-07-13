@@ -13,7 +13,8 @@ ligand_coord_dir = params["ligand_coords_dir"]
 precom_dir = params['masif_precomputation_dir']
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
-pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel')
+#pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel')
+pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/l2/kerasModel/savedModel')
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
 train_file = 'train_pdbs_sequence.npy'
@@ -52,7 +53,8 @@ if not os.path.exists(outdir):
 
 dataset_dict = {'train' : train_list, 'test' : test_list, 'val' : val_list}
 
-for dataset in dataset_dict.keys():
+#for dataset in dataset_dict.keys():
+for dataset in ['test']:
     data = dataset_dict[dataset]
     n_data = len(data)
     
