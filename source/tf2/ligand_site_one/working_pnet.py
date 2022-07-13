@@ -19,13 +19,12 @@ ligand_list = params['ligand_list']
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
 #pdb = sys.argv[1]
-pdb='7T7A_A'
+#pdb='7T7A_A'
+pdb='5MOG_ACBED_'
 
 print('pdb:', pdb)
-#print('pocket:', pocket)
 
-
-pdb_dir = os.path.join(params['masif_precomputation_dir'], pdb)
+precom_dir = params['masif_precomputation_dir']
 
 xyz_coords = Predictor.getXYZCoords(pdb_dir)
 tree = spatial.KDTree(xyz_coords)
@@ -36,12 +35,26 @@ all_ligand_coords = np.load(
         ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
     )
 )
-ligand_coords = all_ligand_coords[0]
-pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
-pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
+n_pockets_true = len(all_ligand_types)
 
-npoints_true = len(pocket_points_true)
-print(f'{npoints_true} true pocket points')
+pdb_dir = os.path.join(precom_dir, pdb)
+xyz_coords = Predictor.getXYZCoords(pdb_dir)
+tree = spatial.KDTree(xyz_coords)
+pred.loadData(pdb_dir)
+
+pp_true_list = []
+for lig_i in range(n_pockets_true):
+    print(f'Pocket {lig_i}')
+    
+    ligand_coords = all_ligand_coords[lig_i]
+    pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
+    pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
+    
+    if len(pocket_points_true) == 0:
+        print(f'\tLigand has no pocket points...')
+        continue
+    
+    pp_true_list.append(pocket_points_true)
 
 all_ligand_types = np.load(
     os.path.join(
@@ -52,23 +65,21 @@ ligand_true = all_ligand_types[0]
 ligandIdx_true = ligand_list.index(ligand_true)
 
 #####################
-ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
-ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
-
-pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path = ligand_site_model_path)
+pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel')
 pred.loadData(pdb_dir)
 
 ########################
 pdb_pnet_dir = os.path.join(binding_dir, pdb.rstrip("_"))
+#pdb_pnet_dir ='/home/daniel.monyak/5MOG/charged_5MOG'
 files = os.listdir(pdb_pnet_dir)
 n_pockets = np.sum(np.char.endswith(files, '.txt'))
 
 pocket_points_pred = []
-for pocket in range(n_pockets):
-    pnet_coords = np.loadtxt(os.path.join(pdb_pnet_dir, f'pocket{pocket}.txt'), dtype=float)
-    pp_pred_temp = tree.query_ball_point(pnet_coords, 3.0)
-    pp_pred_temp = list(set([pp for p in pp_pred_temp for pp in p]))
-    pocket_points_pred.extend(pp_pred_temp)
+pocket = 0
+
+pnet_coords = np.loadtxt(os.path.join(pdb_pnet_dir, f'pocket{pocket}.txt'), dtype=float)
+pp_pred_temp = tree.query_ball_point(pnet_coords, 3.0)
+pp_pred_temp = list(set([pp for p in pp_pred_temp for pp in p]))
 
 npoints = len(pocket_points_pred)
 print(f'{npoints} predicted pocket points')
