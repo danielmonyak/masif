@@ -30,6 +30,11 @@ xyz_coords = Predictor.getXYZCoords(pdb_dir)
 tree = spatial.KDTree(xyz_coords)
 
 ####################
+all_ligand_types = np.load(
+    os.path.join(
+        ligand_coord_dir, "{}_ligand_types.npy".format(pdb.split("_")[0])
+    )
+).astype(str)
 all_ligand_coords = np.load(
     os.path.join(
         ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
@@ -56,11 +61,7 @@ for lig_i in range(n_pockets_true):
     
     pp_true_list.append(pocket_points_true)
 
-all_ligand_types = np.load(
-    os.path.join(
-        ligand_coord_dir, "{}_ligand_types.npy".format(pdb.split("_")[0])
-    )
-).astype(str)
+
 ligand_true = all_ligand_types[0]
 ligandIdx_true = ligand_list.index(ligand_true)
 
@@ -69,24 +70,24 @@ pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/
 pred.loadData(pdb_dir)
 
 ########################
-pdb_pnet_dir = os.path.join(binding_dir, pdb.rstrip("_"))
-#pdb_pnet_dir ='/home/daniel.monyak/5MOG/charged_5MOG'
+#pdb_pnet_dir = os.path.join(binding_dir, pdb.rstrip("_"))
+pdb_pnet_dir ='/home/daniel.monyak/5MOG/charged_5MOG'
 files = os.listdir(pdb_pnet_dir)
-n_pockets = np.sum(np.char.endswith(files, '.txt'))
-
-pocket_points_pred = []
-pocket = 0
+n_pockets_pred = np.sum(np.char.endswith(files, '.txt'))
 
 pnet_coords = np.loadtxt(os.path.join(pdb_pnet_dir, f'pocket{pocket}.txt'), dtype=float)
-pp_pred_temp = tree.query_ball_point(pnet_coords, 3.0)
-pp_pred_temp = list(set([pp for p in pp_pred_temp for pp in p]))
+pocket_points_pred = tree.query_ball_point(pnet_coords, 3.0)
+pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
 
 npoints = len(pocket_points_pred)
 print(f'{npoints} predicted pocket points')
 
 ########################
+pocket = 0
+pocket_points_true = pp_true_list[pocket]
+
 overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
-recall = len(overlap)/npoints_true
+recall = len(overlap)/len(pocket_points_true)
 precision = len(overlap)/npoints
 print('Recall:', round(recall, 2))
 print('Precision:', round(precision, 2))
