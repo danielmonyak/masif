@@ -57,7 +57,7 @@ class MaSIF_ligand(Model):
             layers.BatchNormalization(),
             #
             layers.ReLU(),
-            layers.Dense(self.n_thetas * self.n_rhos),
+            layers.Dense(self.n_thetas * self.n_rhos, kernel_regularizer=regularizers.L1(l1_val)),
             #
             layers.BatchNormalization(),
             layers.ReLU(),
@@ -69,11 +69,11 @@ class MaSIF_ligand(Model):
             #layers.BatchNormalization(),
             #
             layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L1(l1_val)),
-            layers.Dense(40, activation='relu'),
-            layers.Dense(25, activation='relu'),
-            layers.Dense(10, activation='relu'),
+            layers.Dense(40, activation='relu', kernel_regularizer=regularizers.L1(l1_val)),
+            layers.Dense(25, activation='relu', kernel_regularizer=regularizers.L1(l1_val)),
+            layers.Dense(10, activation='relu', kernel_regularizer=regularizers.L1(l1_val)),
 
-            layers.Dense(self.n_ligands)
+            layers.Dense(self.n_ligands, kernel_regularizer=regularizers.L1(l1_val))
         ]
     
     def call(self, x):
