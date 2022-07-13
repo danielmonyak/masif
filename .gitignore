@@ -51,3 +51,4 @@ source/tf2/masif_ligand/*loss.txt
 source/tf2/masif_ligand/*accuracy*
 source/tf2/masif_ligand/0.*
 source/tf2/masif_ligand/30
+source/tf2/masif_ligand/10
