@@ -23,7 +23,8 @@ class MaSIF_ligand(Model):
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
-        l1_val = 0.01
+        reg_val = 0.01,
+        reg_type = 'L2'
     ):
         ## Call super - model initializer
         super(MaSIF_ligand, self).__init__()
@@ -32,6 +33,8 @@ class MaSIF_ligand(Model):
         self.keep_prob = keep_prob
         ##
         
+        reg = regularizers.L1(reg_val)
+
         # order of the spectral filters
         self.max_rho = max_rho
         self.n_thetas = n_thetas
@@ -68,12 +71,12 @@ class MaSIF_ligand(Model):
             #
             #layers.BatchNormalization(),
             #
-            layers.Dense(64, activation='relu', kernel_regularizer=regularizers.L1(l1_val)),
-            layers.Dense(40, activation='relu', kernel_regularizer=regularizers.L1(l1_val)),
-            layers.Dense(25, activation='relu', kernel_regularizer=regularizers.L1(l1_val)),
-            layers.Dense(10, activation='relu', kernel_regularizer=regularizers.L1(l1_val)),
+            layers.Dense(64, activation='relu', kernel_regularizer=reg),
+            layers.Dense(40, activation='relu', kernel_regularizer=reg),
+            layers.Dense(25, activation='relu', kernel_regularizer=reg),
+            layers.Dense(10, activation='relu', kernel_regularizer=reg),
 
-            layers.Dense(self.n_ligands, kernel_regularizer=regularizers.L1(l1_val))
+            layers.Dense(self.n_ligands, kernel_regularizer=reg)
         ]
     
     def call(self, x):
