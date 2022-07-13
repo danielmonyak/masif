@@ -1,8 +1,10 @@
 import numpy as np
 import pandas as pd
 import os
+import sys
 
-outdir = 'results'
+#outdir = 'results'
+outdir = sys.argv[1]
 
 results = pd.read_csv(os.path.join(outdir, 'results.csv'))
 BIG_results = pd.read_csv(os.path.join(outdir, 'BIG_results.csv'))
