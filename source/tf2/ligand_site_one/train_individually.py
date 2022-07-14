@@ -33,19 +33,6 @@ getData = lambda dataset : tf.data.TFRecordDataset(os.path.join(params["tfrecord
 train_data = getData('train')
 val_data = getData('val')
 
-model = MaSIF_ligand_site(
-    params["max_distance"],
-    params["n_classes"],
-    feat_mask=params["feat_mask"]
-)
-
-from_logits = model.loss_fn.get_config()['from_logits']
-binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
-
-model.compile(optimizer = model.opt,
-  loss = model.loss_fn,
-  metrics=[binAcc]
-)
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
@@ -61,19 +48,6 @@ val_samples_threshold = 5e4     #############
 #############################################
 #############################################
 
-if continue_training:
-    model.load_weights(ckpPath)
-    print(f'Loaded model from {ckpPath}')
-
-if read_metrics:
-    with open(ckpStatePath, 'rb') as handle:
-        ckpState = pickle.load(handle)
-    i = ckpState['last_epoch']
-    best_acc = ckpState['best_acc']
-    print(f'Resuming epoch {i} of training\nValidation accuracy: {best_acc}')
-else:
-    i = 0
-    best_acc = 0
 
 def goodLabel(labels):
     n_ligands = labels.shape[1]
@@ -87,7 +61,40 @@ def goodLabel(labels):
     
     return True
 
-with tf.device(dev):
+#with tf.device(dev):
+with strategy.scope()
+    model = MaSIF_ligand_site(
+        params["max_distance"],
+        params["n_classes"],
+        feat_mask=params["feat_mask"],
+        n_conv_layers = 4
+    )
+
+    from_logits = model.loss_fn.get_config()['from_logits']
+    binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
+
+    model.compile(optimizer = model.opt,
+      loss = model.loss_fn,
+      metrics=[binAcc]
+    )
+    
+    if continue_training:
+        model.load_weights(ckpPath)
+        print(f'Loaded model from {ckpPath}')
+
+    if read_metrics:
+        with open(ckpStatePath, 'rb') as handle:
+            ckpState = pickle.load(handle)
+        i = ckpState['last_epoch']
+        best_acc = ckpState['best_acc']
+        print(f'Resuming epoch {i} of training\nValidation accuracy: {best_acc}')
+    else:
+        i = 0
+        best_acc = 0
+
+    #######################################
+    #######################################
+    #######################################
     
     train_iterator = iter(train_data)
     val_iterator = iter(val_data)
@@ -106,9 +113,10 @@ with tf.device(dev):
         finished_samples = 0
         
         while finished_samples < train_samples_threshold:
-            try:
-                data_element = train_iterator.get_next()
-            except:
+            optional = train_iterator.get_next_as_optional()
+            if optional.has_value():
+                data_element = optional.get_value()
+            else:
                 train_iterator = iter(train_data)
                 train_j = 0
                 i += 1
@@ -124,15 +132,14 @@ with tf.device(dev):
 
             pocket_points = tf.where(tf.squeeze(labels > 0))
             npoints = tf.shape(pocket_points)[0]
-            
             empty_points = tf.where(tf.squeeze(labels == 0))
             empty_sample = tf.random.shuffle(empty_points)[:npoints]
-            
             sample = flatten(tf.concat([pocket_points, empty_sample], axis=0))
             
+            coords = [tf.expand_dims(tsr, axis=-1) for tsr in data_element[1:3]]
+            X = tf.expand_dims(tf.concat([data_element[0]] + coords + [data_element[3], indices], axis=-1), axis=0)
 
             y = tf.cast(labels > 0, dtype=tf.int32)
-            X = data_element[:4]
             
             y_samp = tf.gather(y, sample)
             X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
