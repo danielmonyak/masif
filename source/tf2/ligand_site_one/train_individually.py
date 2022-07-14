@@ -158,14 +158,14 @@ with strategy.scope()
             indices = np.expand_dims(pad_indices(indices, max_verts), axis=-1)
             
             
-            pocket_points = np.where(np.squeeze(labels > 0))[0]
+            '''pocket_points = np.where(np.squeeze(labels > 0))[0]
             npoints = pocket_points.shape[0]
             empty_points = np.where(np.squeeze(labels == 0))[0]
             #empty_sample = tf.random.shuffle(empty_points)[:npoints]
             empty_sample = np.random.choice(empty_points, npoints)
             
             #sample = flatten(tf.concat([pocket_points, empty_sample], axis=0))
-            sample = np.concatenate([pocket_points, empty_sample])
+            sample = np.concatenate([pocket_points, empty_sample])'''
             
             #coords = [tf.expand_dims(tsr, axis=-1) for tsr in data_element[1:3]]
             #X = tf.expand_dims(tf.concat([data_element[0]] + coords + [data_element[3], indices], axis=-1), axis=0)
@@ -174,11 +174,11 @@ with strategy.scope()
 
             y = tf.cast(labels > 0, dtype=tf.int32)
             
-            y_samp = tf.gather(y, sample)
-            X_samp = X[sample]
+            '''y_samp = tf.gather(y, sample)
+            X_samp = X[sample]'''
             
-            #_=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 20.0})
-            _=model.fit(X_samp, y_samp, epochs = 1, verbose = 2)
+            #model.fit(X, y, verbose = 1, class_weight = {0 : 1.0, 1 : 20.0})
+            model.fit(X, y, verbose = 2)
 
             finished_samples += sample.shape[0]
             train_j += 1
