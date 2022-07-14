@@ -210,15 +210,19 @@ class ConvLayer(layers.Layer):
         indices_tensor = tf.cast(tf.gather(x, 8, axis=-1), dtype=tf.int32)
         ####
         
+        print(f'Conv layer: 0')
+        
         var_dict = self.variable_dicts[0]
 
-        n_pockets = x.shape[0]
-        rg = range(0, n_pockets, self.conv_batch_size)
+        n_samples = x.shape[0]
+        rg = range(0, n_samples, self.conv_batch_size)
         sampIdx = list(rg)
-        if n_pockets % self.conv_batch_size != 0:
-            sampIdx.append(n_pockets)
+        if n_samples % self.conv_batch_size != 0:
+            sampIdx.append(n_samples)
         ret_list = []
-        for i in range(len(rg)):
+        for i in range(len(rg)-1):
+            print(f'Batch {i} of {len(rg)-1}')
+            
             sample = tf.range(rg[i], rg[i+1])
             input_feat_temp = tf.gather(input_feat, sample, axis=0)
             rho_coords_temp = tf.gather(rho_coords, sample, axis=0)
@@ -264,6 +268,8 @@ class ConvLayer(layers.Layer):
         
         start = 1
         for layer_num, var_dict in enumerate(self.variable_dicts[start:], start):
+            print(f'Conv layer: {layer_num}')
+            
             if layer_num == 0:
                 continue
 
@@ -279,7 +285,9 @@ class ConvLayer(layers.Layer):
 
             
             ret_list = []
-            for i in range(len(rg)):
+            for i in range(len(rg)-1):
+                print(f'Batch {i} of {len(rg)-1}')
+                
                 sample = tf.range(rg[i], rg[i+1])
                 input_feat_temp = tf.gather(ret, sample, axis=0)
                 rho_coords_temp = tf.gather(rho_coords, sample, axis=0)
