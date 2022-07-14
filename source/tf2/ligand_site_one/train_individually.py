@@ -180,9 +180,10 @@ with strategy.scope():
             batch_sz = X.shape[0]
             
             #class_weight = {0 : 1.0, 1 : 20.0})
-            model.fit(X, y, verbose = 1, batch_size = batch_sz, use_multiprocessing = True)
+            
+            #model.fit(X, y, verbose = 1, batch_size = batch_sz, use_multiprocessing = True)
 
-            '''
+            
             ##########################################
             ##########################################
             with tf.GradientTape() as tape:
@@ -199,7 +200,8 @@ with strategy.scope():
             self.compiled_metrics.update_state(y, y_pred)
             ##########################################
             ##########################################
-            '''
+            
+            print('\n\nFinished training on one protein\n\n')
             
             finished_samples += batch_sz
             train_j += 1
