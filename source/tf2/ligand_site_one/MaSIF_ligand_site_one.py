@@ -330,6 +330,7 @@ class ConvLayer(layers.Layer):
             )  # batch_size, n_vertices, n_gauss
             gauss_activations = tf.multiply(gauss_activations, mask)
 
+            # check the axis on this
             if mean_gauss_activation:  # computes mean weights for the different gaussians
                 gauss_activations /= (
                     tf.reduce_sum(input_tensor=gauss_activations, axis=2, keepdims=True) + eps
@@ -339,7 +340,6 @@ class ConvLayer(layers.Layer):
                 gauss_activations, 2
             )  # batch_size, n_vertices, 1, n_gauss,
 
-            # check the axis on this
             input_feat_ = tf.expand_dims(
                 input_feat, -1
             )  # batch_size, n_vertices, n_feat, 1
@@ -356,6 +356,7 @@ class ConvLayer(layers.Layer):
 
             conv_feat = tf.matmul(gauss_desc, W_conv) + b_conv  # batch_size, 80
             all_conv_feat.append(conv_feat)
+            
         all_conv_feat = tf.stack(all_conv_feat)
         conv_feat = tf.reduce_max(all_conv_feat, axis=0)
         
