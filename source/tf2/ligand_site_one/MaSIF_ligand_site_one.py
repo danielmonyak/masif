@@ -204,8 +204,15 @@ class ConvLayer(layers.Layer):
     def call(self, x):
         '''input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.map_func, elems = x,
                               fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])'''
-        input_feat, rho_coords, theta_coords, mask = x
-
+        #input_feat, rho_coords, theta_coords, mask = x
+        input_feat = tf.gather(x, tf.range(5), axis=-1)
+        rho_coords = tf.gather(x, 5, axis=-1)
+        theta_coords = tf.gather(x, 6, axis=-1)
+        mask = tf.expand_dims(tf.gather(x, 7, axis=-1), axis=-1)
+        ####
+        indices_tensor = tf.expand_dims(tf.gather(x, 8, axis=-1), axis=-1)
+        ####
+        
         var_dict = self.variable_dicts[0]
 
         mu_rho = var_dict['mu_rho']
@@ -253,10 +260,13 @@ class ConvLayer(layers.Layer):
         if len(self.variable_dicts) == 1:
             return ret
         ####################
+        
         start = 1
         for layer_num, var_dict in enumerate(self.variable_dicts[start:], start):
             if layer_num == 0:
                 continue
+
+            ret = tf.gather(ret, indices_tensor)
 
             mu_rho = var_dict['mu_rho']
             mu_theta = var_dict['mu_theta']
@@ -267,7 +277,8 @@ class ConvLayer(layers.Layer):
             W_conv = var_dict['W_conv']
 
             ret = self.inference(
-                tf.expand_dims(ret, axis=-1),
+                #tf.expand_dims(ret, axis=-1),
+                ret
                 rho_coords,
                 theta_coords,
                 mask,
