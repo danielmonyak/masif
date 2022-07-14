@@ -172,7 +172,6 @@ with tf.device(dev):
             #X = tf.expand_dims(tf.concat([data_element[0]] + coords + [data_element[3], indices], axis=-1), axis=0)
             coords = [np.expand_dims(tsr, axis=-1) for tsr in data_element[1:3]]
             X = np.concatenate([data_element[0]] + coords + [data_element[3], indices], axis=-1)
-
             y = tf.cast(labels > 0, dtype=tf.int32)
             
             '''y_samp = tf.gather(y, sample)
@@ -183,6 +182,25 @@ with tf.device(dev):
             #model.fit(X, y, verbose = 1, class_weight = {0 : 1.0, 1 : 20.0})
             model.fit(X, y, verbose = 1, batch_size = batch_sz, use_multiprocessing = True)
 
+            
+            ##########################################
+            ##########################################
+            with tf.GradientTape() as tape:
+                y_pred = self(X, training=True)  # Forward pass
+                print('computing loss now')
+                loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+
+            print('computing gradient now')
+            trainable_vars = self.trainable_variables
+            gradients = tape.gradient(loss, trainable_vars)
+
+            print('applying gradient now')
+            self.optimizer.apply_gradients(zip(gradients, trainable_vars))
+            self.compiled_metrics.update_state(y, y_pred)
+            ##########################################
+            ##########################################
+            
+            
             finished_samples += batch_sz
             train_j += 1
             
