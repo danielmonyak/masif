@@ -276,12 +276,12 @@ class ConvLayer(layers.Layer):
                 rho_coords,
                 theta_coords,
                 mask,
-                var_dict['W_conv'][i],
-                var_dict['b_conv'][i],
-                var_dict['mu_rho'][i],
-                var_dict['sigma_rho'][i],
-                var_dict['mu_theta'][i],
-                var_dict['sigma_theta'][i]
+                var_dict['W_conv'],
+                var_dict['b_conv'],
+                var_dict['mu_rho'],
+                var_dict['sigma_rho'],
+                var_dict['mu_theta'],
+                var_dict['sigma_theta']
             )  # batch_size, n_gauss*n_gauss
             # Reduce the dimensionality by averaging over the last dimension
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
