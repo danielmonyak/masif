@@ -245,7 +245,7 @@ class ConvLayer(layers.Layer):
         ret = tf.reshape(ret, self.reshape_shapes[0])
         
         ret = tf.matmul(ret, FC1_W) + FC1_b
-        ret = tf.relu(ret)
+        ret = tf.nn.relu(ret)
         
         ret = tf.matmul(ret, FC2_W) + FC2_b
         ret = tf.nn.relu(ret)
