@@ -177,10 +177,12 @@ with strategy.scope():
             '''y_samp = tf.gather(y, sample)
             X_samp = X[sample]'''
             
+            batch_sz = X.shape[0]
+            
             #model.fit(X, y, verbose = 1, class_weight = {0 : 1.0, 1 : 20.0})
-            model.fit(X, y, verbose = 2)
+            model.fit(X, y, verbose = 1, batch_size = batch_sz)
 
-            finished_samples += sample.shape[0]
+            finished_samples += batch_sz
             train_j += 1
             
         #############################################################
