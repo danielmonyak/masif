@@ -101,7 +101,7 @@ class LSResNet(Model):
         #self.testDense = layers.Dense(1, activation='sigmoid')
     
     def runConv(self, x):
-        n_pockets = tf.shape(x)[0]
+        n_pockets = x.shape[0]
         rg = range(0, n_pockets, self.conv_batch_size)
         ret_list = []
         for i in range(len(rg)-1):
