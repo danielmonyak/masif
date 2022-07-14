@@ -219,11 +219,12 @@ class ConvLayer(layers.Layer):
         sampIdx = list(rg)
         if n_samples % self.conv_batch_size != 0:
             sampIdx.append(n_samples)
+        
         ret_list = []
-        for i in range(len(rg)-1):
-            print(f'Batch {i} of {len(rg)-1}')
+        for i in range(len(sampIdx)-1):
+            print(f'Batch {i+1} of {len(sampIdx)-1}')
             
-            sample = tf.range(rg[i], rg[i+1])
+            sample = tf.range(sampIdx[i], sampIdx[i+1])
             input_feat_temp = tf.gather(input_feat, sample, axis=0)
             rho_coords_temp = tf.gather(rho_coords, sample, axis=0)
             theta_coords_temp = tf.gather(theta_coords, sample, axis=0)
@@ -285,10 +286,10 @@ class ConvLayer(layers.Layer):
 
             
             ret_list = []
-            for i in range(len(rg)-1):
-                print(f'Batch {i} of {len(rg)-1}')
+            for i in range(len(sampIdx)-1):
+                print(f'Batch {i+1} of {len(sampIdx)-1}')
                 
-                sample = tf.range(rg[i], rg[i+1])
+                sample = tf.range(sampIdx[i], sampIdx[i+1])
                 input_feat_temp = tf.gather(input_feat, sample, axis=0)
                 rho_coords_temp = tf.gather(rho_coords, sample, axis=0)
                 theta_coords_temp = tf.gather(theta_coords, sample, axis=0)
