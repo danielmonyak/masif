@@ -10,12 +10,12 @@ import tensorflow as tf
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
-'''
+
 phys_gpus = tf.config.list_physical_devices('GPU')
 strategy_str = []
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
-'''
+
 lg_gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in lg_gpus]
 strategy = tf.distribute.MirroredStrategy(gpus_str)
@@ -82,8 +82,8 @@ def pad_indices(indices, max_verts):
     return np.stack(ret_list)
 
 
-#with tf.device(dev):
-with strategy.scope():
+with tf.device(dev):
+#with strategy.scope():
     model = MaSIF_ligand_site(
         params["max_distance"],
         params["n_classes"],
