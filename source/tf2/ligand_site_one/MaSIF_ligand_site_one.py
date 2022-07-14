@@ -109,12 +109,9 @@ class ConvLayer(layers.Layer):
                              lambda x : tf.reduce_mean(x, axis=-1),
                              lambda x : tf.reduce_max(x, axis=-1)]
         
-        mu_rho_initial = np.expand_dims(initial_coords[:, 0], 0).astype(
-            "float32"
-        )
-        mu_theta_initial = np.expand_dims(initial_coords[:, 1], 0).astype(
-            "float32"
-        )
+        mu_rho_initial = tf.cast(tf.expand_dims(initial_coords[:, 0], axis=0), dtype=tf.float32)
+        mu_theta_initial = tf.cast(tf.expand_dims(initial_coords[:, 1], axis=0), dtype=tf.float32)
+        
         mu_rho = []
         mu_theta = []
         sigma_rho = []
@@ -122,27 +119,22 @@ class ConvLayer(layers.Layer):
 
         b_conv = []
         W_conv = []
-        ## mu_rho and mu_theta inital values are used for sigma as well -- check on this
         
         layer_num = 0
         for i in range(self.n_feat):
             mu_rho.append(
-                #tf.Variable(mu_rho_initial, name="mu_rho_{}_{}".format(i, layer_num), trainable = True)
                 self.add_weight(name="mu_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial),
                                 initializer = ValueInit(mu_rho_initial), trainable = True)
             )  # 1, n_gauss
             mu_theta.append(
-                #tf.Variable(mu_theta_initial, name="mu_theta_{}_{}".format(i, layer_num), trainable = True)
                 self.add_weight(name="mu_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial),
                                 initializer = ValueInit(mu_theta_initial), trainable = True)
             )  # 1, n_gauss
             sigma_rho.append(
-                #tf.Variable(np.ones_like(mu_rho_initial) * self.sigma_rho_init, name="sigma_rho_{}_{}".format(i, layer_num), trainable = True)
                 self.add_weight(name="sigma_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial),
                                 initializer = initializers.Constant(self.sigma_rho_init), trainable = True)
             )  # 1, n_gauss
             sigma_theta.append(
-                #tf.Variable(np.ones_like(mu_theta_initial) * self.sigma_theta_init, name="sigma_theta_{}_{}".format(i, layer_num), trainable = True)
                 self.add_weight(name="sigma_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial),
                                 initializer = initializers.Constant(self.sigma_theta_init), trainable = True)
             )  # 1, n_gauss
@@ -163,17 +155,6 @@ class ConvLayer(layers.Layer):
                 )
             )
             
-        
-        #gu_init = tf.keras.initializers.GlorotUniform()
-        #zero_init = tf.keras.initializers.Zeros
-        #FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, 200), initializer = gu_init, trainable=True, dtype="float32")
-        #FC1_b = self.add_weight('FC1_b', shape=(200,), initializer = zero_init, trainable=True, dtype="float32")
-        '''FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
-        FC1_b = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = zero_init, trainable=True, dtype="float32")
-        
-        FC2_W = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
-        FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = zero_init, trainable=True, dtype="float32")'''
-        
         var_dict = {}
         var_dict['mu_rho'] = mu_rho
         var_dict['mu_theta'] = mu_theta
@@ -181,34 +162,36 @@ class ConvLayer(layers.Layer):
         var_dict['sigma_theta'] = sigma_theta
         var_dict['b_conv'] = b_conv
         var_dict['W_conv'] = W_conv
-        '''
-        var_dict['FC1_W'] = FC1_W
-        var_dict['FC1_b'] = FC1_b
         
-        var_dict['FC2_W'] = FC2_W
-        var_dict['FC2_b'] = FC2_b'''
+        if n_conv_layers > 1:
+            gu_init = tf.keras.initializers.GlorotUniform()
+            '''FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, 200), initializer = gu_init, trainable=True, dtype="float32")
+            FC1_b = self.add_weight('FC1_b', shape=(200,), initializer = zero_init, trainable=True, dtype="float32")'''
+            FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
+            FC1_b = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = 'zeros', trainable=True, dtype="float32")
+
+            FC2_W = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
+            FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = 'zeros', trainable=True, dtype="float32")
+        
+            var_dict['FC1_W'] = FC1_W
+            var_dict['FC1_b'] = FC1_b
+
+            var_dict['FC2_W'] = FC2_W
+            var_dict['FC2_b'] = FC2_b
         
         self.variable_dicts.append(var_dict)
-        
         
         i = 0
         for layer_num in range(1, n_conv_layers):
             var_dict = {}
-            var_dict['mu_rho'] = tf.Variable(mu_rho_initial, name="mu_rho_{}_{}".format(i, layer_num), trainable = True)
-            var_dict['mu_theta'] = tf.Variable(mu_theta_initial, name="mu_theta_{}_{}".format(i, layer_num), trainable = True)
-            var_dict['sigma_rho'] = tf.Variable(np.ones_like(mu_rho_initial) * self.sigma_rho_init, name="sigma_rho_{}_{}".format(i, layer_num), trainable = True)
-            var_dict['sigma_theta'] = tf.Variable((np.ones_like(mu_theta_initial) * self.sigma_theta_init), name="sigma_theta_{}_{}".format(i, layer_num), trainable = True)
+            var_dict['mu_rho'] = self.add_weight(name="mu_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial), initializer = ValueInit(mu_rho_initial), trainable = True)
+            var_dict['mu_theta'] = self.add_weight(name="mu_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial), initializer = ValueInit(mu_theta_initial), trainable = True)
+            var_dict['sigma_rho'] = self.add_weight(name="sigma_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial), initializer = initializers.Constant(self.sigma_rho_init), trainable = True)
+            var_dict['sigma_theta'] = self.add_weight(name="sigma_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial), initializer = initializers.Constant(self.sigma_theta_init), trainable = True)
             
             var_dict['b_conv'] = self.add_weight("b_conv_{}_{}".format(i, layer_num), shape=conv_shapes[layer_num][1], initializer='zeros', trainable = True)
             var_dict['W_conv'] = self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True)
-            '''var_dict['b_conv'] = tf.Variable(tf.zeros(conv_shapes[0][1]), name="b_conv_{}_{}".format(i, layer_num), trainable = True)
-            var_dict['W_conv'] = tf.Variable(initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform")(shape=conv_shapes[0]),
-                                             name = "W_conv_{}_{}".format(i, layer_num), trainable = True)'''
             
-            #################################
-            '''var_dict['FC1_W'] = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos, 200), initializer = gu_init, trainable=True, dtype="float32")
-            var_dict['FC1_b'] = self.add_weight('FC1_b', shape=(200,), initializer = zero_init, trainable=True, dtype="float32")'''
-            #################################
             self.variable_dicts.append(var_dict)
     '''
     #@tf.autograph.experimental.do_not_convert
