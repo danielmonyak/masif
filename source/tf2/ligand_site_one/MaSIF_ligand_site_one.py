@@ -93,7 +93,6 @@ class ConvLayer(layers.Layer):
         
         # Variable dict lists
         self.variable_dicts = []
-        self.relu = tf.keras.layers.ReLU()
         
         initial_coords = self.compute_initial_coordinates()
         # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
@@ -165,21 +164,20 @@ class ConvLayer(layers.Layer):
         var_dict['b_conv'] = b_conv
         var_dict['W_conv'] = W_conv
         
-        if n_conv_layers > 1:
-            gu_init = tf.keras.initializers.GlorotUniform()
-            '''FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, 200), initializer = gu_init, trainable=True, dtype="float32")
-            FC1_b = self.add_weight('FC1_b', shape=(200,), initializer = zero_init, trainable=True, dtype="float32")'''
-            FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
-            FC1_b = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = 'zeros', trainable=True, dtype="float32")
+        gu_init = tf.keras.initializers.GlorotUniform()
+        '''FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, 200), initializer = gu_init, trainable=True, dtype="float32")
+        FC1_b = self.add_weight('FC1_b', shape=(200,), initializer = zero_init, trainable=True, dtype="float32")'''
+        FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
+        FC1_b = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = 'zeros', trainable=True, dtype="float32")
 
-            FC2_W = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
-            FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = 'zeros', trainable=True, dtype="float32")
-        
-            var_dict['FC1_W'] = FC1_W
-            var_dict['FC1_b'] = FC1_b
+        FC2_W = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
+        FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = 'zeros', trainable=True, dtype="float32")
 
-            var_dict['FC2_W'] = FC2_W
-            var_dict['FC2_b'] = FC2_b
+        var_dict['FC1_W'] = FC1_W
+        var_dict['FC1_b'] = FC1_b
+
+        var_dict['FC2_W'] = FC2_W
+        var_dict['FC2_b'] = FC2_b
         
         self.variable_dicts.append(var_dict)
         
@@ -244,20 +242,19 @@ class ConvLayer(layers.Layer):
 
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
-        '''
+        
         ret = tf.matmul(ret, FC1_W) + FC1_b
-        ret = self.relu(ret)
+        ret = tf.relu(ret)
         
         ret = tf.matmul(ret, FC2_W) + FC2_b
-        ret = self.relu(ret)
-        '''
+        ret = tf.nn.relu(ret)
+        
         #####################
         if len(self.variable_dicts) == 1:
             return ret
         ####################
-        for layer_num, var_dict in enumerate(self.variable_dicts):
-            print('SHOULD NOT BE HERE')
-            
+        start = 1
+        for layer_num, var_dict in enumerate(self.variable_dicts[start:], start):
             if layer_num == 0:
                 continue
 
@@ -268,9 +265,6 @@ class ConvLayer(layers.Layer):
 
             b_conv = var_dict['b_conv']
             W_conv = var_dict['W_conv']
-
-            FC1_W = var_dict['FC1_W']
-            FC1_b = var_dict['FC1_b']
 
             ret = self.inference(
                 tf.expand_dims(ret, axis=-1),
@@ -285,12 +279,9 @@ class ConvLayer(layers.Layer):
                 sigma_theta,
             )  # batch_size, n_gauss*n_gauss
             # Reduce the dimensionality by averaging over the last dimension
-            '''ret = tf.reshape(ret, self.reshape_shapes[layer_num])
-            ret = self.reduce_funcs[layer_num](ret)'''
+            ret = tf.reshape(ret, self.reshape_shapes[layer_num])
+            ret = self.reduce_funcs[layer_num](ret)
             
-            #ret = tf.matmul(ret, FC1_W) + FC1_b
-            ret = self.relu(ret)
-
         return ret
     
     def inference(
