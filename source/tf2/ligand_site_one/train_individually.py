@@ -10,7 +10,6 @@ import tensorflow as tf
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
-import random
 
 gpus = tf.config.list_physical_devices('GPU')
 for gpu in gpus:
@@ -62,11 +61,21 @@ def goodLabel(labels):
     return True
 
 max_verts = 200
+'''
 def pad_map_fn(packed):
     row, def_val = packed
     leftover = max_verts - row.shape[0]
     paddings = tf.constant([[0,leftover]])
-    return tf.pad(row, paddings, constant_values=def_val)
+    return tf.pad(row, paddings, constant_values=def_val)'''
+
+def pad_indices(indices, max_verts):
+    ret_list = []
+    for patch_ix in range(len(indices)):
+        ret_list.append(np.concatenate(
+            [indices[patch_ix], [patch_ix] * (max_verts - len(indices[patch_ix]))])
+        )
+    return np.stack(ret_list)
+
 
 #with tf.device(dev):
 with strategy.scope()
@@ -137,25 +146,33 @@ with strategy.scope()
                 train_j += 1
                 continue
 
-            pdb = data_element[5]
-            indices = np.load(mydir + pid + "_list_indices.npy", encoding="latin1", allow_pickle = True)
+            pdb = data_element[5].numpy().decode('ascii') + '_'
+            indices = np.load(os.path.join(params['masif_precomputation_dir'], 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
             
-            default_values = tf.range(indices.shape[0])
-            indices = tf.map_fn(fn=pad_map_fn, elems=(indices, default_values), fn_output_signature=tf.TensorSpec(shape=max_verts, dtype=tf.int32))
-
-            pocket_points = tf.where(tf.squeeze(labels > 0))
-            npoints = tf.shape(pocket_points)[0]
-            empty_points = tf.where(tf.squeeze(labels == 0))
-            empty_sample = tf.random.shuffle(empty_points)[:npoints]
-            sample = flatten(tf.concat([pocket_points, empty_sample], axis=0))
+            '''default_values = tf.range(indices.shape[0])
+            indices = tf.map_fn(fn=pad_map_fn, elems=(indices, default_values), fn_output_signature=tf.TensorSpec(shape=max_verts, dtype=tf.int32))'''
+            indices = np.expand_dims(pad_indices(indices, max_verts), axis=-1)
             
-            coords = [tf.expand_dims(tsr, axis=-1) for tsr in data_element[1:3]]
-            X = tf.expand_dims(tf.concat([data_element[0]] + coords + [data_element[3], indices], axis=-1), axis=0)
+            
+            pocket_points = np.where(np.squeeze(labels > 0))[0]
+            npoints = pocket_points.shape[0]
+            empty_points = np.where(np.squeeze(labels == 0))[0]
+            #empty_sample = tf.random.shuffle(empty_points)[:npoints]
+            empty_sample = np.random.choice(empty_points, npoints)
+            
+            #sample = flatten(tf.concat([pocket_points, empty_sample], axis=0))
+            sample = np.concatenate([pocket_points, empty_sample])
+            
+            #coords = [tf.expand_dims(tsr, axis=-1) for tsr in data_element[1:3]]
+            #X = tf.expand_dims(tf.concat([data_element[0]] + coords + [data_element[3], indices], axis=-1), axis=0)
+            coords = [np.expand_dims(tsr, axis=-1) for tsr in data_element[1:3]]
+            X = np.concatenate([data_element[0]] + coords + [data_element[3], indices], axis=-1)
 
             y = tf.cast(labels > 0, dtype=tf.int32)
             
             y_samp = tf.gather(y, sample)
-            X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
+            #X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
+            X_samp = X[sample]
             
             #_=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 20.0})
             _=model.fit(X_samp, y_samp, epochs = 1, verbose = 2)
