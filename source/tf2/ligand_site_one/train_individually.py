@@ -61,6 +61,13 @@ def goodLabel(labels):
     
     return True
 
+max_verts = 200
+def pad_map_fn(packed):
+    row, def_val = packed
+    leftover = max_verts - row.shape[0]
+    paddings = tf.constant([[0,leftover]])
+    return tf.pad(row, paddings, constant_values=def_val)
+
 #with tf.device(dev):
 with strategy.scope()
     model = MaSIF_ligand_site(
@@ -129,6 +136,12 @@ with strategy.scope()
             if not goodLabel(labels):
                 train_j += 1
                 continue
+
+            pdb = data_element[5]
+            indices = np.load(mydir + pid + "_list_indices.npy", encoding="latin1", allow_pickle = True)
+            
+            default_values = tf.range(indices.shape[0])
+            indices = tf.map_fn(fn=pad_map_fn, elems=(indices, default_values), fn_output_signature=tf.TensorSpec(shape=max_verts, dtype=tf.int32))
 
             pocket_points = tf.where(tf.squeeze(labels > 0))
             npoints = tf.shape(pocket_points)[0]
