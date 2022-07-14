@@ -329,6 +329,7 @@ class ConvLayer(layers.Layer):
         eps=1e-5,
         mean_gauss_activation=True,
     ):
+        '''
         print(f'input_feat.shape: {input_feat.shape}')
         print(f'rho_coords.shape: {rho_coords.shape}')
         print(f'theta_coords.shape: {theta_coords.shape}')
@@ -336,7 +337,7 @@ class ConvLayer(layers.Layer):
         print(f'mu_rho.shape: {mu_rho.shape}')
         print(f'sigma_rho.shape: {sigma_rho.shape}')
         print(f'mu_theta.shape: {mu_theta.shape}')
-        print(f'sigma_theta.shape: {sigma_theta.shape}')
+        print(f'sigma_theta.shape: {sigma_theta.shape}')'''
         
         n_samples = tf.shape(rho_coords)[0]
         n_vertices = tf.shape(rho_coords)[1]
