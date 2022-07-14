@@ -147,7 +147,7 @@ with strategy.scope()
                 continue
 
             pdb = data_element[5].numpy().decode('ascii') + '_'
-            indices = np.load(os.path.join(params['masif_precomputation_dir'], 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
+            indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
             
             '''default_values = tf.range(indices.shape[0])
             indices = tf.map_fn(fn=pad_map_fn, elems=(indices, default_values), fn_output_signature=tf.TensorSpec(shape=max_verts, dtype=tf.int32))'''
