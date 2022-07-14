@@ -82,8 +82,8 @@ def pad_indices(indices, max_verts):
     return np.stack(ret_list)
 
 
-with tf.device(dev):
-#with strategy.scope():
+#with tf.device(dev):
+with strategy.scope():
     model = MaSIF_ligand_site(
         params["max_distance"],
         params["n_classes"],
@@ -181,9 +181,9 @@ with tf.device(dev):
             
             #class_weight = {0 : 1.0, 1 : 20.0})
             
-            #model.fit(X, y, verbose = 1, batch_size = batch_sz, use_multiprocessing = True)
+            model.fit(X, y, verbose = 1, batch_size = batch_sz, use_multiprocessing = True)
 
-            
+            '''
             ##########################################
             ##########################################
             with tf.GradientTape() as tape:
@@ -200,6 +200,7 @@ with tf.device(dev):
             model.compiled_metrics.update_state(y, y_pred)
             ##########################################
             ##########################################
+            '''
             
             print('\n\nFinished training on one protein\n\n')
             
