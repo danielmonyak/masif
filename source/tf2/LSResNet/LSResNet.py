@@ -120,8 +120,11 @@ class LSResNet(Model):
     def call(self, X_packed, training=False):
         X, xyz_coords = X_packed
         
+        del X_packed
+        
         ret = tf.map_fn(fn=self.runConv, elems = X, fn_output_signature = tf.TensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat], dtype=tf.float32))
-        #ret = self.myConvLayer(X)
+        
+        del X
         
         ret = runLayers(self.denseReduce, ret)
         
@@ -131,10 +134,16 @@ class LSResNet(Model):
         
         ret = self.myMakeGrid(xyz_coords, ret)
         
+        del xyz_coords
+        
         ret1 = runLayers(self.convBlock[0], ret)
         residue = runLayers(self.convBlock[1], ret)
         
         ret = self.Add((ret1, residue))
+        
+        del ret1
+        del residue
+        
         ret = self.ReLU(ret)
         ret = self.lastConvLayer(ret)
         
