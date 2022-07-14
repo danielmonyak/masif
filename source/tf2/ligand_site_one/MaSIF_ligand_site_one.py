@@ -167,17 +167,11 @@ class ConvLayer(layers.Layer):
         gu_init = tf.keras.initializers.GlorotUniform()
         '''FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, 200), initializer = gu_init, trainable=True, dtype="float32")
         FC1_b = self.add_weight('FC1_b', shape=(200,), initializer = zero_init, trainable=True, dtype="float32")'''
-        FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
-        FC1_b = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = 'zeros', trainable=True, dtype="float32")
+        var_dict['FC1_W'] = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
+        var_dict['FC1_b'] = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = 'zeros', trainable=True, dtype="float32")
 
-        FC2_W = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
-        FC2_b = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = 'zeros', trainable=True, dtype="float32")
-
-        var_dict['FC1_W'] = FC1_W
-        var_dict['FC1_b'] = FC1_b
-
-        var_dict['FC2_W'] = FC2_W
-        var_dict['FC2_b'] = FC2_b
+        var_dict['FC2_W'] = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
+        var_dict['FC2_b'] = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = 'zeros', trainable=True, dtype="float32")
         
         self.variable_dicts.append(var_dict)
         
@@ -221,12 +215,12 @@ class ConvLayer(layers.Layer):
         sigma_theta = var_dict['sigma_theta']
         b_conv = var_dict['b_conv']
         W_conv = var_dict['W_conv']
-        '''
+        
         FC1_W = var_dict['FC1_W']
         FC1_b = var_dict['FC1_b']
         
         FC2_W = var_dict['FC2_W']
-        FC2_b = var_dict['FC2_b']'''
+        FC2_b = var_dict['FC2_b']
 
 
         ret = []
