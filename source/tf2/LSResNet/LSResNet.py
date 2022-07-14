@@ -130,12 +130,12 @@ class LSResNet(Model):
         #############################
         
         ret = self.myMakeGrid(xyz_coords, ret)
-        '''
+        
         ret1 = runLayers(self.convBlock[0], ret)
         residue = runLayers(self.convBlock[1], ret)
         
         ret = tf.add(ret1, residue)
-        ret = tf.nn.relu(ret)'''
+        ret = tf.nn.relu(ret)
         ret = self.lastConvLayer(ret)
         
         print('done with forward prop')
