@@ -188,17 +188,17 @@ with strategy.scope():
             ##########################################
             ##########################################
             with tf.GradientTape() as tape:
-                y_pred = self(X, training=True)  # Forward pass
+                y_pred = model(X, training=True)  # Forward pass
                 print('computing loss now')
-                loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+                loss = model.compiled_loss(y, y_pred, regularization_losses=model.losses)
 
             print('computing gradient now')
-            trainable_vars = self.trainable_variables
+            trainable_vars = model.trainable_variables
             gradients = tape.gradient(loss, trainable_vars)
 
             print('applying gradient now')
-            self.optimizer.apply_gradients(zip(gradients, trainable_vars))
-            self.compiled_metrics.update_state(y, y_pred)
+            model.optimizer.apply_gradients(zip(gradients, trainable_vars))
+            model.compiled_metrics.update_state(y, y_pred)
             ##########################################
             ##########################################
             
