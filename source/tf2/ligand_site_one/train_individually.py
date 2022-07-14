@@ -82,14 +82,13 @@ def pad_indices(indices, max_verts):
     return np.stack(ret_list)
 
 
-#with tf.device(dev):
-with strategy.scope():
+with tf.device(dev):
+#with strategy.scope():
     model = MaSIF_ligand_site(
         params["max_distance"],
         params["n_classes"],
         feat_mask=params["feat_mask"],
-        n_conv_layers = 3,
-        conv_batch_size = 200
+        n_conv_layers = 3
     )
 
     from_logits = model.loss_fn.get_config()['from_logits']
