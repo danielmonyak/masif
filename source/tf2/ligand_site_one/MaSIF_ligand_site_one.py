@@ -312,7 +312,7 @@ class ConvLayer(layers.Layer):
                 
                 ret_list.append(ret)
             
-            ret = tf.concat(ret_list)
+            ret = tf.concat(ret_list, axis=0)
             
         return ret
     
