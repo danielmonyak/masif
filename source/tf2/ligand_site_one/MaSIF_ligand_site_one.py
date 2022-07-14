@@ -259,11 +259,7 @@ class ConvLayer(layers.Layer):
             if layer_num == 0:
                 continue
 
-            print(f'layer_num: {layer_num}')
-            print(f'ret.shape: {ret.shape}')
-            print(f'indices_tensor.shape: {indices_tensor.shape}')
             ret = tf.gather(ret, indices_tensor)
-            print(f'ret.shape: {ret.shape}')
 
             mu_rho = var_dict['mu_rho']
             mu_theta = var_dict['mu_theta']
