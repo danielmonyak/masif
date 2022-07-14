@@ -12,6 +12,7 @@ from tf2.read_ligand_tfrecords import _parse_function
 from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
 
 phys_gpus = tf.config.list_physical_devices('GPU')
+strategy_str = []
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
@@ -180,7 +181,7 @@ with strategy.scope():
             batch_sz = X.shape[0]
             
             #model.fit(X, y, verbose = 1, class_weight = {0 : 1.0, 1 : 20.0})
-            model.fit(X, y, verbose = 1, batch_size = batch_sz)
+            model.fit(X, y, verbose = 1, batch_size = batch_sz, use_multiprocessing = True)
 
             finished_samples += batch_sz
             train_j += 1
