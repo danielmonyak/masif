@@ -203,7 +203,7 @@ class ConvLayer(layers.Layer):
         theta_coords = tf.cast(tf.gather(x, 6, axis=-1), dtype=tf.float32)
         mask = tf.cast(tf.expand_dims(tf.gather(x, 7, axis=-1), axis=-1), dtype=tf.float32)
         ####
-        indices_tensor = tf.cast(tf.expand_dims(tf.gather(x, 8, axis=-1), axis=-1), dtype=tf.int32)
+        indices_tensor = tf.cast(tf.gather(x, 8, axis=-1), dtype=tf.int32)
         ####
         
         var_dict = self.variable_dicts[0]
