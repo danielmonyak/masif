@@ -179,8 +179,8 @@ with tf.device(dev):
             
             batch_sz = X.shape[0]
             
-            #model.fit(X, y, verbose = 1, class_weight = {0 : 1.0, 1 : 20.0})
-            model.fit(X, y, verbose = 1, batch_size = batch_sz, use_multiprocessing = True)
+            #class_weight = {0 : 1.0, 1 : 20.0})
+            #model.fit(X, y, verbose = 1, batch_size = batch_sz, use_multiprocessing = True)
 
             
             ##########################################
