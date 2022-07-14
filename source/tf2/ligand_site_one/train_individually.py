@@ -82,7 +82,7 @@ def pad_indices(indices, max_verts):
 
 
 #with tf.device(dev):
-with strategy.scope()
+with strategy.scope():
     model = MaSIF_ligand_site(
         params["max_distance"],
         params["n_classes"],
