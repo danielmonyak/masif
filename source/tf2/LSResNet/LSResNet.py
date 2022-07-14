@@ -30,7 +30,7 @@ class LSResNet(Model):
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
         n_conv_layers = 1,
-        conv_batch_size = 100
+        conv_batch_size = 10
     ):
         ## Call super - model initializer
         super(LSResNet, self).__init__()
