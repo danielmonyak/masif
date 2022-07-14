@@ -83,7 +83,7 @@ with strategy.scope()
         params["max_distance"],
         params["n_classes"],
         feat_mask=params["feat_mask"],
-        n_conv_layers = 4
+        n_conv_layers = 3
     )
 
     from_logits = model.loss_fn.get_config()['from_logits']
@@ -171,7 +171,6 @@ with strategy.scope()
             y = tf.cast(labels > 0, dtype=tf.int32)
             
             y_samp = tf.gather(y, sample)
-            #X_samp = tuple(tf.gather(tsr, sample) for tsr in X)
             X_samp = X[sample]
             
             #_=model.fit(X, y, epochs = 1, verbose = 2, class_weight = {0 : 1.0, 1 : 20.0})
