@@ -278,7 +278,7 @@ class ConvLayer(layers.Layer):
 
             ret = self.inference(
                 #tf.expand_dims(ret, axis=-1),
-                ret
+                ret,
                 rho_coords,
                 theta_coords,
                 mask,
