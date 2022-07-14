@@ -194,17 +194,16 @@ class ConvLayer(layers.Layer):
         rest = tf.reshape(row[self.bigIdx:], [3] + self.smallShape)
         return [input_feat, rest[0], rest[1], rest[2]]
     '''
-    #@tf.autograph.experimental.do_not_convert
     def call(self, x):
         '''input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.map_func, elems = x,
                               fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])'''
         #input_feat, rho_coords, theta_coords, mask = x
-        input_feat = tf.gather(x, tf.range(5), axis=-1)
-        rho_coords = tf.gather(x, 5, axis=-1)
-        theta_coords = tf.gather(x, 6, axis=-1)
-        mask = tf.expand_dims(tf.gather(x, 7, axis=-1), axis=-1)
+        input_feat = tf.cast(tf.gather(x, tf.range(5), axis=-1), dtype=tf.float32)
+        rho_coords = tf.cast(tf.gather(x, 5, axis=-1), dtype=tf.float32)
+        theta_coords = tf.cast(tf.gather(x, 6, axis=-1), dtype=tf.float32)
+        mask = tf.cast(tf.expand_dims(tf.gather(x, 7, axis=-1), axis=-1), dtype=tf.float32)
         ####
-        indices_tensor = tf.cast(tf.gather(x, 8, axis=-1), dtype=tf.int32)
+        indices_tensor = tf.cast(tf.expand_dims(tf.gather(x, 8, axis=-1), axis=-1), dtype=tf.int32)
         ####
         
         var_dict = self.variable_dicts[0]
