@@ -214,25 +214,27 @@ with strategy.scope():
             indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
             indices = np.expand_dims(pad_indices(indices, max_verts), axis=-1)
             
-            pocket_points = np.where(np.squeeze(labels > 0))[0]
+            '''pocket_points = np.where(np.squeeze(labels > 0))[0]
             npoints = pocket_points.shape[0]
             empty_points = np.where(np.squeeze(labels == 0))[0]
             empty_sample = np.random.choice(empty_points, npoints)
             
-            sample = np.concatenate([pocket_points, empty_sample])
+            sample = np.concatenate([pocket_points, empty_sample])'''
             
             coords = [np.expand_dims(tsr, axis=-1) for tsr in data_element[1:3]]
             X = np.concatenate([data_element[0]] + coords + [data_element[3], indices], axis=-1)
             y = tf.cast(labels > 0, dtype=tf.int32)
-            
+            '''
             y_samp = tf.gather(y, sample)
-            X_samp = X[sample]
+            X_samp = X[sample]'''
             
-            loss, acc = model.evaluate(X, y, verbose = 0)            
+            batch_sz = X.shape[0]
+            
+            loss, acc = model.evaluate(X, y, verbose = 0, batch_size = batch_sz)            
             loss_list.append(loss)
             acc_list.append(acc)
 
-            finished_samples += y.shape[0]
+            finished_samples += batch_sz
             val_j += 1
         
         #############################################################
