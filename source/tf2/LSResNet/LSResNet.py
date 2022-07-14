@@ -134,7 +134,7 @@ class LSResNet(Model):
         ret1 = runLayers(self.convBlock[0], ret)
         residue = runLayers(self.convBlock[1], ret)
         
-        ret = self.Add(ret1, residue)
+        ret = self.Add((ret1, residue))
         ret = self.ReLU(ret)
         ret = self.lastConvLayer(ret)
         
