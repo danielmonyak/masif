@@ -273,7 +273,7 @@ class ConvLayer(layers.Layer):
             if layer_num == 0:
                 continue
 
-            ret = tf.gather(ret, indices_tensor)
+            input_feat = tf.gather(ret, indices_tensor)
 
             mu_rho = var_dict['mu_rho']
             mu_theta = var_dict['mu_theta']
@@ -289,7 +289,7 @@ class ConvLayer(layers.Layer):
                 print(f'Batch {i} of {len(rg)-1}')
                 
                 sample = tf.range(rg[i], rg[i+1])
-                input_feat_temp = tf.gather(ret, sample, axis=0)
+                input_feat_temp = tf.gather(input_feat, sample, axis=0)
                 rho_coords_temp = tf.gather(rho_coords, sample, axis=0)
                 theta_coords_temp = tf.gather(theta_coords, sample, axis=0)
                 mask_temp = tf.gather(mask, sample, axis=0)
