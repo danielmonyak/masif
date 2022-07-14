@@ -260,6 +260,7 @@ class ConvLayer(layers.Layer):
                 continue
 
             ret = tf.gather(ret, indices_tensor)
+            print(f'ret.shape: {ret.shape}')
 
             mu_rho = var_dict['mu_rho']
             mu_theta = var_dict['mu_theta']
