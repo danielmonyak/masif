@@ -42,21 +42,23 @@ class MaSIF_ligand_site(Model):
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
  
-        myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers)
+        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers)
+        self.myDense = layers.Dense(self.n_thetas, activation="relu")
+        self.outLayer = layers.Dense(1)
         
+        '''
         self.myLayers=[
             myConvLayer,
-            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
-            layers.Dense(30, activation='relu'),
-            layers.Dense(10, activation='relu'),
+            #layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
+            #layers.Dense(30, activation='relu'),
+            #layers.Dense(10, activation='relu'),
             layers.Dense(1)
-        ]
+        ]'''
     
-    #@tf.autograph.experimental.do_not_convert
     def call(self, x, training=False):
-        ret = x
-        for l in self.myLayers:
-            ret = l(ret)
+        ret = self.myConvLayer(x)
+        ret = self.myDense(ret)
+        ret = self.outLayer(ret)
         return ret
 
 class ConvLayer(layers.Layer):
