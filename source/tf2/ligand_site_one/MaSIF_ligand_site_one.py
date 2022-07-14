@@ -204,11 +204,11 @@ class ConvLayer(layers.Layer):
         theta_coords = tf.gather(x, 6, axis=-1)
         mask = tf.expand_dims(tf.gather(x, 7, axis=-1), axis=-1)
         ####
-        indices_tensor = tf.cast(tf.expand_dims(tf.gather(x, 8, axis=-1), axis=-1), dtype=tf.int32)
+        indices_tensor = tf.cast(tf.gather(x, 8, axis=-1), dtype=tf.int32)
         ####
         
         var_dict = self.variable_dicts[0]
-
+        '''
         mu_rho = var_dict['mu_rho']
         mu_theta = var_dict['mu_theta']
         sigma_rho = var_dict['sigma_rho']
@@ -221,7 +221,7 @@ class ConvLayer(layers.Layer):
         
         FC2_W = var_dict['FC2_W']
         FC2_b = var_dict['FC2_b']
-
+        '''
 
         ret = []
         for i in range(self.n_feat):
@@ -232,22 +232,22 @@ class ConvLayer(layers.Layer):
                     rho_coords,
                     theta_coords,
                     mask,
-                    W_conv[i],
-                    b_conv[i],
-                    mu_rho[i],
-                    sigma_rho[i],
-                    mu_theta[i],
-                    sigma_theta[i],
+                    var_dict['W_conv'][i],
+                    var_dict['b_conv'][i],
+                    var_dict['mu_rho'][i],
+                    var_dict['sigma_rho'][i],
+                    var_dict['mu_theta'][i],
+                    var_dict['sigma_theta'][i]
                 )
             )  # batch_size, n_gauss*1
 
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
         
-        ret = tf.matmul(ret, FC1_W) + FC1_b
+        ret = tf.matmul(ret, var_dict['FC1_W']) + var_dict['FC1_b']
         ret = tf.nn.relu(ret)
         
-        ret = tf.matmul(ret, FC2_W) + FC2_b
+        ret = tf.matmul(ret, var_dict['FC2_W']) + var_dict['FC2_b']
         ret = tf.nn.relu(ret)
         
         #####################
@@ -276,12 +276,12 @@ class ConvLayer(layers.Layer):
                 rho_coords,
                 theta_coords,
                 mask,
-                W_conv,
-                b_conv,
-                mu_rho,
-                sigma_rho,
-                mu_theta,
-                sigma_theta,
+                var_dict['W_conv'][i],
+                var_dict['b_conv'][i],
+                var_dict['mu_rho'][i],
+                var_dict['sigma_rho'][i],
+                var_dict['mu_theta'][i],
+                var_dict['sigma_theta'][i]
             )  # batch_size, n_gauss*n_gauss
             # Reduce the dimensionality by averaging over the last dimension
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
@@ -306,7 +306,8 @@ class ConvLayer(layers.Layer):
     ):
         n_samples = tf.shape(input=rho_coords)[0]
         n_vertices = tf.shape(input=rho_coords)[1]
-
+        n_feat = tf.shape(input_feat)[2]
+        
         all_conv_feat = []
         for k in range(self.n_rotations):
 
@@ -350,8 +351,9 @@ class ConvLayer(layers.Layer):
             )  # batch_size, n_vertices, n_feat, n_gauss,
             gauss_desc = tf.reduce_sum(gauss_desc, axis=1)  # batch_size, n_feat, n_gauss,
             gauss_desc = tf.reshape(
-                gauss_desc, [n_samples, self.n_thetas * self.n_rhos]
-            )  # batch_size, 80
+                gauss_desc, [n_samples, self.n_thetas * self.n_rhos * n_feat]
+            ) # batch_size, self.n_thetas*self.n_rhos*n_feat
+            
 
             conv_feat = tf.matmul(gauss_desc, W_conv) + b_conv  # batch_size, 80
             all_conv_feat.append(conv_feat)
