@@ -21,7 +21,8 @@ class MaSIF_ligand_site(Model):
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
-        n_conv_layers = 1
+        n_conv_layers = 1,
+        conv_batch_size = 100
     ):
         ## Call super - model initializer
         super(MaSIF_ligand_site, self).__init__()
@@ -42,7 +43,7 @@ class MaSIF_ligand_site(Model):
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
  
-        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers)
+        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers, conv_batch_size)
         self.myDense = layers.Dense(self.n_thetas, activation="relu")
         self.outLayer = layers.Dense(1)
         
@@ -69,7 +70,8 @@ class ConvLayer(layers.Layer):
         n_rhos,
         n_rotations,
         feat_mask,
-        n_conv_layers):
+        n_conv_layers,
+        conv_batch_size):
         
         super(ConvLayer, self).__init__()
         
@@ -90,6 +92,8 @@ class ConvLayer(layers.Layer):
         #self.smallShape = [200, 1]
         #self.bigIdx = tf.cast(functools.reduce(prodFunc, bigShape), dtype = tf.int32)
         ####
+        
+        self.conv_batch_size = conv_batch_size
         
         # Variable dict lists
         self.variable_dicts = []
@@ -207,40 +211,44 @@ class ConvLayer(layers.Layer):
         ####
         
         var_dict = self.variable_dicts[0]
-        '''
-        mu_rho = var_dict['mu_rho']
-        mu_theta = var_dict['mu_theta']
-        sigma_rho = var_dict['sigma_rho']
-        sigma_theta = var_dict['sigma_theta']
-        b_conv = var_dict['b_conv']
-        W_conv = var_dict['W_conv']
-        
-        FC1_W = var_dict['FC1_W']
-        FC1_b = var_dict['FC1_b']
-        
-        FC2_W = var_dict['FC2_W']
-        FC2_b = var_dict['FC2_b']
-        '''
 
-        ret = []
-        for i in range(self.n_feat):
-            my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
-            ret.append(
-                self.inference(
-                    my_input_feat,
-                    rho_coords,
-                    theta_coords,
-                    mask,
-                    var_dict['W_conv'][i],
-                    var_dict['b_conv'][i],
-                    var_dict['mu_rho'][i],
-                    var_dict['sigma_rho'][i],
-                    var_dict['mu_theta'][i],
-                    var_dict['sigma_theta'][i]
-                )
-            )  # batch_size, n_gauss*1
+        n_pockets = x.shape[0]
+        rg = range(0, n_pockets, self.conv_batch_size)
+        sampIdx = list(rg)
+        if n_pockets % self.conv_batch_size != 0:
+            sampIdx.append(n_pockets)
+        ret_list = []
+        for i in range(len(rg)):
+            sample = tf.range(rg[i], rg[i+1])
+            input_feat_temp = tf.gather(input_feat, sample, axis=0)
+            rho_coords_temp = tf.gather(rho_coords, sample, axis=0)
+            theta_coords_temp = tf.gather(theta_coords, sample, axis=0)
+            mask_temp = tf.gather(mask, sample, axis=0)
+            
+            ret = []
+            for i in range(self.n_feat):
+                my_input_feat = tf.gather(input_feat_temp, tf.range(i, i+1), axis=-1)
+                ret.append(
+                    self.inference(
+                        my_input_feat,
+                        rho_coords_temp,
+                        theta_coords_temp,
+                        mask_temp,
+                        var_dict['W_conv'][i],
+                        var_dict['b_conv'][i],
+                        var_dict['mu_rho'][i],
+                        var_dict['sigma_rho'][i],
+                        var_dict['mu_theta'][i],
+                        var_dict['sigma_theta'][i]
+                    )
+                )  # batch_size, n_gauss*1
 
-        ret = tf.stack(ret, axis=2)
+            ret = tf.stack(ret, axis=2)
+            
+            ret_list.append(ret)
+        
+        ret = tf.concat(ret_list, axis = 0)
+        
         ret = tf.reshape(ret, self.reshape_shapes[0])
         
         ret = tf.matmul(ret, var_dict['FC1_W']) + var_dict['FC1_b']
@@ -269,22 +277,34 @@ class ConvLayer(layers.Layer):
             b_conv = var_dict['b_conv']
             W_conv = var_dict['W_conv']
 
-            ret = self.inference(
-                #tf.expand_dims(ret, axis=-1),
-                ret,
-                rho_coords,
-                theta_coords,
-                mask,
-                var_dict['W_conv'],
-                var_dict['b_conv'],
-                var_dict['mu_rho'],
-                var_dict['sigma_rho'],
-                var_dict['mu_theta'],
-                var_dict['sigma_theta']
-            )  # batch_size, n_gauss*n_gauss
-            # Reduce the dimensionality by averaging over the last dimension
-            ret = tf.reshape(ret, self.reshape_shapes[layer_num])
-            ret = self.reduce_funcs[layer_num](ret)
+            
+            ret_list = []
+            for i in range(len(rg)):
+                sample = tf.range(rg[i], rg[i+1])
+                input_feat_temp = tf.gather(ret, sample, axis=0)
+                rho_coords_temp = tf.gather(rho_coords, sample, axis=0)
+                theta_coords_temp = tf.gather(theta_coords, sample, axis=0)
+                mask_temp = tf.gather(mask, sample, axis=0)
+                
+                ret = self.inference(
+                    input_feat_temp,
+                    rho_coords_temp,
+                    theta_coords_temp,
+                    mask_temp,
+                    var_dict['W_conv'],
+                    var_dict['b_conv'],
+                    var_dict['mu_rho'],
+                    var_dict['sigma_rho'],
+                    var_dict['mu_theta'],
+                    var_dict['sigma_theta']
+                )  # batch_size, n_gauss*n_gauss
+                # Reduce the dimensionality by averaging over the last dimension
+                ret = tf.reshape(ret, self.reshape_shapes[layer_num])
+                ret = self.reduce_funcs[layer_num](ret)
+                
+                ret_list.append(ret)
+            
+            ret = tf.concat(ret_list)
             
         return ret
     
