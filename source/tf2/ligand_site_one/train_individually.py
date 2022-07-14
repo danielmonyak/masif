@@ -11,10 +11,14 @@ from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
 
+gpus = tf.config.experimental.list_logical_devices('GPU')
+gpus_str = [g.name for g in gpus]
+strategy = tf.distribute.MirroredStrategy([gpus_str[0], gpus_str[1]])
+'''
 gpus = tf.config.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
-
+'''
 dev = '/GPU:1'
 cpu = '/CPU:0'
 
@@ -190,9 +194,10 @@ with strategy.scope()
         loss_list = []
 
         while finished_samples < val_samples_threshold:
-            try:
-                data_element = val_iterator.get_next()
-            except:
+            optional = val_iterator.get_next_as_optional()
+            if optional.has_value():
+                data_element = optional.get_value()
+            else:
                 val_iterator = iter(val_data)
                 val_j = 0
                 continue
@@ -203,8 +208,23 @@ with strategy.scope()
             if not goodLabel(labels):
                 continue
 
+            pdb = data_element[5].numpy().decode('ascii') + '_'
+            indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
+            indices = np.expand_dims(pad_indices(indices, max_verts), axis=-1)
+            
+            pocket_points = np.where(np.squeeze(labels > 0))[0]
+            npoints = pocket_points.shape[0]
+            empty_points = np.where(np.squeeze(labels == 0))[0]
+            empty_sample = np.random.choice(empty_points, npoints)
+            
+            sample = np.concatenate([pocket_points, empty_sample])
+            
+            coords = [np.expand_dims(tsr, axis=-1) for tsr in data_element[1:3]]
+            X = np.concatenate([data_element[0]] + coords + [data_element[3], indices], axis=-1)
             y = tf.cast(labels > 0, dtype=tf.int32)
-            X = data_element[:4]
+            
+            y_samp = tf.gather(y, sample)
+            X_samp = X[sample]
             
             loss, acc = model.evaluate(X, y, verbose = 0)            
             loss_list.append(loss)
