@@ -51,14 +51,6 @@ pdb_ckp_thresh = 10             #############
 #############################################
 
 max_verts = 200
-def pad_indices(indices, max_verts):
-    ret_list = []
-    for patch_ix in range(len(indices)):
-        ret_list.append(np.concatenate(
-            [indices[patch_ix], [patch_ix] * (max_verts - len(indices[patch_ix]))])
-        )
-    return np.stack(ret_list)
-
 
 with tf.device(dev):
 #with strategy.scope():
