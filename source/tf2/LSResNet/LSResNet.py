@@ -120,9 +120,11 @@ class LSResNet(Model):
         
         #del X_packed
         
+        #ret = self.myConvLayer(X)
         #ret = tf.map_fn(fn=self.runConv, elems = X, fn_output_signature = tf.TensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat], dtype=tf.float32))
         ret = tf.map_fn(fn=self.myConvLayer, elems = X, fn_output_signature = tf.TensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat], dtype=tf.float32))
-        #ret = self.myConvLayer(X)
+        
+        
         #del X
         
         ret = runLayers(self.denseReduce, ret)
@@ -132,7 +134,6 @@ class LSResNet(Model):
         
         ret1 = runLayers(self.convBlock[0], ret)
         residue = runLayers(self.convBlock[1], ret)
-        
         ret = self.Add((ret1, residue))
         
         #del ret1
@@ -142,41 +143,17 @@ class LSResNet(Model):
         ret = self.lastConvLayer(ret)
         
         return ret
-    '''
-    def map_func(self, packed):
-        resolution = 1. / self.scale
-        
-        xyz_coords = tf.gather(packed, tf.range(3), axis=-1)
-        y_raw = tf.expand_dims(tf.gather(packed, 3, axis=-1), axis=-1)
-        
-        print(f'y_raw: {y_raw.shape}')
-        print(f'xyz_coords: {xyz_coords.shape}')
-        
-        y = tfbio.data.make_grid(xyz_coords, y_raw, max_dist=self.max_dist, grid_resolution=resolution)
-        return tf.squeeze(y, axis=0)
-    
-    def make_y(self, y_raw, xyz_coords):
-        print(f'y_raw: {y_raw.shape}')
-        print(f'xyz_coords: {xyz_coords.shape}')
-        
-        packed = tf.concat([xyz_coords, tf.cast(y_raw, dtype=tf.float64)], axis=-1)
-        print(f'packed: {packed.shape}')
-        
-        return tf.map_fn(fn=self.map_func, elems = packed, fn_output_signature = tf.TensorSpec(shape=[36,36,36,1], dtype=tf.float32))'''
-    
+
     def train_step(self, data):
+        print('Train step')
         X_packed, y = data
         
         with tf.GradientTape() as tape:
             y_pred = self(X_packed, training=True)  # Forward pass
-            print('computing loss now')
             loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
-        print('computing gradient now')
         trainable_vars = self.trainable_variables
         gradients = tape.gradient(loss, trainable_vars)
-        
-        print('applying gradient now')
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
         self.compiled_metrics.update_state(y, y_pred)
         
