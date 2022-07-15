@@ -239,8 +239,8 @@ class ConvLayer(layers.Layer):
             sampIdx= tf.concat([tf.range(n_samples, delta=self.conv_batch_size), tf.expand_dims(n_samples, axis=0)], axis=0)
         
         ret_list = []
-        for i in range(len(sampIdx)-1):
-            #print(f'Batch {i+1} of {len(sampIdx)-1}')
+        for i in tf.range(tf.shape(sampIdx)[0]-1):
+            #print(f'Batch {i+1} of {tf.shape(sampIdx)[0]-1}')
             
             sample = tf.range(sampIdx[i], sampIdx[i+1])
             input_feat_temp = tf.gather(input_feat, sample, axis=0)
@@ -304,8 +304,8 @@ class ConvLayer(layers.Layer):
 
             
             ret_list = []
-            for i in range(len(sampIdx)-1):
-                #print(f'Batch {i+1} of {len(sampIdx)-1}')
+            for i in range(tf.shape(sampIdx)[0]-1):
+                #print(f'Batch {i+1} of {tf.shape(sampIdx)[0]-1}')
                 
                 sample = tf.range(sampIdx[i], sampIdx[i+1])
                 input_feat_temp = tf.gather(input_feat, sample, axis=0)
