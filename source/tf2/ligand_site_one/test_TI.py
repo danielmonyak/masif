@@ -66,13 +66,6 @@ def goodLabel(labels):
     return True
 
 max_verts = 200
-'''
-def pad_map_fn(packed):
-    row, def_val = packed
-    leftover = max_verts - row.shape[0]
-    paddings = tf.constant([[0,leftover]])
-    return tf.pad(row, paddings, constant_values=def_val)'''
-
 def pad_indices(indices, max_verts):
     ret_list = []
     for patch_ix in range(len(indices)):
@@ -88,7 +81,7 @@ with strategy.scope():
         params["max_distance"],
         params["n_classes"],
         feat_mask=params["feat_mask"],
-        n_conv_layers = 1
+        n_conv_layers = 3
     )
 
     from_logits = model.loss_fn.get_config()['from_logits']
@@ -151,13 +144,13 @@ with strategy.scope():
                 train_j += 1
                 continue
 
-            ''''
+            
             pdb = data_element[5].numpy().decode('ascii') + '_'
             indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
-            indices = pad_indices(indices, max_verts)'''
+            indices = pad_indices(indices, max_verts)
             
             
-            X = data_element[:4]
+            X = (data_element[:4], indices)
             y = tf.cast(labels > 0, dtype=tf.int32)
             
             '''y_samp = tf.gather(y, sample)
