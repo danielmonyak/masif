@@ -233,12 +233,15 @@ class ConvLayer(layers.Layer):
         print(f'Conv layer: 0')
         
         var_dict = self.variable_dicts[0]
-
+        
         n_samples = input_feat.shape[0]
-        rg = range(0, n_samples, self.conv_batch_size)
-        sampIdx = list(rg)
-        if n_samples % self.conv_batch_size != 0:
-            sampIdx.append(n_samples)
+        if self.conv_batch_size is None:
+            sampIdx = [0, n_samples]
+        else:
+            sampIdx= range(0, n_samples, self.conv_batch_size)
+            sampIdx = list(sampIdx)
+            if n_samples % self.conv_batch_size != 0:
+                sampIdx.append(n_samples)
         
         ret_list = []
         for i in range(len(sampIdx)-1):
