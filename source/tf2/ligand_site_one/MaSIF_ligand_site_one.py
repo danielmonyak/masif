@@ -49,7 +49,7 @@ class MaSIF_ligand_site(Model):
         
         '''
         self.myLayers=[
-            myConvLayer,
+            myConvLayer, 
             #layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             #layers.Dense(30, activation='relu'),
             #layers.Dense(10, activation='relu'),
