@@ -121,6 +121,7 @@ class LSResNet(Model):
         #del X_packed
         
         #ret = tf.map_fn(fn=self.runConv, elems = X, fn_output_signature = tf.TensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat], dtype=tf.float32))
+        ret = tf.map_fn(fn=self.myConvLayer, elems = X, fn_output_signature = tf.TensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat], dtype=tf.float32))
         ret = self.myConvLayer(X)
         #del X
         
