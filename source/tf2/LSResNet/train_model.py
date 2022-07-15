@@ -38,19 +38,7 @@ dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "va
 getData = lambda dataset : tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
 train_data = getData('train')
 
-model = LSResNet(
-    params["max_distance"],
-    params["n_classes"],
-    feat_mask=params["feat_mask"]
-)
 
-from_logits = model.loss_fn.get_config()['from_logits']
-binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
-
-model.compile(optimizer = model.opt,
-  loss = model.loss_fn,
-  metrics=[binAcc]
-)
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
@@ -64,20 +52,6 @@ num_epochs = 5                  #############
 pdb_ckp_thresh = 10             #############
 #############################################
 #############################################
-
-if continue_training:
-    model.load_weights(ckpPath)
-    print(f'Loaded model from {ckpPath}')
-
-if read_metrics:
-    with open(ckpStatePath, 'rb') as handle:
-        ckpState = pickle.load(handle)
-    i = ckpState['last_epoch']
-    best_acc = ckpState['best_acc']
-    print(f'Resuming epoch {i} of training\nValidation accuracy: {best_acc}')
-else:
-    i = 0
-    best_acc = 0
 
 def goodLabel(labels):
     n_ligands = labels.shape[1]
@@ -93,6 +67,35 @@ def goodLabel(labels):
 
 #with tf.device(dev):
 with strategy.scope():
+    model = LSResNet(
+        params["max_distance"],
+        params["n_classes"],
+        feat_mask=params["feat_mask"]
+    )
+
+    from_logits = model.loss_fn.get_config()['from_logits']
+    binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
+
+    model.compile(optimizer = model.opt,
+      loss = model.loss_fn,
+      metrics=[binAcc]
+    )
+
+    if continue_training:
+        model.load_weights(ckpPath)
+        print(f'Loaded model from {ckpPath}')
+
+    if read_metrics:
+        with open(ckpStatePath, 'rb') as handle:
+            ckpState = pickle.load(handle)
+        i = ckpState['last_epoch']
+        best_acc = ckpState['best_acc']
+        print(f'Resuming epoch {i} of training\nValidation accuracy: {best_acc}')
+    else:
+        i = 0
+        best_acc = 0
+
+    
     train_iterator = iter(train_data)
 
     train_j = 0
