@@ -9,12 +9,16 @@ from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from tf2.LSResNet.LSResNet import LSResNet
 from tf2.usage.predictor import Predictor
-
 import tfbio.data
 
-gpus = tf.config.list_physical_devices('GPU')
-for gpu in gpus:
-    tf.config.experimental.set_memory_growth(gpu, True)
+phys_gpus = tf.config.list_physical_devices('GPU')
+strategy_str = []
+for phys_g in phys_gpus:
+    tf.config.experimental.set_memory_growth(phys_g, True)
+
+lg_gpus = tf.config.experimental.list_logical_devices('GPU')
+gpus_str = [g.name for g in lg_gpus]
+strategy = tf.distribute.MirroredStrategy(gpus_str)
 
 dev = '/GPU:1'
 cpu = '/CPU:0'
@@ -33,7 +37,6 @@ params = masif_opts["ligand"]
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 getData = lambda dataset : tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
 train_data = getData('train')
-val_data = getData('val')
 
 model = LSResNet(
     params["max_distance"],
@@ -58,8 +61,6 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 #############################################
 #############################################
 num_epochs = 5                  #############
-train_samples_threshold = 2e5   #############
-val_samples_threshold = 5e4     #############
 #############################################
 #############################################
 
@@ -89,10 +90,9 @@ def goodLabel(labels):
     
     return True
 
-with tf.device(dev):
-    
+#with tf.device(dev):
+with strategy.scope():
     train_iterator = iter(train_data)
-    val_iterator = iter(val_data)
 
     train_j = 0
     val_j = 0
@@ -122,9 +122,12 @@ with tf.device(dev):
             pdb_dir = os.path.join(precom_dir, pdb)
             xyz_coords = tf.cast(tf.expand_dims(Predictor.getXYZCoords(pdb_dir), axis=0), dtype=tf.float32)
             
+            '''
             #X = tuple(tf.expand_dims(tsr, axis=0) for tsr in data_element[:4])
             coords = [tf.expand_dims(tsr, axis=-1) for tsr in data_element[1:3]]
             X = tf.expand_dims(tf.concat([data_element[0]] + coords + [data_element[3]], axis=-1), axis=0)
+            '''
+            X = data_element[:4]
             
             y_raw = tf.cast(labels > 0, dtype=tf.int32)
             resolution = 1. / model.scale
@@ -132,14 +135,17 @@ with tf.device(dev):
             
             X_packed = (X, xyz_coords)
             
-            _=model.fit(X_packed, y, verbose = 2)
+            _=model.fit(X_packed, y, verbose = 2, use_multiprocessing = True)
             
-            finished_samples += sample.shape[0]
+            finished_samples += labels.shape[0]
             train_j += 1
             
             optional = temp_iterator.get_next_as_optional()
-            
-        model.save_weights(ckpPath)
         
+        train_iterator = iter(train_data)
+        train_j = 0
+        i += 1
+        
+        model.save_weights(ckpPath)
+
 model.save(modelPath_endTraining)
-            
