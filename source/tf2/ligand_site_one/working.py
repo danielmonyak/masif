@@ -33,8 +33,8 @@ else:
 
 pdb = possible_pdbs[pdb_idx]
 '''
-pdb = sys.argv[1]
-#pdb = '3O7W_A_'
+#pdb = sys.argv[1]
+pdb = '3O7W_A_'
 
 print('pdb:', pdb)
 
@@ -79,12 +79,6 @@ ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_s
 
 pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path = ligand_site_model_path)
 pred.loadData(pdb_dir)
-
-  
-input_feat = np.load(os.path.join(pdb_dir, "p1_input_feat.npy"))
-rho_coords = np.load(os.path.join(pdb_dir, "p1_rho_wrt_center.npy"))
-theta_coords = np.load(os.path.join(pdb_dir, "p1_theta_wrt_center.npy"))
-mask = np.expand_dims(np.load(os.path.join(pdb_dir, "p1_mask.npy")), axis=-1)
 
 X = ((pred.input_feat, pred.rho_coords, pred.theta_coords, pred.mask), pred.indices)
 ligand_site_probs = tf.sigmoid(pred.ligand_site_model(X))
