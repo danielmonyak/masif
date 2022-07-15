@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 from default_config.masif_opts import masif_opts
 
