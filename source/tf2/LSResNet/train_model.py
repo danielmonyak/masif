@@ -11,14 +11,16 @@ from tf2.LSResNet.LSResNet import LSResNet
 from tf2.usage.predictor import Predictor
 import tfbio.data
 
+gpus_IN_USE = [2,3]
+
 phys_gpus = tf.config.list_physical_devices('GPU')
 strategy_str = []
-for phys_g in phys_gpus:
-    tf.config.experimental.set_memory_growth(phys_g, True)
+for i in gpus_IN_USE:
+    tf.config.experimental.set_memory_growth(phys_gpus[i], True)
 
 lg_gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in lg_gpus]
-strategy = tf.distribute.MirroredStrategy(gpus_str)
+strategy = tf.distribute.MirroredStrategy([gpus_str[i] for i in gpus_IN_USE])
 
 dev = '/GPU:1'
 cpu = '/CPU:0'
@@ -37,8 +39,6 @@ params = masif_opts["ligand"]
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 getData = lambda dataset : tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
 train_data = getData('train')
-
-
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
