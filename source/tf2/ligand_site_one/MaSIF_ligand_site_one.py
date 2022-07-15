@@ -6,7 +6,6 @@ from default_config.util import *
 
 params = masif_opts["ligand"]
 
-
 class MaSIF_ligand_site(Model):
     """
     The neural network model.
@@ -215,6 +214,7 @@ class ConvLayer(layers.Layer):
         rest = tf.reshape(row[self.bigIdx:], [3] + self.smallShape)
         return [input_feat, rest[0], rest[1], rest[2]]
     '''
+    
     def call(self, x):
         '''input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.map_func, elems = x,
                               fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])'''
@@ -232,14 +232,11 @@ class ConvLayer(layers.Layer):
         
         var_dict = self.variable_dicts[0]
         
-        n_samples = input_feat.shape[0]
+        n_samples = tf.shape(input_feat)[0]
         if self.conv_batch_size is None:
-            sampIdx = [0, n_samples]
+            sampIdx = tf.concat([0, n_samples], axis=0)
         else:
-            sampIdx= range(0, n_samples, self.conv_batch_size)
-            sampIdx = list(sampIdx)
-            if n_samples % self.conv_batch_size != 0:
-                sampIdx.append(n_samples)
+            sampIdx= tf.concat([tf.range(n_samples, delta=self.conv_batch_size), tf.expand_dims(n_samples, axis=0)], axis=0)
         
         ret_list = []
         for i in range(len(sampIdx)-1):
