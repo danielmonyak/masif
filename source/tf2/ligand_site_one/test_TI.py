@@ -81,7 +81,7 @@ with strategy.scope():
         params["max_distance"],
         params["n_classes"],
         feat_mask=params["feat_mask"],
-        n_conv_layers = 1,
+        n_conv_layers = 3,
         conv_batch_size = None
     )
 
@@ -127,16 +127,9 @@ with strategy.scope():
         #############################################################
         finished_samples = 0
         
-        while finished_samples < train_samples_threshold:
-            optional = train_iterator.get_next_as_optional()
-            if optional.has_value():
-                data_element = optional.get_value()
-            else:
-                train_iterator = iter(train_data)
-                train_j = 0
-                i += 1
-                print(f'Running training data, epoch {i}')
-                continue
+        optional = train_iterator.get_next_as_optional()
+        while optional.has_value():
+            data_element = optional.get_value()
                 
             print(f'Epoch {i}, train record {train_j}')
 
@@ -153,20 +146,33 @@ with strategy.scope():
             
             X = (data_element[:4], indices)
             y = tf.cast(labels > 0, dtype=tf.int32)
-            
-            '''y_samp = tf.gather(y, sample)
-            X_samp = X[sample]'''
-            
-            #batch_sz = X.shape[0]
+            batch_sz = y.shape[0]
             
             #class_weight = {0 : 1.0, 1 : 20.0})
+            #model.fit(X, y, verbose = 1, use_multiprocessing = True)
             
-            model.fit(X, y, verbose = 1, use_multiprocessing = True)
+            ########################################################################
+            with tf.GradientTape() as tape:
+                y_pred = model(x, training=True)  # Forward pass
+                print('computing loss now')
+                loss = model.compiled_loss(y, y_pred, regularization_losses=model.losses)
 
-            print('\n\nFinished training on one protein\n\n')
+            print('computing gradient now')
+            trainable_vars = model.trainable_variables
+            gradients = tape.gradient(loss, trainable_vars)
+
+            print('applying gradient now')
+            model.optimizer.apply_gradients(zip(gradients, trainable_vars))
+            model.compiled_metrics.update_state(y, y_pred)
+            ########################################################################
             
+            print('\n\nFinished training on one protein\n\n')
             finished_samples += batch_sz
             train_j += 1
+        
+        train_iterator = iter(train_data)
+        train_j = 0
+        i += 1
         
         model.save_weights(ckpPath)
         ckpState = {'best_acc' : best_acc, 'last_epoch' : i}
