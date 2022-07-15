@@ -25,7 +25,7 @@ dev = '/GPU:1'
 cpu = '/CPU:0'
 
 #############################################
-continue_training = False
+continue_training = True
 read_metrics = False
 
 starting_sample = 30
