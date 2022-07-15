@@ -262,7 +262,7 @@ class ConvLayer(layers.Layer):
                     var_dict['mu_theta'][i],
                     var_dict['sigma_theta'][i]
                 )
-            ret.append(tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = [None, tf.TensorSpec(shape=[None, self.conv_shapes[0][0]])]))
+            ret.append(tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = [None, tf.TensorSpec(shape=[None, self.conv_shapes[0][0]], dtype=tf.float32)]))
         
 
         ret = tf.stack(ret, axis=2)
@@ -310,7 +310,7 @@ class ConvLayer(layers.Layer):
                     var_dict['sigma_theta']
                 )
             
-            ret = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = [None, tf.TensorSpec(shape=[None, self.conv_shapes[layer_num][0]])])
+            ret = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = [None, tf.TensorSpec(shape=[None, self.conv_shapes[layer_num][0]], dtype=tf.float32)])
             
             # Reduce the dimensionality by averaging over the last dimension
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
