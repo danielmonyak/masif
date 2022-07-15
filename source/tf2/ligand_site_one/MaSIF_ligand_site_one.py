@@ -117,7 +117,7 @@ class ConvLayer(layers.Layer):
         initial_coords = self.compute_initial_coordinates()
         # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
         
-        conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
+        self.conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
                        [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
                        [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
                        [self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos]]
@@ -164,14 +164,14 @@ class ConvLayer(layers.Layer):
             b_conv.append(
                 self.add_weight(
                     "b_conv_{}_{}".format(i, layer_num),
-                    shape=conv_shapes[layer_num][1], initializer='zeros',
+                    shape=self.conv_shapes[layer_num][1], initializer='zeros',
                     trainable = True
                 )
             )
             W_conv.append(
                 self.add_weight(
                     "W_conv_{}_{}".format(i, layer_num),
-                    shape=conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"),
+                    shape=self.conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"),
                     trainable = True
                 )
             )
@@ -203,8 +203,8 @@ class ConvLayer(layers.Layer):
             var_dict['sigma_rho'] = self.add_weight(name="sigma_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial), initializer = initializers.Constant(self.sigma_rho_init), trainable = True)
             var_dict['sigma_theta'] = self.add_weight(name="sigma_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial), initializer = initializers.Constant(self.sigma_theta_init), trainable = True)
             
-            var_dict['b_conv'] = self.add_weight("b_conv_{}_{}".format(i, layer_num), shape=conv_shapes[layer_num][1], initializer='zeros', trainable = True)
-            var_dict['W_conv'] = self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True)
+            var_dict['b_conv'] = self.add_weight("b_conv_{}_{}".format(i, layer_num), shape=self.conv_shapes[layer_num][1], initializer='zeros', trainable = True)
+            var_dict['W_conv'] = self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=self.conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True)
             
             self.variable_dicts.append(var_dict)
     '''
@@ -250,21 +250,19 @@ class ConvLayer(layers.Layer):
                 theta_coords_temp = tf.gather(theta_coords, sample, axis=0)
                 mask_temp = tf.gather(mask, sample, axis=0)
                 
-                b_conv = var_dict['b_conv'][i]
-                
                 return self.inference(
                     input_feat_temp,
                     rho_coords_temp,
                     theta_coords_temp,
                     mask_temp,
                     var_dict['W_conv'][i],
-                    b_conv,
+                    var_dict['b_conv'][i],
                     var_dict['mu_rho'][i],
                     var_dict['sigma_rho'][i],
                     var_dict['mu_theta'][i],
                     var_dict['sigma_theta'][i]
                 )
-            ret.append(tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = [None, tf.TensorSpec(shape=[None, tf.shape(b_conv)[0]])]))
+            ret.append(tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = [None, tf.TensorSpec(shape=[None, self.conv_shapes[0][0]])]))
         
 
         ret = tf.stack(ret, axis=2)
@@ -312,7 +310,7 @@ class ConvLayer(layers.Layer):
                     var_dict['sigma_theta']
                 )
             
-            ret = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = [None, tf.TensorSpec(shape=[None, tf.shape(b_conv)[0]])])
+            ret = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = [None, tf.TensorSpec(shape=[None, self.conv_shapes[layer_num][0]])])
             
             # Reduce the dimensionality by averaging over the last dimension
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
