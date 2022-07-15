@@ -98,8 +98,6 @@ class LSResNet(Model):
         
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1, kernel_regularizer=L2(1e-4))
     
-        #self.testDense = layers.Dense(1, activation='sigmoid')
-    
     def runConv(self, x):
         n_pockets = x.shape[0]
         rg = range(0, n_pockets, self.conv_batch_size)
@@ -120,34 +118,27 @@ class LSResNet(Model):
     def call(self, X_packed, training=False):
         X, xyz_coords = X_packed
         
-        del X_packed
+        #del X_packed
         
-        ret = tf.map_fn(fn=self.runConv, elems = X, fn_output_signature = tf.TensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat], dtype=tf.float32))
-        
-        del X
+        #ret = tf.map_fn(fn=self.runConv, elems = X, fn_output_signature = tf.TensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat], dtype=tf.float32))
+        ret = self.myConvLayer(X)
+        #del X
         
         ret = runLayers(self.denseReduce, ret)
-        
-        #############################
-        #return self.testDense(ret)
-        #############################
-        
         ret = self.myMakeGrid(xyz_coords, ret)
         
-        del xyz_coords
+        #del xyz_coords
         
         ret1 = runLayers(self.convBlock[0], ret)
         residue = runLayers(self.convBlock[1], ret)
         
         ret = self.Add((ret1, residue))
         
-        del ret1
-        del residue
+        #del ret1
+        #del residue
         
         ret = self.ReLU(ret)
         ret = self.lastConvLayer(ret)
-        
-        print('done with forward prop')
         
         return ret
     '''
@@ -294,11 +285,11 @@ class ConvLayer(layers.Layer):
             )
     
     def call(self, x):
-        input_feat = tf.gather(x, tf.range(5), axis=-1)
+        '''input_feat = tf.gather(x, tf.range(5), axis=-1)
         rho_coords = tf.gather(x, 5, axis=-1)
         theta_coords = tf.gather(x, 6, axis=-1)
-        mask = tf.expand_dims(tf.gather(x, 7, axis=-1), axis=-1)
-        #input_feat, rho_coords, theta_coords, mask = x
+        mask = tf.expand_dims(tf.gather(x, 7, axis=-1), axis=-1)'''
+        input_feat, rho_coords, theta_coords, mask = x
 
         ret = []
         for i in range(self.n_feat):
@@ -338,15 +329,6 @@ class ConvLayer(layers.Layer):
         eps=1e-5,
         mean_gauss_activation=True,
     ):
-        '''
-        print(f'input_feat.shape: {input_feat.shape}')
-        print(f'rho_coords.shape: {rho_coords.shape}')
-        print(f'theta_coords.shape: {theta_coords.shape}')
-        print(f'mask.shape: {mask.shape}')
-        print(f'mu_rho.shape: {mu_rho.shape}')
-        print(f'sigma_rho.shape: {sigma_rho.shape}')
-        print(f'mu_theta.shape: {mu_theta.shape}')
-        print(f'sigma_theta.shape: {sigma_theta.shape}')'''
         
         n_samples = tf.shape(rho_coords)[0]
         n_vertices = tf.shape(rho_coords)[1]
