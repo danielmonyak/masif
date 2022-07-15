@@ -50,19 +50,6 @@ pdb_ckp_thresh = 10             #############
 #############################################
 #############################################
 
-
-def goodLabel(labels):
-    n_ligands = labels.shape[1]
-    if n_ligands > 1:
-        return False
-    
-    pocket_points = tf.where(labels != 0)
-    npoints = tf.shape(pocket_points)[0]
-    if npoints < minPockets:
-        return False
-    
-    return True
-
 max_verts = 200
 def pad_indices(indices, max_verts):
     ret_list = []
@@ -80,7 +67,7 @@ with tf.device(dev):
         params["n_classes"],
         feat_mask=params["feat_mask"],
         n_conv_layers = 3,
-        conv_batch_size = 500
+        conv_batch_size = 1000
     )
 
     from_logits = model.loss_fn.get_config()['from_logits']
@@ -131,20 +118,27 @@ with tf.device(dev):
             print(f'Epoch {i}, train record {train_j}')
 
             labels = data_element[4]
-            if not goodLabel(labels):
+            bin_labels = np.asarray(labels > 0).astype(int)
+            pocket_points_count = np.sum(bin_labels, axis=0)
+            good_labels = bin_labels[:, pocket_points_count > minPockets]
+            if good_labels.shape[1] == 0:
                 train_j += 1
                 continue
+            
+            y_added = np.sum(good_labels, axis=1, keepdims=True)
+            
+            y = tf.cast(y_added > 0, dtype=tf.int32)
+            batch_sz = y.shape[0]
             
             pdb = data_element[5].numpy().decode('ascii') + '_'
             indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
             indices = pad_indices(indices, max_verts)
             
             X = (data_element[:4], indices)
-            y = tf.cast(labels > 0, dtype=tf.int32)
-            batch_sz = y.shape[0]
+
             
             #class_weight = {0 : 1.0, 1 : 20.0})
-            model.fit(X, y, verbose = 2, use_multiprocessing = True)
+            model.fit(X, y, verbose = 2)
             
             print('\n\nFinished training on one protein\n\n')
             finished_samples += batch_sz
