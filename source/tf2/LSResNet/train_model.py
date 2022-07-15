@@ -6,7 +6,8 @@ import pickle
 import numpy as np
 import tensorflow as tf
 
-gpus_IN_USE = [2,3]
+gpus_IN_USE = range(4)
+
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
