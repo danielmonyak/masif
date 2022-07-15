@@ -14,7 +14,6 @@ import tfbio.data
 gpus_IN_USE = [2,3]
 
 phys_gpus = tf.config.list_physical_devices('GPU')
-strategy_str = []
 for i in gpus_IN_USE:
     tf.config.experimental.set_memory_growth(phys_gpus[i], True)
 
