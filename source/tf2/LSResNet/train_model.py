@@ -111,7 +111,7 @@ with strategy.scope():
         #############################################################
         finished_samples = 0
         
-        optional = temp_iterator.get_next_as_optional()
+        optional = train_iterator.get_next_as_optional()
         while optional.has_value():
             data_element = optional.get_value()
                 
@@ -144,7 +144,7 @@ with strategy.scope():
             finished_samples += labels.shape[0]
             train_j += 1
             
-            optional = temp_iterator.get_next_as_optional()
+            optional = train_iterator.get_next_as_optional()
             
             if train_j % pdb_ckp_thresh == 0:
                 print(f'Saving model weights to {ckpPath}')
