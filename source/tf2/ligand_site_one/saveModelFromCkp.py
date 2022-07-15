@@ -19,17 +19,20 @@ modelPath = os.path.join(modelDir, 'savedModel')
 model = MaSIF_ligand_site(
     params["max_distance"],
     params["n_classes"],
-    feat_mask=params["feat_mask"]
+    feat_mask=params["feat_mask"],
+    n_conv_layers = 3
 )
+from_logits = model.loss_fn.get_config()['from_logits']
+binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=['binary_accuracy']
+  metrics=[binAcc]
 )
 
 input_feat_empty = tf.zeros([1, 200, 5])
 coords_empty = tf.zeros([1, 200])
 mask_empty = tf.zeros([1, 200, 1])
-X_empty = (input_feat_empty, coords_empty, coords_empty, mask_empty)
+X_empty = ((input_feat_empty, coords_empty, coords_empty, mask_empty), coords_empty)
 _=model(X_empty)
 
 model.load_weights(ckpPath)
