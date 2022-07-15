@@ -137,35 +137,18 @@ with strategy.scope():
             if not goodLabel(labels):
                 train_j += 1
                 continue
-
             
             pdb = data_element[5].numpy().decode('ascii') + '_'
             indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
             indices = pad_indices(indices, max_verts)
-            
             
             X = (data_element[:4], indices)
             y = tf.cast(labels > 0, dtype=tf.int32)
             batch_sz = y.shape[0]
             
             #class_weight = {0 : 1.0, 1 : 20.0})
-            model.fit(X, y, verbose = 1, use_multiprocessing = True)
-            '''
-            ########################################################################
-            with tf.GradientTape() as tape:
-                y_pred = model(X, training=True)  # Forward pass
-                print('computing loss now')
-                loss = model.compiled_loss(y, y_pred, regularization_losses=model.losses)
-
-            print('computing gradient now')
-            trainable_vars = model.trainable_variables
-            gradients = tape.gradient(loss, trainable_vars)
-
-            print('applying gradient now')
-            model.optimizer.apply_gradients(zip(gradients, trainable_vars))
-            model.compiled_metrics.update_state(y, y_pred)
-            ########################################################################
-            '''
+            model.fit(X, y, verbose = 2, use_multiprocessing = True)
+            
             print('\n\nFinished training on one protein\n\n')
             finished_samples += batch_sz
             train_j += 1
