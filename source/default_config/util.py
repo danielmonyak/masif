@@ -24,3 +24,10 @@ class ValueInit(tf.keras.initializers.Initializer):
   def __call__(self, shape, dtype=None, **kwargs):
     return self.value
 
+def pad_indices(indices, max_verts):
+    ret_list = []
+    for patch_ix in range(len(indices)):
+        ret_list.append(np.concatenate(
+            [indices[patch_ix], [patch_ix] * (max_verts - len(indices[patch_ix]))])
+        )
+    return np.stack(ret_list)
