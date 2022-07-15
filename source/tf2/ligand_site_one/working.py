@@ -8,9 +8,13 @@ import numpy as np
 from scipy import spatial
 from sklearn.metrics import accuracy_score, balanced_accuracy_score
 import tensorflow as tf
+
+phys_gpus = tf.config.list_physical_devices('GPU')
+for phys_g in phys_gpus:
+    tf.config.experimental.set_memory_growth(phys_g, True)
+
 from default_config.util import *
 from tf2.usage.predictor import Predictor
-
 
 params = masif_opts["ligand"]
 ligand_coord_dir = params["ligand_coords_dir"]
@@ -35,35 +39,46 @@ pdb = sys.argv[1]
 print('pdb:', pdb)
 
 
-precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
-pdb_dir = os.path.join(precom_dir, pdb)
-
-xyz_coords = Predictor.getXYZCoords(pdb_dir)            
-all_ligand_coords = np.load(
-    os.path.join(
-        ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
-    )
-)
-ligand_coords = all_ligand_coords[0]
+xyz_coords = Predictor.getXYZCoords(pdb_dir)
 tree = spatial.KDTree(xyz_coords)
-pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
-pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
 
-npoints_true = len(pocket_points_true)
-print(f'{npoints_true} true pocket points')
-
+####################
 all_ligand_types = np.load(
     os.path.join(
         ligand_coord_dir, "{}_ligand_types.npy".format(pdb.split("_")[0])
     )
 ).astype(str)
+all_ligand_coords = np.load(
+    os.path.join(
+        ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
+    )
+)
+n_pockets_true = len(all_ligand_types)
+
+pdb_dir = os.path.join(precom_dir, pdb)
+xyz_coords = Predictor.getXYZCoords(pdb_dir)
+tree = spatial.KDTree(xyz_coords)
+pred.loadData(pdb_dir)
+
+pp_true_list = []
+for lig_i in range(n_pockets_true):
+    print(f'Pocket {lig_i}')
+    
+    ligand_coords = all_ligand_coords[lig_i]
+    pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
+    pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
+    
+    if len(pocket_points_true) == 0:
+        print(f'\tLigand has no pocket points...')
+        continue
+    
+    pp_true_list.append(pocket_points_true)
+
+
 ligand_true = all_ligand_types[0]
 ligandIdx_true = ligand_list.index(ligand_true)
 
-
-#ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
-ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel'
-
+ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel'
 ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
 
 pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path = ligand_site_model_path)
