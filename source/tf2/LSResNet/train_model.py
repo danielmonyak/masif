@@ -5,21 +5,22 @@ import sys
 import pickle
 import numpy as np
 import tensorflow as tf
+
+gpus_IN_USE = [2,3]
+phys_gpus = tf.config.list_physical_devices('GPU')
+for phys_g in phys_gpus:
+    tf.config.experimental.set_memory_growth(phys_g, True)
+
+lg_gpus = tf.config.experimental.list_logical_devices('GPU')
+gpus_str = [g.name for g in lg_gpus]
+strategy = tf.distribute.MirroredStrategy([gpus_str[i] for i in gpus_IN_USE])
+
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from tf2.LSResNet.LSResNet import LSResNet
 from tf2.usage.predictor import Predictor
 import tfbio.data
 
-gpus_IN_USE = [2,3]
-
-phys_gpus = tf.config.list_physical_devices('GPU')
-for i in gpus_IN_USE:
-    tf.config.experimental.set_memory_growth(phys_gpus[i], True)
-
-lg_gpus = tf.config.experimental.list_logical_devices('GPU')
-gpus_str = [g.name for g in lg_gpus]
-strategy = tf.distribute.MirroredStrategy([gpus_str[i] for i in gpus_IN_USE])
 
 dev = '/GPU:1'
 cpu = '/CPU:0'
