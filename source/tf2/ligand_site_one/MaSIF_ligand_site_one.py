@@ -56,6 +56,25 @@ class MaSIF_ligand_site(Model):
             layers.Dense(1)
         ]'''
     
+    def train_step(self, data):
+        x, y = data
+        
+        with tf.GradientTape() as tape:
+            y_pred = self(x, training=True)  # Forward pass
+            print('computing loss now')
+            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+
+        print('computing gradient now')
+        trainable_vars = self.trainable_variables
+        gradients = tape.gradient(loss, trainable_vars)
+        
+        print('applying gradient now')
+        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
+        self.compiled_metrics.update_state(y, y_pred)
+        
+        return {m.name: m.result() for m in self.metrics}
+    
+    
     def call(self, x, training=False):
         ret = self.myConvLayer(x)
         ret = self.myDense(ret)
