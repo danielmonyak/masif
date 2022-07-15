@@ -45,8 +45,7 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 #############################################
 #############################################
 num_epochs = 5                  #############
-train_samples_threshold = 2e5   #############
-val_samples_threshold = 5e4     #############
+pdb_ckp_thresh = 10             #############
 #############################################
 #############################################
 
@@ -110,7 +109,6 @@ with strategy.scope():
     #######################################
     
     train_iterator = iter(train_data)
-    val_iterator = iter(val_data)
 
     train_j = 0
     val_j = 0
@@ -150,12 +148,17 @@ with strategy.scope():
             print('\n\nFinished training on one protein\n\n')
             finished_samples += batch_sz
             train_j += 1
+            
+            if train_j % pdb_ckp_thresh == 0:
+                print(f'Saving model weights to {ckpPath}')
+                model.save_weights(ckpPath)
         
         train_iterator = iter(train_data)
         train_j = 0
         i += 1
         
+        print(f'Saving model weights to {ckpPath}')
         model.save_weights(ckpPath)
 
+print(f'Saving model to to {modelPath_endTraining}')
 model.save(modelPath_endTraining)
-            
