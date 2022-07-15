@@ -153,7 +153,7 @@ with strategy.scope():
             
             ########################################################################
             with tf.GradientTape() as tape:
-                y_pred = model(x, training=True)  # Forward pass
+                y_pred = model(X, training=True)  # Forward pass
                 print('computing loss now')
                 loss = model.compiled_loss(y, y_pred, regularization_losses=model.losses)
 
