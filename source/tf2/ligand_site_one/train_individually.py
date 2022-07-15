@@ -114,15 +114,16 @@ with tf.device(dev):
         optional = train_iterator.get_next_as_optional()
         while optional.has_value():
             data_element = optional.get_value()
-                
+            
             print(f'Epoch {i}, train record {train_j}')
-
+            
             labels = data_element[4]
             bin_labels = np.asarray(labels > 0).astype(int)
             pocket_points_count = np.sum(bin_labels, axis=0)
             good_labels = bin_labels[:, pocket_points_count > minPockets]
             if good_labels.shape[1] == 0:
                 train_j += 1
+                optional = train_iterator.get_next_as_optional()
                 continue
             
             y_added = np.sum(good_labels, axis=1, keepdims=True)
@@ -142,8 +143,8 @@ with tf.device(dev):
             
             print('\n\nFinished training on one protein\n\n')
             finished_samples += batch_sz
-            train_j += 1
             
+            train_j += 1
             optional = train_iterator.get_next_as_optional()
             
             if train_j % pdb_ckp_thresh == 0:
