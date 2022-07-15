@@ -82,7 +82,7 @@ with strategy.scope():
         params["n_classes"],
         feat_mask=params["feat_mask"],
         n_conv_layers = 3,
-        conv_batch_size = 200
+        conv_batch_size = None
     )
 
     from_logits = model.loss_fn.get_config()['from_logits']
@@ -149,8 +149,8 @@ with strategy.scope():
             batch_sz = y.shape[0]
             
             #class_weight = {0 : 1.0, 1 : 20.0})
-            #model.fit(X, y, verbose = 1, use_multiprocessing = True)
-            
+            model.fit(X, y, verbose = 1, use_multiprocessing = True)
+            '''
             ########################################################################
             with tf.GradientTape() as tape:
                 y_pred = model(X, training=True)  # Forward pass
@@ -165,7 +165,7 @@ with strategy.scope():
             model.optimizer.apply_gradients(zip(gradients, trainable_vars))
             model.compiled_metrics.update_state(y, y_pred)
             ########################################################################
-            
+            '''
             print('\n\nFinished training on one protein\n\n')
             finished_samples += batch_sz
             train_j += 1
