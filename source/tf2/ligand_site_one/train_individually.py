@@ -29,7 +29,7 @@ cpu = '/CPU:0'
 continue_training = False
 read_metrics = False
 
-starting_sample = 2
+starting_sample = 0
 #############################################
 
 params = masif_opts["ligand"]
@@ -81,7 +81,7 @@ with strategy.scope():
         params["n_classes"],
         feat_mask=params["feat_mask"],
         n_conv_layers = 3,
-        conv_batch_size = None
+        conv_batch_size = 200
     )
 
     from_logits = model.loss_fn.get_config()['from_logits']
