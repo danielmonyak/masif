@@ -61,6 +61,7 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 #############################################
 #############################################
 num_epochs = 5                  #############
+pdb_ckp_thresh = 10             #############
 #############################################
 #############################################
 
@@ -141,11 +142,17 @@ with strategy.scope():
             train_j += 1
             
             optional = temp_iterator.get_next_as_optional()
+            
+            if train_j % pdb_ckp_thresh == 0:
+                print(f'Saving model weights to {ckpPath}')
+                model.save_weights(ckpPath)
         
         train_iterator = iter(train_data)
         train_j = 0
         i += 1
         
+        print(f'Saving model weights to {ckpPath}')
         model.save_weights(ckpPath)
 
+print(f'Saving model to to {modelPath_endTraining}')
 model.save(modelPath_endTraining)
