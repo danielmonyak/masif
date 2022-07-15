@@ -35,8 +35,6 @@ params = masif_opts["ligand"]
 dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
 getData = lambda dataset : tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
 train_data = getData('train')
-val_data = getData('val')
-
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
@@ -158,9 +156,6 @@ with strategy.scope():
         i += 1
         
         model.save_weights(ckpPath)
-        ckpState = {'best_acc' : best_acc, 'last_epoch' : i}
-        with open(ckpStatePath, 'wb') as handle:
-            pickle.dump(ckpState, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 model.save(modelPath_endTraining)
             
