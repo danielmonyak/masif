@@ -55,7 +55,7 @@ class MaSIF_ligand_site(Model):
             #layers.Dense(10, activation='relu'),
             layers.Dense(1)
         ]'''
-    
+    '''
     def train_step(self, data):
         print('Train step')
         
@@ -70,7 +70,7 @@ class MaSIF_ligand_site(Model):
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
         self.compiled_metrics.update_state(y, y_pred)
         
-        return {m.name: m.result() for m in self.metrics}
+        return {m.name: m.result() for m in self.metrics}'''
     
     
     def call(self, x, training=False):
