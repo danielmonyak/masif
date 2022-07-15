@@ -151,7 +151,7 @@ with strategy.scope():
             finished_samples += batch_sz
             train_j += 1
             
-            optional = train_iterator.get_next_as_optional()
+            #optional = train_iterator.get_next_as_optional()
             
             if train_j % pdb_ckp_thresh == 0:
                 print(f'Saving model weights to {ckpPath}')
