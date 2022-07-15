@@ -8,16 +8,15 @@ import pickle
 import numpy as np
 import tensorflow as tf
 
-gpus_IN_USE = [1]
 
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
-
+'''
 lg_gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in lg_gpus]
 strategy = tf.distribute.MirroredStrategy([gpus_str[i] for i in gpus_IN_USE])
-
+'''
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
@@ -74,14 +73,14 @@ def pad_indices(indices, max_verts):
     return np.stack(ret_list)
 
 
-#with tf.device(dev):
-with strategy.scope():
+with tf.device(dev):
+#with strategy.scope():
     model = MaSIF_ligand_site(
         params["max_distance"],
         params["n_classes"],
         feat_mask=params["feat_mask"],
         n_conv_layers = 3,
-        conv_batch_size = 200
+        conv_batch_size = 500
     )
 
     from_logits = model.loss_fn.get_config()['from_logits']
