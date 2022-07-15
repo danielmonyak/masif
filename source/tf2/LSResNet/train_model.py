@@ -140,7 +140,7 @@ with strategy.scope():
             
             X_packed = (X, xyz_coords)
             
-            _=model.fit(X_packed, y, verbose = 2, use_multiprocessing = True)
+            model.fit(X_packed, y, verbose = 2, use_multiprocessing = True)
             
             finished_samples += labels.shape[0]
             train_j += 1
