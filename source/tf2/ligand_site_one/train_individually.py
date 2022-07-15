@@ -150,7 +150,9 @@ with strategy.scope():
             if not goodLabel(labels):
                 train_j += 1
                 continue
-
+            
+            y = tf.cast(labels > 0, dtype=tf.int32)
+            
             pdb = data_element[5].numpy().decode('ascii') + '_'
             indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
             
@@ -172,7 +174,6 @@ with strategy.scope():
             #X = tf.expand_dims(tf.concat([data_element[0]] + coords + [data_element[3], indices], axis=-1), axis=0)
             coords = [np.expand_dims(tsr, axis=-1) for tsr in data_element[1:3]]
             X = np.concatenate([data_element[0]] + coords + [data_element[3], indices], axis=-1)
-            y = tf.cast(labels > 0, dtype=tf.int32)
             
             '''y_samp = tf.gather(y, sample)
             X_samp = X[sample]'''
