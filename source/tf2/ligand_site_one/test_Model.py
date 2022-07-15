@@ -220,7 +220,8 @@ class ConvLayer(layers.Layer):
     def call(self, x):
         '''input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.map_func, elems = x,
                               fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])'''
-        input_feat, rho_coords, theta_coords, mask = x
+        input_feat, rho_coords, theta_coords, mask = x[0]
+        indices_tensor = tf.cast(x[1], dtype=tf.int32)
         '''input_feat = tf.cast(tf.gather(x, tf.range(5), axis=-1), dtype=tf.float32)
         rho_coords = tf.cast(tf.gather(x, 5, axis=-1), dtype=tf.float32)
         theta_coords = tf.cast(tf.gather(x, 6, axis=-1), dtype=tf.float32)
