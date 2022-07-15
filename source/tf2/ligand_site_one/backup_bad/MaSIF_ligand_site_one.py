@@ -57,16 +57,18 @@ class MaSIF_ligand_site(Model):
         ]'''
     
     def train_step(self, data):
-        print('Train step')
-        
         x, y = data
         
         with tf.GradientTape() as tape:
             y_pred = self(x, training=True)  # Forward pass
+            print('computing loss now')
             loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
+        print('computing gradient now')
         trainable_vars = self.trainable_variables
         gradients = tape.gradient(loss, trainable_vars)
+        
+        print('applying gradient now')
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
         self.compiled_metrics.update_state(y, y_pred)
         
@@ -218,28 +220,24 @@ class ConvLayer(layers.Layer):
     def call(self, x):
         '''input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.map_func, elems = x,
                               fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])'''
-        input_feat, rho_coords, theta_coords, mask = x[0]
-        indices_tensor = tf.cast(x[1], dtype=tf.int32)
-        '''input_feat = tf.cast(tf.gather(x, tf.range(5), axis=-1), dtype=tf.float32)
+        #input_feat, rho_coords, theta_coords, mask = x
+        input_feat = tf.cast(tf.gather(x, tf.range(5), axis=-1), dtype=tf.float32)
         rho_coords = tf.cast(tf.gather(x, 5, axis=-1), dtype=tf.float32)
         theta_coords = tf.cast(tf.gather(x, 6, axis=-1), dtype=tf.float32)
         mask = tf.cast(tf.expand_dims(tf.gather(x, 7, axis=-1), axis=-1), dtype=tf.float32)
         ####
         indices_tensor = tf.cast(tf.gather(x, 8, axis=-1), dtype=tf.int32)
-        ####'''
+        ####
         
         print(f'Conv layer: 0')
         
         var_dict = self.variable_dicts[0]
-        
-        n_samples = input_feat.shape[0]
-        if self.conv_batch_size is None:
-            sampIdx = [0, n_samples]
-        else:
-            sampIdx= range(0, n_samples, self.conv_batch_size)
-            sampIdx = list(sampIdx)
-            if n_samples % self.conv_batch_size != 0:
-                sampIdx.append(n_samples)
+
+        n_samples = x.shape[0]
+        rg = range(0, n_samples, self.conv_batch_size)
+        sampIdx = list(rg)
+        if n_samples % self.conv_batch_size != 0:
+            sampIdx.append(n_samples)
         
         ret_list = []
         for i in range(len(sampIdx)-1):
