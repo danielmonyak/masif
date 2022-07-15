@@ -38,9 +38,7 @@ pdb = sys.argv[1]
 
 print('pdb:', pdb)
 
-
-xyz_coords = Predictor.getXYZCoords(pdb_dir)
-tree = spatial.KDTree(xyz_coords)
+pdb_dir = os.path.join(params['masif_precomputation_dir'], pdb)
 
 ####################
 all_ligand_types = np.load(
@@ -55,10 +53,8 @@ all_ligand_coords = np.load(
 )
 n_pockets_true = len(all_ligand_types)
 
-pdb_dir = os.path.join(precom_dir, pdb)
 xyz_coords = Predictor.getXYZCoords(pdb_dir)
 tree = spatial.KDTree(xyz_coords)
-pred.loadData(pdb_dir)
 
 pp_true_list = []
 for lig_i in range(n_pockets_true):
@@ -90,8 +86,8 @@ rho_coords = np.load(os.path.join(pdb_dir, "p1_rho_wrt_center.npy"))
 theta_coords = np.load(os.path.join(pdb_dir, "p1_theta_wrt_center.npy"))
 mask = np.expand_dims(np.load(os.path.join(pdb_dir, "p1_mask.npy")), axis=-1)
 
-X = (input_feat, rho_coords, theta_coords, mask)
-ligand_site_probs = tf.sigmoid(pred.ligand_site_model.predict(X))
+X = ((pred.input_feat, pred.rho_coords, pred.theta_coords, pred.mask), pred.indices)
+ligand_site_probs = tf.sigmoid(pred.ligand_site_model(X))
 
 def summary(threshold):
   pocket_points_pred = flatten(tf.where(tf.squeeze(ligand_site_probs > threshold)))
