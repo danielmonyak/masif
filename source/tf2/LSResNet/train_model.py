@@ -124,7 +124,7 @@ with strategy.scope():
 
             pdb = data_element[5].numpy().decode('ascii') + '_'
             pdb_dir = os.path.join(precom_dir, pdb)
-            xyz_coords = tf.cast(tf.expand_dims(Predictor.getXYZCoords(pdb_dir), axis=0), dtype=tf.float32)
+            xyz_coords = tf.cast(Predictor.getXYZCoords(pdb_dir), dtype=tf.float32)
             
             '''
             #X = tuple(tf.expand_dims(tsr, axis=0) for tsr in data_element[:4])
@@ -135,7 +135,7 @@ with strategy.scope():
             
             y_raw = tf.cast(labels > 0, dtype=tf.int32)
             resolution = 1. / model.scale
-            y = tfbio.data.make_grid(xyz_coords[0], y_raw, max_dist=model.max_dist, grid_resolution=resolution)
+            y = tfbio.data.make_grid(xyz_coords[0], y_raw, max_dist=model.max_dist, grid_resolution=resolution)[0]
             
             X_packed = (X, xyz_coords)
             
