@@ -14,7 +14,7 @@ precom_dir = params['masif_precomputation_dir']
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
 #pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel')
-pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel')
+pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel')
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
 train_file = 'train_pdbs_sequence.npy'
@@ -199,6 +199,7 @@ for dataset in ['test']:
         BIG_n_pockets_pred.append(n_pockets_pred)
         BIG_matched.append(matched)
         
+        print(f'\ni: {i}, (i > 0) and (i \% 50 == 0): {(i > 0) and (i % 50 == 0)}\n')
         if (i > 0) and (i % 50 == 0):
             results = pd.DataFrame(dict(zip([col.partition('_list')[0] for col in columns], [eval(col) for col in columns])))
             results.to_csv(os.path.join(outdir, 'results.csv'), index=False)
