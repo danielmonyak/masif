@@ -298,7 +298,7 @@ class ConvLayer(layers.Layer):
                 
                 b_conv = var_dict['b_conv']
                 
-                return self.inference(
+                infc = self.inference(
                     input_feat_temp,
                     rho_coords_temp,
                     theta_coords_temp,
@@ -310,8 +310,10 @@ class ConvLayer(layers.Layer):
                     var_dict['mu_theta'],
                     var_dict['sigma_theta']
                 )
+                return tf.RaggedTensor.from_tensor(infc)
             
-            ret = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[None, self.conv_shapes[layer_num][0]], dtype=tf.float32))
+            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.conv_shapes[layer_num][0]], dtype=tf.float32, ragged_rank=1))
+            ret = map_output.merge_dims(0, 1).to_tensor()
             
             # Reduce the dimensionality by averaging over the last dimension
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
