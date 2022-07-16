@@ -51,6 +51,7 @@ pdb_ckp_thresh = 10             #############
 #############################################
 
 max_verts = 200
+batch_sz = 100
 
 #with tf.device(dev):
 #with strategy.scope():
@@ -59,7 +60,7 @@ model = MaSIF_ligand_site(
     params["n_classes"],
     feat_mask=params["feat_mask"],
     n_conv_layers = 3,
-    conv_batch_size = 500
+    conv_batch_size = batch_sz
 )
 
 from_logits = model.loss_fn.get_config()['from_logits']
@@ -120,21 +121,28 @@ while i < num_epochs:
 
         y_added = np.sum(good_labels, axis=1, keepdims=True)
 
-        y = tf.cast(y_added > 0, dtype=tf.int32)
-        batch_sz = y.shape[0]
+        y = (y_added > 0).astype(int)
+        n_samples = y.shape[0]
+        
+        leftover = batch_sz - (n_samples % batch_sz)
+        addLeftover = lambda tsr : np.concatenate([tsr, np.zeros([leftover] + tsr.shape)])
 
         pdb = data_element[5].numpy().decode('ascii') + '_'
         indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
         indices = pad_indices(indices, max_verts)
 
-        X = (data_element[:4], indices)
+        data_inputs = tuple(addLeftover(tsr) for tsr in data_element[:4])
+        indices = addLeftover(indices)
+        y = addLeftover(y)
+        
+        X = (data_inputs, indices)
 
 
         #class_weight = {0 : 1.0, 1 : 20.0})
         model.fit(X, y, verbose = 2)
 
         print('\n\nFinished training on one protein\n\n')
-        finished_samples += batch_sz
+        finished_samples += n_samples
 
         train_j += 1
         optional = train_iterator.get_next_as_optional()
