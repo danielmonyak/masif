@@ -1,5 +1,6 @@
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
+import tensorflow as tf
 import functools
 from operator import add
 from default_config.util import *
@@ -73,6 +74,7 @@ class MaSIF_ligand_site(Model):
     
     
     def call(self, x, training=False):
+        tf.config.set_soft_device_placement(True)
         ret = self.myConvLayer(x)
         ret = self.myDense(ret)
         ret = self.outLayer(ret)
