@@ -126,7 +126,7 @@ while i < num_epochs:
 
         pdb = data_element[5].numpy().decode('ascii') + '_'
         indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
-        indices = pad_indices(indices, max_verts)
+        indices = pad_indices(indices, max_verts).astype(np.int32)
         
         X = (data_element[:4], indices)
 
