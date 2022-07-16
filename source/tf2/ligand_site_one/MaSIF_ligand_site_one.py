@@ -234,7 +234,7 @@ class ConvLayer(layers.Layer):
         
         n_samples = tf.shape(input_feat)[0]
         if self.conv_batch_size is None:
-            sampIdx = tf.concat([0, n_samples], axis=0)
+            sampIdx = tf.stack([0, n_samples], axis=0)
         else:
             sampIdx= tf.concat([tf.range(n_samples, delta=self.conv_batch_size), tf.expand_dims(n_samples, axis=0)], axis=0)
         
