@@ -6,6 +6,7 @@ from operator import add
 from default_config.util import *
 
 params = masif_opts["ligand"]
+addLeftover = lambda tsr : tf.concat([tsr, tf.zeros([leftover] + tsr.shape[1:])], axis=0)
 
 class MaSIF_ligand_site(Model):
     """
@@ -220,8 +221,7 @@ class ConvLayer(layers.Layer):
     def call(self, x):
         '''input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.map_func, elems = x,
                               fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])'''
-        input_feat, rho_coords, theta_coords, mask = x[0]
-        indices_tensor = tf.cast(x[1], dtype=tf.int32)
+
         '''input_feat = tf.cast(tf.gather(x, tf.range(5), axis=-1), dtype=tf.float32)
         rho_coords = tf.cast(tf.gather(x, 5, axis=-1), dtype=tf.float32)
         theta_coords = tf.cast(tf.gather(x, 6, axis=-1), dtype=tf.float32)
@@ -236,9 +236,14 @@ class ConvLayer(layers.Layer):
         
         n_samples = tf.shape(input_feat)[0]
         if self.conv_batch_size is None:
+            input_feat, rho_coords, theta_coords, mask = x[0]
+            indices_tensor = tf.cast(x[1], dtype=tf.int32)
             sampIdx = tf.stack([0, n_samples], axis=0)
         else:
-            sampIdx= tf.concat([tf.range(n_samples, delta=self.conv_batch_size), tf.expand_dims(n_samples, axis=0)], axis=0)
+            leftover = self.conv_batch_size - (n_samples % self.conv_batch_size)
+            input_feat, rho_coords, theta_coords, mask = (addLeftover(tsr) for tsr in x[0])
+            indices_tensor = addLeftover(x[1])
+            sampIdx = tf.range(n_samples + leftover + 1, delta=self.conv_batch_size)
         
         
         ret = []
@@ -313,14 +318,15 @@ class ConvLayer(layers.Layer):
                     var_dict['sigma_theta']
                 )
             
-            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[0][0]], dtype=tf.float32))
+            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[layer_num][0]], dtype=tf.float32))
             ret = tf.concat(tf.unstack(map_output), axis=0)
             
             # Reduce the dimensionality by averaging over the last dimension
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
             ret = self.reduce_funcs[layer_num](ret)
                 
-            
+        ret = ret[:leftover]
+        
         return ret
     
     def inference(
