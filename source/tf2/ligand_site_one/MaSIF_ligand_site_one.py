@@ -271,7 +271,8 @@ class ConvLayer(layers.Layer):
                 )
             
             map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[0][0]], dtype=tf.float32))
-            ret.append(tf.concat(tf.unstack(map_output), axis=0))
+            #ret.append(tf.concat(tf.unstack(map_output), axis=0))
+            ret.append(tf.reshape(map_output, shape=[-1, map_output.shape[-1]]))
 
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
@@ -303,15 +304,13 @@ class ConvLayer(layers.Layer):
                 theta_coords_temp = tf.gather(theta_coords, sample, axis=0)
                 mask_temp = tf.gather(mask, sample, axis=0)
                 
-                b_conv = var_dict['b_conv']
-                
                 return self.inference(
                     input_feat_temp,
                     rho_coords_temp,
                     theta_coords_temp,
                     mask_temp,
                     var_dict['W_conv'],
-                    b_conv,
+                    var_dict['b_conv'],
                     var_dict['mu_rho'],
                     var_dict['sigma_rho'],
                     var_dict['mu_theta'],
@@ -319,13 +318,14 @@ class ConvLayer(layers.Layer):
                 )
             
             map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[layer_num][0]], dtype=tf.float32))
-            ret = tf.concat(tf.unstack(map_output), axis=0)
+            #ret = tf.concat(tf.unstack(map_output), axis=0)
+            ret = tf.reshape(map_output, shape=[-1, map_output.shape[-1]])
             
             # Reduce the dimensionality by averaging over the last dimension
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
             ret = self.reduce_funcs[layer_num](ret)
                 
-        ret = ret[:leftover]
+        ret = ret[:-leftover]
         
         return ret
     
