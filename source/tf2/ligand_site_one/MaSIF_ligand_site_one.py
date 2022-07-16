@@ -238,6 +238,7 @@ class ConvLayer(layers.Layer):
         if self.conv_batch_size is None:
             sampIdx = tf.stack([0, n_samples], axis=0)
         else:
+            batch_sz = tf.cast(self.conv_batch_size / n_samples, dtype=tf.int32)
             sampIdx= tf.concat([tf.range(n_samples, delta=self.conv_batch_size), tf.expand_dims(n_samples, axis=0)], axis=0)
         
         
@@ -252,7 +253,7 @@ class ConvLayer(layers.Layer):
                 theta_coords_temp = tf.gather(theta_coords, sample, axis=0)
                 mask_temp = tf.gather(mask, sample, axis=0)
                 
-                infc = self.inference(
+                return self.inference(
                     input_feat_temp,
                     rho_coords_temp,
                     theta_coords_temp,
@@ -264,13 +265,9 @@ class ConvLayer(layers.Layer):
                     var_dict['mu_theta'][i],
                     var_dict['sigma_theta'][i]
                 )
-                with tf.device('/CPU:0'):
-                    infc = tf.RaggedTensor.from_tensor(infc)
-                return infc
             
-            with tf.device('/CPU:0'):
-                map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.conv_shapes[0][0]], dtype=tf.float32, ragged_rank=1))
-                ret.append(map_output.merge_dims(0, 1).to_tensor())
+            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[batch_sz, self.conv_shapes[0][0]], dtype=tf.float32))
+            ret.append(tf.concat(tf.unstack(map_output), axis=0))
 
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
@@ -304,7 +301,7 @@ class ConvLayer(layers.Layer):
                 
                 b_conv = var_dict['b_conv']
                 
-                infc = self.inference(
+                return self.inference(
                     input_feat_temp,
                     rho_coords_temp,
                     theta_coords_temp,
@@ -316,13 +313,9 @@ class ConvLayer(layers.Layer):
                     var_dict['mu_theta'],
                     var_dict['sigma_theta']
                 )
-                with tf.device('/CPU:0'):
-                    infc = tf.RaggedTensor.from_tensor(infc)
-                return infc
             
-            with tf.device('/CPU:0'):
-                map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.conv_shapes[layer_num][0]], dtype=tf.float32, ragged_rank=1))
-                ret = map_output.merge_dims(0, 1).to_tensor()
+            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[batch_sz, self.conv_shapes[0][0]], dtype=tf.float32))
+            ret = tf.concat(tf.unstack(map_output), axis=0)
             
             # Reduce the dimensionality by averaging over the last dimension
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
