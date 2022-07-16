@@ -316,9 +316,9 @@ class ConvLayer(layers.Layer):
                     var_dict['mu_theta'],
                     var_dict['sigma_theta']
                 )
-                infc = tf.RaggedTensor.from_tensor(infc)
                 with tf.device('/CPU:0'):
-                    return infc
+                    infc = tf.RaggedTensor.from_tensor(infc)
+                return infc
             
             with tf.device('/CPU:0'):
                 map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.conv_shapes[layer_num][0]], dtype=tf.float32, ragged_rank=1))
