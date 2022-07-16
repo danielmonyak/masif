@@ -264,9 +264,13 @@ class ConvLayer(layers.Layer):
                     var_dict['mu_theta'][i],
                     var_dict['sigma_theta'][i]
                 )
-                return tf.RaggedTensor.from_tensor(infc)
-            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.conv_shapes[0][0]], dtype=tf.float32, ragged_rank=1))
-            ret.append(map_output.merge_dims(0, 1).to_tensor())
+                with tf.device('/CPU:0'):
+                    infc = tf.RaggedTensor.from_tensor(infc)
+                return infc
+            
+            with tf.device('/CPU:0'):
+                map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.conv_shapes[0][0]], dtype=tf.float32, ragged_rank=1))
+                ret.append(map_output.merge_dims(0, 1).to_tensor())
 
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
@@ -312,10 +316,13 @@ class ConvLayer(layers.Layer):
                     var_dict['mu_theta'],
                     var_dict['sigma_theta']
                 )
-                return tf.RaggedTensor.from_tensor(infc)
+                infc = tf.RaggedTensor.from_tensor(infc)
+                with tf.device('/CPU:0'):
+                    return infc
             
-            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.conv_shapes[layer_num][0]], dtype=tf.float32, ragged_rank=1))
-            ret = map_output.merge_dims(0, 1).to_tensor()
+            with tf.device('/CPU:0'):
+                map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.RaggedTensorSpec(shape=[None, self.conv_shapes[layer_num][0]], dtype=tf.float32, ragged_rank=1))
+                ret = map_output.merge_dims(0, 1).to_tensor()
             
             # Reduce the dimensionality by averaging over the last dimension
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
