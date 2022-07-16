@@ -21,7 +21,7 @@ model = MaSIF_ligand_site(
     params["n_classes"],
     feat_mask=params["feat_mask"],
     n_conv_layers = 3,
-    conv_batch_size = None
+    conv_batch_size = 1000
 )
 from_logits = model.loss_fn.get_config()['from_logits']
 binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
@@ -30,7 +30,7 @@ model.compile(optimizer = model.opt,
   metrics=[binAcc]
 )
 
-k = 10
+k = 1010
 input_feat_empty = tf.zeros([k, 200, 5])
 coords_empty = tf.zeros([k, 200])
 mask_empty = tf.zeros([k, 200, 1])
