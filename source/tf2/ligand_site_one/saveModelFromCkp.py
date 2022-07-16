@@ -20,7 +20,8 @@ model = MaSIF_ligand_site(
     params["max_distance"],
     params["n_classes"],
     feat_mask=params["feat_mask"],
-    n_conv_layers = 3
+    n_conv_layers = 3,
+    conv_batch_size = None
 )
 from_logits = model.loss_fn.get_config()['from_logits']
 binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
