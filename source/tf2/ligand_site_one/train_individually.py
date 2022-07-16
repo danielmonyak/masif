@@ -22,7 +22,7 @@ cpu = '/CPU:0'
 strategy = tf.distribute.MirroredStrategy([dev])
 '''
 tf.config.set_soft_device_placement(True)
-tf.debugging.set_log_device_placement(True)
+#tf.debugging.set_log_device_placement(True)
 
 #############################################
 continue_training = False
