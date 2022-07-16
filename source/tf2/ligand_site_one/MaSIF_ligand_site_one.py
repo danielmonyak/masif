@@ -238,7 +238,6 @@ class ConvLayer(layers.Layer):
         if self.conv_batch_size is None:
             sampIdx = tf.stack([0, n_samples], axis=0)
         else:
-            batch_sz = tf.cast(self.conv_batch_size / n_samples, dtype=tf.int32)
             sampIdx= tf.concat([tf.range(n_samples, delta=self.conv_batch_size), tf.expand_dims(n_samples, axis=0)], axis=0)
         
         
@@ -266,7 +265,7 @@ class ConvLayer(layers.Layer):
                     var_dict['sigma_theta'][i]
                 )
             
-            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[batch_sz, self.conv_shapes[0][0]], dtype=tf.float32))
+            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[0][0]], dtype=tf.float32))
             ret.append(tf.concat(tf.unstack(map_output), axis=0))
 
         ret = tf.stack(ret, axis=2)
@@ -314,7 +313,7 @@ class ConvLayer(layers.Layer):
                     var_dict['sigma_theta']
                 )
             
-            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[batch_sz, self.conv_shapes[0][0]], dtype=tf.float32))
+            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[0][0]], dtype=tf.float32))
             ret = tf.concat(tf.unstack(map_output), axis=0)
             
             # Reduce the dimensionality by averaging over the last dimension
