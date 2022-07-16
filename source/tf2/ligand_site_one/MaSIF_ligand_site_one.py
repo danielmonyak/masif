@@ -325,10 +325,11 @@ class ConvLayer(layers.Layer):
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
             ret = self.reduce_funcs[layer_num](ret)
                 
-        ret = ret[:-leftover]
+        if self.conv_batch_size is None:
+            return ret
         
-        return ret
-    
+        return ret[:-leftover]
+        
     def inference(
         self,
         input_feat,
