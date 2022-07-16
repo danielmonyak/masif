@@ -6,8 +6,7 @@ from operator import add
 from default_config.util import *
 
 params = masif_opts["ligand"]
-addLeftover = lambda tsr, dtype : tf.concat([tsr, tf.zeros(tf.TensorShape([leftover] + list(tsr.shape[1:])), dtype=dtype)], axis=0)
-    
+
 class MaSIF_ligand_site(Model):
     """
     The neural network model.
@@ -241,6 +240,7 @@ class ConvLayer(layers.Layer):
             sampIdx = tf.stack([0, n_samples], axis=0)
         else:
             leftover = self.conv_batch_size - (n_samples % self.conv_batch_size)
+            addLeftover = lambda tsr, dtype : tf.concat([tsr, tf.zeros(tf.TensorShape([leftover] + list(tsr.shape[1:])), dtype=dtype)], axis=0)
             input_feat, rho_coords, theta_coords, mask = (addLeftover(tsr, tf.float32) for tsr in x[0])
             indices_tensor = addLeftover(x[1], tf.int32)
             sampIdx = tf.range(n_samples + leftover + 1, delta=self.conv_batch_size)
@@ -325,10 +325,9 @@ class ConvLayer(layers.Layer):
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
             ret = self.reduce_funcs[layer_num](ret)
                 
-        if self.conv_batch_size is None:
-            return ret
-        
-        return ret[:-leftover]
+        if leftover > 0:
+            ret = ret[:-leftover]
+        return ret
         
     def inference(
         self,
