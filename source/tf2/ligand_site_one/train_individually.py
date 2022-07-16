@@ -120,7 +120,7 @@ while i < num_epochs:
             continue
 
         y_added = np.sum(good_labels, axis=1, keepdims=True)
-        y = (y_added > 0).astype(int)
+        y = (y_added > 0).astype(np.int32)
         
         n_samples = y.shape[0]
 
