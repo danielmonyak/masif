@@ -59,7 +59,7 @@ model = MaSIF_ligand_site(
     params["max_distance"],
     params["n_classes"],
     feat_mask=params["feat_mask"],
-    n_conv_layers = 3,
+    n_conv_layers = masif_opts['site']['n_conv_layers'],
     conv_batch_size = batch_sz
 )
 
