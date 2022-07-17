@@ -279,17 +279,16 @@ class ConvLayer(layers.Layer):
                 )
             
             map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[0][0]], dtype=tf.float32))
-            
-            ###
-            del input_feat, my_input_feat
-            ###
-            
             ret.append(tf.reshape(map_output, shape=[-1, map_output.shape[-1]]))
             
             ###
             del map_output
             ###
 
+        ###
+        del input_feat, my_input_feat
+        ###
+        
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
         
