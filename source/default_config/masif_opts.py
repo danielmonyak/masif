@@ -64,6 +64,9 @@ masif_opts["site"]["out_pred_dir"] = "output/all_feat_3l/pred_data/"
 masif_opts["site"]["out_surf_dir"] = "output/all_feat_3l/pred_surfaces/"
 masif_opts["site"]["feat_mask"] = [1.0] * 5
 
+###
+masif_opts['ligand']['max_verts'] = 200
+###
 # Neural network ligand application specific parameters.
 masif_opts["ligand"] = {}
 masif_opts["ligand"]["assembly_dir"] = os.path.join(basedir, "data_preparation/00b-pdbs_assembly")
