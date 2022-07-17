@@ -65,10 +65,11 @@ model = MaSIF_ligand_site(
 
 from_logits = model.loss_fn.get_config()['from_logits']
 binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
+auc = tf.keras.metrics.AUC(from_logits = from_logits)
 
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=[binAcc]
+  metrics=[binAcc, auc]
 )
 
 if continue_training:
