@@ -328,9 +328,7 @@ class ConvLayer(layers.Layer):
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
             ret = self.reduce_funcs[layer_num](ret)
                 
-        if leftover > 0:
-            ret = ret[:-leftover]
-        return ret
+        return ret[:tf.shape(ret)[0] - leftover]
         
     def inference(
         self,
