@@ -9,6 +9,8 @@ from scipy import spatial
 from sklearn.metrics import accuracy_score, balanced_accuracy_score
 import tensorflow as tf
 
+tf.config.set_soft_device_placement(True)
+
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
@@ -19,8 +21,6 @@ from tf2.usage.predictor import Predictor
 params = masif_opts["ligand"]
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
-
-dev = '/GPU:1'
 
 '''possible_test_pdbs = ['2VRB_AB_', '1FCD_AC_', '1FNN_A_', '1RI4_A_', '4PGH_AB_']
 possible_train_pdbs = ['3O7W_A_', '4YTP_ACBD_', '4YMP_A_', '4IVM_B_', '3FMO_AB_']
@@ -79,11 +79,11 @@ ligandIdx_true = ligand_list.index(ligand_true)
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel'
 ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
 
-with tf.device(dev):
-    pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path = ligand_site_model_path)
-    pred.loadData(pdb_dir)
-    X = ((pred.input_feat, pred.rho_coords, pred.theta_coords, pred.mask), pred.indices)
-    ligand_site_probs = tf.sigmoid(pred.ligand_site_model(X))
+#with tf.device(dev):
+pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path = ligand_site_model_path)
+pred.loadData(pdb_dir)
+X = ((pred.input_feat, pred.rho_coords, pred.theta_coords, pred.mask), pred.indices)
+ligand_site_probs = tf.sigmoid(pred.ligand_site_model(X))
 
 def summary(threshold):
   pocket_points_pred = flatten(tf.where(tf.squeeze(ligand_site_probs > threshold)))
@@ -141,7 +141,7 @@ if not threshold_best:
   threshold_best = 0.5
   sys.exit('NO THRESHOLD WAS GOOD ENOUGH TO GIVE A PREDICTION WITH CONFIDENCE')
 
-pocket_points_pred = flatten(tf.where(tf.squeeze(ligand_site_probs > threshold_best)))
+pocket_points_pred = np.asarray(ligand_site_probs > threshold_best).nonzero()[0]
 ########
 '''
 y_gen = np.zeros(pred.n_pockets)
