@@ -39,7 +39,7 @@ input_feat_empty = np.zeros([k, 200, 5])
 coords_empty = np.zeros([k, 200])
 mask_empty = np.zeros([k, 200, 1])
 indices_empty = np.zeros([k, 200], dtype=np.int32)
-X_empty = ((input_feat_empty, coords_empty, coords_empty, mask_empty), coords_empty)
+X_empty = ((input_feat_empty, coords_empty, coords_empty, mask_empty), indices_empty)
 _=model(X_empty)
 
 model.load_weights(ckpPath)
