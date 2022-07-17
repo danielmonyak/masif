@@ -21,7 +21,7 @@ cpu = '/CPU:0'
 '''
 strategy = tf.distribute.MirroredStrategy([dev])
 '''
-#tf.config.set_soft_device_placement(True)
+tf.config.set_soft_device_placement(True)
 #tf.debugging.set_log_device_placement(True)
 
 #############################################
@@ -129,7 +129,6 @@ while i < num_epochs:
         indices = pad_indices(indices, max_verts).astype(np.int32)
         
         X = (data_element[:4], indices)
-
 
         #class_weight = {0 : 1.0, 1 : 20.0})
         model.fit(X, y, verbose = 2)
