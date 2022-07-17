@@ -55,7 +55,7 @@ class Predictor:
     ), axis=-1)
     self.n_pockets = self.mask.shape[0]
     
-    self.indices = pad_indices(np.load(os.path.join(pdb_dir, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True), 200)
+    self.indices = pad_indices(np.load(os.path.join(pdb_dir, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True), 200).astype(np.int32)
     
     self.data_dict = {'input_feat' : self.input_feat, 'rho_coords' : self.rho_coords,
                    'theta_coords' : self.theta_coords, 'mask' : self.mask}
