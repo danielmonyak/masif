@@ -239,7 +239,6 @@ class ConvLayer(layers.Layer):
             indices_tensor = tf.cast(x[1], dtype=tf.int32)
             sampIdx = tf.stack([0, n_samples], axis=0)
         else:
-            print('here')
             leftover = self.conv_batch_size - (n_samples % self.conv_batch_size)
             def addLeftover(tsr, dtype):
                 shape = tf.concat([tf.expand_dims(leftover, axis=0), tsr.shape[1:]], axis=0)
