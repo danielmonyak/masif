@@ -23,7 +23,7 @@ model = MaSIF_ligand_site(
     params["n_classes"],
     feat_mask=params["feat_mask"],
     n_conv_layers = masif_opts['site']['n_conv_layers'],
-    conv_batch_size = 1000
+    conv_batch_size = 500
 )
 
 from_logits = model.loss_fn.get_config()['from_logits']
