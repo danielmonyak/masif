@@ -25,10 +25,10 @@ tf.config.set_soft_device_placement(True)
 #tf.debugging.set_log_device_placement(True)
 
 #############################################
-continue_training = True
+continue_training = False
 #read_metrics = False
 
-starting_sample = 340
+starting_sample = 0
 starting_epoch = 0
 #############################################
 
@@ -136,8 +136,7 @@ while i < num_epochs:
         
         X = (data_element[:4], indices)
 
-        #class_weight = {0 : 1.0, 1 : 20.0})
-        model.fit(X, y, verbose = 2)
+        model.fit(X, y, verbose = 2, class_weight = {0 : 1.0, 1 : 25.6})
 
         print('\n\nFinished training on one protein\n\n')
         finished_samples += n_samples
