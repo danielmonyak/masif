@@ -240,9 +240,9 @@ class ConvLayer(layers.Layer):
             sampIdx = tf.stack([0, n_samples], axis=0)
         else:
             leftover = self.conv_batch_size - (n_samples % self.conv_batch_size)
-            def addLeftover (tsr, dtype):
+            def addLeftover(tsr, dtype):
                 shape = tf.concat([tf.expand_dims(leftover, axis=0), tsr.shape[1:]], axis=0)
-                empty = tf.zeros(shape)
+                empty = tf.zeros(shape, dtype=dtype)
                 return tf.concat([tsr, empty], axis=0)
             input_feat, rho_coords, theta_coords, mask = (addLeftover(tsr, tf.float32) for tsr in x[0])
             indices_tensor = addLeftover(x[1], tf.int32)
