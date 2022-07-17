@@ -35,7 +35,7 @@ data/masif_ligand/train_model.out
 data/masif_ligand/train_model.err
 data/masif_ligand/lists/
 data/masif_ligand/nn_models*
-source/tf2/*/kerasModel*
+source/tf2/*/*odel*
 source/tf2/*/*pid*
 source/tf2/usage/results*
 func.py
