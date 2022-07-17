@@ -1,6 +1,5 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
-
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import sys
 from IPython.core.debugger import set_trace
 import importlib
@@ -36,7 +35,8 @@ else:
 pdb = possible_pdbs[pdb_idx]
 '''
 #pdb = sys.argv[1]
-pdb = '3O7W_A_'
+#pdb = '3WV7_ACB_'
+pdb = '4N09_A_'
 
 print('pdb:', pdb)
 
@@ -64,7 +64,7 @@ for lig_i in range(n_pockets_true):
     
     ligand_coords = all_ligand_coords[lig_i]
     pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
-    pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
+    pocket_points_true = np.array(list(set([pp for p in pocket_points_true for pp in p])))
     
     if len(pocket_points_true) == 0:
         print(f'\tLigand has no pocket points...')
@@ -79,14 +79,18 @@ ligandIdx_true = ligand_list.index(ligand_true)
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel'
 ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
 
-#with tf.device(dev):
-pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path = ligand_site_model_path)
-pred.loadData(pdb_dir)
-X = ((pred.input_feat, pred.rho_coords, pred.theta_coords, pred.mask), pred.indices)
-ligand_site_probs = tf.sigmoid(pred.ligand_site_model(X))
+with tf.device('/GPU:1'):
+    pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path = ligand_site_model_path)
+    pred.loadData(pdb_dir)
+    X = ((pred.input_feat, pred.rho_coords, pred.theta_coords, pred.mask), pred.indices)
+    outputs = pred.ligand_site_model(X)
+    ligand_site_probs = tf.sigmoid(outputs).numpy()
 
+###########################################################################
+###########################################################################
+    
 def summary(threshold):
-  pocket_points_pred = flatten(tf.where(tf.squeeze(ligand_site_probs > threshold)))
+  pocket_points_pred = np.asarray(ligand_site_probs > threshold).nonzero()[0]
   
   npoints = len(pocket_points_pred)
   if npoints < 2 * minPockets:
@@ -116,8 +120,9 @@ def summary(threshold):
   
   return abs(npoints - npoints_true)
 
+###########################################################################
+###########################################################################
 
-########
 print()
 
 #score_best = 0
@@ -138,32 +143,34 @@ for threshold in np.linspace(.1, .9, 9):
 print('threshold_best:', threshold_best)
 print()
 if not threshold_best:
-  threshold_best = 0.5
-  sys.exit('NO THRESHOLD WAS GOOD ENOUGH TO GIVE A PREDICTION WITH CONFIDENCE')
+    sys.exit('NO THRESHOLD WAS GOOD ENOUGH TO GIVE A PREDICTION WITH CONFIDENCE')
+
+###########################################################################
+###########################################################################
 
 pocket_points_pred = np.asarray(ligand_site_probs > threshold_best).nonzero()[0]
 ########
-'''
+
 y_gen = np.zeros(pred.n_pockets)
 y_true = y_gen.copy()
 y_true[pocket_points_true] = 1
 y_pred = y_gen
-y_pred[pocket_points_pred.numpy()] = 1
+y_pred[pocket_points_pred] = 1
 
 
-y_true_all = flatten(y_true)
-y_pred_all = flatten(y_pred)
-bal_acc = balanced_accuracy_score(y_true_all, y_pred_all)
-mask = tf.boolean_mask(y_pred_all, y_true_all)
-overlap = tf.reduce_sum(mask)
-recall = overlap/tf.reduce_sum(y_true_all)
-precision = overlap/tf.reduce_sum(y_pred_all)
-specificity = 1 - tf.reduce_mean(tf.cast(tf.boolean_mask(y_pred_all, 1 - y_true_all), dtype=tf.float64))
+#y_true_all = flatten(y_true)
+#y_pred_all = flatten(y_pred)
+bal_acc = balanced_accuracy_score(y_true, y_pred)
+mask = y_pred == y_true
+overlap = np.sum(mask)
+recall = overlap/np.sum(y_true)
+precision = overlap/np.sum(y_pred)
+specificity = 1 - np.mean(y_pred == (1 - y_true))
 
 print('Balanced accuracy:', round(bal_acc, 2))
-print('Recall:', round(recall.numpy(), 2))
-print('Precision:', round(precision.numpy(), 2))
-print('Specificity:', round(specificity.numpy(), 2))
+print('Recall:', round(recall, 2))
+print('Precision:', round(precision, 2))
+print('Specificity:', round(specificity, 2))
 
 print()
 '''
@@ -179,3 +186,4 @@ print('\nX_pred_pred:', X_pred_pred.numpy())
 
 print('\nligandIdx_true:', ligandIdx_true)
 
+'''
