@@ -51,7 +51,7 @@ pdb_ckp_thresh = 10             #############
 #############################################
 #############################################
 
-cv_batch_sz = 20
+cv_batch_sz = 1
 
 #with tf.device(dev):
 #with strategy.scope():
