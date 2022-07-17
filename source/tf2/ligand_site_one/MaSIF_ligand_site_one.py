@@ -246,6 +246,11 @@ class ConvLayer(layers.Layer):
                 return tf.concat([tsr, empty], axis=0)
             input_feat, rho_coords, theta_coords, mask = (addLeftover(tsr, tf.float32) for tsr in x[0])
             indices_tensor = addLeftover(x[1], tf.int32)
+            
+            ###
+            del x
+            ###
+            
             sampIdx = tf.range(n_samples + leftover + 1, delta=self.conv_batch_size)
         
         
@@ -274,8 +279,16 @@ class ConvLayer(layers.Layer):
                 )
             
             map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[0][0]], dtype=tf.float32))
-            #ret.append(tf.concat(tf.unstack(map_output), axis=0))
+            
+            ###
+            del input_feat, my_input_feat
+            ###
+            
             ret.append(tf.reshape(map_output, shape=[-1, map_output.shape[-1]]))
+            
+            ###
+            del map_output
+            ###
 
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
@@ -322,7 +335,16 @@ class ConvLayer(layers.Layer):
             
             map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[layer_num][0]], dtype=tf.float32))
             #ret = tf.concat(tf.unstack(map_output), axis=0)
+            
+            ###
+            del input_feat
+            ###
+            
             ret = tf.reshape(map_output, shape=[-1, map_output.shape[-1]])
+            
+            ###
+            del map_output
+            ###
             
             # Reduce the dimensionality by averaging over the last dimension
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
