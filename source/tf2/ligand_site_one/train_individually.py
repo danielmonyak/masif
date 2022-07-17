@@ -25,10 +25,11 @@ tf.config.set_soft_device_placement(True)
 #tf.debugging.set_log_device_placement(True)
 
 #############################################
-continue_training = False
-read_metrics = False
+continue_training = True
+#read_metrics = False
 
-starting_sample = 0
+starting_sample = 340
+starting_epoch = 0
 #############################################
 
 params = masif_opts["ligand"]
@@ -50,8 +51,7 @@ pdb_ckp_thresh = 10             #############
 #############################################
 #############################################
 
-max_verts = 200
-batch_sz = 100
+batch_sz = 500
 
 #with tf.device(dev):
 #with strategy.scope():
@@ -74,31 +74,33 @@ model.compile(optimizer = model.opt,
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
-
+'''
 if read_metrics:
     with open(ckpStatePath, 'rb') as handle:
         ckpState = pickle.load(handle)
-    i = ckpState['last_epoch']
-    best_acc = ckpState['best_acc']
+    starting_epoch = ckpState['last_epoch']
     print(f'Resuming epoch {i} of training\nValidation accuracy: {best_acc}')
 else:
     i = 0
     best_acc = 0
+'''
 
+
+    
 #######################################
 #######################################
 #######################################
 
-train_iterator = iter(train_data)
-
-train_j = 0
-val_j = 0
-while train_j < starting_sample:
-    data_element = train_iterator.get_next()
-    train_j += 1
+i = starting_epoch
 
 print(f'Running training data, epoch {i}')
 while i < num_epochs:
+    train_iterator = iter(train_data)
+    train_j = 0
+    if i == starting_epoch:
+        while train_j < starting_sample:
+            data_element = train_iterator.get_next()
+            train_j += 1
     #############################################################
     ###################     TRAINING DATA     ###################
     #############################################################
@@ -123,7 +125,11 @@ while i < num_epochs:
         y = (y_added > 0).astype(np.int32)
         
         n_samples = y.shape[0]
-
+        
+        ##### 200 every time
+        max_verts = data_element[0].shape[1]
+        #####
+        
         pdb = data_element[5].numpy().decode('ascii') + '_'
         indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
         indices = pad_indices(indices, max_verts).astype(np.int32)
