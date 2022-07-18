@@ -107,76 +107,62 @@ while i < num_epochs:
     #############################################################
     ###################     TRAINING DATA     ###################
     #############################################################
-    for ppi_pair_id in data_dirs:
-        #print(f'Epoch {i}, train record {train_j}')
+    for pdb_dir in data_dirs:
+        print(f'Epoch {i}, train record {train_j}')
         
-        mydir = os.path.join(params["masif_precomputation_dir"], ppi_pair_id)
-        #mydir = params["masif_precomputation_dir"] + ppi_pair_id + "/"
-        split = ppi_pair_id.split("_")
-        pdbid = split[0]
-        chains1 = split[1]
-        if len(split) > 2:
-            chains2 = split[2]
-        else: 
-            chains2 = ''
-        pids = []
-        if pdbid + "_" + chains1 in training_list:
-            pids.append("p1")
-        if pdbid + "_" + chains2 in training_list:
-            pids.append("p2")
-            
-        for pid in pids:
-            rho_wrt_center = np.load(os.path.join(mydir, pid + "_rho_wrt_center.npy"))
-            
-            n_samples = rho_wrt_center.shape[0]
-            # Memory limitation?
-            if n_samples > 8000:
-                continue
-            
-            theta_wrt_center = np.load(os.path.join(mydir, pid + "_theta_wrt_center.npy"))
-            input_feat = np.load(os.path.join(mydir, pid + "_input_feat.npy"))
-            mask = np.load(os.path.join(mydir, pid + "_mask.npy"))
-            mask = np.expand_dims(mask, 2)
-            indices = np.load(os.path.join(mydir, pid + "_list_indices.npy", encoding="latin1", allow_pickle = True))
-            # indices is (n_verts x <30), it should be
-            indices = pad_indices(indices, mask.shape[1]).astype(np.int32)
-            
-            data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [input_feat, rho_wrt_center, theta_wrt_center, mask])
-            indices = np.expand_dims(indices, axis=0)
+        mydir = os.path.join(params["masif_precomputation_dir"], pdb_idr)
+        
+        rho_wrt_center = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
 
-            X = (data_tsrs, indices)
-            
-            
-            ###############################################################
-            ###############################################################
-            X_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_X.npy"))
-            Y_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_Y.npy"))
-            Z_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_Z.npy"))
-            xyz_coords = np.vstack([X, Y, Z]).T
-            tree = spatial.KDTree(xyz_coords)
-            all_ligand_coords = np.load(
-                os.path.join(
-                    ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
-                )
+        n_samples = rho_wrt_center.shape[0]
+        # Memory limitation?
+        if n_samples > 8000:
+            train_j += 1
+            continue
+
+        theta_wrt_center = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
+        input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
+        mask = np.load(os.path.join(mydir, "p1_mask.npy"))
+        mask = np.expand_dims(mask, 2)
+        indices = np.load(os.path.join(mydir, "p1_list_indices.npy", encoding="latin1", allow_pickle = True))
+        # indices is (n_verts x <30), it should be
+        indices = pad_indices(indices, mask.shape[1]).astype(np.int32)
+
+        data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [input_feat, rho_wrt_center, theta_wrt_center, mask])
+        indices = np.expand_dims(indices, axis=0)
+
+        X = (data_tsrs, indices)
+
+        ###############################################################
+        ###############################################################
+        X_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_X.npy"))
+        Y_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_Y.npy"))
+        Z_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_Z.npy"))
+        xyz_coords = np.vstack([X, Y, Z]).T
+        tree = spatial.KDTree(xyz_coords)
+        all_ligand_coords = np.load(
+            os.path.join(
+                ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
             )
-            pocket_points = []
-            for j, structure_ligand in enumerate(all_ligand_coords):
-                ligand_coords = all_ligand_coords[j]
-                temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
-                temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
-                pocket_points.extend(temp_pocket_points)
-            
-            y = np.zeros([1, n_samples], dtype=np.int32)
-            y[0, pocket_points] = 1
-            
-            if (np.mean(y) > 0.75 or np.sum(y) < 30):
-                continue
-            count_proteins += 1
-            
-            # TRAIN MODEL
-            ################################################
-            model.fit(X, y, verbose = 2)    ################
-            ################################################
+        )
+        pocket_points = []
+        for j, structure_ligand in enumerate(all_ligand_coords):
+            ligand_coords = all_ligand_coords[j]
+            temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
+            temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
+            pocket_points.extend(temp_pocket_points)
+
+        y = np.zeros([1, n_samples], dtype=np.int32)
+        y[0, pocket_points] = 1
+
+        if (np.mean(y) > 0.75 or np.sum(y) < 30):
+            train_j += 1
+            continue
+
+        # TRAIN MODEL
+        ################################################
+        model.fit(X, y, verbose = 2)    ################
+        ################################################
         
         print('\n\nFinished training on one protein\n\n')
         train_j += 1
