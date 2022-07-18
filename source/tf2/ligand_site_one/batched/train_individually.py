@@ -5,6 +5,7 @@ import importlib
 from IPython.core.debugger import set_trace
 import pickle
 import numpy as np
+from scipy import spatial
 import tensorflow as tf
 
 phys_gpus = tf.config.list_physical_devices('GPU')
@@ -106,8 +107,6 @@ while i < num_epochs:
     #############################################################
     ###################     TRAINING DATA     ###################
     #############################################################
-    finished_samples = 0
-
     for ppi_pair_id in data_dirs:
         #print(f'Epoch {i}, train record {train_j}')
         
@@ -127,19 +126,13 @@ while i < num_epochs:
             pids.append("p2")
             
         for pid in pids:
-            try:
-                iface_labels = np.load(mydir + pid + "_iface_labels.npy")
-            except:
-                continue
-                
-            # Memory limitation?
-            if len(iface_labels) > 8000:
-                continue
-            if (np.mean(iface_labels) > 0.75 or np.sum(iface_labels) < 30):
-                continue
-            count_proteins += 1
-
             rho_wrt_center = np.load(os.path.join(mydir, pid + "_rho_wrt_center.npy"))
+            
+            n_samples = rho_wrt_center.shape[0]
+            # Memory limitation?
+            if n_samples > 8000:
+                continue
+            
             theta_wrt_center = np.load(os.path.join(mydir, pid + "_theta_wrt_center.npy"))
             input_feat = np.load(os.path.join(mydir, pid + "_input_feat.npy"))
             mask = np.load(os.path.join(mydir, pid + "_mask.npy"))
@@ -154,53 +147,44 @@ while i < num_epochs:
             X = (data_tsrs, indices)
             
             
+            ###############################################################
+            ###############################################################
+            X_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_X.npy"))
+            Y_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_Y.npy"))
+            Z_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_Z.npy"))
+            xyz_coords = np.vstack([X, Y, Z]).T
+            tree = spatial.KDTree(xyz_coords)
+            all_ligand_coords = np.load(
+                os.path.join(
+                    ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
+                )
+            )
+            pocket_points = []
+            for j, structure_ligand in enumerate(all_ligand_coords):
+                ligand_coords = all_ligand_coords[j]
+                temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
+                temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
+                pocket_points.extend(temp_pocket_points)
             
+            y = np.zeros([1, n_samples], dtype=np.int32)
+            y[0, pocket_points] = 1
             
+            if (np.mean(y) > 0.75 or np.sum(y) < 30):
+                continue
+            count_proteins += 1
             
-            
-            
-        '''
-        labels = data_element[4]
-        bin_labels = np.asarray(labels > 0).astype(int)
-        pocket_points_count = np.sum(bin_labels, axis=0)
-        good_labels = bin_labels[:, pocket_points_count > minPockets]
-        if good_labels.shape[1] == 0:
-            train_j += 1
-            optional = train_iterator.get_next_as_optional()
-            continue
-
-        y_added = np.sum(good_labels, axis=1, keepdims=True)
-        y = (y_added > 0).astype(np.int32)
-
-        n_samples = y.shape[0]
-
-        ##### 200 every time
-        max_verts = data_element[0].shape[1]
-        #####
-
-        pdb = data_element[5].numpy().decode('ascii') + '_'
-        indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
-        indices = pad_indices(indices, max_verts).astype(np.int32)
-
-        data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in data_element[:4])
-        indices = np.expand_dims(indices, axis=0)
-        y = np.expand_dims(y, axis=0)
-
-        X = (data_tsrs, indices)
-        '''
-        model.fit(X, y, verbose = 2)
-
+            # TRAIN MODEL
+            ################################################
+            model.fit(X, y, verbose = 2)    ################
+            ################################################
+        
         print('\n\nFinished training on one protein\n\n')
-        finished_samples += n_samples
-
         train_j += 1
-        optional = train_iterator.get_next_as_optional()
 
         if train_j % pdb_ckp_thresh == 0:
             print(f'Saving model weights to {ckpPath}')
             model.save_weights(ckpPath)
 
-    train_iterator = iter(train_data)
     train_j = 0
     i += 1
 
