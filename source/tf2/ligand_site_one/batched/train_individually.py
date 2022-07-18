@@ -7,10 +7,10 @@ import pickle
 import numpy as np
 import tensorflow as tf
 
-phys_gpus = tf.config.list_physical_devices('GPU')
+'''phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
-
+'''
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 from MaSIF_ligand_site_one import MaSIF_ligand_site
