@@ -54,7 +54,6 @@ class MaSIF_site:
 
         coords = np.concatenate((grid_rho_[None, :], grid_theta_[None, :]), axis=0)
         coords = coords.T  # every row contains the coordinates of a grid intersection
-        print(coords.shape)
         return coords
 
     def inference(
@@ -72,9 +71,6 @@ class MaSIF_site:
         eps=1e-5,
         mean_gauss_activation=True,
     ):
-        ####
-        print('input_feat:', input_feat.shape)
-        ####
         
         n_samples = tf.shape(rho_coords)[0]
         n_vertices = tf.shape(rho_coords)[1]
@@ -117,11 +113,6 @@ class MaSIF_site:
             input_feat_ = tf.expand_dims(
                 input_feat, 3
             )  # batch_size, n_vertices, n_feat, 1
-            
-            ####
-            print('input_feat_:', input_feat.shape)
-            print('gauss_activations:', gauss_activations.shape)
-            ####
             
             gauss_desc = tf.multiply(
                 gauss_activations, input_feat_
@@ -308,10 +299,6 @@ class MaSIF_site:
                     theta_coords = self.theta_coords
                     mask = self.mask
 
-                    ####
-                    print('my_input_feat:', my_input_feat.shape)
-                    ####
-                    
                     self.global_desc.append(
                         self.inference(
                             my_input_feat,
@@ -330,17 +317,9 @@ class MaSIF_site:
                 # They should be batch_size, n_feat*n_gauss (5 x 12)
                 self.global_desc = tf.stack(self.global_desc, axis=1)
                 
-                ####
-                print('self.global_desc:', self.global_desc.shape)
-                ####
-                
                 self.global_desc = tf.reshape(
                     self.global_desc, [-1, self.n_thetas * self.n_rhos * self.n_feat]
                 )
-                
-                ####
-                print('self.global_desc:', self.global_desc.shape)
-                ####
                 
                 self.global_desc = tf.contrib.layers.fully_connected(
                     self.global_desc,
@@ -348,17 +327,9 @@ class MaSIF_site:
                     activation_fn=tf.nn.relu,
                 )
                 
-                ####
-                print('self.global_desc:', self.global_desc.shape)
-                ####
-                
                 self.global_desc = tf.contrib.layers.fully_connected(
                     self.global_desc, self.n_feat, activation_fn=tf.nn.relu
                 )
-                
-                ####
-                print('self.global_desc:', self.global_desc.shape)
-                ####
                 
                 # Do a second convolutional layer. input: batch_size, n_feat -- output: batch_size, n_feat
                 if n_conv_layers > 1:
@@ -366,10 +337,6 @@ class MaSIF_site:
                     self.global_desc = tf.gather(
                         self.global_desc, self.indices_tensor
                     )  # batch_size, max_verts, n_feat
-                    
-                    ####
-                    print('self.global_desc:', self.global_desc.shape)
-                    ####
                     
                     W_conv_l2 = tf.get_variable(
                         "W_conv_l2",
@@ -396,10 +363,6 @@ class MaSIF_site:
                         self.sigma_theta_l2,
                     )  # batch_size, n_gauss*n_gauss
                     
-                    ####
-                    print('self.global_desc:', self.global_desc.shape)
-                    ####
-                    
                     batch_size = tf.shape(self.global_desc)[0]
                     # Reduce the dimensionality by averaging over the last dimension
                     self.global_desc = tf.reshape(
@@ -407,15 +370,7 @@ class MaSIF_site:
                         [batch_size, self.n_feat, self.n_thetas * self.n_rhos],
                     )
                     
-                    ####
-                    print('self.global_desc:', self.global_desc.shape)
-                    ####
-                    
                     self.global_desc = tf.reduce_mean(self.global_desc, axis=2)
-                    
-                    ####
-                    print('self.global_desc:', self.global_desc.shape)
-                    ####
                     
                     self.global_desc_shape = tf.shape(self.global_desc)
 
