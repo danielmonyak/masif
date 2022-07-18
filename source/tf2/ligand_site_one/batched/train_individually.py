@@ -1,6 +1,5 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
-
 import sys
 import importlib
 from IPython.core.debugger import set_trace
