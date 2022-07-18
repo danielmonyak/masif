@@ -136,7 +136,11 @@ while i < num_epochs:
         indices = np.load(os.path.join(params['masif_precomputation_dir'], pdb, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True)
         indices = pad_indices(indices, max_verts).astype(np.int32)
         
-        X = (data_element[:4], indices)
+        data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in data_element[:4])
+        indices = np.expand_dims(indices, axis=0)
+        y = np.expand_dims(y, axis=0)
+        
+        X = (data_tsrs, indices)
 
         #### MUST SPECIFY BATCH SIZE!!!! tf.gather indices are not verified on GPU
         model.fit(X, y, verbose = 2, class_weight = {0 : 1.0, 1 : 25.6}, batch_size=n_samples)
