@@ -61,7 +61,8 @@ masif_opts["site"]["max_distance"] = 9.0  # Radius for the neural network.
 masif_opts["site"]["masif_precomputation_dir"] = "/data02/daniel/masif/site/data_preparation/04a-precomputation_9A/precomputation/"
 #############
 masif_opts["site"]["ligand_coords_dir"] = "/data02/daniel/masif/site/data_preparation/00c-ligand_coords"
-masif_opts["site"]["assembly_dir"] = "/data02/daniel/masif/site/data_preparation/01-benchmark_pdbs"
+masif_opts["site"]["assembly_dir"] = "/data02/daniel/masif/site/data_preparation/00b-pdbs_assembly"
+masif_opts['site']["raw_pdb_dir"] = "/data02/daniel/masif/site/data_preparation/00-raw_pdbs"
 #############
 masif_opts["site"]["range_val_samples"] = 0.9  # 0.9 to 1.0
 masif_opts["site"]["model_dir"] = "nn_models/all_feat_3l/model_data/"
@@ -71,6 +72,7 @@ masif_opts["site"]["feat_mask"] = [1.0] * 5
 
 # Neural network ligand application specific parameters.
 masif_opts["ligand"] = {}
+masif_opts['ligand']["raw_pdb_dir"] = "/data02/daniel/masif/masif_ligand/data_preparation/00-raw_pdbs"
 masif_opts["ligand"]["assembly_dir"] = os.path.join(basedir, "data_preparation/00b-pdbs_assembly")
 masif_opts["ligand"]["ligand_coords_dir"] = os.path.join(basedir, "data_preparation/00c-ligand_coords")
 masif_opts["ligand"]["masif_precomputation_dir"] = os.path.join(basedir, "data_preparation/04a-precomputation_12A/precomputation")
@@ -91,7 +93,7 @@ masif_opts['ligand']['minPockets'] = 32
 masif_opts['ligand']['defaultCode'] = -1234567
 masif_opts['ligand']['savedPockets'] = 200
 masif_opts['ligand']['empty_pocket_ratio'] = 10
-masif_opts['ligand']['ligand_list'] = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
+masif_opts['ligand']['ligand_list'] = masif_opts['ligand_list']
 
 
 
