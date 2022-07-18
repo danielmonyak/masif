@@ -5,6 +5,8 @@ import numpy as np
 from IPython.core.debugger import set_trace
 from sklearn.metrics import accuracy_score, roc_auc_score
 
+
+from scipy import spatial
 import tensorflow as tf
 
 # Apply mask to input_feat
@@ -117,7 +119,7 @@ def train_masif_site(
                 tree = spatial.KDTree(xyz_coords)
                 all_ligand_coords = np.load(
                     os.path.join(
-                        params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
+                        params['ligand_coords_dir'], "{}_ligand_coords.npy".format(ppi_pair_id.split("_")[0])
                     )
                 )
                 pocket_points = []
@@ -246,7 +248,7 @@ def train_masif_site(
                 tree = spatial.KDTree(xyz_coords)
                 all_ligand_coords = np.load(
                     os.path.join(
-                        params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
+                        params['ligand_coords_dir'], "{}_ligand_coords.npy".format(ppi_pair_id.split("_")[0])
                     )
                 )
                 pocket_points = []
