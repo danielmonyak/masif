@@ -8,13 +8,15 @@ from default_config.masif_opts import masif_opts
 if len(sys.argv) > 2:
     masif_app = sys.argv[2]
 else:
-    masif_app = 'ligand'
+    masif_app = 'masif_ligand'
 
 params = masif_opts[masif_app]
 
-
-in_fields = sys.argv[1].split("_")
-pdb_id = in_fields[0]
+if masif_app == 'site':
+    pdb_id = sys.arv[1].rstrip('_')
+elif masif_app == 'masif_ligand':
+    in_fields = sys.argv[1].split("_")
+    pdb_id = in_fields[0]
 
 # Edited by Daniel Monyak
 # Added try-except blocks in the "makedir" if statements so that there aren't multi-processing bugs
