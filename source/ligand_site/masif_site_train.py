@@ -37,7 +37,7 @@ if "pids" not in params:
     params["pids"] = ["p1", "p2"]
 
 # Build the neural network model
-from masif_modules.MaSIF_site import MaSIF_site
+from MaSIF_site import MaSIF_site
 
 if "n_theta" in params:
     learning_obj = MaSIF_site(
@@ -61,7 +61,7 @@ else:
     )
 
 # train
-from masif_modules.train_masif_site import train_masif_site
+from train_masif_site import train_masif_site
 
 print(params["feat_mask"])
 if not os.path.exists(params["model_dir"]):
