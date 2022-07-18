@@ -223,19 +223,7 @@ class ConvLayer(layers.Layer):
     '''
     
     def call(self, x):
-        '''input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.map_func, elems = x,
-                              fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])'''
-
-        '''input_feat = tf.cast(tf.gather(x, tf.range(5), axis=-1), dtype=tf.float32)
-        rho_coords = tf.cast(tf.gather(x, 5, axis=-1), dtype=tf.float32)
-        theta_coords = tf.cast(tf.gather(x, 6, axis=-1), dtype=tf.float32)
-        mask = tf.cast(tf.expand_dims(tf.gather(x, 7, axis=-1), axis=-1), dtype=tf.float32)
-        ####
-        indices_tensor = tf.cast(tf.gather(x, 8, axis=-1), dtype=tf.int32)
-        ####'''
-        
         print(f'Conv layer: 0')
-        
         var_dict = self.variable_dicts[0]
         
         n_samples = tf.shape(x[1])[0]
@@ -401,7 +389,7 @@ class ConvLayer(layers.Layer):
             # check the axis on this
             if mean_gauss_activation:  # computes mean weights for the different gaussians
                 gauss_activations /= (
-                    tf.reduce_sum(input_tensor=gauss_activations, axis=2, keepdims=True) + eps
+                    tf.reduce_sum(input_tensor=gauss_activations, axis=1, keepdims=True) + eps
                 )  # batch_size, n_vertices, n_gauss
 
             gauss_activations = tf.expand_dims(
