@@ -141,9 +141,8 @@ while i < num_epochs:
         y = np.expand_dims(y, axis=0)
         
         X = (data_tsrs, indices)
-
-        #### MUST SPECIFY BATCH SIZE!!!! tf.gather indices are not verified on GPU
-        model.fit(X, y, verbose = 2, class_weight = {0 : 1.0, 1 : 25.6}, batch_size=n_samples)
+        
+        model.fit(X, y, verbose = 2, class_weight = {0 : 1.0, 1 : 25.6})
 
         print('\n\nFinished training on one protein\n\n')
         finished_samples += n_samples
