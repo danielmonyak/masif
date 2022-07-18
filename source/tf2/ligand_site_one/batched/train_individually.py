@@ -51,14 +51,15 @@ pdb_ckp_thresh = 10             #############
 #############################################
 #############################################
 
-cv_batch_sz = 100
+cv_batch_sz = 1
 
 #with tf.device(dev):
 #with strategy.scope():
 model = MaSIF_ligand_site(
     params["max_distance"],
     feat_mask=params["feat_mask"],
-    n_conv_layers = params['n_conv_layers'],
+    #n_conv_layers = params['n_conv_layers'],
+    n_conv_layers = 2,
     conv_batch_size = cv_batch_sz
 )
 
