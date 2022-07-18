@@ -39,6 +39,7 @@ class MaSIF_ligand_site(Model):
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
         
+        self.n_conv_layers = n_conv_layers
         
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
@@ -74,7 +75,7 @@ class MaSIF_ligand_site(Model):
     
     def call(self, x, training=False):
         #tf.config.set_soft_device_placement(True)
-        ret = tf.map_fn(fn=self.myConvLayer, elems = x, fn_output_signature = tf.TensorSpec(shape=[None, self.n_thetas * self.n_rhos * self.n_feat], dtype=tf.float32))
+        ret = tf.map_fn(fn=self.myConvLayer, elems = x, fn_output_signature = tf.TensorSpec(shape=[None, self.reshape_shapes[self.n_conv_layers-1][1]], dtype=tf.float32))
         ret = self.myDense(ret)
         ret = self.outLayer(ret)
         return ret
