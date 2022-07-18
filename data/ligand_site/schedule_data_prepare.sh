@@ -4,12 +4,11 @@ if [ ! -d $out ]; then mkdir $out; fi
 if [ ! -d $err ]; then mkdir $err; fi
 
 batchSize=10
-sleep_time=2
+sleep_time=10
 
 i=0
 unset running
 while read p; do
-	echo $p
 	if [ $(( i % $batchSize )) -eq 0 ]; then
 		for pid in ${running[@]}; do
 			while ps -o pid ax | grep -q $pid; do
@@ -19,15 +18,13 @@ while read p; do
 		running=()
 	fi
 	FIELD1=$(echo $p| cut -d" " -f1)
-	PDBID=$(echo $FIELD1| cut -d"_" -f1)
-	CHAIN1=$(echo $FIELD1| cut -d"_" -f2)
-	CHAIN2=$(echo $FIELD1| cut -d"_" -f3)
-	#./data_prepare_one.sh $PDBID\_$CHAIN1\_$CHAIN2 > $out/$p.out 2>$err/$p.err &
-	./make_ligand_coords.sh $PDBID\_$CHAIN1\_$CHAIN2 > $out/$p.out 2>$err/$p.err &
+       	PDBID=$(echo $FIELD1| cut -d"_" -f1)
+      	CHAIN1=$(echo $FIELD1| cut -d"_" -f2)
+       	CHAIN2=$(echo $FIELD1| cut -d"_" -f3)
+ 	./re_precompute.sh $PDBID\_$CHAIN1\_$CHAIN2 > $out/$p.out 2>$err/$p.err &
 	disown -h $!
 	running+=($!)
 	i=$((i+1))
-done < lists/masif_site_only.txt
-#done < lists/full_list.txt
+done < lists/sequence_split_list_UNIQUE.txt
 
 echo Finished!
