@@ -3,15 +3,24 @@ import sys
 from SBI.structure import PDB
 from default_config.masif_opts import masif_opts
 
-ligands = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
-
+#ligands = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
+ligands = masif_opts['ligand_list']
 
 # Edited by Daniel Monyak
 # Added try-except blocks in the "makedir" if statements so that there aren't multi-processing bugs
 
-if not os.path.exists(masif_opts["ligand"]["assembly_dir"]):
+if len(sys.argv) > 2:
+    masif_app = sys.argv[2]
+else:
+    masif_app = 'ligand'
+
+params = masif_opts[masif_app]
+
+
+
+if not os.path.exists(params["assembly_dir"]):
     try:
-        os.mkdir(masif_opts["ligand"]["assembly_dir"])
+        os.mkdir(params["assembly_dir"])
     except:
         pass
 
