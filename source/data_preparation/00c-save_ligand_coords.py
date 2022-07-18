@@ -12,11 +12,8 @@ else:
 
 params = masif_opts[masif_app]
 
-if masif_app == 'site':
-    pdb_id = sys.arv[1].rstrip('_')
-elif masif_app == 'ligand':
-    in_fields = sys.argv[1].split("_")
-    pdb_id = in_fields[0]
+in_fields = sys.argv[1].split("_")
+pdb_id = in_fields[0]
 
 # Edited by Daniel Monyak
 # Added try-except blocks in the "makedir" if statements so that there aren't multi-processing bugs
