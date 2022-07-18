@@ -31,6 +31,8 @@ elif masif_app == 'masif_site':
     params['ply_chain_dir'] = masif_opts['ply_chain_dir']
 elif masif_app == 'masif_ligand':
     params = masif_opts['ligand']
+elif masif_app == 'ligand_site':
+    params = masif_opts['ligand_site']
 
 ppi_pair_list = [sys.argv[2]]
 
