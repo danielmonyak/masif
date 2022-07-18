@@ -3,8 +3,8 @@ err=error_files
 if [ ! -d $out ]; then mkdir $out; fi
 if [ ! -d $err ]; then mkdir $err; fi
 
-batchSize=8
-sleep_time=60
+batchSize=10
+sleep_time=1
 
 i=0
 unset running
@@ -19,15 +19,15 @@ while read p; do
 		running=()
 	fi
 	FIELD1=$(echo $p| cut -d" " -f1)
-        PDBID=$(echo $FIELD1| cut -d"_" -f1)
-        CHAIN1=$(echo $FIELD1| cut -d"_" -f2)
-        CHAIN2=$(echo $FIELD1| cut -d"_" -f3)
-        ./data_prepare_one.sh $PDBID\_$CHAIN1\_$CHAIN2 > $out/$p.out 2>$err/$p.err &
+	PDBID=$(echo $FIELD1| cut -d"_" -f1)
+	CHAIN1=$(echo $FIELD1| cut -d"_" -f2)
+	CHAIN2=$(echo $FIELD1| cut -d"_" -f3)
+	#./data_prepare_one.sh $PDBID\_$CHAIN1\_$CHAIN2 > $out/$p.out 2>$err/$p.err &
+	./make_ligand_coords.sh $PDBID\_$CHAIN1\_$CHAIN2 > $out/$p.out 2>$err/$p.err &
 	disown -h $!
 	running+=($!)
 	i=$((i+1))
-done < lists/todo.txt
-#done < lists/masif_site_only.txt
+done < lists/masif_site_only.txt
 #done < lists/full_list.txt
 
 echo Finished!
