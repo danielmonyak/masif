@@ -5,7 +5,12 @@ import sys
 from SBI.structure import PDB
 from default_config.masif_opts import masif_opts
 
-params = masif_opts['site']
+if len(sys.argv) > 2:
+    masif_app = sys.argv[2]
+else:
+    masif_app = 'ligand'
+
+params = masif_opts[masif_app]
 
 
 in_fields = sys.argv[1].split("_")
