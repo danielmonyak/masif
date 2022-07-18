@@ -14,7 +14,7 @@ for phys_g in phys_gpus:
 
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
-from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
+from MaSIF_ligand_site_one import MaSIF_ligand_site
 
 dev = '/GPU:1'
 cpu = '/CPU:0'
