@@ -27,14 +27,14 @@ if not os.path.exists(params["assembly_dir"]):
 def assemble(pdb_id):
     # Reads and builds the biological assembly of a structure
     struct = PDB(
-        os.path.join(masif_opts["raw_pdb_dir"], "{}.pdb".format(pdb_id)), header=True
+        os.path.join(params["raw_pdb_dir"], "{}.pdb".format(pdb_id)), header=True
     )
     try:
         struct_assembly = struct.apply_biomolecule_matrices()[0]
     except:
         return 0
     struct_assembly.write(
-        os.path.join(masif_opts["ligand"]["assembly_dir"], "{}.pdb".format(pdb_id))
+        os.path.join(params["assembly_dir"], "{}.pdb".format(pdb_id))
     )
     return 1
 
