@@ -98,3 +98,4 @@ masif_opts['ligand_site'] = masif_opts['ligand'].copy()
 masif_opts["ligand_site"]["max_shape_size"] = 100
 masif_opts["ligand_site"]["n_conv_layers"] = 3
 masif_opts["ligand_site"]["max_distance"] = 9.0  # Radius for the neural network.
+masif_opts["ligand"]["masif_precomputation_dir"] = os.path.join(basedir, "data_preparation/04a-precomputation_9A/precomputation")
