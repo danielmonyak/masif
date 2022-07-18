@@ -8,13 +8,13 @@ from default_config.masif_opts import masif_opts
 if len(sys.argv) > 2:
     masif_app = sys.argv[2]
 else:
-    masif_app = 'masif_ligand'
+    masif_app = 'ligand'
 
 params = masif_opts[masif_app]
 
 if masif_app == 'site':
     pdb_id = sys.arv[1].rstrip('_')
-elif masif_app == 'masif_ligand':
+elif masif_app == 'ligand':
     in_fields = sys.argv[1].split("_")
     pdb_id = in_fields[0]
 
