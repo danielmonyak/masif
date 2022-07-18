@@ -75,7 +75,12 @@ class MaSIF_ligand_site(Model):
     
     def call(self, x, training=False):
         #tf.config.set_soft_device_placement(True)
-        ret = tf.map_fn(fn=self.myConvLayer, elems = x, fn_output_signature = tf.TensorSpec(shape=[None, self.reshape_shapes[self.n_conv_layers-1][1]], dtype=tf.float32))
+        if self.n_conv_layers == 1:
+            output_sz = self.n_thetas * self.n_rhos * self.n_feat
+        elif self.n_conv_layers == 2 or self.n_conv_layers == 3:
+            output_sz = self.n_feat
+            
+        ret = tf.map_fn(fn=self.myConvLayer, elems = x, fn_output_signature = tf.TensorSpec(shape=[None, output_sz], dtype=tf.float32))
         ret = self.myDense(ret)
         ret = self.outLayer(ret)
         return ret
