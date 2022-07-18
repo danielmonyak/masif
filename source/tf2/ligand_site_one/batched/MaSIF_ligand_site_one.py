@@ -14,7 +14,6 @@ class MaSIF_ligand_site(Model):
     def __init__(
         self,
         max_rho,
-        n_ligands,
         n_thetas=16,
         n_rhos=5,
         learning_rate=1e-4,
@@ -31,7 +30,6 @@ class MaSIF_ligand_site(Model):
         self.max_rho = max_rho
         self.n_thetas = n_thetas
         self.n_rhos = n_rhos
-        self.n_ligands = n_ligands
         self.sigma_rho_init = (
             max_rho / 8
         )  # in MoNet was 0.005 with max radius=0.04 (i.e. 8 times smaller)
@@ -44,7 +42,7 @@ class MaSIF_ligand_site(Model):
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
  
-        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers, conv_batch_size)
+        self.myConvLayer = ConvLayer(max_rho, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers, conv_batch_size)
         self.myDense = layers.Dense(self.n_thetas, activation="relu")
         self.outLayer = layers.Dense(1)
         
@@ -88,7 +86,6 @@ class MaSIF_ligand_site(Model):
 class ConvLayer(layers.Layer):
     def __init__(self,
         max_rho,
-        n_ligands,
         n_thetas,
         n_rhos,
         n_rotations,
@@ -102,7 +99,6 @@ class ConvLayer(layers.Layer):
         self.max_rho = max_rho
         self.n_thetas = n_thetas
         self.n_rhos = n_rhos
-        self.n_ligands = n_ligands
         self.sigma_rho_init = (
             max_rho / 8
         )  # in MoNet was 0.005 with max radius=0.04 (i.e. 8 times smaller)
