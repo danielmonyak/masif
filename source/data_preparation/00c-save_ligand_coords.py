@@ -5,26 +5,29 @@ import sys
 from SBI.structure import PDB
 from default_config.masif_opts import masif_opts
 
+params = masif_opts['site']
+
+
 in_fields = sys.argv[1].split("_")
 pdb_id = in_fields[0]
 
 # Edited by Daniel Monyak
 # Added try-except blocks in the "makedir" if statements so that there aren't multi-processing bugs
 
-if not os.path.exists(masif_opts["ligand"]["ligand_coords_dir"]):
+if not os.path.exists(params["ligand_coords_dir"]):
     try:
-        os.mkdir(masif_opts["ligand"]["ligand_coords_dir"])
+        os.mkdir(params["ligand_coords_dir"])
     except:
         pass
 
 # Ligands of interest
-ligands = masif_opts['ligand']['ligand_list']
+ligands = masif_opts['ligand_list']
 
 structure_ligands_type = []
 structure_ligands_coords = []
 try:
     structure = PDB(
-        os.path.join(masif_opts["ligand"]["assembly_dir"], "{}.pdb".format(pdb_id))
+        os.path.join(params["assembly_dir"], "{}.pdb".format(pdb_id))
     )
 except:
     print("Problem with opening structure", pdb)
