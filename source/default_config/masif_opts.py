@@ -20,6 +20,9 @@ masif_opts["compute_iface"] = True
 masif_opts["mesh_res"] = 1.0
 masif_opts["feature_interpolation"] = True
 
+####
+masif_opts['ligand_list'] = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
+####
 
 # Coords params
 masif_opts["radius"] = 12.0
@@ -55,10 +58,10 @@ masif_opts["site"]["testing_list"] = "lists/testing.txt"
 masif_opts["site"]["max_shape_size"] = 100
 masif_opts["site"]["n_conv_layers"] = 3
 masif_opts["site"]["max_distance"] = 9.0  # Radius for the neural network.
-#masif_opts["site"]["masif_precomputation_dir"] = "/data02/daniel/masif/site/data_preparation/04a-precomputation_9A/precomputation/"
-
-masif_opts["site"]["masif_precomputation_dir"] = "/data02/daniel/masif/masif_ligand/data_preparation/04a-precomputation_9A/precomputation/"
-
+masif_opts["site"]["masif_precomputation_dir"] = "/data02/daniel/masif/site/data_preparation/04a-precomputation_9A/precomputation/"
+#############
+masif_opts["site"]["ligand_coords_dir"] = "/data02/daniel/masif/site/data_preparation/00c-ligand_coords"
+#############
 masif_opts["site"]["range_val_samples"] = 0.9  # 0.9 to 1.0
 masif_opts["site"]["model_dir"] = "nn_models/all_feat_3l/model_data/"
 masif_opts["site"]["out_pred_dir"] = "output/all_feat_3l/pred_data/"
