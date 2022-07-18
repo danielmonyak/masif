@@ -37,7 +37,7 @@ if "pids" not in params:
     params["pids"] = ["p1", "p2"]
 
 # Build the neural network model
-from MaSIF_site import MaSIF_site
+from masif_modules.MaSIF_site import MaSIF_site
 
 if "n_theta" in params:
     learning_obj = MaSIF_site(
