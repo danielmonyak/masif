@@ -67,13 +67,17 @@ def train_masif_site(
     logfile = open(out_dir + "log.txt", "w")
     for key in params:
         logfile.write("{}: {}\n".format(key, params[key]))
-
+    
+    '''
     training_list = open(params["training_list"]).readlines()
     training_list = [x.rstrip() for x in training_list]
-
     testing_list = open(params["testing_list"]).readlines()
-    testing_list = [x.rstrip() for x in testing_list]
-
+    testing_list = [x.rstrip() for x in testing_list]'''
+    
+    pdb_list_dir = '/home/daniel.monyak/software/masif/data/masif_ligand'
+    training_list = np.loadtxt(os.path.join(pdb_list_dir, 'training.txt'))
+    training_list = np.loadtxt(os.path.join(pdb_list_dir, 'testing.txt'))
+    
     data_dirs = os.listdir(params["masif_precomputation_dir"])
     np.random.shuffle(data_dirs)
     data_dirs = data_dirs
