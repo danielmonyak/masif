@@ -14,7 +14,7 @@ for phys_g in phys_gpus:
 
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
-from MaSIF_ligand_site_one import MaSIF_ligand_site
+from tf2.ligand_site_one.batched.MaSIF_ligand_site_one import MaSIF_ligand_site
 
 dev = '/GPU:1'
 cpu = '/CPU:0'
@@ -36,7 +36,7 @@ starting_epoch = 0
 #############################################
 
 #params = masif_opts["ligand"]
-params = masif_opts["site"]
+params = masif_opts["ligand_site"]
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
@@ -85,15 +85,7 @@ else:
     best_acc = 0
 '''
 
-training_list = np.char.rstrip(np.loadtxt(params["training_list"]))
-testing_list = np.char.rstrip(np.loadtxt(params["testing_list"]))
-
-data_dirs = os.listdir(params["masif_precomputation_dir"])
-np.random.shuffle(data_dirs)
-data_dirs = data_dirs
-n_val = len(data_dirs) // 10
-val_dirs = set(data_dirs[(len(data_dirs) - n_val) :])
-
+training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/train_pdbs_sequence.npy')
 
 #######################################
 #######################################
@@ -107,15 +99,14 @@ while i < num_epochs:
     #############################################################
     ###################     TRAINING DATA     ###################
     #############################################################
-    for pdb_dir in data_dirs:
+    for pdb_id in training_list:
         print(f'Epoch {i}, train record {train_j}')
         
-        mydir = os.path.join(params["masif_precomputation_dir"], pdb_idr)
+        mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
         
         rho_wrt_center = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
-
         n_samples = rho_wrt_center.shape[0]
-        # Memory limitation?
+
         if n_samples > 8000:
             train_j += 1
             continue
@@ -124,7 +115,7 @@ while i < num_epochs:
         input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
         mask = np.load(os.path.join(mydir, "p1_mask.npy"))
         mask = np.expand_dims(mask, 2)
-        indices = np.load(os.path.join(mydir, "p1_list_indices.npy", encoding="latin1", allow_pickle = True))
+        indices = np.load(os.path.join(mydir, "p1_list_indices.npy"), encoding="latin1", allow_pickle = True)
         # indices is (n_verts x <30), it should be
         indices = pad_indices(indices, mask.shape[1]).astype(np.int32)
 
@@ -135,14 +126,14 @@ while i < num_epochs:
 
         ###############################################################
         ###############################################################
-        X_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_X.npy"))
-        Y_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_Y.npy"))
-        Z_coords = np.load(os.path.join(precom_dir, pdb + "_", "pid" + "_Z.npy"))
-        xyz_coords = np.vstack([X, Y, Z]).T
+        X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
+        Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
+        Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
+        xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
         tree = spatial.KDTree(xyz_coords)
         all_ligand_coords = np.load(
             os.path.join(
-                ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
+                params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
             )
         )
         pocket_points = []
@@ -155,7 +146,7 @@ while i < num_epochs:
         y = np.zeros([1, n_samples], dtype=np.int32)
         y[0, pocket_points] = 1
 
-        if (np.mean(y) > 0.75 or np.sum(y) < 30):
+        if (np.mean(y) > 0.75) or (np.sum(y) < 30):
             train_j += 1
             continue
 
