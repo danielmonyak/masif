@@ -73,9 +73,9 @@ masif_opts["site"]["feat_mask"] = [1.0] * 5
 # Neural network ligand application specific parameters.
 masif_opts["ligand"] = {}
 masif_opts['ligand']["raw_pdb_dir"] = "/data02/daniel/masif/masif_ligand/data_preparation/00-raw_pdbs"
-masif_opts["ligand"]["assembly_dir"] = "/data02/daniel/masif/masif_ligand/data_preparation/00b-pdbs_assembly")
-masif_opts["ligand"]["ligand_coords_dir"] = "/data02/daniel/masif/masif_ligand/data_preparation/00c-ligand_coords")
-masif_opts["ligand"]["masif_precomputation_dir"] = "/data02/daniel/masif/masif_ligand/data_preparation/04a-precomputation_12A/precomputation")
+masif_opts["ligand"]["assembly_dir"] = "/data02/daniel/masif/masif_ligand/data_preparation/00b-pdbs_assembly"
+masif_opts["ligand"]["ligand_coords_dir"] = "/data02/daniel/masif/masif_ligand/data_preparation/00c-ligand_coords"
+masif_opts["ligand"]["masif_precomputation_dir"] = "/data02/daniel/masif/masif_ligand/data_preparation/04a-precomputation_12A/precomputation"
 masif_opts["ligand"]["max_shape_size"] = 200
 masif_opts["ligand"]["feat_mask"] = [1.0] * 5
 masif_opts["ligand"]["train_fract"] = 0.9 * 0.8
