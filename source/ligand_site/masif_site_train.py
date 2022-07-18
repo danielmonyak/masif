@@ -13,7 +13,8 @@ This file is part of MaSIF.
 Released under an Apache License 2.0
 """
 
-params = masif_opts["site"]
+#params = masif_opts["site"]
+params = masif_opts["ligand_site"]
 
 '''
 if len(sys.argv) > 0:
