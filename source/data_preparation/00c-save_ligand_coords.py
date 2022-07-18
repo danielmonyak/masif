@@ -40,13 +40,13 @@ for chain in structure.chains:
 
 np.save(
     os.path.join(
-        masif_opts["ligand"]["ligand_coords_dir"], "{}_ligand_types.npy".format(pdb_id)
+        params["ligand_coords_dir"], "{}_ligand_types.npy".format(pdb_id)
     ),
     structure_ligands_type,
 )
 np.save(
     os.path.join(
-        masif_opts["ligand"]["ligand_coords_dir"], "{}_ligand_coords.npy".format(pdb_id)
+        params["ligand_coords_dir"], "{}_ligand_coords.npy".format(pdb_id)
     ),
     structure_ligands_coords,
 )
