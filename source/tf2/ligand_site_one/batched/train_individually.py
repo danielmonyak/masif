@@ -142,7 +142,7 @@ while i < num_epochs:
         
         X = (data_tsrs, indices)
         
-        model.fit(X, y, verbose = 2, class_weight = {0 : 1.0, 1 : 25.6})
+        model.fit(X, y, verbose = 2)
 
         print('\n\nFinished training on one protein\n\n')
         finished_samples += n_samples
