@@ -20,7 +20,7 @@ params = masif_opts["ligand_site"]
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
-'''possible_test_pdbs = ['2VRB_AB_', '1FCD_AC_', '1FNN_A_', '1RI4_A_', '4PGH_AB_']
+possible_test_pdbs = ['2VRB_AB_', '1FCD_AC_', '1FNN_A_', '1RI4_A_', '4PGH_AB_']
 possible_train_pdbs = ['3O7W_A_', '4YTP_ACBD_', '4YMP_A_', '4IVM_B_', '3FMO_AB_']
 pos_list = {'test' : possible_test_pdbs, 'train' : possible_train_pdbs}
 
@@ -32,10 +32,10 @@ else:
   possible_pdbs = possible_test_pdbs
 
 pdb = possible_pdbs[pdb_idx]
-'''
+
 #pdb = sys.argv[1]
 #pdb = '3WV7_ACB_'
-pdb = '3O7W_A_'
+#pdb = '4YMP_A_'
 
 print('pdb:', pdb)
 
@@ -71,16 +71,15 @@ for lig_i in range(n_pockets_true):
     
     pp_true_list.append(pocket_points_true)
 
+pocket_points_true_all = np.concatenate(pp_true_list)
+npoints_true = len(pocket_points_true_all)
 
 ligand_true = all_ligand_types[0]
 ligandIdx_true = ligand_list.index(ligand_true)
 
-ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel'
-ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel_endTraining'
-
 pred = Predictor(
     ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel',
-    ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel_endTraining'
+    ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/ckp'
 )
 pred.loadData(pdb_dir)
 
@@ -88,41 +87,41 @@ data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [pred.input_feat, pred.
 indices = np.expand_dims(pred.indices, axis=0)
 X = (data_tsrs, indices)
 logits = pred.ligand_site_model(X)
-ligand_site_probs = tf.sigmoid(logits).numpy()
+ligand_site_probs = np.squeeze(tf.sigmoid(logits))
 
 ###########################################################################
 ###########################################################################
-    
+
 def summary(threshold):
-  pocket_points_pred = np.asarray(ligand_site_probs > threshold).nonzero()[0]
-  
-  npoints = len(pocket_points_pred)
-  if npoints < 2 * minPockets:
-    print(f'Only {npoints} pocket points were predicted...\n')
-    return npoints_true
-  
-  print(f'{npoints} pocket points were predicted...\n')
-  '''
-  overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
-  recall = len(overlap)/len(pocket_points_true)
-  precision = len(overlap)/npoints
-  print('Recall:', round(recall, 2))
-  print('Precision:', round(precision, 2))
-  '''
-  X_pred = pred.getLigandX(pocket_points_pred)
-  ligand_probs_mean = pred.predictLigandProbs(X_pred, 0.5)
-  
-  ligandIdx_pred = tf.argmax(ligand_probs_mean)
-  print('\nligandIdx_pred:', ligandIdx_pred.numpy(), '\n')
-  
-  max_prob = tf.reduce_max(ligand_probs_mean)
-  print('max_prob:', round(max_prob.numpy(), 2))
-  #
-  #score = max_prob/(1 + abs(.5 - threshold))
-  #print('score:', round(score.numpy(), 2), '\n')
-  #return max_prob, score
-  
-  return abs(npoints - npoints_true)
+    pocket_points_pred = np.asarray(ligand_site_probs > threshold).nonzero()[0]  
+    npoints = len(pocket_points_pred)
+        
+    if npoints < 2 * minPockets:
+        print(f'Only {npoints} pocket points were predicted...\n')
+        return npoints_true
+    
+    print(f'{npoints} pocket points were predicted...')
+    
+    overlap = np.intersect1d(pocket_points_true_all, pocket_points_pred)
+    recall = len(overlap)/len(pocket_points_true_all)
+    precision = len(overlap)/npoints
+    print('Recall:', round(recall, 2))
+    print('Precision:', round(precision, 2))
+    '''
+    X_pred = pred.getLigandX(pocket_points_pred)
+    ligand_probs_mean = pred.predictLigandProbs(X_pred, 0)
+    
+    ligandIdx_pred = tf.argmax(ligand_probs_mean)
+    print('\nligandIdx_pred:', ligandIdx_pred.numpy(), '\n')
+    
+    max_prob = tf.reduce_max(ligand_probs_mean)
+    print('max_prob:', round(max_prob.numpy(), 2))
+    #
+    #score = max_prob/(1 + abs(.5 - threshold))
+    #print('score:', round(score.numpy(), 2), '\n')
+    #return max_prob, score'''
+    
+    return abs(npoints - npoints_true)
 
 ###########################################################################
 ###########################################################################
@@ -133,7 +132,7 @@ print()
 ptsDif_best = npoints_true
 threshold_best = 0
 for threshold in np.linspace(.1, .9, 9):
-  print('threshold:', threshold)
+  print('\nthreshold:', threshold)
   
   ptsDif = summary(threshold)
   if ptsDif < ptsDif_best:
@@ -154,18 +153,15 @@ if not threshold_best:
 
 pocket_points_pred = np.asarray(ligand_site_probs > threshold_best).nonzero()[0]
 ########
-
-y_gen = np.zeros(pred.n_pockets)
+'''
+y_gen = np.zeros(pred.n_samples)
 y_true = y_gen.copy()
-y_true[pocket_points_true] = 1
+y_true[pocket_points_true_all] = 1
 y_pred = y_gen
 y_pred[pocket_points_pred] = 1
 
-
-#y_true_all = flatten(y_true)
-#y_pred_all = flatten(y_pred)
 bal_acc = balanced_accuracy_score(y_true, y_pred)
-mask = y_pred == y_true
+mask = (y_pred == 1) & (y_true == 1)
 overlap = np.sum(mask)
 recall = overlap/np.sum(y_true)
 precision = overlap/np.sum(y_pred)
@@ -177,7 +173,7 @@ print('Precision:', round(precision, 2))
 print('Specificity:', round(specificity, 2))
 
 print()
-'''
+
 ########
 
 X_true = pred.getLigandX(pocket_points_true)
