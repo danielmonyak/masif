@@ -54,3 +54,7 @@ source/tf2/masif_ligand/30
 source/tf2/masif_ligand/10
 source/tf2/masif_ligand/25
 source/tf2/masif_ligand/l2
+source/tf2/ligand_site_one/batched/auc.txt
+source/tf2/ligand_site_one/batched/kerasModel
+source/tf2/ligand_site_one/batched/loss.txt
+source/tf2/ligand_site_one/batched/make*
