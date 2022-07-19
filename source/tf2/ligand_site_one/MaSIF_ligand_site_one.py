@@ -112,12 +112,6 @@ class ConvLayer(layers.Layer):
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
         
-        ####
-        #self.bigShape = [200, self.n_feat]
-        #self.smallShape = [200, 1]
-        #self.bigIdx = tf.cast(functools.reduce(prodFunc, bigShape), dtype = tf.int32)
-        ####
-        
         self.conv_batch_size = conv_batch_size
         
         # Variable dict lists
