@@ -1,5 +1,5 @@
 import numpy as np
-from tensorflow.keras import layers, Sequential, initializers, Model
+from tensorflow.keras import layers, Sequential, initializers, Model, regularizers
 import tensorflow as tf
 import functools
 from operator import add
@@ -21,10 +21,15 @@ class MaSIF_ligand_site(Model):
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
         n_conv_layers = 1,
-        conv_batch_size = 100
+        conv_batch_size = 100,
+        reg_val = 1e-4,
+        reg_type = 'l2'
     ):
         ## Call super - model initializer
         super(MaSIF_ligand_site, self).__init__()
+        
+        regKwargs = {reg_type : reg_val}
+        reg = regularizers.L1L2(**regKwargs)
         
         # order of the spectral filters
         self.max_rho = max_rho
@@ -42,9 +47,9 @@ class MaSIF_ligand_site(Model):
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
  
-        self.myConvLayer = ConvLayer(max_rho, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers, conv_batch_size)
-        self.myDense = layers.Dense(self.n_thetas, activation="relu")
-        self.outLayer = layers.Dense(1)
+        self.myConvLayer = ConvLayer(max_rho, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers, conv_batch_size, kernel_regularizer=reg)
+        self.myDense = layers.Dense(self.n_thetas, activation="relu", kernel_regularizer=reg)
+        self.outLayer = layers.Dense(1, kernel_regularizer=reg)
         
         '''
         self.myLayers=[
@@ -91,7 +96,8 @@ class ConvLayer(layers.Layer):
         n_rotations,
         feat_mask,
         n_conv_layers,
-        conv_batch_size):
+        conv_batch_size,
+        kernel_regularizer=None):
         
         super(ConvLayer, self).__init__()
         
@@ -148,19 +154,19 @@ class ConvLayer(layers.Layer):
         for i in range(self.n_feat):
             mu_rho.append(
                 self.add_weight(name="mu_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial),
-                                initializer = ValueInit(mu_rho_initial), trainable = True)
+                                initializer = ValueInit(mu_rho_initial), trainable = True, regularizer=reg)
             )  # 1, n_gauss
             mu_theta.append(
                 self.add_weight(name="mu_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial),
-                                initializer = ValueInit(mu_theta_initial), trainable = True)
+                                initializer = ValueInit(mu_theta_initial), trainable = True, regularizer=reg)
             )  # 1, n_gauss
             sigma_rho.append(
                 self.add_weight(name="sigma_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial),
-                                initializer = initializers.Constant(self.sigma_rho_init), trainable = True)
+                                initializer = initializers.Constant(self.sigma_rho_init), trainable = True, regularizer=reg)
             )  # 1, n_gauss
             sigma_theta.append(
                 self.add_weight(name="sigma_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial),
-                                initializer = initializers.Constant(self.sigma_theta_init), trainable = True)
+                                initializer = initializers.Constant(self.sigma_theta_init), trainable = True, regularizer=reg)
             )  # 1, n_gauss
 
 
@@ -175,7 +181,7 @@ class ConvLayer(layers.Layer):
                 self.add_weight(
                     "W_conv_{}_{}".format(i, layer_num),
                     shape=self.conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"),
-                    trainable = True
+                    trainable = True, regularizer=reg
                 )
             )
             
@@ -190,10 +196,10 @@ class ConvLayer(layers.Layer):
         gu_init = tf.keras.initializers.GlorotUniform()
         '''FC1_W = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, 200), initializer = gu_init, trainable=True, dtype="float32")
         FC1_b = self.add_weight('FC1_b', shape=(200,), initializer = zero_init, trainable=True, dtype="float32")'''
-        var_dict['FC1_W'] = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32")
+        var_dict['FC1_W'] = self.add_weight('FC1_W', shape=(self.n_thetas * self.n_rhos * self.n_feat, self.n_thetas * self.n_rhos), initializer = gu_init, trainable=True, dtype="float32", regularizer=reg)
         var_dict['FC1_b'] = self.add_weight('FC1_b', shape=(self.n_thetas * self.n_rhos,), initializer = 'zeros', trainable=True, dtype="float32")
 
-        var_dict['FC2_W'] = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32")
+        var_dict['FC2_W'] = self.add_weight('FC2_W', shape=(self.n_thetas * self.n_rhos, self.n_feat), initializer = gu_init, trainable=True, dtype="float32", regularizer=reg)
         var_dict['FC2_b'] = self.add_weight('FC2_b', shape=(self.n_feat,), initializer = 'zeros', trainable=True, dtype="float32")
         
         self.variable_dicts.append(var_dict)
@@ -201,13 +207,13 @@ class ConvLayer(layers.Layer):
         i = 0
         for layer_num in range(1, n_conv_layers):
             var_dict = {}
-            var_dict['mu_rho'] = self.add_weight(name="mu_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial), initializer = ValueInit(mu_rho_initial), trainable = True)
-            var_dict['mu_theta'] = self.add_weight(name="mu_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial), initializer = ValueInit(mu_theta_initial), trainable = True)
-            var_dict['sigma_rho'] = self.add_weight(name="sigma_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial), initializer = initializers.Constant(self.sigma_rho_init), trainable = True)
-            var_dict['sigma_theta'] = self.add_weight(name="sigma_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial), initializer = initializers.Constant(self.sigma_theta_init), trainable = True)
+            var_dict['mu_rho'] = self.add_weight(name="mu_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial), initializer = ValueInit(mu_rho_initial), trainable = True, regularizer=reg)
+            var_dict['mu_theta'] = self.add_weight(name="mu_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial), initializer = ValueInit(mu_theta_initial), trainable = True, regularizer=reg)
+            var_dict['sigma_rho'] = self.add_weight(name="sigma_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial), initializer = initializers.Constant(self.sigma_rho_init), trainable = True, regularizer=reg)
+            var_dict['sigma_theta'] = self.add_weight(name="sigma_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial), initializer = initializers.Constant(self.sigma_theta_init), trainable = True, regularizer=reg)
             
             var_dict['b_conv'] = self.add_weight("b_conv_{}_{}".format(i, layer_num), shape=self.conv_shapes[layer_num][1], initializer='zeros', trainable = True)
-            var_dict['W_conv'] = self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=self.conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True)
+            var_dict['W_conv'] = self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=self.conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True, regularizer=reg)
             
             self.variable_dicts.append(var_dict)
     '''
