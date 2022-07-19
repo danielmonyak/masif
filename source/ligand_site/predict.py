@@ -1,4 +1,3 @@
-# Header variables and parameters.
 import time
 import os
 import numpy as np
@@ -8,12 +7,6 @@ import importlib
 from masif_modules.train_masif_site import run_masif_site, pad_indices
 from default_config.masif_opts import masif_opts
 
-"""
-masif_site_predict.py: Evaluate one or multiple proteins on MaSIF-site. 
-Pablo Gainza - LPDI STI EPFL 2019
-This file is part of MaSIF.
-Released under an Apache License 2.0
-"""
 
 # Apply mask to input_feat
 def mask_input_feat(input_feat, mask):
@@ -25,7 +18,8 @@ def mask_input_feat(input_feat, mask):
 params = masif_opts['ligand_site']
 
 
-pdb = sys.argv[1]
+#pdb = sys.argv[1]
+pdb = '3O7W_A_'
 
 # Shape precomputation dir.
 parent_in_dir = params["masif_precomputation_dir"]
@@ -45,6 +39,7 @@ learning_obj = MaSIF_site(
 )
 print("Restoring model from: " + params["model_dir"] + "model")
 learning_obj.saver.restore(learning_obj.session, params["model_dir"] + "model")
+
 
 if not os.path.exists(params["out_pred_dir"]):
     os.makedirs(params["out_pred_dir"])
@@ -68,5 +63,7 @@ feed_dict = {
     learning_obj.indices_tensor: indices,
 }
 
-logits = learning_obj.session.run([learning_obj.logits], feed_dict=feed_dict)
-
+score = learning_obj.session.run(learning_obj.full_score, feed_dict=feed_dict)
+pocket_points_pred = (full_score > 0.5).nonzero()[0]
+outpath = os.path.join(params["out_pred_dir"], f'{pdb}pocket_points_pred.npy')
+np.save(outpath, pocket_points_pred)
