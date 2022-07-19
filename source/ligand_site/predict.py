@@ -18,8 +18,8 @@ def mask_input_feat(input_feat, mask):
 params = masif_opts['ligand_site']
 
 
-#pdb = sys.argv[1]
-pdb = '3O7W_A_'
+pdb = sys.argv[1]
+#pdb = '3O7W_A_'
 
 # Shape precomputation dir.
 parent_in_dir = params["masif_precomputation_dir"]
