@@ -8,8 +8,6 @@ from scipy import spatial
 from sklearn.metrics import accuracy_score, balanced_accuracy_score
 import tensorflow as tf
 
-tf.config.set_soft_device_placement(True)
-
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
@@ -17,7 +15,8 @@ for phys_g in phys_gpus:
 from default_config.util import *
 from tf2.usage.predictor import Predictor
 
-params = masif_opts["ligand"]
+#params = masif_opts["ligand"]
+params = masif_opts["ligand_site"]
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
@@ -36,7 +35,7 @@ pdb = possible_pdbs[pdb_idx]
 '''
 #pdb = sys.argv[1]
 #pdb = '3WV7_ACB_'
-pdb = '4N09_A_'
+pdb = '3O7W_A_'
 
 print('pdb:', pdb)
 
@@ -77,14 +76,19 @@ ligand_true = all_ligand_types[0]
 ligandIdx_true = ligand_list.index(ligand_true)
 
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel'
-ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel'
+ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel_endTraining'
 
-with tf.device('/GPU:1'):
-    pred = Predictor(ligand_model_path = ligand_model_path, ligand_site_model_path = ligand_site_model_path)
-    pred.loadData(pdb_dir)
-    X = ((pred.input_feat, pred.rho_coords, pred.theta_coords, pred.mask), pred.indices)
-    outputs = pred.ligand_site_model(X)
-    ligand_site_probs = tf.sigmoid(outputs).numpy()
+pred = Predictor(
+    ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel',
+    ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/savedModel_endTraining'
+)
+pred.loadData(pdb_dir)
+
+data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [pred.input_feat, pred.rho_coords, pred.theta_coords, pred.mask])
+indices = np.expand_dims(pred.indices, axis=0)
+X = (data_tsrs, indices)
+logits = pred.ligand_site_model(X)
+ligand_site_probs = tf.sigmoid(logits).numpy()
 
 ###########################################################################
 ###########################################################################
