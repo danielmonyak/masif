@@ -148,7 +148,7 @@ for threshold in thresh_list:
 print('threshold_best:', threshold_best)
 print()
 if not threshold_best:
-    sys.exit('NO THRESHOLD WAS GOOD ENOUGH TO GIVE A PREDICTION WITH CONFIDENCE')
+    print('NO THRESHOLD WAS GOOD ENOUGH TO GIVE A PREDICTION WITH CONFIDENCE')
 
 ###########################################################################
 ###########################################################################
