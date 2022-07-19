@@ -28,7 +28,7 @@ strategy = tf.distribute.MirroredStrategy(gpu_strs)
 #tf.debugging.set_log_device_placement(True)
 
 #############################################
-continue_training = True
+continue_training = False
 #read_metrics = False
 
 starting_sample = 0
