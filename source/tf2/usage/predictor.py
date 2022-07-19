@@ -91,7 +91,7 @@ class Predictor:
   
   # Get input to MaSIF_ligand, using pocket_points
   def getLigandX(self, pocket_points):
-    getDataFromDict = lambda key : np.flatten(self.data_dict[key][pocket_points])
+    getDataFromDict = lambda key : self.data_dict[key][pocket_points].flatten()
     flat_list = list(map(getDataFromDict, data_order))
     return tf.RaggedTensor.from_tensor(
       tf.expand_dims(
