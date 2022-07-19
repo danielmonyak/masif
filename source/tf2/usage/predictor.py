@@ -53,63 +53,25 @@ class Predictor:
     self.mask = np.expand_dims(np.load(
       os.path.join(pdb_dir, "p1_mask.npy")
     ), axis=-1)
-    self.n_pockets = self.mask.shape[0]
+    self.n_samples = self.mask.shape[0]
     
-    self.indices = pad_indices(np.load(os.path.join(pdb_dir, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True), 200).astype(np.int32)
+    self.indices = pad_indices(np.load(os.path.join(pdb_dir, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True), mask.shape[1]).astype(np.int32)
     
     self.data_dict = {'input_feat' : self.input_feat, 'rho_coords' : self.rho_coords,
                    'theta_coords' : self.theta_coords, 'mask' : self.mask}
-    def getFlatDataFromDict(key, sample):
-      data = self.data_dict[key]
-      return np.take(data, sample, axis=0).flatten()
-    def getDataSampleTemp(sample):
-      temp_fn = lambda key : getFlatDataFromDict(key, sample)
-      flat_list = list(map(temp_fn, data_order))
-      return tf.expand_dims(tf.concat(flat_list, axis=0), axis=0)
-    self.getDataSample = lambda sample : getDataSampleTemp(sample)
   
-  # Run MaSIF_ligand_site on all points in pdb, return probablity value for each site
   def getLigandSiteProbs(self):
-    ligand_site_pred_list = []
-    fullSamples = self.n_pockets // minPockets
-
-    print('{} batches to run on ligand_site'.format(fullSamples))
-    before_time = process_time()
-
-    for i in range(fullSamples):
-      if i % 10 == 0:
-        done = 100.0 * i/fullSamples
-        print('{} of {} batches completed. {}% done...'.format(i, fullSamples, round(done)))
-      sample = range(minPockets * i, minPockets * (i+1))
-      temp_X = self.getDataSample(sample)
-      temp_pred = tf.sigmoid(tf.squeeze(self.ligand_site_model(temp_X, gen_sample)))
-      ligand_site_pred_list.append(temp_pred)
-
-    i = fullSamples
-    n_leftover = self.n_pockets % minPockets
-    valid = tf.range(minPockets * i, minPockets * i + n_leftover)
-    #garbage = tf.zeros([minPockets - n_leftover], dtype=tf.int32)
-    #sample = tf.expand_dims(tf.concat([valid, garbage], axis=0), axis=0)
-
-    garbage = tf.range(minPockets * (i-1) + n_leftover, minPockets * i)
-    sample = tf.expand_dims(tf.concat([garbage, valid], axis=0), axis=0)
-    
-    temp_X = self.getDataSample(sample)
-    temp_pred = tf.sigmoid(tf.squeeze(self.ligand_site_model(temp_X, gen_sample)))
-    ligand_site_pred_list.append(temp_pred[-n_leftover:])
-
-    after_time = process_time()
-    print('100% of batches completed in {} seconds.'.format(round(after_time - before_time)))
-
-    return tf.concat(ligand_site_pred_list, axis = 0)
-  # Wrapper function for 
+    data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [input_feat, rho_wrt_center, theta_wrt_center, mask])
+    indices = np.expand_dims(indices, axis=0)
+    X = (data_tsrs, indices)
+    return self.ligand_site_model.predict(X)
+  
+  # Wrapper function for getLigandSiteProbs
   def predictPocketPoints(self, threshold = None):
     ligand_site_probs = self.getLigandSiteProbs()
-    
     if threshold is None:
       threshold = self.threshold
-    pocket_points = tf.where(ligand_site_probs > threshold)
-    return tf.squeeze(pocket_points)
+    return (ligand_site_probs > threshold).nonzero()[0]
   
   # Get geometric coordinates of PDB
   def getXYZCoords(pdb_dir):
@@ -121,7 +83,7 @@ class Predictor:
   
   # Get input to MaSIF_ligand, using pocket_points
   def getLigandX(self, pocket_points):
-    getDataFromDict = lambda key : tf.reshape(tf.gather(self.data_dict[key], pocket_points, axis = 0), [-1])
+    getDataFromDict = lambda key : np.flatten(self.data_dict[key][pocket_points])
     flat_list = list(map(getDataFromDict, data_order))
     return tf.RaggedTensor.from_tensor(
       tf.expand_dims(
@@ -156,8 +118,6 @@ class Predictor:
   def predictRaw(self, pdb_dir):
     self.loadData(pdb_dir)
     
-    #ligand_site_X = self.getLigandSiteX()
-    #pocket_points = self.predictPocketPoints(ligand_site_X)
     pocket_points = self.predictPocketPoints()
     
     ligand_X = self.getLigandX(pocket_points)
