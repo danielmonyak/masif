@@ -38,8 +38,7 @@ pdb = '3O7W_A_'
 
 print('pdb:', pdb)
 
-pdb_dir pdb_dir)
-= os.path.join(params['masif_precomputation_dir'], pdb)
+pdb_dir = os.path.join(params['masif_precomputation_dir'], pdb)
 
 ####################
 all_ligand_types = np.load(
