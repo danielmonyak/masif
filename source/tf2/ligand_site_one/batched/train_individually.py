@@ -58,8 +58,10 @@ cv_batch_sz = 1
 model = MaSIF_ligand_site(
     params["max_distance"],
     feat_mask=params["feat_mask"],
-    #n_conv_layers = params['n_conv_layers'],
-    n_conv_layers = 2,
+    n_thetas=4,
+    n_rhos=3,
+    n_rotations=4,
+    n_conv_layers = params['n_conv_layers'],
     conv_batch_size = cv_batch_sz
 )
 
@@ -75,6 +77,7 @@ model.compile(optimizer = model.opt,
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
+
 '''
 if read_metrics:
     with open(ckpStatePath, 'rb') as handle:
@@ -83,8 +86,7 @@ if read_metrics:
     print(f'Resuming epoch {i} of training\nValidation accuracy: {best_acc}')
 else:
     i = 0
-    best_acc = 0
-'''
+    best_acc = 0'''
 
 training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/train_pdbs_sequence.npy')
 
@@ -105,16 +107,16 @@ while i < num_epochs:
         
         mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
         
-        rho_wrt_center = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
-        n_samples = rho_wrt_center.shape[0]
+        mask = np.load(os.path.join(mydir, "p1_mask.npy"))
+        n_samples = mask.shape[0]
 
         if n_samples > 8000:
             train_j += 1
             continue
 
-        theta_wrt_center = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
         input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
-        mask = np.load(os.path.join(mydir, "p1_mask.npy"))
+        theta_wrt_center = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
+        rho_wrt_center = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
         mask = np.expand_dims(mask, 2)
         indices = np.load(os.path.join(mydir, "p1_list_indices.npy"), encoding="latin1", allow_pickle = True)
         # indices is (n_verts x <30), it should be
