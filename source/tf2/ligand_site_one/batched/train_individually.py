@@ -111,7 +111,7 @@ while i < num_epochs:
         n_samples = mask.shape[0]
 
         if n_samples > 8000:
-            train_j += 1
+            print('Too many patches to train on...')
             continue
 
         input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
@@ -150,7 +150,7 @@ while i < num_epochs:
         y[0, pocket_points, 0] = 1
 
         if (np.mean(y) > 0.75) or (np.sum(y) < 30):
-            train_j += 1
+            print('Too many pocket points or not enough patches...')
             continue
 
         # TRAIN MODEL
@@ -158,7 +158,6 @@ while i < num_epochs:
         model.fit(X, y, verbose = 2)    ################
         ################################################
         
-        print('\n\nFinished training on one protein\n\n')
         train_j += 1
 
         if train_j % pdb_ckp_thresh == 0:
