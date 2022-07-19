@@ -210,14 +210,14 @@ class ConvLayer(layers.Layer):
             var_dict['W_conv'] = self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=self.conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True)
             
             self.variable_dicts.append(var_dict)
-    '''
-    #@tf.autograph.experimental.do_not_convert
-    def map_func(self, row, makeSample):
-        input_feat = tf.reshape(row[:self.bigIdx], self.bigShape)
-        rest = tf.reshape(row[self.bigIdx:], [3] + self.smallShape)
-        return [input_feat, rest[0], rest[1], rest[2]]
-    '''
     
+    @tf.function(
+    input_signature=((TensorSpec(shape=(None, None, 100, 5), dtype=tf.float32),
+                      TensorSpec(shape=(None, None, 100), dtype=tf.float32),
+                      TensorSpec(shape=(None, None, 100), dtype=tf.float32),
+                      TensorSpec(shape=(None, None, 100, 1), dtype=tf.float32)),
+                     TensorSpec(shape=(None, None, 100), dtype=tf.int32))
+    )
     def call(self, x):
         var_dict = self.variable_dicts[0]
         
