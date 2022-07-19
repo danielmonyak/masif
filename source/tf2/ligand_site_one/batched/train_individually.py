@@ -61,6 +61,7 @@ model = MaSIF_ligand_site(
     n_thetas=4,
     n_rhos=3,
     n_rotations=4,
+    learning_rate = 1e-3,
     n_conv_layers = params['n_conv_layers'],
     conv_batch_size = cv_batch_sz
 )
