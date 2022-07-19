@@ -5,7 +5,7 @@ from IPython.core.debugger import set_trace
 import importlib
 import numpy as np
 from scipy import spatial
-from sklearn.metrics import accuracy_score, balanced_accuracy_score
+from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score, RocCurveDisplay
 import tensorflow as tf
 
 phys_gpus = tf.config.list_physical_devices('GPU')
@@ -153,10 +153,11 @@ if not threshold_best:
 
 pocket_points_pred = np.asarray(ligand_site_probs > threshold_best).nonzero()[0]
 ########
-'''
+
 y_gen = np.zeros(pred.n_samples)
 y_true = y_gen.copy()
 y_true[pocket_points_true_all] = 1
+'''
 y_pred = y_gen
 y_pred[pocket_points_pred] = 1
 
@@ -187,3 +188,7 @@ print('\nX_pred_pred:', X_pred_pred.numpy())
 print('\nligandIdx_true:', ligandIdx_true)
 
 '''
+roc_auc_score(y_true, ligand_site_probs)
+#RocCurveDisplay.from_predictions(y_true, ligand_site_probs)
+
+#predPath = os.path.join(params["out_pred_dir"], f'{pdb}y_pred.npy')
