@@ -197,7 +197,7 @@ print('auc:', roc_auc_score(y_true, ligand_site_probs))
 print('\ntf1\n')
 
 tf1_score = np.load(os.path.join('../../ligand_site', params["out_pred_dir"], f'{pdb}y_pred.npy'))
-for threshold in np.linspace(.1, .9, 9):
+for threshold in thresh_list:
   print('\nthreshold:', threshold)
   ptsDif = summary(threshold, pocket_points_true_all, tf1_score)
 
