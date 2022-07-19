@@ -64,6 +64,8 @@ feed_dict = {
 }
 
 score = learning_obj.session.run(learning_obj.full_score, feed_dict=feed_dict)
-pocket_points_pred = (full_score > 0.5).nonzero()[0]
-outpath = os.path.join(params["out_pred_dir"], f'{pdb}pocket_points_pred.npy')
-np.save(outpath, pocket_points_pred)
+outpath = os.path.join(params["out_pred_dir"], f'{pdb}y_pred.npy')
+np.save(outpath, score)
+#pocket_points_pred = (full_score > 0.5).nonzero()[0]
+#outpath = os.path.join(params["out_pred_dir"], f'{pdb}pocket_points_pred.npy')
+#np.save(outpath, pocket_points_pred)
