@@ -12,19 +12,24 @@ with tf.device('/GPU:2'):
 
 class Predictor:
   def getLigandSiteModel(self, ligand_site_ckp_path):
-    ligand_site_model = MaSIF_ligand_site(
+    model = MaSIF_ligand_site(
       params["max_distance"],
-      params["n_classes"],
       feat_mask=params["feat_mask"],
-      keep_prob = 1.0,
-      n_conv_layers = 1
+      n_thetas=4,
+      n_rhos=3,
+      n_rotations=4,
+      learning_rate = 1e-3,
+      n_conv_layers = params['n_conv_layers'],
+      conv_batch_size = None
     )
-    ligand_site_model.compile(optimizer = ligand_site_model.opt,
-      loss = ligand_site_model.loss_fn,
-      metrics=['accuracy']
+    from_logits = model.loss_fn.get_config()['from_logits']
+    binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
+    model.compile(optimizer = model.opt,
+      loss = model.loss_fn,
+      metrics=[binAcc]
     )
-    ligand_site_model.load_weights(ligand_site_ckp_path)
-    return ligand_site_model
+    model.load_weights(ligand_site_ckp_path)
+    return model
     
   def __init__(self, ligand_model_path = None, ligand_site_ckp_path = None, ligand_site_model_path = None, n_predictions = 100, threshold = 0.5, ligand_threshold = 0):
     # Load MaSIF_ligand and MaSIF_ligand_site models
