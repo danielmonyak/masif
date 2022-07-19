@@ -219,7 +219,6 @@ class ConvLayer(layers.Layer):
     '''
     
     def call(self, x):
-        print(f'Conv layer: 0')
         var_dict = self.variable_dicts[0]
         
         n_samples = tf.shape(x[1])[0]
@@ -282,8 +281,6 @@ class ConvLayer(layers.Layer):
         
         start = 1
         for layer_num, var_dict in enumerate(self.variable_dicts[start:], start):
-            print(f'Conv layer: {layer_num}')
-            
             if layer_num == 0:
                 continue
 
