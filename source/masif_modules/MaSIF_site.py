@@ -380,7 +380,6 @@ class MaSIF_site:
                     self.global_desc = tf.gather(
                         self.global_desc, self.indices_tensor
                     )  # batch_size, max_verts, n_gauss
-                    print("global_desc shape: {}".format(self.global_desc.get_shape()))
                     W_conv_l3 = tf.get_variable(
                         "W_conv_l3",
                         shape=[
@@ -504,9 +503,9 @@ class MaSIF_site:
                     ).minimize(self.data_loss)
 
                 self.var_grad = tf.gradients(self.data_loss, tf.trainable_variables())
-                for k in range(len(self.var_grad)):
+                '''for k in range(len(self.var_grad)):
                     if self.var_grad[k] is None:
-                        print(tf.trainable_variables()[k])
+                        print(tf.trainable_variables()[k])'''
                 self.norm_grad = self.frobenius_norm(
                     tf.concat([tf.reshape(g, [-1]) for g in self.var_grad], 0)
                 )
@@ -520,5 +519,5 @@ class MaSIF_site:
                 # Run the Op to initialize the variables.
                 init = tf.global_variables_initializer()
                 self.session.run(init)
-                self.count_number_parameters()
+                #self.count_number_parameters()
 
