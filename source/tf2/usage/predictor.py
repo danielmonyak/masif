@@ -102,51 +102,6 @@ class Predictor:
     print('100% of batches completed in {} seconds.'.format(round(after_time - before_time)))
 
     return tf.concat(ligand_site_pred_list, axis = 0)
-  '''
-  def getLigandSiteProbs(self):
-    ligand_site_pred_list = []
-    fullSamples = self.n_pockets // minPockets
-    
-    ####
-    randIdx = np.arange(self.n_pockets)
-    np.random.shuffle(randIdx)
-    order = np.argsort(randIdx)
-    ####
-    
-    print('{} batches to run on ligand_site'.format(fullSamples))
-    before_time = process_time()
-
-    for i in range(fullSamples):
-      if i % 10 == 0:
-        done = 100.0 * i/fullSamples
-        print('{} of {} batches completed. {}% done...'.format(i, fullSamples, round(done)))
-      
-      ####
-      sample = randIdx[minPockets * i : minPockets * (i+1)]
-      ####
-      
-      temp_X = self.getDataSample(sample)
-      temp_pred = tf.sigmoid(tf.squeeze(self.ligand_site_model(temp_X, gen_sample)))
-      ligand_site_pred_list.append(temp_pred)
-
-    i = fullSamples
-    n_leftover = self.n_pockets % minPockets
-    valid = tf.range(minPockets * i, minPockets * i + n_leftover)
-    garbage = tf.zeros([minPockets - n_leftover], dtype=tf.int32)
-    sample = tf.expand_dims(tf.concat([valid, garbage], axis=0), axis=0)
-
-    temp_X = self.getDataSample(sample)
-    temp_pred = tf.sigmoid(tf.squeeze(self.ligand_site_model(temp_X, gen_sample)))
-    ligand_site_pred_list.append(temp_pred[:n_leftover])
-
-    after_time = process_time()
-    print('100% of batches completed in {} seconds.'.format(round(after_time - before_time)))
-
-    ligand_site_probs = tf.concat(ligand_site_pred_list, axis = 0)
-    ####
-    return tf.gather(ligand_site_probs, order)
-    ####
-  '''
   # Wrapper function for 
   def predictPocketPoints(self, threshold = None):
     ligand_site_probs = self.getLigandSiteProbs()
