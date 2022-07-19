@@ -32,7 +32,7 @@ continue_training = True
 #read_metrics = False
 
 starting_sample = 0
-starting_epoch = 5
+starting_epoch = 0
 #############################################
 
 #params = masif_opts["ligand"]
@@ -63,7 +63,9 @@ model = MaSIF_ligand_site(
     n_rotations=4,
     learning_rate = 1e-3,
     n_conv_layers = params['n_conv_layers'],
-    conv_batch_size = cv_batch_sz
+    conv_batch_size = cv_batch_sz,
+    reg_val = 1e-4,
+    reg_type = 'l2'
 )
 
 from_logits = model.loss_fn.get_config()['from_logits']
