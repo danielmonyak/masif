@@ -224,7 +224,7 @@ class ConvLayer(layers.Layer):
         
         n_samples = tf.shape(x[1])[0]
         if self.conv_batch_size is None:
-            leftover = None
+            leftover = 0
             input_feat, rho_coords, theta_coords, mask = [tf.cast(tsr, dtype=tf.float32) for tsr in x[0]]
             indices_tensor = tf.cast(x[1], dtype=tf.int32)
             sampIdx = tf.stack([0, n_samples], axis=0)
