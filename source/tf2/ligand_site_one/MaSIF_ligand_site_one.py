@@ -210,14 +210,14 @@ class ConvLayer(layers.Layer):
             var_dict['W_conv'] = self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=self.conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True)
             
             self.variable_dicts.append(var_dict)
-    
+    '''
     @tf.function(
     input_signature=((tf.TensorSpec(shape=(None, None, 100, 5), dtype=tf.float32),
                       tf.TensorSpec(shape=(None, None, 100), dtype=tf.float32),
                       tf.TensorSpec(shape=(None, None, 100), dtype=tf.float32),
                       tf.TensorSpec(shape=(None, None, 100, 1), dtype=tf.float32)),
                      tf.TensorSpec(shape=(None, None, 100), dtype=tf.int32))
-    )
+    )'''
     def call(self, x):
         var_dict = self.variable_dicts[0]
         
