@@ -47,7 +47,7 @@ class MaSIF_ligand_site(Model):
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
  
-        self.myConvLayer = ConvLayer(max_rho, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers, conv_batch_size, kernel_regularizer=reg)
+        self.myConvLayer = ConvLayer(max_rho, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers, conv_batch_size, reg)
         self.myDense = layers.Dense(self.n_thetas, activation="relu", kernel_regularizer=reg)
         self.outLayer = layers.Dense(1, kernel_regularizer=reg)
         
@@ -97,7 +97,7 @@ class ConvLayer(layers.Layer):
         feat_mask,
         n_conv_layers,
         conv_batch_size,
-        kernel_regularizer=None):
+        reg=None):
         
         super(ConvLayer, self).__init__()
         
