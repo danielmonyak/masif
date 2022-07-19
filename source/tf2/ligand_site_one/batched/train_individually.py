@@ -136,7 +136,7 @@ while i < num_epochs:
         xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
         tree = spatial.KDTree(xyz_coords)
         coordsPath = os.path.join(
-            params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0]))
+            params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
         )
         try:
             all_ligand_coords = np.load(coordsPath)
