@@ -14,7 +14,6 @@ class MaSIF_ligand_site(Model):
     def __init__(
         self,
         max_rho,
-        n_ligands,
         n_thetas=16,
         n_rhos=5,
         learning_rate=1e-4,
@@ -31,7 +30,6 @@ class MaSIF_ligand_site(Model):
         self.max_rho = max_rho
         self.n_thetas = n_thetas
         self.n_rhos = n_rhos
-        self.n_ligands = n_ligands
         self.sigma_rho_init = (
             max_rho / 8
         )  # in MoNet was 0.005 with max radius=0.04 (i.e. 8 times smaller)
@@ -39,11 +37,12 @@ class MaSIF_ligand_site(Model):
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
         
+        self.n_conv_layers = n_conv_layers
         
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
  
-        self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers, conv_batch_size)
+        self.myConvLayer = ConvLayer(max_rho, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers, conv_batch_size)
         self.myDense = layers.Dense(self.n_thetas, activation="relu")
         self.outLayer = layers.Dense(1)
         
@@ -72,10 +71,14 @@ class MaSIF_ligand_site(Model):
         
         return {m.name: m.result() for m in self.metrics}'''
     
-    
     def call(self, x, training=False):
-        tf.config.set_soft_device_placement(True)
-        ret = self.myConvLayer(x)
+        #tf.config.set_soft_device_placement(True)
+        if self.n_conv_layers == 1:
+            output_sz = self.n_thetas * self.n_rhos * self.n_feat
+        elif self.n_conv_layers == 2 or self.n_conv_layers == 3:
+            output_sz = self.n_feat
+            
+        ret = tf.map_fn(fn=self.myConvLayer, elems = x, fn_output_signature = tf.TensorSpec(shape=[None, output_sz], dtype=tf.float32))
         ret = self.myDense(ret)
         ret = self.outLayer(ret)
         return ret
@@ -83,7 +86,6 @@ class MaSIF_ligand_site(Model):
 class ConvLayer(layers.Layer):
     def __init__(self,
         max_rho,
-        n_ligands,
         n_thetas,
         n_rhos,
         n_rotations,
@@ -97,7 +99,6 @@ class ConvLayer(layers.Layer):
         self.max_rho = max_rho
         self.n_thetas = n_thetas
         self.n_rhos = n_rhos
-        self.n_ligands = n_ligands
         self.sigma_rho_init = (
             max_rho / 8
         )  # in MoNet was 0.005 with max radius=0.04 (i.e. 8 times smaller)
@@ -218,23 +219,11 @@ class ConvLayer(layers.Layer):
     '''
     
     def call(self, x):
-        '''input_feat, rho_coords, theta_coords, mask = tf.map_fn(fn=self.map_func, elems = x,
-                              fn_output_signature = [inputFeatSpec, restSpec, restSpec, restSpec])'''
-
-        '''input_feat = tf.cast(tf.gather(x, tf.range(5), axis=-1), dtype=tf.float32)
-        rho_coords = tf.cast(tf.gather(x, 5, axis=-1), dtype=tf.float32)
-        theta_coords = tf.cast(tf.gather(x, 6, axis=-1), dtype=tf.float32)
-        mask = tf.cast(tf.expand_dims(tf.gather(x, 7, axis=-1), axis=-1), dtype=tf.float32)
-        ####
-        indices_tensor = tf.cast(tf.gather(x, 8, axis=-1), dtype=tf.int32)
-        ####'''
-        
-        print(f'Conv layer: 0')
-        
         var_dict = self.variable_dicts[0]
         
         n_samples = tf.shape(x[1])[0]
         if self.conv_batch_size is None:
+            leftover = 0
             input_feat, rho_coords, theta_coords, mask = [tf.cast(tsr, dtype=tf.float32) for tsr in x[0]]
             indices_tensor = tf.cast(x[1], dtype=tf.int32)
             sampIdx = tf.stack([0, n_samples], axis=0)
@@ -246,11 +235,6 @@ class ConvLayer(layers.Layer):
                 return tf.concat([tsr, empty], axis=0)
             input_feat, rho_coords, theta_coords, mask = (addLeftover(tsr, tf.float32) for tsr in x[0])
             indices_tensor = addLeftover(x[1], tf.int32)
-            
-            ###
-            del x
-            ###
-            
             sampIdx = tf.range(n_samples + leftover + 1, delta=self.conv_batch_size)
         
         
@@ -281,14 +265,6 @@ class ConvLayer(layers.Layer):
             map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[0][0]], dtype=tf.float32))
             ret.append(tf.reshape(map_output, shape=[-1, map_output.shape[-1]]))
             
-            ###
-            del map_output
-            ###
-
-        ###
-        del input_feat, my_input_feat
-        ###
-        
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
         
@@ -305,8 +281,6 @@ class ConvLayer(layers.Layer):
         
         start = 1
         for layer_num, var_dict in enumerate(self.variable_dicts[start:], start):
-            print(f'Conv layer: {layer_num}')
-            
             if layer_num == 0:
                 continue
 
@@ -335,15 +309,7 @@ class ConvLayer(layers.Layer):
             map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[layer_num][0]], dtype=tf.float32))
             #ret = tf.concat(tf.unstack(map_output), axis=0)
             
-            ###
-            del input_feat
-            ###
-            
             ret = tf.reshape(map_output, shape=[-1, map_output.shape[-1]])
-            
-            ###
-            del map_output
-            ###
             
             # Reduce the dimensionality by averaging over the last dimension
             ret = tf.reshape(ret, self.reshape_shapes[layer_num])
@@ -396,7 +362,7 @@ class ConvLayer(layers.Layer):
             # check the axis on this
             if mean_gauss_activation:  # computes mean weights for the different gaussians
                 gauss_activations /= (
-                    tf.reduce_sum(input_tensor=gauss_activations, axis=2, keepdims=True) + eps
+                    tf.reduce_sum(input_tensor=gauss_activations, axis=1, keepdims=True) + eps
                 )  # batch_size, n_vertices, n_gauss
 
             gauss_activations = tf.expand_dims(
