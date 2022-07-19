@@ -132,7 +132,8 @@ print()
 #score_best = 0
 ptsDif_best = npoints_true
 threshold_best = 0
-for threshold in np.linspace(.1, .9, 9):
+thresh_list = np.concatenate([np.linspace(.1, .9, 9), np.linspace(.91, .99, 9)]):
+for threshold in thresh_list:
   print('\nthreshold:', threshold)
   
   ptsDif = summary(threshold, pocket_points_true_all, ligand_site_probs)
