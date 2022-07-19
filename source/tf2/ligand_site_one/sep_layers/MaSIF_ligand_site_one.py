@@ -47,7 +47,17 @@ class MaSIF_ligand_site(Model):
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
  
-        self.myConvLayer = ConvLayer(max_rho, n_thetas, n_rhos, n_rotations, feat_mask, n_conv_layers, conv_batch_size, reg)
+        self.convBlock_arr = [
+            [
+                self.myConvLayer = ConvLayer(max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg)
+                layers.BatchNormalization(),
+                layers.ReLU(),
+                layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=reg),
+                layers.Dense(self.n_feat, activation="relu", kernel_regularizer=reg)
+            ],
+            [
+                
+        ]
         self.myDense = layers.Dense(self.n_thetas, activation="relu", kernel_regularizer=reg)
         self.outLayer = layers.Dense(1, kernel_regularizer=reg)
         
@@ -95,8 +105,6 @@ class ConvLayer(layers.Layer):
         n_rhos,
         n_rotations,
         feat_mask,
-        n_conv_layers,
-        conv_batch_size,
         reg=None):
         
         super(ConvLayer, self).__init__()
@@ -210,14 +218,7 @@ class ConvLayer(layers.Layer):
             var_dict['W_conv'] = self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=self.conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True, regularizer=reg)
             
             self.variable_dicts.append(var_dict)
-    '''
-    @tf.function(
-    input_signature=((tf.TensorSpec(shape=(None, None, 100, 5), dtype=tf.float32),
-                      tf.TensorSpec(shape=(None, None, 100), dtype=tf.float32),
-                      tf.TensorSpec(shape=(None, None, 100), dtype=tf.float32),
-                      tf.TensorSpec(shape=(None, None, 100, 1), dtype=tf.float32)),
-                     tf.TensorSpec(shape=(None, None, 100), dtype=tf.int32))
-    )'''
+
     def call(self, x):
         var_dict = self.variable_dicts[0]
         
@@ -264,9 +265,11 @@ class ConvLayer(layers.Layer):
             
             map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[0][0]], dtype=tf.float32))
             ret.append(tf.reshape(map_output, shape=[-1, map_output.shape[-1]]))
-            
+
         ret = tf.stack(ret, axis=2)
         ret = tf.reshape(ret, self.reshape_shapes[0])
+            
+        return ret
         
         ret = tf.matmul(ret, var_dict['FC1_W']) + var_dict['FC1_b']
         ret = tf.nn.relu(ret)
@@ -389,7 +392,7 @@ class ConvLayer(layers.Layer):
         all_conv_feat = tf.stack(all_conv_feat)
         conv_feat = tf.reduce_max(all_conv_feat, axis=0)
         
-        conv_feat = tf.nn.relu(conv_feat)
+        #conv_feat = tf.nn.relu(conv_feat)
         return conv_feat
 
     
