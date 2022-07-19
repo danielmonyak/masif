@@ -5,6 +5,7 @@ from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 from time import process_time
 
 params = masif_opts['ligand']
+ligand_site_params = masif_opts['ligand_site']
 ligand_list = params['ligand_list']
 minPockets = params['minPockets']
 with tf.device('/GPU:2'):
@@ -13,13 +14,13 @@ with tf.device('/GPU:2'):
 class Predictor:
   def getLigandSiteModel(self, ligand_site_ckp_path):
     model = MaSIF_ligand_site(
-      params["max_distance"],
-      feat_mask=params["feat_mask"],
+      ligand_site_params["max_distance"],
+      feat_mask=ligand_site_params["feat_mask"],
       n_thetas=4,
       n_rhos=3,
       n_rotations=4,
       learning_rate = 1e-3,
-      n_conv_layers = params['n_conv_layers'],
+      n_conv_layers = ligand_site_params['n_conv_layers'],
       conv_batch_size = None
     )
     from_logits = model.loss_fn.get_config()['from_logits']
