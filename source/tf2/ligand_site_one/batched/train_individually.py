@@ -104,7 +104,7 @@ while i < num_epochs:
     ###################     TRAINING DATA     ###################
     #############################################################
     for pdb_id in training_list:
-        print(f'Epoch {i}, train record {train_j}')
+        print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
         
         mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
         
@@ -135,11 +135,14 @@ while i < num_epochs:
         Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
         xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
         tree = spatial.KDTree(xyz_coords)
-        all_ligand_coords = np.load(
-            os.path.join(
-                params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
-            )
+        coordsPath = os.path.join(
+            params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0]))
         )
+        try:
+            all_ligand_coords = np.load(coordsPath)
+        except:
+            print(f'Problem opening {coordsPath}')
+            continue
         pocket_points = []
         for j, structure_ligand in enumerate(all_ligand_coords):
             ligand_coords = all_ligand_coords[j]
