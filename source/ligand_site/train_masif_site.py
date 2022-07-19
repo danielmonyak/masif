@@ -319,14 +319,14 @@ def train_masif_site(
         outstr += "Per protein AUC mean (validation): {:.4f}; median: {:.4f} for iter {}\n".format(
             np.mean(list_val_auc), np.median(list_val_auc), num_iter
         )
-        '''outstr += "Per protein AUC mean (test): {:.4f}; median: {:.4f} for iter {}\n".format(
+        outstr += "Per protein AUC mean (test): {:.4f}; median: {:.4f} for iter {}\n".format(
             np.mean(list_test_auc), np.median(list_test_auc), num_iter
         )
         flat_all_test_labels = np.concatenate(all_test_labels, axis=0)
         flat_all_test_scores = np.concatenate(all_test_scores, axis=0)
         outstr += "Testing auc (all points): {:.2f}".format(
             metrics.roc_auc_score(flat_all_test_labels, flat_all_test_scores)
-        )'''
+        )
         outstr += "Epoch took {:2f}s\n".format(time.time() - tic)
         logfile.write(outstr + "\n")
         print(outstr)
