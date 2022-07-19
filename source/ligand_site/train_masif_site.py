@@ -331,15 +331,16 @@ def train_masif_site(
         logfile.write(outstr + "\n")
         print(outstr)
 
-        if np.mean(list_val_auc) > best_val_auc:
-            logfile.write(">>> Saving model.\n")
-            print(">>> Saving model.\n")
-            best_val_auc = np.mean(list_val_auc)
-            output_model = out_dir + "model"
-            learning_obj.saver.save(learning_obj.session, output_model)
-            # Save the scores for test.
-            np.save(out_dir + "test_labels.npy", all_test_labels)
-            np.save(out_dir + "test_scores.npy", all_test_scores)
-            np.save(out_dir + "test_names.npy", list_test_names)
+        ################### SAVING MODEL EVERY TIME
+        #if np.mean(list_val_auc) > best_val_auc:
+        logfile.write(">>> Saving model.\n")
+        print(">>> Saving model.\n")
+        best_val_auc = np.mean(list_val_auc)
+        output_model = out_dir + "model"
+        learning_obj.saver.save(learning_obj.session, output_model)
+        # Save the scores for test.
+        np.save(out_dir + "test_labels.npy", all_test_labels)
+        np.save(out_dir + "test_scores.npy", all_test_scores)
+        np.save(out_dir + "test_names.npy", list_test_names)
 
     logfile.close()
