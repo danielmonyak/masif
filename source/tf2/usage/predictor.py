@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from default_config.util import *
-from tf2.ligand_site_one.MaSIF_ligand_site import MaSIF_ligand_site
+from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
 from time import process_time
 
 params = masif_opts['ligand']
