@@ -74,7 +74,10 @@ for lig_i in range(n_pockets_true):
 ligand_true = all_ligand_types[0]
 ligandIdx_true = ligand_list.index(ligand_true)
 
-pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel')
+pred = Predictor(
+    ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel',
+    ligand_site_model_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/batched/kerasModel/savedModel_endTraining',
+)
 pred.loadData(pdb_dir)
 
 predPath = os.path.join(params["out_pred_dir"], f'{pdb}y_pred.npy')
