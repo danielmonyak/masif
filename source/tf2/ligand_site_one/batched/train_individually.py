@@ -28,11 +28,11 @@ strategy = tf.distribute.MirroredStrategy(gpu_strs)
 #tf.debugging.set_log_device_placement(True)
 
 #############################################
-continue_training = False
+continue_training = True
 #read_metrics = False
 
 starting_sample = 0
-starting_epoch = 0
+starting_epoch = 5
 #############################################
 
 #params = masif_opts["ligand"]
@@ -46,7 +46,7 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 
 #############################################
 #############################################
-num_epochs = 5                  #############
+num_epochs = 20                 #############
 pdb_ckp_thresh = 10             #############
 #############################################
 #############################################
