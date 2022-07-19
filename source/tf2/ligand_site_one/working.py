@@ -7,6 +7,7 @@ import numpy as np
 from scipy import spatial
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score, RocCurveDisplay
 import tensorflow as tf
+import matplotlib.pyplot as plt
 
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
@@ -92,8 +93,8 @@ ligand_site_probs = np.squeeze(tf.sigmoid(logits))
 ###########################################################################
 ###########################################################################
 
-def summary(threshold):
-    pocket_points_pred = np.asarray(ligand_site_probs > threshold).nonzero()[0]  
+def summary(threshold, pocket_points_true_all, score):
+    pocket_points_pred = np.asarray(score > threshold).nonzero()[0]  
     npoints = len(pocket_points_pred)
         
     if npoints < 2 * minPockets:
@@ -134,7 +135,7 @@ threshold_best = 0
 for threshold in np.linspace(.1, .9, 9):
   print('\nthreshold:', threshold)
   
-  ptsDif = summary(threshold)
+  ptsDif = summary(threshold, pocket_points_true_all, ligand_site_probs)
   if ptsDif < ptsDif_best:
       ptsDif_best = ptsDif
       threshold_best = threshold
@@ -188,7 +189,15 @@ print('\nX_pred_pred:', X_pred_pred.numpy())
 print('\nligandIdx_true:', ligandIdx_true)
 
 '''
-roc_auc_score(y_true, ligand_site_probs)
+print('auc:', roc_auc_score(y_true, ligand_site_probs))
 #RocCurveDisplay.from_predictions(y_true, ligand_site_probs)
+#plt.savefig('curve')
 
-#predPath = os.path.join(params["out_pred_dir"], f'{pdb}y_pred.npy')
+print('\ntf1\n')
+
+tf1_score = np.load(os.path.join('../../ligand_site', params["out_pred_dir"], f'{pdb}y_pred.npy'))
+for threshold in np.linspace(.1, .9, 9):
+  print('\nthreshold:', threshold)
+  ptsDif = summary(threshold, pocket_points_true_all, tf1_score)
+
+print('auc:', roc_auc_score(y_true, tf1_score))
