@@ -3,7 +3,7 @@ err=error_files
 if [ ! -d $out ]; then mkdir $out; fi
 if [ ! -d $err ]; then mkdir $err; fi
 
-batchSize=10
+batchSize=20
 sleep_time=10
 
 i=0
@@ -25,6 +25,6 @@ while read p; do
 	disown -h $!
 	running+=($!)
 	i=$((i+1))
-done < lists/sequence_split_list_UNIQUE.txt
+done < ../masif_ligand/lists/sequence_split_list_UNIQUE.txt
 
 echo Finished!
