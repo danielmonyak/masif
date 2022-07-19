@@ -182,7 +182,7 @@ class Predictor:
     
     ligand_prob_list = []
     for i in range(self.n_predictions):
-      temp_prob = tf.squeeze(self.ligand_model(X))
+      temp_prob = tf.sigmoid(tf.squeeze(self.ligand_model(X)))
       if tf.reduce_max(temp_prob) > self.ligand_threshold:
         ligand_prob_list.append(temp_prob)
     
