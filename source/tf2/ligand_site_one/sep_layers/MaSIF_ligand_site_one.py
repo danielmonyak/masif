@@ -110,11 +110,11 @@ class MaSIF_ligand_site(Model):
         self.convBlock_residue = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[2], reshape_shape = self.reshape_shapes[2])
         ####
         
-        self.FC1 = layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=reg)
-        self.FC2 = layers.Dense(self.n_feat, activation="relu", kernel_regularizer=reg)
+        self.FC1 = layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=self.reg)
+        self.FC2 = layers.Dense(self.n_feat, activation="relu", kernel_regularizer=self.reg)
         
-        self.myDense = layers.Dense(self.n_thetas, activation="relu", kernel_regularizer=reg)
-        self.outLayer = layers.Dense(1, kernel_regularizer=reg)
+        self.myDense = layers.Dense(self.n_thetas, activation="relu", kernel_regularizer=self.reg)
+        self.outLayer = layers.Dense(1, kernel_regularizer=self.reg)
         
     def call(self, x, training=False):
         data_tsrs, indices_tensor = x
