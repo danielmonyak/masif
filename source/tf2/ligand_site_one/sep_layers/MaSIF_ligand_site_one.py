@@ -47,7 +47,14 @@ class MaSIF_ligand_site(Model):
 
         return {m.name: m.result() for m in self.metrics}
 
-
+    def makeConvBlock(self, weights_num, conv_shape, reshape_shape):
+        return [
+            ConvLayer(weights_num, conv_shape, self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
+            layers.Reshape(reshape_shape[1]),
+            MeanAxis1(out_shp=[None, reshape_shape[1][1]]),
+            layers.BatchNormalization()
+        ]
+    
     def __init__(
         self,
         max_rho,
@@ -64,7 +71,7 @@ class MaSIF_ligand_site(Model):
         super(MaSIF_ligand_site, self).__init__()
         
         regKwargs = {reg_type : reg_val}
-        reg = regularizers.L1L2(**regKwargs)
+        self.reg = regularizers.L1L2(**regKwargs)
         
         # order of the spectral filters
         self.max_rho = max_rho
@@ -91,30 +98,16 @@ class MaSIF_ligand_site(Model):
 
 
         self.convBlock0 = [
-            ConvLayer(5, self.conv_shapes[0], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
+            ConvLayer(5, self.conv_shapes[0], max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg),
             layers.Reshape(self.reshape_shapes[0]),
             layers.BatchNormalization()
         ]
-        self.convBlock1 = [
-            ConvLayer(1, self.conv_shapes[1], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
-            layers.Reshape(self.reshape_shapes[1]),
-            MeanAxis1(out_shp=[None, self.reshape_shapes[1][1]]),
-            layers.BatchNormalization()
-        ]
-        self.convBlock2 = [
-            ConvLayer(1, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
-            layers.Reshape(self.reshape_shapes[2]),
-            MeanAxis1(out_shp=[None, self.reshape_shapes[2][1]]),
-            layers.BatchNormalization()
-        ]
+        
+        self.convBlock1 = self.makeConvBlock(weights_num = 1, self.conv_shapes[1], self.reshape_shapes[1])
+        self.convBlock2 = self.makeConvBlock(weights_num = 1, self.conv_shapes[2], self.reshape_shapes[2])
         
         ####
-        self.convBlock_residue = [
-            ConvLayer(1, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
-            layers.Reshape(self.reshape_shapes[2]),
-            MeanAxis1(out_shp=[None, self.reshape_shapes[2][1]]),
-            layers.BatchNormalization()
-        ]
+        self.convBlock_residue = self.makeConvBlock(weights_num = 1, self.conv_shapes[2], self.reshape_shapes[2])
         ####
         
         self.FC1 = layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=reg)
@@ -170,7 +163,7 @@ class ConvLayer(layers.Layer):
         n_thetas,
         n_rhos,
         n_rotations,
-        feat_mask,
+        n_feat,
         reg=None):
         
         super(ConvLayer, self).__init__()
@@ -184,7 +177,7 @@ class ConvLayer(layers.Layer):
         )  # in MoNet was 0.005 with max radius=0.04 (i.e. 8 times smaller)
         self.sigma_theta_init = 1.0  # 0.25
         self.n_rotations = n_rotations
-        self.n_feat = int(sum(feat_mask))
+        self.n_feat = n_feat
         
         initial_coords = self.compute_initial_coordinates()
         # self.rotation_angles = tf.Variable(np.arange(0, 2*np.pi, 2*np.pi/self.n_rotations).astype('float32'))
