@@ -107,7 +107,7 @@ class MaSIF_ligand_site(Model):
         self.convBlock2 = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[2], reshape_shape = self.reshape_shapes[2])
         
         ####
-        self.convBlock_residue = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[2], reshape_shape = self.reshape_shapes[2])
+        #self.convBlock_residue = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[2], reshape_shape = self.reshape_shapes[2])
         ####
         
         self.FC1 = layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=self.reg)
@@ -121,7 +121,7 @@ class MaSIF_ligand_site(Model):
         _, rho_coords, theta_coords, mask = data_tsrs
         
         ####
-        residue = runLayers(self.convBlock_residue, data_tsrs)
+        #residue = runLayers(self.convBlock_residue, data_tsrs)
         ####
         
         ret = runLayers(self.convBlock0, data_tsrs)
@@ -137,7 +137,7 @@ class MaSIF_ligand_site(Model):
         ret = runLayers(self.convBlock2, (input_feat, rho_coords, theta_coords, mask))
         
         ####
-        ret = tf.add(ret, residue)
+        #ret = tf.add(ret, residue)
         ####
         
         ret = tf.nn.relu(ret)
