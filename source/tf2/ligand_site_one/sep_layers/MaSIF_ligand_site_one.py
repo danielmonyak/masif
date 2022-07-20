@@ -85,7 +85,7 @@ class MaSIF_ligand_site(Model):
         ]
         ####
         
-        self.FC1 = layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=reg),
+        self.FC1 = layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=reg)
         self.FC2 = layers.Dense(self.n_feat, activation="relu", kernel_regularizer=reg)
         
         self.myDense = layers.Dense(self.n_thetas, activation="relu", kernel_regularizer=reg)
