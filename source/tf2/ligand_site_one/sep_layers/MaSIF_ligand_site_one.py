@@ -25,7 +25,6 @@ class MaSIF_ligand_site(Model):
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
-        conv_batch_size = 100,
         reg_val = 1e-4,
         reg_type = 'l2'
     ):
@@ -81,7 +80,7 @@ class MaSIF_ligand_site(Model):
                 layers.MeanAxis1(output_shape=[self.reshape_shapes[2][i] for i in [0,2]]),
                 layers.BatchNormalization(),
                 layers.ReLU()
-            ]  
+            ]
         ]
         self.myDense = layers.Dense(self.n_thetas, activation="relu", kernel_regularizer=reg)
         self.outLayer = layers.Dense(1, kernel_regularizer=reg)
