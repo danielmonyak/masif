@@ -183,7 +183,6 @@ class ConvLayer(layers.Layer):
             )
     
     def callInner(self, x):
-        n_samples = tf.shape(x)[0]
         input_feat, rho_coords, theta_coords, mask = [tf.cast(tsr, dtype=tf.float32) for tsr in x]
         
         ret = []
@@ -191,16 +190,16 @@ class ConvLayer(layers.Layer):
             my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
                
             ret.append(self.inference(
-                input_feat,
+                my_input_feat,
                 rho_coords,
                 theta_coords,
-                mask_temp,
-                var_dict['W_conv'][i],
-                var_dict['b_conv'][i],
-                var_dict['mu_rho'][i],
-                var_dict['sigma_rho'][i],
-                var_dict['mu_theta'][i],
-                var_dict['sigma_theta'][i]
+                mask,
+                self.W_conv[i],
+                self.b_conv[i],
+                self.mu_rho[i],
+                self.sigma_rho[i],
+                self.mu_theta[i],
+                self.sigma_theta[i]
             ))
         
         ret = tf.stack(ret, axis=1)
@@ -228,8 +227,8 @@ class ConvLayer(layers.Layer):
         eps=1e-5,
         mean_gauss_activation=True,
     ):
-        n_samples = tf.shape(input=rho_coords)[0]
-        n_vertices = tf.shape(input=rho_coords)[1]
+        n_samples = tf.shape(rho_coords)[0]
+        n_vertices = tf.shape(rho_coords)[1]
         n_feat = tf.shape(input_feat)[2]
         
         all_conv_feat = []
@@ -279,7 +278,7 @@ class ConvLayer(layers.Layer):
             ) # batch_size, self.n_thetas*self.n_rhos*n_feat
             
 
-            conv_feat = tf.matmul(gauss_desc, W_conv) + b_conv  # batch_size, 80
+            conv_feat = tf.matmul(gauss_desc, W_conv) + b_conv  # batch_size, n_gauss
             all_conv_feat.append(conv_feat)
             
         all_conv_feat = tf.stack(all_conv_feat)
