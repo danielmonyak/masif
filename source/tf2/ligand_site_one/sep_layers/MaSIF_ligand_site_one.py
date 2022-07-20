@@ -70,14 +70,14 @@ class MaSIF_ligand_site(Model):
             [
                 ConvLayer(1, self.conv_shapes[1], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
                 layers.Reshape(self.reshape_shapes[1]),
-                MeanAxis1(out_shp=[self.reshape_shapes[1][i] for i in [0,2]]),
+                MeanAxis1(out_shp=self.reshape_shapes[1][:2]),
                 layers.BatchNormalization(),
                 layers.ReLU()
             ],
             [
                 ConvLayer(2, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
                 layers.Reshape(self.reshape_shapes[2]),
-                MeanAxis1(out_shp=[self.reshape_shapes[2][i] for i in [0,2]]),
+                MeanAxis1(out_shp=self.reshape_shapes[2][:2]),
                 layers.BatchNormalization(),
                 layers.ReLU()
             ]
@@ -149,7 +149,6 @@ class ConvLayer(layers.Layer):
         self.W_conv = []
         
         self.conv_shape = conv_shape
-        self.layer_num = layer_num
         self.weights_num = [self.n_feat, 1, 1, 1][layer_num]
         
         for i in range(self.weights_num):
@@ -188,8 +187,11 @@ class ConvLayer(layers.Layer):
         
         ret = []
         for i in range(self.weights_num):
-            my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
-               
+            if self.weights_num == self.n_feat:
+                my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
+            else:
+                my_input_feat = input_feat
+            
             ret.append(self.inference(
                 my_input_feat,
                 rho_coords,
