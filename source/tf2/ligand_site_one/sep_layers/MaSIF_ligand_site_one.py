@@ -16,6 +16,7 @@ class MaSIF_ligand_site(Model):
     def train_step(self, data):
         if len(data) == 3:
             x, y, sample_weight = data
+            sample_weight = sample_weight[0]
         else:
             sample_weight = None
             x, y = data
@@ -28,7 +29,6 @@ class MaSIF_ligand_site(Model):
             
             y_pred = y_pred[0]
             y = y[0]
-            sample_weight = sample_weight[0]
             #print('y:', y.shape)
             #print('y_pred:', y_pred.shape)
             #print('sample_weight:', sample_weight.shape)
