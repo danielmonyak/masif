@@ -50,8 +50,8 @@ class MaSIF_ligand_site(Model):
     def makeConvBlock(self, weights_num, conv_shape, reshape_shape):
         return [
             ConvLayer(weights_num, conv_shape, self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
-            layers.Reshape(reshape_shape[1]),
-            MeanAxis1(out_shp=[None, reshape_shape[1][1]]),
+            layers.Reshape(reshape_shape),
+            MeanAxis1(out_shp=[None, reshape_shape[1]]),
             layers.BatchNormalization()
         ]
     
