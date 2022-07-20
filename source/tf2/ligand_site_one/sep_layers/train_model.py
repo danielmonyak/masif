@@ -167,7 +167,7 @@ for i in range(num_epochs):
         # TRAIN MODEL
         ################################################
         model.fit(X, y, verbose = 2,
-                  class_weight = {0 : 1.0, 1 : 25.0}
+                  class_weight = None
                  )
         ################################################
 
