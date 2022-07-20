@@ -88,18 +88,20 @@ for i in range(num_epochs):
         data = get_data(pdb_id)
         if data is None:
             continue
-            
-        X, y = data
         
-        sample_weight = np.ones_like(y, dtype=np.float32)
-        sample_weight[0, pocket_points, 0] = 25.0
+        if len(data) == 3:
+            X, y, sample_weight = data
+            sample_weight = sample_weight
+        else:
+            sample_weight = None
+            X, y = data
         
         print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
         
         # TRAIN MODEL
         ################################################
         model.fit(X, y, verbose = 2,
-                  sample_weight = None)
+                  sample_weight = sample_weight)
         ################################################
 
         train_j += 1
@@ -112,7 +114,13 @@ for i in range(num_epochs):
         if data is None:
             continue
         
-        X, y = data
+        if len(data) == 3:
+            X, y, sample_weight = data
+            sample_weight = sample_weight
+        else:
+            sample_weight = None
+            X, y = data
+        
         loss, acc, auc = model.evaluate(X, y, verbose=0)
         loss_list.append(loss)
         acc_list.append(acc)
