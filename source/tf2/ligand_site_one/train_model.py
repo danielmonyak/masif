@@ -13,7 +13,6 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from tf2.read_ligand_tfrecords import _parse_function
 from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
 
 dev = '/GPU:1'
