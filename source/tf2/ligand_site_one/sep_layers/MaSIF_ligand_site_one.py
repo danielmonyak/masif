@@ -7,6 +7,11 @@ from default_config.util import *
 
 params = masif_opts["ligand"]
 
+def runLayers(layers, x):
+    for l in layers:
+        x = l(x)
+    return x
+
 class MaSIF_ligand_site(Model):
     """
     The neural network model.
@@ -20,7 +25,6 @@ class MaSIF_ligand_site(Model):
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
-        n_conv_layers = 1,
         conv_batch_size = 100,
         reg_val = 1e-4,
         reg_type = 'l2'
@@ -41,8 +45,6 @@ class MaSIF_ligand_site(Model):
         self.sigma_theta_init = 1.0  # 0.25
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
-        
-        self.n_conv_layers = n_conv_layers
         
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
@@ -85,12 +87,17 @@ class MaSIF_ligand_site(Model):
         self.outLayer = layers.Dense(1, kernel_regularizer=reg)
         
     def call(self, x, training=False):
-        if self.n_conv_layers == 1:
-            output_sz = self.n_thetas * self.n_rhos * self.n_feat
-        elif self.n_conv_layers == 2 or self.n_conv_layers == 3:
-            output_sz = self.n_feat
-            
-        ret = tf.map_fn(fn=self.myConvLayer, elems = x, fn_output_signature = tf.TensorSpec(shape=[None, output_sz], dtype=tf.float32))
+        data_tsrs, indices_tensor = x
+        _, rho_coords, theta_coords, mask = data_tsrs
+        
+        ret = runLayers(self.convBlock_arr[0], data_tsrs)
+        
+        input_feat = tf.gather(ret, indices_tensor)
+        ret = runLayers(self.convBlock_arr[0], (input_feat, rho_coords, theta_coords, mask))
+        
+        input_feat = tf.gather(ret, indices_tensor)
+        ret = runLayers(self.convBlock_arr[0], (input_feat, rho_coords, theta_coords, mask))
+        
         ret = self.myDense(ret)
         ret = self.outLayer(ret)
         return ret
@@ -141,6 +148,7 @@ class ConvLayer(layers.Layer):
         self.b_conv = []
         self.W_conv = []
         
+        self.conv_shape = conv_shape
         self.weights_num = [self.n_feat, 1, 1, 1][layer_num]
         
         for i in range(self.weights_num):
@@ -163,30 +171,29 @@ class ConvLayer(layers.Layer):
 
             self.b_conv.append(
                 self.add_weight(
-                    shape=self.conv_shapes[layer_num][1], initializer='zeros',
+                    shape=self.conv_shape[1], initializer='zeros',
                     trainable = True
                 )
             )
             self.W_conv.append(
                 self.add_weight(
-                    shape=self.conv_shapes[layer_num], initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"),
+                    shape=self.conv_shape, initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"),
                     trainable = True, regularizer=reg
                 )
             )
     
     def callInner(self, x):
-        n_samples = tf.shape(x[1])[0]
-        input_feat, rho_coords, theta_coords, mask = [tf.cast(tsr, dtype=tf.float32) for tsr in x[0]]
-        indices_tensor = tf.cast(x[1], dtype=tf.int32)
+        n_samples = tf.shape(x)[0]
+        input_feat, rho_coords, theta_coords, mask = [tf.cast(tsr, dtype=tf.float32) for tsr in x]
         
         ret = []
         for i in range(self.weights_num):
             my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
                
             ret.append(self.inference(
-                input_feat_temp,
-                rho_coords_temp,
-                theta_coords_temp,
+                input_feat,
+                rho_coords,
+                theta_coords,
                 mask_temp,
                 var_dict['W_conv'][i],
                 var_dict['b_conv'][i],
@@ -196,53 +203,15 @@ class ConvLayer(layers.Layer):
                 var_dict['sigma_theta'][i]
             ))
         
-        ret = tf.stack(ret, axis=2)
+        ret = tf.stack(ret, axis=1)
+        #ret = tf.stack(ret, axis=2)
         #return tf.squeeze(ret)
         return ret
     
     def call(self, x):
         output_shape = [x.shape[1], self.conv_shape[0], self.weights_num]
         return tf.map_fn(fn=self.callInner, elems = x, fn_output_signature = tf.TensorSpec(shape=output_shape, dtype=tf.float32))
-        
-        
-        start = 1
-        for layer_num, var_dict in enumerate(self.variable_dicts[start:], start):
-            if layer_num == 0:
-                continue
-
-            input_feat = tf.gather(ret, indices_tensor)
-            
-            def tempInference(idx):
-                sample = tf.range(sampIdx[idx], sampIdx[idx+1])
-                input_feat_temp = tf.gather(input_feat, sample, axis=0)
-                rho_coords_temp = tf.gather(rho_coords, sample, axis=0)
-                theta_coords_temp = tf.gather(theta_coords, sample, axis=0)
-                mask_temp = tf.gather(mask, sample, axis=0)
-                
-                return self.inference(
-                    input_feat_temp,
-                    rho_coords_temp,
-                    theta_coords_temp,
-                    mask_temp,
-                    var_dict['W_conv'],
-                    var_dict['b_conv'],
-                    var_dict['mu_rho'],
-                    var_dict['sigma_rho'],
-                    var_dict['mu_theta'],
-                    var_dict['sigma_theta']
-                )
-            
-            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[layer_num][0]], dtype=tf.float32))
-            #ret = tf.concat(tf.unstack(map_output), axis=0)
-            
-            ret = tf.reshape(map_output, shape=[-1, map_output.shape[-1]])
-            
-            # Reduce the dimensionality by averaging over the last dimension
-            ret = tf.reshape(ret, self.reshape_shapes[layer_num])
-            ret = self.reduce_funcs[layer_num](ret)
-                
-        return ret[:tf.shape(ret)[0] - leftover]
-        
+    
     def inference(
         self,
         input_feat,
