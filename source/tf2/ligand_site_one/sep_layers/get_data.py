@@ -1,9 +1,6 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
-import sys
 import numpy as np
 from scipy import spatial
-import tensorflow as tf
 from default_config.util import *
 
 params = masif_opts["ligand_site"]
