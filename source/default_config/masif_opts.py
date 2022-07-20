@@ -22,6 +22,7 @@ masif_opts["feature_interpolation"] = True
 
 ####
 masif_opts['ligand_list'] = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
+masif_opts['extra_ligands'] = ['IMD', 'EPE', 'FMN', 'TRS', 'PGE', 'ACT', 'NAG', 'EDO', 'GOL', 'SO4']
 ####
 
 # Coords params
