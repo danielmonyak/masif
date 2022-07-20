@@ -75,7 +75,7 @@ class MaSIF_ligand_site(Model):
                 layers.ReLU()
             ],
             [
-                ConvLayer(1, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
+                ConvLayer(2, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
                 layers.Reshape(self.reshape_shapes[2]),
                 MeanAxis1(out_shp=[self.reshape_shapes[2][i] for i in [0,2]]),
                 layers.BatchNormalization(),
@@ -149,6 +149,7 @@ class ConvLayer(layers.Layer):
         self.W_conv = []
         
         self.conv_shape = conv_shape
+        self.layer_num = layer_num
         self.weights_num = [self.n_feat, 1, 1, 1][layer_num]
         
         for i in range(self.weights_num):
