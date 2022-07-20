@@ -1,7 +1,8 @@
 import os
 import numpy as np
 from default_config.util import *
-from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
+#from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
+from tf2.ligand_site_one.sep_layers.MaSIF_ligand_site_one import MaSIF_ligand_site
 from time import process_time
 
 params = masif_opts['ligand']
@@ -14,14 +15,13 @@ with tf.device('/GPU:2'):
 class Predictor:
   def getLigandSiteModel(self, ligand_site_ckp_path):
     model = MaSIF_ligand_site(
-      ligand_site_params["max_distance"],
-      feat_mask=ligand_site_params["feat_mask"],
-      n_thetas=4,
-      n_rhos=3,
-      n_rotations=4,
-      learning_rate = 1e-3,
-      n_conv_layers = ligand_site_params['n_conv_layers'],
-      conv_batch_size = None
+        params["max_distance"],
+        feat_mask=params["feat_mask"],
+        n_thetas=4,
+        n_rhos=3,
+        learning_rate = 1e-4,
+        n_rotations=4,
+        reg_val = 0
     )
     from_logits = model.loss_fn.get_config()['from_logits']
     binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
