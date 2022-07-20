@@ -162,12 +162,15 @@ for i in range(num_epochs):
         ########################
         '''
         
+        sample_weight = np.ones(len(y), dtype=np.float32)
+        sample_weight[pocket_points] = 25.0
+        
         print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
         
         # TRAIN MODEL
         ################################################
         model.fit(X, y, verbose = 2,
-                  class_weight = None
+                  sample_weight = sample_weight
                  )
         ################################################
 
