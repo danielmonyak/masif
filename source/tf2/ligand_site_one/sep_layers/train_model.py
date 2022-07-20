@@ -13,18 +13,7 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
-
-dev = '/GPU:1'
-cpu = '/CPU:0'
-'''
-log_gpus = tf.config.list_logical_devices('GPU')
-gpu_strs = [g.name for g in log_gpus]
-strategy = tf.distribute.MirroredStrategy(gpu_strs)
-'''
-
-#tf.config.set_soft_device_placement(True)
-#tf.debugging.set_log_device_placement(True)
+from tf2.ligand_site_one.sep_layers.MaSIF_ligand_site_one import MaSIF_ligand_site
 
 #############################################
 continue_training = False
@@ -50,19 +39,13 @@ pdb_ckp_thresh = 10             #############
 #############################################
 #############################################
 
-cv_batch_sz = None
-
-#with tf.device(dev):
-#with strategy.scope():
 model = MaSIF_ligand_site(
     params["max_distance"],
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
-    n_rotations=4,
     learning_rate = 1e-3,
-    n_conv_layers = params['n_conv_layers'],
-    conv_batch_size = cv_batch_sz,
+    n_rotations=4,
     reg_val = 1e-4,
     reg_type = 'l2'
 )
