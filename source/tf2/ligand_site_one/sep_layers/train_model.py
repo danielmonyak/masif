@@ -35,7 +35,7 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 #############################################
 #############################################
 num_epochs = 20                 #############
-pdb_ckp_thresh = 10             #############
+ckp_thresh = 10                 #############
 #############################################
 #############################################
 
@@ -82,16 +82,22 @@ training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/li
 i = starting_epoch
 
 print(f'Running training data, epoch {i}')
-while i < num_epochs:
+for i in range(num_epochs):
     train_j = 0
     #############################################################
     ###################     TRAINING DATA     ###################
     #############################################################
+    '''input_feat_list = []
+    rho_coords_list = []
+    theta_coords_list = []
+    mask_list = []
+    indices_list = []
+    y_list = []'''
     for pdb_id in training_list:
         print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
-        
+
         mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
-        
+
         mask = np.load(os.path.join(mydir, "p1_mask.npy"))
         n_samples = mask.shape[0]
 
@@ -100,16 +106,15 @@ while i < num_epochs:
             continue
 
         input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
-        theta_wrt_center = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
-        rho_wrt_center = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
+        rho_coords = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
+        theta_coords = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
         mask = np.expand_dims(mask, 2)
         indices = np.load(os.path.join(mydir, "p1_list_indices.npy"), encoding="latin1", allow_pickle = True)
         # indices is (n_verts x <30), it should be
         indices = pad_indices(indices, mask.shape[1]).astype(np.int32)
 
-        data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [input_feat, rho_wrt_center, theta_wrt_center, mask])
+        data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [input_feat, rho_coords, theta_coords, mask])
         indices = np.expand_dims(indices, axis=0)
-
         X = (data_tsrs, indices)
 
         ###############################################################
@@ -127,6 +132,7 @@ while i < num_epochs:
         except:
             print(f'Problem opening {coordsPath}')
             continue
+
         pocket_points = []
         for j, structure_ligand in enumerate(all_ligand_coords):
             ligand_coords = all_ligand_coords[j]
@@ -136,25 +142,54 @@ while i < num_epochs:
 
         y = np.zeros([1, n_samples, 1], dtype=np.int32)
         y[0, pocket_points, 0] = 1
+        #y = np.zeros([n_samples, 1], dtype=np.int32)
+        #y[pocket_points, 0] = 1
 
         if (np.mean(y) > 0.75) or (np.sum(y) < 30):
             print('Too many pocket points or not enough patches...')
             continue
 
+        '''
+        ########################
+        input_feat_list.append(input_feat)
+        rho_coords_list.append(rho_coords)
+        theta_coords_list.append(theta_coords)
+        mask_list_list.append(mask_list)
+        indices_list.append(indices)
+        ########################
+        ########################
+        y_list.append(y)
+        ########################
+        '''
+        
         # TRAIN MODEL
         ################################################
         model.fit(X, y, verbose = 2)    ################
         ################################################
-        
+
         train_j += 1
 
-        if train_j % pdb_ckp_thresh == 0:
+        if train_j % ckp_thresh == 0:
+            '''
+            print(f'Training on {len(y_list)} PDBs')
+            data_tsrs = tuple(tf.ragged.stack(tsr_list) for tsr_list in [input_feat_list, rho_coords_list, theta_coords_list, mask_list_list])
+            indices = tf.ragged.stack(indices_list)
+            X = (data_tsrs, indices)
+            y = tf.ragged.stack(y_list)
+            
+            ################################################
+            model.fit(X, y, verbose = 2)    ################
+            ################################################
+            
+            input_feat_list.clear()
+            rho_coords_list.clear()
+            theta_coords_list.clear()
+            mask_list_list.clear()
+            indices_list.clear()
+            y_list.clear()'''
             print(f'Saving model weights to {ckpPath}')
             model.save_weights(ckpPath)
-
-    train_j = 0
-    i += 1
-
+    
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
 
