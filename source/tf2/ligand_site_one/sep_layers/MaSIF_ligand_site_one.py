@@ -98,7 +98,7 @@ class MaSIF_ligand_site(Model):
 
 
         self.convBlock0 = [
-            ConvLayer(5, self.conv_shapes[0], max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg),
+            ConvLayer(5, self.conv_shapes[0], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
             layers.Reshape(self.reshape_shapes[0]),
             layers.BatchNormalization()
         ]
