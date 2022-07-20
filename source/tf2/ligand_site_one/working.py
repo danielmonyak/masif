@@ -80,7 +80,7 @@ ligandIdx_true = ligand_list.index(ligand_true)
 
 pred = Predictor(
     ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel',
-    ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/kerasModel/ckp'
+    ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/sep_layers/kerasModel/ckp'
 )
 pred.loadData(pdb_dir)
 
