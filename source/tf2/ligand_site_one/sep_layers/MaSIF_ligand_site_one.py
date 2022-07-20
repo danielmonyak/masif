@@ -153,33 +153,27 @@ class ConvLayer(layers.Layer):
         
         for i in range(self.weights_num):
             self.mu_rho.append(
-                self.add_weight(shape=tf.shape(mu_rho_initial),
+                self.add_weight("mu_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial),
                                 initializer = ValueInit(mu_rho_initial), trainable = True, regularizer=reg)
             )  # 1, n_gauss
             self.mu_theta.append(
-                self.add_weight(shape=tf.shape(mu_theta_initial),
+                self.add_weight("mu_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial),
                                 initializer = ValueInit(mu_theta_initial), trainable = True, regularizer=reg)
             )  # 1, n_gauss
             self.sigma_rho.append(
-                self.add_weight(shape=tf.shape(mu_rho_initial),
+                self.add_weight("sigma_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial),
                                 initializer = initializers.Constant(self.sigma_rho_init), trainable = True, regularizer=reg)
             )  # 1, n_gauss
             self.sigma_theta.append(
-                self.add_weight(shape=tf.shape(mu_theta_initial),
+                self.add_weight("sigma_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial),
                                 initializer = initializers.Constant(self.sigma_theta_init), trainable = True, regularizer=reg)
             )  # 1, n_gauss
 
             self.b_conv.append(
-                self.add_weight(
-                    shape=self.conv_shape[1], initializer='zeros',
-                    trainable = True
-                )
+                self.add_weight("b_conv_{}_{}".format(i, layer_num), shape=self.conv_shape[1], initializer='zeros', trainable = True)
             )
             self.W_conv.append(
-                self.add_weight(
-                    shape=self.conv_shape, initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"),
-                    trainable = True, regularizer=reg
-                )
+                self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=self.conv_shape, initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True, regularizer=reg)
             )
     
     def callInner(self, x):
