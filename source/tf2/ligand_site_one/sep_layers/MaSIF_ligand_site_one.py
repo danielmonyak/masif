@@ -92,10 +92,10 @@ class MaSIF_ligand_site(Model):
         ret = runLayers(self.convBlock_arr[0], data_tsrs)
         
         input_feat = tf.gather(ret, indices_tensor, batch_dims=1)
-        ret = runLayers(self.convBlock_arr[0], (input_feat, rho_coords, theta_coords, mask))
+        ret = runLayers(self.convBlock_arr[1], (input_feat, rho_coords, theta_coords, mask))
         
         input_feat = tf.gather(ret, indices_tensor)
-        ret = runLayers(self.convBlock_arr[0], (input_feat, rho_coords, theta_coords, mask))
+        ret = runLayers(self.convBlock_arr[2], (input_feat, rho_coords, theta_coords, mask))
         
         ret = self.myDense(ret)
         ret = self.outLayer(ret)
