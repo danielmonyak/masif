@@ -209,7 +209,8 @@ class ConvLayer(layers.Layer):
         return ret
     
     def call(self, x):
-        out_shp = [x.shape[1], self.conv_shape[0], self.weights_num]
+        n_samples = x[0].shape[1]
+        out_shp = [n_samples, self.conv_shape[0], self.weights_num]
         return tf.map_fn(fn=self.callInner, elems = x, fn_output_signature = tf.TensorSpec(shape=out_shp, dtype=tf.float32))
     
     def inference(
