@@ -58,30 +58,36 @@ class MaSIF_ligand_site(Model):
                           [-1, self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos]]
 
 
-        self.convBlock_arr = [
-            [
-                ConvLayer(0, self.conv_shapes[0], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
-                layers.Reshape(self.reshape_shapes[0]),
-                layers.BatchNormalization(),
-                layers.ReLU(),
-                layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=reg),
-                layers.Dense(self.n_feat, activation="relu", kernel_regularizer=reg)
-            ],
-            [
-                ConvLayer(1, self.conv_shapes[1], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
-                layers.Reshape(self.reshape_shapes[1]),
-                MeanAxis1(out_shp=[None, self.reshape_shapes[1][1]]),
-                layers.BatchNormalization(),
-                layers.ReLU()
-            ],
-            [
-                ConvLayer(2, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
-                layers.Reshape(self.reshape_shapes[2]),
-                MeanAxis1(out_shp=[None, self.reshape_shapes[2][1]]),
-                layers.BatchNormalization(),
-                layers.ReLU()
-            ]
+        self.convBlock0 = [
+            ConvLayer(5, self.conv_shapes[0], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
+            layers.Reshape(self.reshape_shapes[0]),
+            layers.BatchNormalization()
         ]
+        self.convBlock1 = [
+            ConvLayer(1, self.conv_shapes[1], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
+            layers.Reshape(self.reshape_shapes[1]),
+            MeanAxis1(out_shp=[None, self.reshape_shapes[1][1]]),
+            layers.BatchNormalization()
+        ]
+        self.convBlock2 = [
+            ConvLayer(1, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
+            layers.Reshape(self.reshape_shapes[2]),
+            MeanAxis1(out_shp=[None, self.reshape_shapes[2][1]]),
+            layers.BatchNormalization()
+        ]
+        
+        ####
+        self.convBlock_residue = [
+            ConvLayer(1, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
+            layers.Reshape(self.reshape_shapes[2]),
+            MeanAxis1(out_shp=[None, self.reshape_shapes[2][1]]),
+            layers.BatchNormalization()
+        ]
+        ####
+        
+        self.FC1 = layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=reg),
+        self.FC2 = layers.Dense(self.n_feat, activation="relu", kernel_regularizer=reg)
+        
         self.myDense = layers.Dense(self.n_thetas, activation="relu", kernel_regularizer=reg)
         self.outLayer = layers.Dense(1, kernel_regularizer=reg)
         
@@ -89,13 +95,27 @@ class MaSIF_ligand_site(Model):
         data_tsrs, indices_tensor = x
         _, rho_coords, theta_coords, mask = data_tsrs
         
-        ret = runLayers(self.convBlock_arr[0], data_tsrs)
+        ####
+        residue = runLayers(self.convBlock_residue, data_tsrs)
+        ####
+        
+        ret = runLayers(self.convBlock0, data_tsrs)
+        ret = tf.nn.relu(ret)
+        ret = self.FC1(ret)
+        ret = self.FC2(ret)
         
         input_feat = tf.gather(ret, indices_tensor, batch_dims=1)
-        ret = runLayers(self.convBlock_arr[1], (input_feat, rho_coords, theta_coords, mask))
+        ret = runLayers(self.convBlock1, (input_feat, rho_coords, theta_coords, mask))
+        ret = tf.nn.relu(ret)
         
         input_feat = tf.gather(ret, indices_tensor, batch_dims=1)
-        ret = runLayers(self.convBlock_arr[2], (input_feat, rho_coords, theta_coords, mask))
+        ret = runLayers(self.convBlock2, (input_feat, rho_coords, theta_coords, mask))
+        
+        ####
+        ret = tf.add(ret, residue)
+        ####
+        
+        ret = tf.nn.relu(ret)
         
         ret = self.myDense(ret)
         ret = self.outLayer(ret)
@@ -112,7 +132,7 @@ class MeanAxis1(layers.Layer):
     
 class ConvLayer(layers.Layer):
     def __init__(self,
-        layer_num,
+        weights_num,
         conv_shape,
         max_rho,
         n_thetas,
@@ -149,31 +169,33 @@ class ConvLayer(layers.Layer):
         self.W_conv = []
         
         self.conv_shape = conv_shape
-        self.weights_num = [self.n_feat, 1, 1, 1][layer_num]
+        #self.weights_num = [self.n_feat, 1, 1, 1][layer_num]
+        #if layer_num > 0:
+        self.weights_num = weights_num
         
         for i in range(self.weights_num):
             self.mu_rho.append(
-                self.add_weight("mu_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial),
+                self.add_weight("mu_rho_{}".format(i), shape=tf.shape(mu_rho_initial),
                                 initializer = ValueInit(mu_rho_initial), trainable = True, regularizer=reg)
             )  # 1, n_gauss
             self.mu_theta.append(
-                self.add_weight("mu_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial),
+                self.add_weight("mu_theta_{}".format(i), shape=tf.shape(mu_theta_initial),
                                 initializer = ValueInit(mu_theta_initial), trainable = True, regularizer=reg)
             )  # 1, n_gauss
             self.sigma_rho.append(
-                self.add_weight("sigma_rho_{}_{}".format(i, layer_num), shape=tf.shape(mu_rho_initial),
+                self.add_weight("sigma_rho_{}".format(i), shape=tf.shape(mu_rho_initial),
                                 initializer = initializers.Constant(self.sigma_rho_init), trainable = True, regularizer=reg)
             )  # 1, n_gauss
             self.sigma_theta.append(
-                self.add_weight("sigma_theta_{}_{}".format(i, layer_num), shape=tf.shape(mu_theta_initial),
+                self.add_weight("sigma_theta_{}".format(i), shape=tf.shape(mu_theta_initial),
                                 initializer = initializers.Constant(self.sigma_theta_init), trainable = True, regularizer=reg)
             )  # 1, n_gauss
 
             self.b_conv.append(
-                self.add_weight("b_conv_{}_{}".format(i, layer_num), shape=self.conv_shape[1], initializer='zeros', trainable = True)
+                self.add_weight("b_conv_{}".format(i), shape=self.conv_shape[1], initializer='zeros', trainable = True)
             )
             self.W_conv.append(
-                self.add_weight("W_conv_{}_{}".format(i, layer_num), shape=self.conv_shape, initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True, regularizer=reg)
+                self.add_weight("W_conv_{}".format(i), shape=self.conv_shape, initializer=initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"), trainable = True, regularizer=reg)
             )
     
     def callInner(self, x):
