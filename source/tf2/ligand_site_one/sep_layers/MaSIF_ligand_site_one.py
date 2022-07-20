@@ -60,7 +60,7 @@ class MaSIF_ligand_site(Model):
 
         self.convBlock_arr = [
             [
-                ConvLayer(True, self.conv_shapes[0], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
+                ConvLayer(0, self.conv_shapes[0], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
                 layers.Reshape(self.reshape_shapes[0]),
                 layers.BatchNormalization(),
                 layers.ReLU(),
@@ -68,14 +68,14 @@ class MaSIF_ligand_site(Model):
                 layers.Dense(self.n_feat, activation="relu", kernel_regularizer=reg)
             ],
             [
-                ConvLayer(False, self.conv_shapes[1], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
+                ConvLayer(1, self.conv_shapes[1], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
                 layers.Reshape(self.reshape_shapes[1]),
                 MeanAxis1(out_shp=[self.reshape_shapes[1][i] for i in [0,2]]),
                 layers.BatchNormalization(),
                 layers.ReLU()
             ],
             [
-                ConvLayer(False, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
+                ConvLayer(1, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
                 layers.Reshape(self.reshape_shapes[2]),
                 MeanAxis1(out_shp=[self.reshape_shapes[2][i] for i in [0,2]]),
                 layers.BatchNormalization(),
@@ -208,10 +208,10 @@ class ConvLayer(layers.Layer):
         #return tf.squeeze(ret)
         return ret
     
-    def call(self, x):
-        n_samples = x[0].shape[1]
-        out_shp = [n_samples, self.conv_shape[0], self.weights_num]
-        return tf.map_fn(fn=self.callInner, elems = x, fn_output_signature = tf.TensorSpec(shape=out_shp, dtype=tf.float32))
+    def call(self, data_tsrs):
+        n_samples = data_tsrs[0].shape[1]
+        out_shp = [n_samples, self.weights_num, self.conv_shape[0]]
+        return tf.map_fn(fn=self.callInner, elems = data_tsrs, fn_output_signature = tf.TensorSpec(shape=out_shp, dtype=tf.float32))
     
     def inference(
         self,
