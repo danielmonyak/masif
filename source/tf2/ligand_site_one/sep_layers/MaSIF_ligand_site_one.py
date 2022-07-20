@@ -23,14 +23,15 @@ class MaSIF_ligand_site(Model):
         print('input_feat:', x[0][0].shape)
         print('indices_tensor:', x[1].shape)
         
-        y = y[0]
-        
         with tf.GradientTape() as tape:
             y_pred = self(x, training=True)
             
             y_pred = y_pred[0]
+            y = y[0]
+            sample_weight = sample_weight[0]
             print('y:', y.shape)
             print('y_pred:', y_pred.shape)
+            print('sample_weight:', sample_weight.shape)
             
             loss = self.compiled_loss(
                 y,
