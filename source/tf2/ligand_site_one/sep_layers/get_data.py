@@ -54,4 +54,7 @@ def get_data(pdb_id):
     if (np.mean(y) > 0.75) or (np.sum(y) < 30):
         return None
     
+    sample_weight = np.ones_like(y, dtype=np.float32)
+    sample_weight[0, pocket_points, 0] = 25.0
+    
     return X, y
