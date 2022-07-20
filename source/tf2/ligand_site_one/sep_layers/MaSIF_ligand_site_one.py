@@ -183,7 +183,7 @@ class ConvLayer(layers.Layer):
         for i in range(self.weights_num):
             my_input_feat = tf.gather(input_feat, tf.range(i, i+1), axis=-1)
                
-            ret = self.inference(
+            ret.append(self.inference(
                 input_feat_temp,
                 rho_coords_temp,
                 theta_coords_temp,
@@ -194,17 +194,15 @@ class ConvLayer(layers.Layer):
                 var_dict['sigma_rho'][i],
                 var_dict['mu_theta'][i],
                 var_dict['sigma_theta'][i]
-            )
-            ret.append(tf.reshape(ret, shape=[-1, map_output.shape[-1]]))
-            
-            map_output = tf.map_fn(fn=tempInference, elems = tf.range(tf.shape(sampIdx)[0]-1), fn_output_signature = tf.TensorSpec(shape=[self.conv_batch_size, self.conv_shapes[0][0]], dtype=tf.float32))
-            ret.append()
-
+            ))
+        
         ret = tf.stack(ret, axis=2)
-        return tf.squeeze(ret)
+        #return tf.squeeze(ret)
+        return ret
     
     def call(self, x):
-        return tf.map_fn(fn=self.callInner, elems = x, fn_output_signature = tf.TensorSpec(shape=[self.n_thetas * self.n_rhos, self.n_feat], dtype=tf.float32))
+        output_shape = [x.shape[1], self.conv_shape[0], self.weights_num]
+        return tf.map_fn(fn=self.callInner, elems = x, fn_output_signature = tf.TensorSpec(shape=output_shape, dtype=tf.float32))
         
         
         start = 1
