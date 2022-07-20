@@ -70,14 +70,14 @@ class MaSIF_ligand_site(Model):
             [
                 ConvLayer(1, self.conv_shapes[1], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
                 layers.Reshape(self.reshape_shapes[1]),
-                MeanAxis1(out_shp=self.reshape_shapes[1][:2]),
+                MeanAxis1(out_shp=[None, self.reshape_shapes[1][1]]),
                 layers.BatchNormalization(),
                 layers.ReLU()
             ],
             [
                 ConvLayer(2, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
                 layers.Reshape(self.reshape_shapes[2]),
-                MeanAxis1(out_shp=self.reshape_shapes[2][:2]),
+                MeanAxis1(out_shp=[None, self.reshape_shapes[2][1]]),
                 layers.BatchNormalization(),
                 layers.ReLU()
             ]
