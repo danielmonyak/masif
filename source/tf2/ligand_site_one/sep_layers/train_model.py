@@ -44,7 +44,7 @@ model = MaSIF_ligand_site(
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
-    learning_rate = 1e-3,
+    learning_rate = 1e-5,
     n_rotations=4,
     reg_val = 0
 )
