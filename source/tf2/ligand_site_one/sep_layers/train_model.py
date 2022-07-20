@@ -94,7 +94,7 @@ for i in range(num_epochs):
     indices_list = []
     y_list = []'''
     for pdb_id in training_list:
-        print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
+        #print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
 
         mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
 
@@ -161,6 +161,8 @@ for i in range(num_epochs):
         y_list.append(y)
         ########################
         '''
+        
+        print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
         
         # TRAIN MODEL
         ################################################
