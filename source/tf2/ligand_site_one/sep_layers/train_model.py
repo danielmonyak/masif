@@ -162,8 +162,8 @@ for i in range(num_epochs):
         ########################
         '''
         
-        sample_weight = np.ones(n_samples, dtype=np.float32)
-        sample_weight[pocket_points] = 25.0
+        sample_weight = np.ones([1, n_samples], dtype=np.float32)
+        sample_weight[0, pocket_points] = 25.0
         
         print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
         
