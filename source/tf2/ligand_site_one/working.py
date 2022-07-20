@@ -22,7 +22,8 @@ ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
 possible_test_pdbs = ['2VRB_AB_', '1FCD_AC_', '1FNN_A_', '1RI4_A_', '4PGH_AB_']
-possible_train_pdbs = ['3O7W_A_', '4YTP_ACBD_', '4YMP_A_', '4IVM_B_', '3FMO_AB_']
+#possible_train_pdbs = ['3O7W_A_', '4YTP_ACBD_', '4YMP_A_', '4IVM_B_', '3FMO_AB_']
+possible_train_pdbs = ['4X7G_A_', '4RLR_A_', '3OWC_A_', '3SC6_A_', '1TU9_A_']
 pos_list = {'test' : possible_test_pdbs, 'train' : possible_train_pdbs}
 
 if len(sys.argv) > 2:
