@@ -13,9 +13,33 @@ def runLayers(layers, x):
     return x
 
 class MaSIF_ligand_site(Model):
-    """
-    The neural network model.
-    """ 
+    def train_step(self, data):
+        if len(data) == 3:
+            x, y, sample_weight = data
+        else:
+            sample_weight = None
+            x, y = data
+
+        print('input_feat:', x[0][0].shape)
+        print('indices_tensor:', x[1].shape)
+        
+        with tf.GradientTape() as tape:
+            y_pred = self(x, training=True)
+            loss = self.compiled_loss(
+                y,
+                y_pred,
+                sample_weight=sample_weight,
+                regularization_losses=self.losses,
+            )
+
+        trainable_vars = self.trainable_variables
+        gradients = tape.gradient(loss, trainable_vars)
+        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
+        self.compiled_metrics.update_state(y, y_pred, sample_weight=sample_weight)
+
+        return {m.name: m.result() for m in self.metrics}
+
+
     def __init__(
         self,
         max_rho,
