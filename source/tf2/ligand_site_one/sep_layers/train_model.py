@@ -102,7 +102,7 @@ for i in range(num_epochs):
         n_samples = mask.shape[0]
 
         if n_samples > 8000:
-            print('Too many patches to train on...')
+            #print('Too many patches to train on...')
             continue
 
         input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
@@ -130,7 +130,7 @@ for i in range(num_epochs):
         try:
             all_ligand_coords = np.load(coordsPath)
         except:
-            print(f'Problem opening {coordsPath}')
+            #print(f'Problem opening {coordsPath}')
             continue
 
         pocket_points = []
@@ -146,7 +146,7 @@ for i in range(num_epochs):
         #y[pocket_points, 0] = 1
 
         if (np.mean(y) > 0.75) or (np.sum(y) < 30):
-            print('Too many pocket points or not enough patches...')
+            #print('Too many pocket points or not enough patches...')
             continue
 
         '''
@@ -162,8 +162,8 @@ for i in range(num_epochs):
         ########################
         '''
         
-        sample_weight = np.ones([1, n_samples], dtype=np.float32)
-        sample_weight[0, pocket_points] = 25.0
+        sample_weight = np.ones_like(y, dtype=np.float32)
+        sample_weight[0, pocket_points, 0] = 25.0
         
         print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
         
