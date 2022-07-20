@@ -14,7 +14,7 @@ for phys_g in phys_gpus:
 
 from default_config.util import *
 from tf2.ligand_site_one.sep_layers.MaSIF_ligand_site_one import MaSIF_ligand_site
-get_data
+from get_data import get_data
 #############################################
 continue_training = False
 #read_metrics = False
