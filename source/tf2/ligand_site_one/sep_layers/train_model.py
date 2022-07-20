@@ -46,8 +46,7 @@ model = MaSIF_ligand_site(
     n_rhos=3,
     learning_rate = 1e-3,
     n_rotations=4,
-    reg_val = 1e-4,
-    reg_type = 'l2'
+    reg_val = 0
 )
 
 from_logits = model.loss_fn.get_config()['from_logits']
