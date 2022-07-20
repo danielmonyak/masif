@@ -103,6 +103,7 @@ class MaSIF_ligand_site(Model):
 
 class MeanAxis1(layers.Layer):
     def __init__(self, out_shp):
+        super(MeanAxis1, self).__init__()
         self.out_shp = out_shp
     def callInner(self, x):
         return tf.reduce_mean(x, axis=-1)
