@@ -103,11 +103,11 @@ class MaSIF_ligand_site(Model):
             layers.BatchNormalization()
         ]
         
-        self.convBlock1 = self.makeConvBlock(weights_num = 1, self.conv_shapes[1], self.reshape_shapes[1])
-        self.convBlock2 = self.makeConvBlock(weights_num = 1, self.conv_shapes[2], self.reshape_shapes[2])
+        self.convBlock1 = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[1], reshape_shape = self.reshape_shapes[1])
+        self.convBlock2 = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[2], reshape_shape = self.reshape_shapes[2])
         
         ####
-        self.convBlock_residue = self.makeConvBlock(weights_num = 1, self.conv_shapes[2], self.reshape_shapes[2])
+        self.convBlock_residue = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[2], reshape_shape = self.reshape_shapes[2])
         ####
         
         self.FC1 = layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=reg)
