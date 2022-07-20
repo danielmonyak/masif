@@ -70,14 +70,14 @@ class MaSIF_ligand_site(Model):
             [
                 ConvLayer(False, self.conv_shapes[1], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
                 layers.Reshape(self.reshape_shapes[1]),
-                MeanAxis1(output_shape=[self.reshape_shapes[1][i] for i in [0,2]]),
+                MeanAxis1(out_shp=[self.reshape_shapes[1][i] for i in [0,2]]),
                 layers.BatchNormalization(),
                 layers.ReLU()
             ],
             [
                 ConvLayer(False, self.conv_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, feat_mask, reg),
                 layers.Reshape(self.reshape_shapes[2]),
-                MeanAxis1(output_shape=[self.reshape_shapes[2][i] for i in [0,2]]),
+                MeanAxis1(out_shp=[self.reshape_shapes[2][i] for i in [0,2]]),
                 layers.BatchNormalization(),
                 layers.ReLU()
             ]
@@ -102,12 +102,12 @@ class MaSIF_ligand_site(Model):
         return ret
 
 class MeanAxis1(layers.Layer):
-    def __init__(self, output_shape):
-        self.output_shape = output_shape
+    def __init__(self, out_shp):
+        self.out_shp = out_shp
     def callInner(self, x):
         return tf.reduce_mean(x, axis=-1)
     def call(self, x):
-        return tf.map_fn(fn=self.callInner, elems = x, fn_output_signature = tf.TensorSpec(shape=self.output_shape, dtype=tf.float32))
+        return tf.map_fn(fn=self.callInner, elems = x, fn_output_signature = tf.TensorSpec(shape=self.out_shp, dtype=tf.float32))
     
 class ConvLayer(layers.Layer):
     def __init__(self,
@@ -208,8 +208,8 @@ class ConvLayer(layers.Layer):
         return ret
     
     def call(self, x):
-        output_shape = [x.shape[1], self.conv_shape[0], self.weights_num]
-        return tf.map_fn(fn=self.callInner, elems = x, fn_output_signature = tf.TensorSpec(shape=output_shape, dtype=tf.float32))
+        out_shp = [x.shape[1], self.conv_shape[0], self.weights_num]
+        return tf.map_fn(fn=self.callInner, elems = x, fn_output_signature = tf.TensorSpec(shape=out_shp, dtype=tf.float32))
     
     def inference(
         self,
