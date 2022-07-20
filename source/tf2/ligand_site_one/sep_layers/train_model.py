@@ -126,5 +126,4 @@ for i in range(num_epochs):
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
 
-print(f'Saving model to to {modelPath_endTraining}')
-model.save(modelPath_endTraining)
+print(f'Finished {num_epochs} training epochs!')
