@@ -55,7 +55,7 @@ class LSResNet(Model):
         reg_type = 'l2'
     ):
         ## Call super - model initializer
-        super(MaSIF_ligand_site, self).__init__()
+        super(LSResNet, self).__init__()
         
         regKwargs = {reg_type : reg_val}
         self.reg = regularizers.L1L2(**regKwargs)
