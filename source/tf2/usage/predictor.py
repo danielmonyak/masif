@@ -29,7 +29,8 @@ class Predictor:
       loss = model.loss_fn,
       metrics=[binAcc]
     )
-    model.load_weights(ligand_site_ckp_path)
+    load_status = model.load_weights(ligand_site_ckp_path)
+    load_status.expect_partial()
     return model
     
   def __init__(self, ligand_model_path = None, ligand_site_ckp_path = None, ligand_site_model_path = None, n_predictions = 100, threshold = 0.5, ligand_threshold = 0):
