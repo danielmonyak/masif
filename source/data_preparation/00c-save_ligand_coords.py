@@ -25,7 +25,13 @@ if not os.path.exists(params["ligand_coords_dir"]):
         pass
 
 # Ligands of interest
-ligands = masif_opts['ligand_list']
+
+if len(sys.argv) > 3:
+    lig_l = sys.argv[3]
+else:
+    lig_l = 'ligand_list'
+
+ligands = masif_opts[lig_l]    
 
 structure_ligands_type = []
 structure_ligands_coords = []
