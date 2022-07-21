@@ -34,6 +34,7 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 #############################################
 num_epochs = 20                 #############
 starting_epoch = 0              #############
+use_sample_weight = True        #############
 #############################################
 #############################################
 
@@ -95,12 +96,9 @@ for i in range(num_epochs):
         if data is None:
             continue
         
-        if len(data) == 3:
-            X, y, sample_weight = data
-            sample_weight = sample_weight
-        else:
+        X, y, sample_weight = data
+        if not use_sample_weight:
             sample_weight = None
-            X, y = data
         
         print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
         
