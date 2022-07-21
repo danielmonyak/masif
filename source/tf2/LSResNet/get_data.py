@@ -52,7 +52,8 @@ def get_data(pdb_id):
     
     scale = 0.5
     resolution = 1. / scale
-    y = tfbio.data.make_grid(xyz_coords, labels, max_dist=model.max_dist, grid_resolution=resolution)
+    max_dist = 35
+    y = tfbio.data.make_grid(xyz_coords, labels, max_dist=max_dist, grid_resolution=resolution)
     
     y[y > 0] = 1
     
