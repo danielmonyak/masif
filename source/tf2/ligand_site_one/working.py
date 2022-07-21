@@ -29,15 +29,9 @@ pos_list = {'test' : possible_test_pdbs, 'train' : possible_train_pdbs}
 if len(sys.argv) > 2:
   pdb_idx = int(sys.argv[1])
   possible_pdbs = pos_list[sys.argv[2]]
+  pdb = possible_pdbs[pdb_idx]
 else:
-  pdb_idx = 0
-  possible_pdbs = possible_test_pdbs
-
-pdb = possible_pdbs[pdb_idx]
-
-#pdb = sys.argv[1]
-#pdb = '3WV7_ACB_'
-#pdb = '4YMP_A_'
+  pdb = sys.argv[1]
 
 print('pdb:', pdb)
 
