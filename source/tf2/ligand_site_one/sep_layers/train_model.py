@@ -50,8 +50,8 @@ from_logits = model.loss_fn.get_config()['from_logits']
 thresh = (not from_logits) * 0.5
 binAcc = tf.keras.metrics.BinaryAccuracy(threshold = thresh)
 auc = tf.keras.metrics.AUC(from_logits = from_logits)
-FN = tf.keras.metrics.FalseNegatives(threshold = thresh)
-TP = tf.keras.metrics.TruePositives(threshold = thresh)
+FN = tf.keras.metrics.FalseNegatives(thresholds = thresh)
+TP = tf.keras.metrics.TruePositives(thresholds = thresh)
 
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
