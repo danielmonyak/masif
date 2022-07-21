@@ -58,7 +58,7 @@ FN = myMetrics.FalseNegatives(from_logits = from_logits)
 
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=[binAcc, auc, TP, TN, FP, FN]
+  metrics=[binAcc, auc, TP, FN]
 )
 
 if continue_training:
