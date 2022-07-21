@@ -58,7 +58,7 @@ def get_data(pdb_id):
     n_empty = n_samples - n_pockets
     
     sample_weight = np.empty(shape=y.shape, dtype=np.float32)
-    sample_weight.fill(1/(2*n_empty))
-    sample_weight[0, pocket_points, 0] = 1/(2*n_pockets)
+    sample_weight.fill(n_samples/(2*n_empty))
+    sample_weight[0, pocket_points, 0] = n_samples/(2*n_pockets)
     
     return X, y, sample_weight
