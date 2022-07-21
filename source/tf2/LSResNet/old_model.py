@@ -1,4 +1,3 @@
-import tfbio.data
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model
 from tensorflow.keras.regularizers import L2
