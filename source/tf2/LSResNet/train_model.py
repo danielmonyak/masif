@@ -14,7 +14,7 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from tf2.ligand_site_one.sep_layers.MaSIF_ligand_site_one import MaSIF_ligand_site
+from tf2.LSResNet.LSResNet import LSResNet
 from get_data import get_data
 #############################################
 continue_training = False
@@ -34,7 +34,7 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 #############################################
 num_epochs = 20                 #############
 starting_epoch = 0              #############
-use_sample_weight = True        #############
+use_sample_weight = False        #############
 #############################################
 #############################################
 
@@ -96,9 +96,7 @@ for i in range(num_epochs):
         if data is None:
             continue
         
-        X, y, sample_weight = data
-        if not use_sample_weight:
-            sample_weight = None
+        X, y = data
         
         print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
         
@@ -109,32 +107,7 @@ for i in range(num_epochs):
         ################################################
 
         train_j += 1
-        
-    loss_list = []
-    acc_list = []
-    auc_list = []
-    for pdb_id in val_list:
-        data = get_data(pdb_id)
-        if data is None:
-            continue
-        
-        if len(data) == 3:
-            X, y, sample_weight = data
-            sample_weight = sample_weight
-        else:
-            sample_weight = None
-            X, y = data
-        
-        loss, acc, auc = model.evaluate(X, y, verbose=0)[:3]
-        loss_list.append(loss)
-        acc_list.append(acc)
-        auc_list.append(auc)
-    
-    print(f'Epoch {i}, Validation Metrics')
-    print(f'Loss: {np.mean(loss_list)}')
-    print(f'Binary Accuracy: {np.mean(acc_list)}')
-    print(f'AUC: {np.mean(auc_list)}')
-    
+            
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
 
