@@ -2,7 +2,6 @@ import os
 import numpy as np
 from scipy import spatial
 from default_config.util import *
-from tf2.usage.predictor import Predictor
 import tfbio.data
 
 params = masif_opts["ligand_site"]
@@ -20,16 +19,9 @@ def get_data(pdb_id):
     rho_coords = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
     theta_coords = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
     mask = np.expand_dims(mask, 2)
-    indices = np.load(os.path.join(mydir, "p1_list_indices.npy"), encoding="latin1", allow_pickle = True)
-    # indices is (n_verts x <30), it should be
-    indices = pad_indices(indices, mask.shape[1]).astype(np.int32)
 
     data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [input_feat, rho_coords, theta_coords, mask])
     
-    xyz_coords = np.expand_dims(Predictor.getXYZCoords(pdb_dir), axis=0)
-    
-    X = (data_tsrs, xyz_coords)
-
     ###############################################################
     ###############################################################
     X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
@@ -60,7 +52,10 @@ def get_data(pdb_id):
     
     scale = 0.5
     resolution = 1. / scale
-    y = tfbio.data.make_grid(xyz_coords[0], y_raw, max_dist=model.max_dist, grid_resolution=resolution)
+    y = tfbio.data.make_grid(xyz_coords, labels, max_dist=model.max_dist, grid_resolution=resolution)
     
+    y[y > 0] = 1
     
-    return X, y, sample_weight
+    X = (data_tsrs, np.expand_dims(xyz_coords, axis=0))
+
+    return X, y
