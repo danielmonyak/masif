@@ -1,4 +1,4 @@
-tf_env=venv_latest
+tf_env=venv_tf
 env_path=/apps01/anaconda3/envs/$tf_env
 
 export APBS_BIN=$HOME/software/APBS-3.4.1.Linux/bin/apbs
