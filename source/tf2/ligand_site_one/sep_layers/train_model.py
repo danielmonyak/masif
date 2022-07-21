@@ -55,7 +55,7 @@ TP = tf.keras.metrics.TruePositives(thresholds = thresh)
 
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=[binAcc, auc]
+  metrics=[binAcc, auc, FN, TP]
 )
 
 if continue_training:
