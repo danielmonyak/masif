@@ -127,7 +127,7 @@ for i in range(num_epochs):
             sample_weight = None
             X, y = data
         
-        loss, acc, auc = model.evaluate(X, y, verbose=0)
+        loss, acc, auc = model.evaluate(X, y, verbose=0)[:3]
         loss_list.append(loss)
         acc_list.append(acc)
         auc_list.append(auc)
