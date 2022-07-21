@@ -47,7 +47,7 @@ def get_data(pdb_id):
     labels = np.zeros([n_samples, 1], dtype=np.int32)
     labels[pocket_points, 0] = 1
 
-    if (np.mean(y) > 0.75) or (np.sum(y) < 30):
+    if (np.mean(labels) > 0.75) or (np.sum(labels) < 30):
         return None
     
     scale = 0.5
