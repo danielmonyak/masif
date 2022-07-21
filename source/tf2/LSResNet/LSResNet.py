@@ -133,9 +133,13 @@ class LSResNet(Model):
         
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1)
         
-    def call(self, x, training=False):
-        ret = runLayers(self.convBlock0, data_tsrs)
+    def call(self, X_packed, training=False):
+        X, xyz_coords = X_packed
+        
+        ret = runLayers(self.convBlock0, X)
         ret = runLayers(self.denseReduce, ret)
+        
+        ret = self.myMakeGrid(xyz_coords, ret)
         
         ret1 = runLayers(self.RNConvBlock[0], ret)
         residue = runLayers(self.RNConvBlock[1], ret)
