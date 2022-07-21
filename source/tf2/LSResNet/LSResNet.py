@@ -10,7 +10,7 @@ def runLayers(layers, x):
         x = l(x)
     return x
 
-class MaSIF_ligand_site(Model):
+class LSResNet(Model):
     def train_step(self, data):
         if len(data) == 3:
             x, y, sample_weight = data
