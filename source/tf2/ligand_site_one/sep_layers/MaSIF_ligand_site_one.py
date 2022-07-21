@@ -49,7 +49,7 @@ class MaSIF_ligand_site(Model):
             ConvLayer(weights_num, conv_shape, self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
             layers.Reshape(reshape_shape),
             MeanAxis1(out_shp=[None, reshape_shape[1]]),
-            layers.BatchNormalization()
+            #layers.BatchNormalization()
         ]
     
     def __init__(
@@ -97,7 +97,7 @@ class MaSIF_ligand_site(Model):
         self.convBlock0 = [
             ConvLayer(5, self.conv_shapes[0], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
             layers.Reshape(self.reshape_shapes[0]),
-            layers.BatchNormalization()
+            #layers.BatchNormalization()
         ]
         
         self.convBlock1 = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[1], reshape_shape = self.reshape_shapes[1])
