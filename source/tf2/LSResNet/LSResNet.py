@@ -5,8 +5,6 @@ import functools
 from operator import add
 from default_config.util import *
 
-params = masif_opts["ligand"]
-
 def runLayers(layers, x):
     for l in layers:
         x = l(x)
@@ -43,14 +41,6 @@ class MaSIF_ligand_site(Model):
         self.compiled_metrics.update_state(y, y_pred, sample_weight=sample_weight)
 
         return {m.name: m.result() for m in self.metrics}
-
-    def makeConvBlock(self, weights_num, conv_shape, reshape_shape):
-        return [
-            ConvLayer(weights_num, conv_shape, self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
-            layers.Reshape(reshape_shape),
-            MeanAxis1(out_shp=[None, reshape_shape[1]]),
-            #layers.BatchNormalization()
-        ]
     
     def __init__(
         self,
@@ -81,6 +71,9 @@ class MaSIF_ligand_site(Model):
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
         
+        self.scale = 0.5
+        self.max_dist = 35
+        
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
         
@@ -96,62 +89,62 @@ class MaSIF_ligand_site(Model):
 
         self.convBlock0 = [
             ConvLayer(5, self.conv_shapes[0], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
-            layers.Reshape(self.reshape_shapes[0]),
-            #layers.BatchNormalization()
+            layers.Reshape(self.reshape_shapes[0])
         ]
         
-        self.convBlock1 = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[1], reshape_shape = self.reshape_shapes[1])
-        self.convBlock2 = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[2], reshape_shape = self.reshape_shapes[2])
+        self.denseReduce = [
+            layers.BatchNormalization(),
+            layers.ReLU(),
+            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
+            layers.Dense(self.n_feat, activation="relu"),
+        ]
         
-        ####
-        #self.convBlock_residue = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[2], reshape_shape = self.reshape_shapes[2])
-        ####
+        resolution = 1. / self.scale
+        self.myMakeGrid = MakeGrid(max_dist=self.max_dist, grid_resolution=resolution)
         
-        self.FC1 = layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=self.reg)
-        self.FC2 = layers.Dense(self.n_feat, activation="relu", kernel_regularizer=self.reg)
+        if K.image_data_format()=='channels_last':
+            bn_axis=4
+        else:
+            bn_axis=1
+
+        print(f'bn_axis: {bn_axis}')
+            
+        f=5
+        filters = [f, f, f]
+        filters1,filters2,filters3=filters
+        strides = (1,1,1)
         
-        self.myDense = layers.Dense(self.n_thetas, activation="relu", kernel_regularizer=self.reg)
-        self.outLayer = layers.Dense(1, kernel_regularizer=self.reg)
+        self.RNConvBlock=[
+            [layers.Conv3D(filters1, kernel_size=1, strides=strides, data_format=K.image_data_format()),
+            layers.BatchNormalization(axis=bn_axis),
+            layers.ReLU(),
+             
+            layers.Conv3D(filters2, kernel_size=3, padding='same'),
+            layers.BatchNormalization(axis=bn_axis),
+            layers.ReLU(),
+             
+            layers.Conv3D(filters3, kernel_size=1),
+            layers.BatchNormalization(axis=bn_axis)],
+            
+            [layers.Conv3D(filters3, kernel_size=1, strides=strides),
+            layers.BatchNormalization(axis=bn_axis)]
+        ]
+        
+        self.lastConvLayer = layers.Conv3D(1, kernel_size=1)
         
     def call(self, x, training=False):
-        data_tsrs, indices_tensor = x
-        _, rho_coords, theta_coords, mask = data_tsrs
-        
-        ####
-        #residue = runLayers(self.convBlock_residue, data_tsrs)
-        ####
-        
         ret = runLayers(self.convBlock0, data_tsrs)
-        ret = tf.nn.relu(ret)
-        ret = self.FC1(ret)
-        ret = self.FC2(ret)
+        ret = runLayers(self.denseReduce, ret)
         
-        input_feat = tf.gather(ret, indices_tensor, batch_dims=1)
-        ret = runLayers(self.convBlock1, (input_feat, rho_coords, theta_coords, mask))
-        ret = tf.nn.relu(ret)
-        
-        input_feat = tf.gather(ret, indices_tensor, batch_dims=1)
-        ret = runLayers(self.convBlock2, (input_feat, rho_coords, theta_coords, mask))
-        
-        ####
-        #ret = tf.add(ret, residue)
-        ####
+        ret1 = runLayers(self.RNConvBlock[0], ret)
+        residue = runLayers(self.RNConvBlock[1], ret)
+        ret = self.Add((ret1, residue))
         
         ret = tf.nn.relu(ret)
+        ret = self.lastConvLayer(ret)
         
-        ret = self.myDense(ret)
-        ret = self.outLayer(ret)
         return ret
 
-class MeanAxis1(layers.Layer):
-    def __init__(self, out_shp):
-        super(MeanAxis1, self).__init__()
-        self.out_shp = out_shp
-    def callInner(self, x):
-        return tf.reduce_mean(x, axis=-1)
-    def call(self, x):
-        return tf.map_fn(fn=self.callInner, elems = x, fn_output_signature = tf.TensorSpec(shape=self.out_shp, dtype=tf.float32))
-    
 class ConvLayer(layers.Layer):
     def __init__(self,
         weights_num,
@@ -351,3 +344,37 @@ class ConvLayer(layers.Layer):
         coords = np.concatenate((grid_rho_[None, :], grid_theta_[None, :]), axis=0)
         coords = coords.T  # every row contains the coordinates of a grid intersection
         return coords
+
+
+class MakeGrid(layers.Layer):
+    def __init__(self, max_dist=10.0, grid_resolution=1.0):
+        if grid_resolution <= 0:
+            raise ValueError('grid_resolution must be positive')
+        if max_dist <= 0:
+            raise ValueError('max_dist must be positive')
+        
+        self.grid_resolution = tf.constant(grid_resolution, dtype=tf.float32)
+        self.max_dist = tf.constant(max_dist, dtype=tf.float32)
+        self.box_size = tf.cast(tf.math.ceil(2 * max_dist / grid_resolution + 1), dtype=tf.int32)
+        
+        super(MakeGrid, self).__init__()
+    def call(self, coords, features):
+        batches = tf.shape(coords)[0]
+        c_shape = coords.shape
+        f_shape = features.shape
+        N = c_shape[1]
+        num_features = f_shape[2]
+        
+        grid_coords = (coords + self.max_dist) / self.grid_resolution
+        grid_coords = tf.cast(tf.round(grid_coords), dtype=tf.int32)
+
+        in_box = tf.reduce_all(tf.logical_and(tf.greater_equal(grid_coords, 0), tf.less(grid_coords, self.box_size)), axis=2)
+        grid_coords_IN = tf.boolean_mask(grid_coords, in_box)
+        features_IN = tf.boolean_mask(features, in_box)
+        
+        #### Cannot handle multiple batches at once!!!!!!!!!!!!!!!!!!!!!
+        
+        idx = tf.concat([tf.zeros([tf.shape(grid_coords_IN)[0], 1], dtype=tf.int32), grid_coords_IN], axis=-1)
+        grid = tf.scatter_nd(indices=idx, updates=features_IN, shape=(batches, self.box_size, self.box_size, self.box_size, num_features))
+        
+        return grid
