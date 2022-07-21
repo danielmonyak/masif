@@ -7,7 +7,6 @@ import pickle
 import numpy as np
 from scipy import spatial
 import tensorflow as tf
-import myMetrics
 
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
@@ -52,14 +51,9 @@ from_logits = model.loss_fn.get_config()['from_logits']
 thresh = (not from_logits) * 0.5
 binAcc = tf.keras.metrics.BinaryAccuracy(threshold = thresh)
 auc = tf.keras.metrics.AUC(from_logits = from_logits)
-TP = myMetrics.TruePositives(from_logits = from_logits)
-TN = myMetrics.TrueNegatives(from_logits = from_logits)
-FP = myMetrics.FalsePositives(from_logits = from_logits)
-FN = myMetrics.FalseNegatives(from_logits = from_logits)
-
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=[binAcc, auc, TP, FN]
+  metrics=[binAcc, auc]
 )
 
 if continue_training:
