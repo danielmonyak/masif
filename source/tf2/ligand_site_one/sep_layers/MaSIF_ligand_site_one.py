@@ -27,11 +27,8 @@ class MaSIF_ligand_site(Model):
         with tf.GradientTape() as tape:
             y_pred = self(x, training=True)
             
-            y_pred = y_pred[0]
-            y = y[0]
-            #print('y:', y.shape)
-            #print('y_pred:', y_pred.shape)
-            #print('sample_weight:', sample_weight.shape)
+            #y_pred = y_pred[0]
+            #y = y[0]
             
             loss = self.compiled_loss(
                 y,
