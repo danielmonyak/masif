@@ -96,8 +96,7 @@ for i in range(num_epochs):
         
         # TRAIN MODEL
         ################################################
-        model.fit(X, y, verbose = 2,
-                  sample_weight = sample_weight)
+        model.fit(X, y, verbose = 2)
         ################################################
 
         train_j += 1
