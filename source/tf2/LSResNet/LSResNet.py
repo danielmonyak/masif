@@ -1,6 +1,7 @@
 import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model, regularizers
 import tensorflow as tf
+from tensorflow.keras import backend as K
 import functools
 from operator import add
 from default_config.util import *
