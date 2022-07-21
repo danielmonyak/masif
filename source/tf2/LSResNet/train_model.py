@@ -37,7 +37,7 @@ use_sample_weight = False        #############
 #############################################
 #############################################
 
-model = MaSIF_ligand_site(
+model = LSResNet(
     params["max_distance"],
     feat_mask=params["feat_mask"],
     n_thetas=4,
