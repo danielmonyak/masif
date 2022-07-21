@@ -26,7 +26,7 @@ python $masif_source/data_preparation/00-pdb_download.py $1
 conda activate venv_sbi
 
 python2.7 $masif_source/data_preparation/00b-generate_assembly.py $1
-python2.7 $masif_source/data_preparation/00c-save_ligand_coords.py $1
+python2.7 $masif_source/data_preparation/00c-save_ligand_coords.py $1 ligand all_ligands
 
 conda deactivate
 
