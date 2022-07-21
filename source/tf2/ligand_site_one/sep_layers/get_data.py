@@ -54,7 +54,10 @@ def get_data(pdb_id):
     if (np.mean(y) > 0.75) or (np.sum(y) < 30):
         return None
     
-    sample_weight = np.ones_like(y, dtype=np.float32)
-    sample_weight[0, pocket_points, 0] = 15
+    imbalance_factor = 1/np.mean(y) - 1
+    
+    sample_weight = np.empty(shape=y.shape, dtype=np.float32)
+    sample_weight.fill(1/(2*imbalance_factor))
+    sample_weight[0, pocket_points, 0] = 1/2
     
     return X, y, sample_weight
