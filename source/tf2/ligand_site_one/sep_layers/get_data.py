@@ -55,6 +55,6 @@ def get_data(pdb_id):
         return None
     
     sample_weight = np.ones_like(y, dtype=np.float32)
-    sample_weight[0, pocket_points, 0] = 25.0
+    sample_weight[0, pocket_points, 0] = 15
     
     return X, y, sample_weight
