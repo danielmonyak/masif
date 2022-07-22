@@ -59,7 +59,7 @@ if data is None:
 X, y, centroid = data
 prot_coords = np.squeeze(X[1])
 
-density = model(X)
+density = model.predict(X).numpy()
 
 origin = (centroid - params['max_dist'])
 step = np.array([1.0 / params['scale']] * 3)
