@@ -91,10 +91,10 @@ class LSResNet(Model):
         self.IB_b9 = IdentityBlock([f * 8, f * 8, f * 8])
 
         self.UCB_a10 = UpConvBlock([f * 4, f*4 , f*4 ], size=(2,2,2), stride=(1,1,1))
-        self.IB_b10 = identity_block([f * 4, f*4 , f*4 ])
+        self.IB_b10 = IdentityBlock([f * 4, f*4 , f*4 ])
 
         self.UCB_a11 = UpConvBlock([f*2 , f*2 , f*2 ], size=(2,2,2), stride=(1,1,1))
-        self.IB_b11 = identity_block([f*2 , f*2 , f*2 ])
+        self.IB_b11 = IdentityBlock([f*2 , f*2 , f*2 ])
         #####################################
         #####################################
         
