@@ -378,27 +378,25 @@ class IdentityBlock:
         filter1,filter2,filter3=filters
         strides = (1,1,1)
         
-        self.mainBlock = [
-            layers.Conv3D(filters1, kernel_size=1, strides=strides),
-            layers.BatchNormalization(axis=bn_axis),
-            layers.ReLU(),
-             
-            layers.Conv3D(filters2, kernel_size=3, padding='same'),
-            layers.BatchNormalization(axis=bn_axis),
-            layers.ReLU(),
-             
-            layers.Conv3D(filters3, kernel_size=1),
-            layers.BatchNormalization(axis=bn_axis)
-        ]
+        self.mainBlock = []
         
-        self.resBlock = [
-            layers.Conv3D(filters3, kernel_size=1, strides=strides),
-            layers.BatchNormalization(axis=bn_axis)
+        self.mainBlock.append(layers.Conv3D(filters1, kernel_size=1))
+        if layer is None:
+            self.mainBlock.append(layers.BatchNormalization(axis=bn_axis))
+        self.mainBlock.append(layers.ReLU())
+             
+        self.mainBlock.append(layers.Conv3D(filters2, kernel_size=3, padding='same'))
+        if layer is None:
+            self.mainBlock.append(layers.BatchNormalization(axis=bn_axis))
+        self.mainBlock.append(layers.ReLU())
+             
+        self.mainBlock.append(layers.Conv3D(filters3, kernel_size=1))
+        if layer is None:
+            self.mainBlock.append(layers.BatchNormalization(axis=bn_axis))
         ]
         
     def call(self, x):
         ret = runLayers(self.mainBlock, x)
-        residue = runLayers(self.resBlock, x)
-        ret = tf.add(ret, residue)
+        ret = tf.add(ret, x)
         ret = tf.nn.relu(ret)
         return ret
