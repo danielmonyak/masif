@@ -20,7 +20,7 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from tf2.LSResNet.LSResNet import LSResNet
+from LSResNet import LSResNet
 from get_data import get_data
 
 params = masif_opts["LSResNet"]
@@ -44,14 +44,6 @@ model = LSResNet(
     n_rotations=4,
     reg_val = 0
 )
-from_logits = model.loss_fn.get_config()['from_logits']
-thresh = (not from_logits) * 0.5
-binAcc = tf.keras.metrics.BinaryAccuracy(threshold = thresh)
-auc = tf.keras.metrics.AUC(from_logits = from_logits)
-model.compile(optimizer = model.opt,
-  loss = model.loss_fn,
-  metrics=[binAcc, auc]
-)
 
 
 modelDir = 'kerasModel'
@@ -67,7 +59,7 @@ if data is None:
 X, y, centroid = data
 prot_coords = np.squeeze(X[1])
 
-density = tf.sigmoid(model.predict(X)).numpy()
+density = model(X)
 
 origin = (centroid - params['max_dist'])
 step = np.array([1.0 / params['scale']] * 3)
@@ -75,7 +67,7 @@ step = np.array([1.0 / params['scale']] * 3)
 if len(sys.argv) > 2:
     threshold = float(sys.argv[2])
 else:
-    threshold = 0.5
+    threshold = 0
 
 min_size=50
 path = 'outdir'
