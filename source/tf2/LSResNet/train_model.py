@@ -16,7 +16,7 @@ from default_config.util import *
 from tf2.LSResNet.LSResNet import LSResNet
 from get_data import get_data
 #############################################
-continue_training = False
+continue_training = (len(sys.argv) > 1) and (sys.argv[1] == 'continue')
 #read_metrics = False
 #############################################
 
