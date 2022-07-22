@@ -420,7 +420,7 @@ class ConvBlock:
         
 class IdentityBlock:
     def __init__(self, filters, layer=None):
-        filter1,filter2,filter3=filters
+        filtesr1,filters2,filters3=filters
         
         if K.image_data_format()=='channels_last':
             bn_axis=4
