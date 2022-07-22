@@ -12,6 +12,9 @@ from skimage.segmentation import clear_border
 from skimage.morphology import closing
 from skimage.measure import label
 
+import openbabel
+import pybel
+
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
@@ -64,8 +67,14 @@ load_status = model.load_weights(ckpPath)
 
 X, y = get_data(pdb.rstrip('_'))
 logits = model.predict(X)
-probs = tf.sigmoid(logits).numpy()
-'''
+density = tf.sigmoid(logits).numpy()
+threshold = 0.5
+min_size=50
+path = 'outdir'
+
+if not os.path.exists(path):
+    os.mkdir(path)
+
 voxel_size = (1 / params['scale']) ** 3
 bw = closing((density[0] > threshold).any(axis=-1))
 cleared = clear_border(bw)
@@ -76,4 +85,22 @@ for i in range(1, num_labels + 1):
     pocket_size = pocket_idx.sum() * voxel_size
     if pocket_size < min_size:
         label_image[np.where(pocket_idx)] = 0
-'''
+
+pockets = label_image
+
+pocket_label_arr = np.unique(pockets)
+i=0
+for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
+    indices = np.argwhere(pockets == pocket_label).astype('float32')
+    #indices *= step
+    #indices += origin
+
+    np.savetxt(path+'/pocket'+str(i)+'.txt', indices)
+
+    mol=openbabel.OBMol()
+    for idx in indices:
+        a=mol.NewAtom()
+        a.SetVector(float(idx[0]),float(idx[1]),float(idx[2]))
+    p_mol=pybel.Molecule(mol)
+    p_mol.write(format,path+'/pocket'+str(i)+'.'+format)
+    i+=1
