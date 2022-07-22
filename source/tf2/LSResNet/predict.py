@@ -1,20 +1,20 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
-from IPython.core.debugger import set_trace
 import importlib
+from IPython.core.debugger import set_trace
+import pickle
 import numpy as np
 from scipy import spatial
-from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score, RocCurveDisplay
 import tensorflow as tf
-import matplotlib.pyplot as plt
 
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from tf2.usage.predictor import Predictor
+from tf2.LSResNet.LSResNet import LSResNet
+from get_data import get_data
 
 params = masif_opts["ligand_site"]
 ligand_coord_dir = params["ligand_coords_dir"]
@@ -32,9 +32,6 @@ else:
   pdb = sys.argv[1]
 
 print('pdb:', pdb)
-
-pdb_dir = os.path.join(params['masif_precomputation_dir'], pdb)
-xyz_coords = Predictor.getXYZCoords(pdb_dir)
 
 model = LSResNet(
     params["max_distance"],
