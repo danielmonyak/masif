@@ -96,22 +96,19 @@ for i in range(num_epochs):
     
     loss_list = []
     acc_list = []
-    auc_list = []
     for pdb_id in val_list:
         data = get_data(pdb_id)
         if data is None:
             continue
             
         X, y = data
-        loss, acc, auc = model.evaluate(X, y, verbose=0)[:3]
+        loss, acc = model.evaluate(X, y, verbose=0)[:3]
         loss_list.append(loss)
         acc_list.append(acc)
-        auc_list.append(auc)
     
     print(f'Epoch {i}, Validation Metrics')
     print(f'Loss: {np.mean(loss_list)}')
     print(f'Binary Accuracy: {np.mean(acc_list)}')
-    print(f'AUC: {np.mean(auc_list)}')
     
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
