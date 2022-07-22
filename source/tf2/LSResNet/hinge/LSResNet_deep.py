@@ -342,8 +342,41 @@ class ConvBlock:
         filters1,filters2,filters3=filters
         strides = (1,1,1)
         
-        self.filters = filters
-        self.strides = strides
+        self.mainBlock = [
+            layers.Conv3D(filters1, kernel_size=1, strides=strides),
+            layers.BatchNormalization(axis=bn_axis),
+            layers.ReLU(),
+             
+            layers.Conv3D(filters2, kernel_size=3, padding='same'),
+            layers.BatchNormalization(axis=bn_axis),
+            layers.ReLU(),
+             
+            layers.Conv3D(filters3, kernel_size=1),
+            layers.BatchNormalization(axis=bn_axis)
+        ]
+        
+        self.resBlock = [
+            layers.Conv3D(filters3, kernel_size=1, strides=strides),
+            layers.BatchNormalization(axis=bn_axis)
+        ]
+        
+    def call(self, x):
+        ret = runLayers(self.mainBlock, x)
+        residue = runLayers(self.resBlock, x)
+        ret = tf.add(ret, residue)
+        ret = tf.nn.relu(ret)
+        return ret
+        
+        
+class IdentityBlock:
+    def __init__(self, filters, layer=None):
+        if K.image_data_format()=='channels_last':
+            bn_axis=4
+        else:
+            bn_axis=1
+        
+        filter1,filter2,filter3=filters
+        strides = (1,1,1)
         
         self.mainBlock = [
             layers.Conv3D(filters1, kernel_size=1, strides=strides),
