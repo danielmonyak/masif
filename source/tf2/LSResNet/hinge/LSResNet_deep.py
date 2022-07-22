@@ -64,35 +64,36 @@ class LSResNet(Model):
         #####################################
         #####################################
         f=18
-        self.CB_a2 = conv_block([f, f, f ], strides=(1,1,1))
-        self.IB_b2 = identity_block([f, f, f ])
-        self.IB_c2 = identity_block([f, f, f ])
         
-        self.CB_a4 = conv_block([f*2, f*2, f * 2], strides=(2,2,2))
-        self.IB_b4 = identity_block([f*2,f*2,f * 2])
-        self.IB_f4 = identity_block([f*2,f*2,f * 2])
+        self.CB_a2 = ConvBlock([f, f, f ], strides=(1,1,1))
+        self.IB_b2 = IdentityBlock([f, f, f ])
+        self.IB_c2 = IdentityBlock([f, f, f ])
         
-        self.CB_a5 = conv_block([f*4, f*4, f * 4], strides=(2,2,2))
-        self.IB_b5 = identity_block([f*4, f*4, f *4])
-        self.IB_c5 = identity_block([f*4, f*4, f * 4])
+        self.CB_a4 = ConvBlock([f*2, f*2, f * 2], strides=(2,2,2))
+        self.IB_b4 = IdentityBlock([f*2,f*2,f * 2])
+        self.IB_f4 = IdentityBlock([f*2,f*2,f * 2])
         
-        self.CB_a6 = conv_block([f*8, f*8, f *8], strides=(3,3,3))
-        self.IB_b6 = identity_block([f*8, f*8, f *8])
-        self.IB_c6 = identity_block([f*8, f*8, f * 8])
+        self.CB_a5 = ConvBlock([f*4, f*4, f * 4], strides=(2,2,2))
+        self.IB_b5 = IdentityBlock([f*4, f*4, f *4])
+        self.IB_c5 = IdentityBlock([f*4, f*4, f * 4])
         
-        self.CB_a7 = conv_block([f*16, f*16, f *16], strides=(3,3,3))
-        self.IB_b7 = identity_block([f*16, f*16, f *16])
+        self.CB_a6 = ConvBlock([f*8, f*8, f *8], strides=(3,3,3))
+        self.IB_b6 = IdentityBlock([f*8, f*8, f *8])
+        self.IB_c6 = IdentityBlock([f*8, f*8, f * 8])
         
-        self.UCB_a8 = up_conv_block([f * 16, f * 16, f * 16], size=(3,3,3), padding='same')
-        self.IB_b8 = identity_block([f * 16, f * 16, f * 16])
+        self.CB_a7 = ConvBlock([f*16, f*16, f *16], strides=(3,3,3))
+        self.IB_b7 = IdentityBlock([f*16, f*16, f *16])
+        
+        self.UCB_a8 = UpConvBlock([f * 16, f * 16, f * 16], size=(3,3,3), padding='same')
+        self.IB_b8 = IdentityBlock([f * 16, f * 16, f * 16])
 
-        self.UCB_a9 = up_conv_block([f * 8, f * 8, f * 8], size=(3,3,3), stride=(1,1,1))
-        self.IB_b9 = identity_block([f * 8, f * 8, f * 8])
+        self.UCB_a9 = UpConvBlock([f * 8, f * 8, f * 8], size=(3,3,3), stride=(1,1,1))
+        self.IB_b9 = IdentityBlock([f * 8, f * 8, f * 8])
 
-        self.UCB_a10 = up_conv_block([f * 4, f*4 , f*4 ], size=(2,2,2), stride=(1,1,1))
+        self.UCB_a10 = UpConvBlock([f * 4, f*4 , f*4 ], size=(2,2,2), stride=(1,1,1))
         self.IB_b10 = identity_block([f * 4, f*4 , f*4 ])
 
-        self.UCB_a11 = up_conv_block([f*2 , f*2 , f*2 ], size=(2,2,2), stride=(1,1,1))
+        self.UCB_a11 = UpConvBlock([f*2 , f*2 , f*2 ], size=(2,2,2), stride=(1,1,1))
         self.IB_b11 = identity_block([f*2 , f*2 , f*2 ])
         #####################################
         #####################################
@@ -107,10 +108,7 @@ class LSResNet(Model):
         
         ret = self.myMakeGrid(xyz_coords, ret)
         
-        ret1 = runLayers(self.RNConvBlock[0], ret)
-        residue = runLayers(self.RNConvBlock[1], ret)
-        ret = tf.add(ret1, residue)
-        ret = tf.nn.relu(ret)
+        ret = run_UNet
         
         ret = self.lastConvLayer(ret)
         
