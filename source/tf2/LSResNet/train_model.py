@@ -84,6 +84,9 @@ for i in range(num_epochs):
     #############################################################
     ###################     TRAINING DATA     ###################
     #############################################################
+    
+    np.random.shuffle(training_list)
+    
     for pdb_id in training_list:
         data = get_data(pdb_id)
         if data is None:
