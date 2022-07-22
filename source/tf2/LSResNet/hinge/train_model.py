@@ -52,7 +52,7 @@ def hinge_accuracy(y_true, y_pred):
 
 binAcc = tf.keras.metrics.BinaryAccuracy(threshold = 0)
 model.compile(optimizer = 'adam',
-  loss = 'hinge',
+  loss = 'squared_hinge',
   metrics=[hinge_accuracy, F1]
 )
 
