@@ -1,11 +1,7 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
-import importlib
-from IPython.core.debugger import set_trace
-import pickle
 import numpy as np
-from scipy import spatial
 import tensorflow as tf
 
 phys_gpus = tf.config.list_physical_devices('GPU')
@@ -13,7 +9,7 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from tf2.LSResNet.LSResNet import LSResNet
+from LSResNet import LSResNet
 from get_data import get_data
 #############################################
 continue_training = (len(sys.argv) > 1) and (sys.argv[1] == 'continue')
@@ -46,13 +42,11 @@ model = LSResNet(
     reg_val = 0
 )
 
-from_logits = model.loss_fn.get_config()['from_logits']
-thresh = (not from_logits) * 0.5
+thresh = 0
 binAcc = tf.keras.metrics.BinaryAccuracy(threshold = thresh)
-auc = tf.keras.metrics.AUC(from_logits = from_logits)
-model.compile(optimizer = model.opt,
-  loss = model.loss_fn,
-  metrics=[binAcc, auc]
+model.compile(optimizer = 'adam',
+  loss = 'hinge',
+  metrics=[binAcc]
 )
 
 if continue_training:
