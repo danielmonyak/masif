@@ -458,28 +458,28 @@ class UpConvBlock:
         else:
             bn_axis=1
     
-    self.mainBlock = []
-    self.mainBlock.append(layers.UpSampling3D(size))
-    self.mainBlock.append(layers.Conv3D(filters1, kernel_size=1, strides=stride))
-    if layer is None:
-        self.mainBlock.append(layers.BatchNormalization(axis=bn_axis))
-    self.mainBlock.append(layers.ReLU())
-    
-    self.mainBlock.append(layers.Conv3D(filters2, kernel_size=3, padding=padding, strides=stride))
-    if layer is None:
-        self.mainBlock.append(layers.BatchNormalization(axis=bn_axis))
-    self.mainBlock.append(layers.ReLU())
-    
-    self.mainBlock.append(layers.Conv3D(filters3, kernel_size=1))
-    if layer is None:
-        self.mainBlock.append(layers.BatchNormalization(axis=bn_axis))
-    
-    
-    self.resBlock = []
-    self.resBlock.append(layers.UpSampling3D(size))
-    self.resBlock.append(layers.Conv3D(filters3, kernel_size=1, strides=stride, padding=padding))
-    if layer is None:
-        self.resBlock.append(layers.BatchNormalization(axis=bn_axis))
+        self.mainBlock = []
+        self.mainBlock.append(layers.UpSampling3D(size))
+        self.mainBlock.append(layers.Conv3D(filters1, kernel_size=1, strides=stride))
+        if layer is None:
+            self.mainBlock.append(layers.BatchNormalization(axis=bn_axis))
+        self.mainBlock.append(layers.ReLU())
+
+        self.mainBlock.append(layers.Conv3D(filters2, kernel_size=3, padding=padding, strides=stride))
+        if layer is None:
+            self.mainBlock.append(layers.BatchNormalization(axis=bn_axis))
+        self.mainBlock.append(layers.ReLU())
+
+        self.mainBlock.append(layers.Conv3D(filters3, kernel_size=1))
+        if layer is None:
+            self.mainBlock.append(layers.BatchNormalization(axis=bn_axis))
+
+
+        self.resBlock = []
+        self.resBlock.append(layers.UpSampling3D(size))
+        self.resBlock.append(layers.Conv3D(filters3, kernel_size=1, strides=stride, padding=padding))
+        if layer is None:
+            self.resBlock.append(layers.BatchNormalization(axis=bn_axis))
     
     def call(self, x):
         ret = runLayers(self.mainBlock, x)
