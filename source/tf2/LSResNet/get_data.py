@@ -4,7 +4,7 @@ from scipy import spatial
 from default_config.util import *
 import tfbio.data
 
-params = masif_opts["ligand_site"]
+params = masif_opts["LSResNet"]
 
 def get_data(pdb_id):
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
@@ -50,10 +50,13 @@ def get_data(pdb_id):
     if (np.mean(labels) > 0.75) or (np.sum(labels) < 30):
         return None
     
-    scale = 0.5
-    resolution = 1. / scale
-    max_dist = 35
-    y = tfbio.data.make_grid(xyz_coords, labels, max_dist=max_dist, grid_resolution=resolution)
+    ###
+    centroid = xyz_coords.mean(axis=0)
+    xyz_coords -= centroid
+    ###
+    
+    resolution = 1. / params['scale']
+    y = tfbio.data.make_grid(xyz_coords, labels, max_dist=params['max_dist'], grid_resolution=resolution)
     
     y[y > 0] = 1
     
