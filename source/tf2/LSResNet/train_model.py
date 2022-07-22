@@ -25,7 +25,6 @@ params = masif_opts["ligand_site"]
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
-ckpStatePath = ckpPath + '.pickle'
 
 modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 
