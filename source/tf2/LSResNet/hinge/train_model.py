@@ -42,11 +42,16 @@ model = LSResNet(
     reg_val = 0
 )
 
-thresh = 0
-binAcc = tf.keras.metrics.BinaryAccuracy(threshold = thresh)
+def hinge_accuracy(y_true, y_pred):
+    y_true = tf.squeeze(y_true) > 0.0
+    y_pred = tf.squeeze(y_pred) > 0.0
+    result = tf.cast(y_true == y_pred, tf.float32)
+    return tf.reduce_mean(result)
+
+binAcc = tf.keras.metrics.BinaryAccuracy(threshold = 0)
 model.compile(optimizer = 'adam',
   loss = 'hinge',
-  metrics=[binAcc]
+  metrics=[hinge_accuracy]
 )
 
 if continue_training:
