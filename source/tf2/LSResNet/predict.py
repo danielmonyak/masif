@@ -71,8 +71,8 @@ centroid = prot_coords.mean(axis=0)
 
 density = tf.sigmoid(model.predict(X)).numpy()
 
-origin = (centroid - self.max_dist)
-step = np.array([1.0 / self.scale] * 3)
+origin = (centroid - params['max_dist'])
+step = np.array([1.0 / params['scale']] * 3)
 
 
 threshold = 0.5
