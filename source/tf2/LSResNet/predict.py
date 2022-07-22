@@ -66,7 +66,7 @@ load_status = model.load_weights(ckpPath)
 #load_status.expect_partial()
 
 X, y = get_data(pdb.rstrip('_'))
-prot_coords = X[1]
+prot_coords = np.squeeze(X[1])
 centroid = prot_coords.mean(axis=0)
 
 density = tf.sigmoid(model.predict(X)).numpy()
@@ -102,13 +102,13 @@ for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
     indices = np.argwhere(pockets == pocket_label).astype('float32')
     indices *= step
     indices += origin
-
+    
     np.savetxt(path+'/pocket'+str(i)+'.txt', indices)
-
+    
     mol=openbabel.OBMol()
     for idx in indices:
         a=mol.NewAtom()
         a.SetVector(float(idx[0]),float(idx[1]),float(idx[2]))
     p_mol=pybel.Molecule(mol)
-    p_mol.write(file_format,path+'/pocket'+str(i)+'.'+file_format)
+    p_mol.write(file_format,path+'/pocket'+str(i)+'.'+file_format, overwrite=True)
     i+=1
