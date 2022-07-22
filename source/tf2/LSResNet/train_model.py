@@ -52,7 +52,7 @@ binAcc = tf.keras.metrics.BinaryAccuracy(threshold = thresh)
 auc = tf.keras.metrics.AUC(from_logits = from_logits)
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=[binAcc, auc]
+  metrics=[binAcc, auc, F1]
 )
 
 if continue_training:
@@ -103,16 +103,18 @@ for i in range(num_epochs):
     loss_list = []
     acc_list = []
     auc_list = []
+    F1_list = []
     for pdb_id in val_list:
         data = get_data(pdb_id)
         if data is None:
             continue
             
         X, y = data
-        loss, acc, auc = model.evaluate(X, y, verbose=0)[:3]
+        loss, acc, auc, F1 = model.evaluate(X, y, verbose=0)[:4]
         loss_list.append(loss)
         acc_list.append(acc)
         auc_list.append(auc)
+        F1_list.append(F1)
     
     print(f'Epoch {i}, Validation Metrics')
     print(f'Loss: {np.mean(loss_list)}')
