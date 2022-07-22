@@ -32,3 +32,13 @@ def pad_indices(indices, max_verts):
             [indices[patch_ix], [patch_ix] * (max_verts - len(indices[patch_ix]))])
         )
     return np.stack(ret_list)
+
+def F1(y_true, y_pred):
+    y_true = tf.squeeze(y_true) > 0.0
+    y_pred = tf.squeeze(y_pred) > 0.0
+    overlap = tf.reduce_sum(tf.cast(y_true & y_pred, dtype=tf.float32))
+    n_true = tf.reduce_sum(tf.cast(y_true, dtype=tf.float32))
+    n_pred = tf.reduce_sum(tf.cast(y_pred, dtype=tf.float32))
+    recall = overlap/n_true
+    precision = overlap/n_pred
+    return 2*precision*recall / (precision + recall)
