@@ -104,6 +104,7 @@ for i in range(num_epochs):
         dataset_temp = tf.data.Dataset.from_tensors(data)
         if cur_batch_sz == 0:
             dataset = dataset_temp
+            cur_batch_sz += 1
         else:
             dataset = dataset.concatenate(dataset_temp)
             cur_batch_sz += 1
