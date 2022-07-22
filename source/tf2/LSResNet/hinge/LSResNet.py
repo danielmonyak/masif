@@ -98,7 +98,7 @@ class LSResNet(Model):
             layers.BatchNormalization(axis=bn_axis)]
         ]
         
-        self.lastConvLayer = layers.Conv3D(1, kernel_size=1)
+        self.lastConvLayer = layers.Conv3D(1, kernel_size=1, activation='tanh')
         
     def call(self, X_packed, training=False):
         X, xyz_coords = X_packed
