@@ -441,7 +441,7 @@ class IdentityBlock:
         self.mainBlock.append(layers.Conv3D(filters3, kernel_size=1))
         if layer is None:
             self.mainBlock.append(layers.BatchNormalization(axis=bn_axis))
-        ]
+        
         
     def call(self, x):
         ret = runLayers(self.mainBlock, x)
