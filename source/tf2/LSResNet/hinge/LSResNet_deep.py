@@ -148,6 +148,7 @@ class LSResNet(Model):
         x = self.IB_b11(x)
     
         x = tf.concat([x, x1], axis=4)
+        return x
     
 class ConvLayer(layers.Layer):
     def __init__(self,
