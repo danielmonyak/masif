@@ -108,12 +108,47 @@ class LSResNet(Model):
         
         ret = self.myMakeGrid(xyz_coords, ret)
         
-        ret = run_UNet
-        
+        ret = self.run_UNet(ret)
         ret = self.lastConvLayer(ret)
-        
         return ret
 
+    def run_UNet(self, inputs):
+        x = self.CB_a2(inputs)
+        x = self.IB_b2(x)
+        x1 = self.IB_c2(x)
+        
+        x = self.CB_a4(x)
+        x = self.IB_b4(x)
+        x2 = self.IB_f4(x)
+        
+        x = self.CB_a5(x)
+        x = self.IB_b5(x)
+        x3 = self.IB_c5(x)
+        
+        x = self.CB_a6(x)
+        x = self.IB_b6(x)
+        x4 = self.IB_c6(x)
+        
+        x = self.CB_a7(x)
+        x = self.IB_b7(x)
+        
+        x = self.UCB_a8(x)
+        x = self.IB_b8(x)
+
+        x = tf.concat([x, x4], axis=4)
+        x = self.UCB_a9(x)
+        x = self.IB_b9(x)
+
+        x = tf.concat([x, x3], axis=4)
+        x = self.UCB_a10(x)
+        x = self.IB_b10(x)
+        
+        x = tf.concat([x, x2], axis=4)
+        x = self.UCB_a11(x)
+        x = self.IB_b11(x)
+    
+        x = tf.concat([x, x1], axis=4)
+    
 class ConvLayer(layers.Layer):
     def __init__(self,
         weights_num,
