@@ -6,7 +6,7 @@ import tfbio.data
 
 params = masif_opts["LSResNet"]
 
-def get_data(pdb_id):
+def get_data(pdb_id, training = True):
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
 
     mask = np.load(os.path.join(mydir, "p1_mask.npy"))
@@ -62,4 +62,7 @@ def get_data(pdb_id):
     
     X = (data_tsrs, np.expand_dims(xyz_coords, axis=0))
 
-    return X, y
+    if training:
+        return X, y
+    
+    return X, y, centroid
