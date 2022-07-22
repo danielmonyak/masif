@@ -99,7 +99,7 @@ i=0
 for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
     indices = np.argwhere(pockets == pocket_label).astype('float32')
     indices *= step
-    indices += origin
+    #indices += origin
     
     np.savetxt(path+'/pocket'+str(i)+'.txt', indices)
     
