@@ -12,6 +12,9 @@ def runLayers(layers, x):
     return x
 
 class LSResNet(Model):
+    def make_ConvBlock():
+        
+    
     def __init__(
         self,
         max_rho,
@@ -72,31 +75,7 @@ class LSResNet(Model):
         resolution = 1. / self.scale
         self.myMakeGrid = MakeGrid(max_dist=self.max_dist, grid_resolution=resolution)
         
-        if K.image_data_format()=='channels_last':
-            bn_axis=4
-        else:
-            bn_axis=1
-            
-        f=5
-        filters = [f, f, f]
-        filters1,filters2,filters3=filters
-        strides = (1,1,1)
         
-        self.RNConvBlock=[
-            [layers.Conv3D(filters1, kernel_size=1, strides=strides, data_format=K.image_data_format()),
-            layers.BatchNormalization(axis=bn_axis),
-            layers.ReLU(),
-             
-            layers.Conv3D(filters2, kernel_size=3, padding='same'),
-            layers.BatchNormalization(axis=bn_axis),
-            layers.ReLU(),
-             
-            layers.Conv3D(filters3, kernel_size=1),
-            layers.BatchNormalization(axis=bn_axis)],
-            
-            [layers.Conv3D(filters3, kernel_size=1, strides=strides),
-            layers.BatchNormalization(axis=bn_axis)]
-        ]
         
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1, activation='tanh')
         
@@ -111,8 +90,8 @@ class LSResNet(Model):
         ret1 = runLayers(self.RNConvBlock[0], ret)
         residue = runLayers(self.RNConvBlock[1], ret)
         ret = tf.add(ret1, residue)
-        
         ret = tf.nn.relu(ret)
+        
         ret = self.lastConvLayer(ret)
         
         return ret
@@ -350,3 +329,43 @@ class MakeGrid(layers.Layer):
         grid = tf.scatter_nd(indices=idx, updates=features_IN, shape=(batches, self.box_size, self.box_size, self.box_size, num_features))
         
         return grid
+
+class ConvBlock:
+    def __init__(self, filters, strides=(2,2,2)):
+        if K.image_data_format()=='channels_last':
+            bn_axis=4
+        else:
+            bn_axis=1
+            
+        f=5
+        filters = [f, f, f]
+        filters1,filters2,filters3=filters
+        strides = (1,1,1)
+        
+        self.filters = filters
+        self.strides = strides
+        
+        self.mainBlock = [
+            layers.Conv3D(filters1, kernel_size=1, strides=strides),
+            layers.BatchNormalization(axis=bn_axis),
+            layers.ReLU(),
+             
+            layers.Conv3D(filters2, kernel_size=3, padding='same'),
+            layers.BatchNormalization(axis=bn_axis),
+            layers.ReLU(),
+             
+            layers.Conv3D(filters3, kernel_size=1),
+            layers.BatchNormalization(axis=bn_axis)
+        ]
+        
+        self.resBlock = [
+            layers.Conv3D(filters3, kernel_size=1, strides=strides),
+            layers.BatchNormalization(axis=bn_axis)
+        ]
+        
+    def call(self, x):
+        ret = runLayers(self.mainBlock, x)
+        residue = runLayers(self.resBlock, x)
+        ret = tf.add(ret, residue)
+        ret = tf.nn.relu(ret)
+        return ret
