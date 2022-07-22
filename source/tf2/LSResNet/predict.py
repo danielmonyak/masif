@@ -58,9 +58,13 @@ modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 
 load_status = model.load_weights(ckpPath)
-#load_status.expect_partial()
+load_status.expect_partial()
 
-X, y, centroid = get_data(pdb.rstrip('_'), training=False)
+data = get_data(pdb.rstrip('_'), training=False)
+if data is None:
+    sys.exit('Data couldn\'t be retrieved')
+
+X, y, centroid = data
 prot_coords = np.squeeze(X[1])
 
 density = tf.sigmoid(model.predict(X)).numpy()
