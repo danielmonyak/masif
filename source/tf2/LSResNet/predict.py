@@ -31,12 +31,7 @@ possible_test_pdbs = ['2VRB_AB_', '1FCD_AC_', '1FNN_A_', '1RI4_A_', '4PGH_AB_']
 possible_train_pdbs = ['4X7G_A_', '4RLR_A_', '3OWC_A_', '3SC6_A_', '1TU9_A_']
 pos_list = {'test' : possible_test_pdbs, 'train' : possible_train_pdbs}
 
-if len(sys.argv) > 2:
-  pdb_idx = int(sys.argv[1])
-  possible_pdbs = pos_list[sys.argv[2]]
-  pdb = possible_pdbs[pdb_idx]
-else:
-  pdb = sys.argv[1]
+pdb = sys.argv[1]
 
 print('pdb:', pdb)
 
@@ -74,8 +69,11 @@ density = tf.sigmoid(model.predict(X)).numpy()
 origin = (centroid - params['max_dist'])
 step = np.array([1.0 / params['scale']] * 3)
 
+if len(sys.argv) > 2:
+    threshold = float(sys.argv[2])
+else:
+    threshold = 0.5
 
-threshold = 0.5
 min_size=50
 path = 'outdir'
 file_format = 'mol2'
