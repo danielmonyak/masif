@@ -3,12 +3,13 @@ err=error_files
 if [ ! -d $out ]; then mkdir $out; fi
 if [ ! -d $err ]; then mkdir $err; fi
 
-batchSize=6
+batchSize=10
 sleep_time=20
 
 i=0
 unset running
 while read p; do
+	echo $p
 	if [ $(( i % $batchSize )) -eq 0 ]; then
 		for pid in ${running[@]}; do
 			while ps -o pid ax | grep -q $pid; do
@@ -17,6 +18,9 @@ while read p; do
 		done
 		running=()
 	fi
+
+	echo "Running data prepare on $p"
+
 	FIELD1=$(echo $p| cut -d" " -f1)
        	PDBID=$(echo $FIELD1| cut -d"_" -f1)
       	CHAIN1=$(echo $FIELD1| cut -d"_" -f2)
