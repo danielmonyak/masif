@@ -9,7 +9,8 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from LSResNet import LSResNet
+#from LSResNet import LSResNet
+from LSResNet_deep import LSResNet
 from get_data import get_data
 #############################################
 continue_training = (len(sys.argv) > 1) and (sys.argv[1] == 'continue')
@@ -17,7 +18,7 @@ continue_training = (len(sys.argv) > 1) and (sys.argv[1] == 'continue')
 #############################################
 
 #params = masif_opts["ligand"]
-params = masif_opts["ligand_site"]
+params = masif_opts["LSResNet"]
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
@@ -27,7 +28,7 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 #############################################
 #############################################
 num_epochs = 40                 #############
-starting_epoch = 15              ############
+starting_epoch = 0              ############
 use_sample_weight = False        ############
 #############################################
 #############################################
