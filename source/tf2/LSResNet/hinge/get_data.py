@@ -62,6 +62,10 @@ def get_data(pdb_id, training = True):
     
     y[y > 0] = 1
     
+    ######################################## HINGE
+    y[y == 0] = -1
+    ####
+    
     X = (data_tsrs, np.expand_dims(xyz_coords, axis=0))
 
     if training:
