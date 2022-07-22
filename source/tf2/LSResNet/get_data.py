@@ -12,7 +12,7 @@ def get_data(pdb_id, training = True):
     mask = np.load(os.path.join(mydir, "p1_mask.npy"))
     n_samples = mask.shape[0]
 
-    if n_samples > 8000:
+    if training and n_samples > 8000:
         return None
 
     input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
@@ -35,6 +35,8 @@ def get_data(pdb_id, training = True):
     try:
         all_ligand_coords = np.load(coordsPath)
     except:
+        if not training:
+            print(f'Problem opening {coordsPath}')
         return None
 
     pocket_points = []
