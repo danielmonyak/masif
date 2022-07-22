@@ -8,6 +8,10 @@ import numpy as np
 from scipy import spatial
 import tensorflow as tf
 
+from skimage.segmentation import clear_border
+from skimage.morphology import closing
+from skimage.measure import label
+
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
@@ -16,7 +20,7 @@ from default_config.util import *
 from tf2.LSResNet.LSResNet import LSResNet
 from get_data import get_data
 
-params = masif_opts["ligand_site"]
+params = masif_opts["LSResNet"]
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
@@ -59,3 +63,17 @@ load_status = model.load_weights(ckpPath)
 #load_status.expect_partial()
 
 X, y = get_data(pdb.rstrip('_'))
+logits = model.predict(X)
+probs = tf.sigmoid(logits).numpy()
+'''
+voxel_size = (1 / params['scale']) ** 3
+bw = closing((density[0] > threshold).any(axis=-1))
+cleared = clear_border(bw)
+
+label_image, num_labels = label(cleared, return_num=True)
+for i in range(1, num_labels + 1):
+    pocket_idx = (label_image == i)
+    pocket_size = pocket_idx.sum() * voxel_size
+    if pocket_size < min_size:
+        label_image[np.where(pocket_idx)] = 0
+'''
