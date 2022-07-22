@@ -410,7 +410,7 @@ class ConvBlock:
             layers.BatchNormalization(axis=bn_axis)
         ]
         
-    def call(self, x):
+    def __call__(self, x):
         ret = runLayers(self.mainBlock, x)
         residue = runLayers(self.resBlock, x)
         ret = tf.add(ret, residue)
@@ -443,7 +443,7 @@ class IdentityBlock:
             self.mainBlock.append(layers.BatchNormalization(axis=bn_axis))
         
         
-    def call(self, x):
+    def __call__(self, x):
         ret = runLayers(self.mainBlock, x)
         ret = tf.add(ret, x)
         ret = tf.nn.relu(ret)
@@ -481,7 +481,7 @@ class UpConvBlock:
         if layer is None:
             self.resBlock.append(layers.BatchNormalization(axis=bn_axis))
     
-    def call(self, x):
+    def __call__(self, x):
         ret = runLayers(self.mainBlock, x)
         residue = runLayers(self.resBlock, x)
         ret = tf.add(ret, residue)
