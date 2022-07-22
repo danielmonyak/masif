@@ -26,9 +26,9 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 
 #############################################
 #############################################
-num_epochs = 20                 #############
-starting_epoch = 0              #############
-use_sample_weight = False        #############
+num_epochs = 40                 #############
+starting_epoch = 15              ############
+use_sample_weight = False        ############
 #############################################
 #############################################
 
@@ -89,6 +89,9 @@ i = starting_epoch
 
 print(f'Running training data, epoch {i}')
 for i in range(num_epochs):
+    if i < starting_epoch:
+        continue
+    
     train_j = 0
     #############################################################
     ###################     TRAINING DATA     ###################
