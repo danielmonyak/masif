@@ -332,15 +332,12 @@ class MakeGrid(layers.Layer):
 
 class ConvBlock:
     def __init__(self, filters, strides=(2,2,2)):
+        filters1,filters2,filters3=filters
+        
         if K.image_data_format()=='channels_last':
             bn_axis=4
         else:
             bn_axis=1
-            
-        f=5
-        filters = [f, f, f]
-        filters1,filters2,filters3=filters
-        strides = (1,1,1)
         
         self.mainBlock = [
             layers.Conv3D(filters1, kernel_size=1, strides=strides),
@@ -370,13 +367,12 @@ class ConvBlock:
         
 class IdentityBlock:
     def __init__(self, filters, layer=None):
+        filter1,filter2,filter3=filters
+        
         if K.image_data_format()=='channels_last':
             bn_axis=4
         else:
             bn_axis=1
-        
-        filter1,filter2,filter3=filters
-        strides = (1,1,1)
         
         self.mainBlock = []
         
@@ -400,3 +396,18 @@ class IdentityBlock:
         ret = tf.add(ret, x)
         ret = tf.nn.relu(ret)
         return ret
+
+class UpConvBlock:
+    def __init__(self, filters, stride=(1,1,1), size=(2,2,2), padding='same', layer=None):
+        filters1,filters2,filters3=filters
+        
+        if K.image_data_format()=='channels_last':
+            bn_axis=4
+        else:
+            bn_axis=1
+    
+    self.mainBlock = []
+    
+    self.mainBlock.append(layers.UpSampling3D(size))
+    
+    
