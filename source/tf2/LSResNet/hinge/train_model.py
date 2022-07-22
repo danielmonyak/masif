@@ -92,6 +92,8 @@ for i in range(num_epochs):
     
     for pdb_id in training_list:
         data = get_data(pdb_id)
+        dataset_temp = tf.data.Dataset.from_tensors(data)
+        
         if data is None:
             continue
         
