@@ -71,6 +71,7 @@ density = tf.sigmoid(logits).numpy()
 threshold = 0.5
 min_size=50
 path = 'outdir'
+file_format = 'mol2'
 
 if not os.path.exists(path):
     os.mkdir(path)
@@ -102,5 +103,5 @@ for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
         a=mol.NewAtom()
         a.SetVector(float(idx[0]),float(idx[1]),float(idx[2]))
     p_mol=pybel.Molecule(mol)
-    p_mol.write(format,path+'/pocket'+str(i)+'.'+format)
+    p_mol.write(file_format,path+'/pocket'+str(i)+'.'+file_format)
     i+=1
