@@ -6,6 +6,8 @@ import functools
 from operator import add
 from default_config.util import *
 
+params = masif_opts['LSResNet']
+
 def runLayers(layers, x):
     for l in layers:
         x = l(x)
@@ -41,23 +43,12 @@ class LSResNet(Model):
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
         
-        self.scale = 0.5
-        self.max_dist = 35
-        
-
-        self.conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
-                       [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
-                       [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
-                       [self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos]] 
-        self.reshape_shapes = [[-1, self.n_thetas * self.n_rhos * self.n_feat],
-                          [-1, self.n_feat, self.n_thetas * self.n_rhos],
-                          [-1, self.n_feat, self.n_thetas * self.n_rhos],
-                          [-1, self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos]]
-
+        self.scale = params['scale']
+        self.max_dist = params['max_dist']
 
         self.convBlock0 = [
-            ConvLayer(5, self.conv_shapes[0], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
-            layers.Reshape(self.reshape_shapes[0])
+            ConvLayer(5, [self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
+            layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat])
         ]
         
         self.denseReduce = [
@@ -70,7 +61,41 @@ class LSResNet(Model):
         resolution = 1. / self.scale
         self.myMakeGrid = MakeGrid(max_dist=self.max_dist, grid_resolution=resolution)
         
+        #####################################
+        #####################################
+        f=18
+        self.CB_a2 = conv_block([f, f, f ], strides=(1,1,1))
+        self.IB_b2 = identity_block([f, f, f ])
+        self.IB_c2 = identity_block([f, f, f ])
         
+        self.CB_a4 = conv_block([f*2, f*2, f * 2], strides=(2,2,2))
+        self.IB_b4 = identity_block([f*2,f*2,f * 2])
+        self.IB_f4 = identity_block([f*2,f*2,f * 2])
+        
+        self.CB_a5 = conv_block([f*4, f*4, f * 4], strides=(2,2,2))
+        self.IB_b5 = identity_block([f*4, f*4, f *4])
+        self.IB_c5 = identity_block([f*4, f*4, f * 4])
+        
+        self.CB_a6 = conv_block([f*8, f*8, f *8], strides=(3,3,3))
+        self.IB_b6 = identity_block([f*8, f*8, f *8])
+        self.IB_c6 = identity_block([f*8, f*8, f * 8])
+        
+        self.CB_a7 = conv_block([f*16, f*16, f *16], strides=(3,3,3))
+        self.IB_b7 = identity_block([f*16, f*16, f *16])
+        
+        self.UCB_a8 = up_conv_block([f * 16, f * 16, f * 16], size=(3,3,3), padding='same')
+        self.IB_b8 = identity_block([f * 16, f * 16, f * 16])
+
+        self.UCB_a9 = up_conv_block([f * 8, f * 8, f * 8], size=(3,3,3), stride=(1,1,1))
+        self.IB_b9 = identity_block([f * 8, f * 8, f * 8])
+
+        self.UCB_a10 = up_conv_block([f * 4, f*4 , f*4 ], size=(2,2,2), stride=(1,1,1))
+        self.IB_b10 = identity_block([f * 4, f*4 , f*4 ])
+
+        self.UCB_a11 = up_conv_block([f*2 , f*2 , f*2 ], size=(2,2,2), stride=(1,1,1))
+        self.IB_b11 = identity_block([f*2 , f*2 , f*2 ])
+        #####################################
+        #####################################
         
         self.lastConvLayer = layers.Conv3D(filters=1, kernel_size=1, activation='tanh')
         
