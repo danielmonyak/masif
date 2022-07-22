@@ -41,4 +41,5 @@ def F1(y_true, y_pred, threshold=0.0):
     n_pred = tf.reduce_sum(tf.cast(y_pred, dtype=tf.float32))
     recall = overlap/n_true
     precision = overlap/n_pred
-    return 2*precision*recall / (precision + recall)
+    f1 = 2*precision*recall / (precision + recall)
+    return tf.where(tf.math.is_nan(f1), tf.zeros_like(f1), f1)
