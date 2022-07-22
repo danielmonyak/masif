@@ -9,6 +9,6 @@ job_name=train_model
 
 script=${job_name}.py 
 
-python -u $script > ${job_name}.out 2>${job_name}.err &
+python -u $script $1 > ${job_name}.out 2>${job_name}.err &
 disown -h $!
 echo $! > ${job_name}_pid.txt
