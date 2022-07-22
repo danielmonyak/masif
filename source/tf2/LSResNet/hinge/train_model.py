@@ -119,7 +119,7 @@ for i in range(num_epochs):
     print(f'Epoch {i}, Validation Metrics')
     print(f'Loss: {np.mean(loss_list)}')
     print(f'Accuracy: {np.mean(acc_list)}')
-    print(f'F1: {np.mean(F1_list)}')
+    print(f'F1: {np.nanmean(F1_list)}')
     
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
