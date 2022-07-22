@@ -66,8 +66,15 @@ load_status = model.load_weights(ckpPath)
 #load_status.expect_partial()
 
 X, y = get_data(pdb.rstrip('_'))
-logits = model.predict(X)
-density = tf.sigmoid(logits).numpy()
+prot_coords = X[1]
+centroid = prot_coords.mean(axis=0)
+
+density = tf.sigmoid(model.predict(X)).numpy()
+
+origin = (centroid - self.max_dist)
+step = np.array([1.0 / self.scale] * 3)
+
+
 threshold = 0.5
 min_size=50
 path = 'outdir'
@@ -93,8 +100,8 @@ pocket_label_arr = np.unique(pockets)
 i=0
 for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
     indices = np.argwhere(pockets == pocket_label).astype('float32')
-    #indices *= step
-    #indices += origin
+    indices *= step
+    indices += origin
 
     np.savetxt(path+'/pocket'+str(i)+'.txt', indices)
 
