@@ -112,3 +112,7 @@ masif_opts["ligand_site"]["model_dir"] = "nn_models/all_feat_3l/model_data/"
 masif_opts["ligand_site"]["out_pred_dir"] = "output/all_feat_3l/pred_data/"
 masif_opts["ligand_site"]["out_surf_dir"] = "output/all_feat_3l/pred_surfaces/"
 masif_opts["ligand_site"]["feat_mask"] = [1.0] * 5
+
+masif_opts['LSResNet'] = masif_opts['ligand_site'].copy()
+masif_opts['LSResNet']['scale'] = 0.5
+masif_opts['LSResNet']['max_dist'] = 35
