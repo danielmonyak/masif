@@ -58,4 +58,4 @@ ckpPath = os.path.join(modelDir, 'ckp')
 load_status = model.load_weights(ckpPath)
 #load_status.expect_partial()
 
-X, y = get_data(pdb.rstrip(_))
+X, y = get_data(pdb.rstrip('_'))
