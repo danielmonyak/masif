@@ -27,7 +27,8 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 #############################################
 num_epochs = 40                 #############
 starting_epoch = 0              #############
-use_sample_weight = False        #############
+use_sample_weight = False       #############
+train_batch_sz_threshold = 32   #############
 #############################################
 #############################################
 
@@ -63,6 +64,7 @@ val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/v
 
 i = starting_epoch
 
+cur_batch_sz = 0
 print(f'Running training data, epoch {i}')
 for i in range(num_epochs):
     train_j = 0
@@ -77,16 +79,35 @@ for i in range(num_epochs):
         if data is None:
             continue
         
-        X, y = data
+        dataset_temp = tf.data.Dataset.from_tensors(data)
+        if cur_batch_sz == 0:
+            dataset = dataset_temp
+            cur_batch_sz += 1
+        else:
+            dataset = dataset.concatenate(dataset_temp)
+            cur_batch_sz += 1
+            if cur_batch_sz == train_batch_sz_threshold:
+                print(f'Epoch {i}, training on {cur_batch_sz} pdbs, batch {batch_i}')
+                model.fit(dataset, verbose = 2)
+                cur_batch_sz = 0
+                batch_i += 1
         
-        print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
+        #print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
         
         # TRAIN MODEL
         ################################################
-        model.fit(X, y, verbose = 2)
+        #model.fit(X, y, verbose = 2)
         ################################################
 
         train_j += 1
+    
+    if cur_batch_sz > 0:
+        print(f'Epoch {i}, training on {cur_batch_sz} pdbs, batch {batch_i}')
+        model.fit(dataset, verbose = 2)
+        cur_batch_sz = 0
+        
+    print(f'Epoch {i}, calculating validation metrics...')
+    
     
     loss_list = []
     acc_list = []
@@ -108,6 +129,7 @@ for i in range(num_epochs):
     print(f'Loss: {np.mean(loss_list)}')
     print(f'Binary Accuracy: {np.mean(acc_list)}')
     print(f'AUC: {np.mean(auc_list)}')
+    print(f'F1: {np.mean(F1_list)}')
     
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
