@@ -42,11 +42,13 @@ model = LSResNet(
     reg_val = 0
 )
 
+def F1_04(y_true, y_pred): return F1(y_true, y_pred, threshold=0.4)
+def F1_06(y_true, y_pred): return F1(y_true, y_pred, threshold=0.6)
+
+
 from_logits = model.loss_fn.get_config()['from_logits']
 binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
 auc = tf.keras.metrics.AUC(from_logits = from_logits)
-F1_04 = lambda y_true, y_pred : F1(y_true, y_pred, threshold=0.4)
-F1_06 = lambda y_true, y_pred : F1(y_true, y_pred, threshold=0.6)
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
   metrics=[binAcc, auc, F1_04, F1, F1_06]
