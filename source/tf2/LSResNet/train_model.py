@@ -43,8 +43,7 @@ model = LSResNet(
 )
 
 from_logits = model.loss_fn.get_config()['from_logits']
-thresh = (not from_logits) * 0.5
-binAcc = tf.keras.metrics.BinaryAccuracy(threshold = thresh)
+binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
 auc = tf.keras.metrics.AUC(from_logits = from_logits)
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
@@ -74,6 +73,10 @@ for i in range(num_epochs):
     
     np.random.shuffle(training_list)
     
+    loss_list = []
+    acc_list = []
+    auc_list = []
+    F1_list = []
     for pdb_id in training_list:
         data = get_data(pdb_id)
         if data is None:
@@ -88,26 +91,34 @@ for i in range(num_epochs):
             cur_batch_sz += 1
             if cur_batch_sz == train_batch_sz_threshold:
                 print(f'Epoch {i}, training on {cur_batch_sz} pdbs, batch {batch_i}')
-                model.fit(dataset, verbose = 2)
+                
+                history = model.fit(dataset, verbose = 0)
+                loss_list.extend(history.history['loss'])
+                acc_list.extend(history.history['binary_accuracy'])
+                auc_list.extend(history.history['auc'])
+                F1_list.extend(history.history['F1'])
+                
                 cur_batch_sz = 0
                 batch_i += 1
         
-        #print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
-        
-        # TRAIN MODEL
-        ################################################
-        #model.fit(X, y, verbose = 2)
-        ################################################
-
         train_j += 1
     
     if cur_batch_sz > 0:
         print(f'Epoch {i}, training on {cur_batch_sz} pdbs, batch {batch_i}')
-        model.fit(dataset, verbose = 2)
-        cur_batch_sz = 0
         
-    print(f'Epoch {i}, calculating validation metrics...')
+        history = model.fit(dataset, verbose = 2)
+        loss_list.extend(history.history['loss'])
+        acc_list.extend(history.history['binary_accuracy'])
+        auc_list.extend(history.history['auc'])
+        F1_list.extend(history.history['F1'])
+        
+        cur_batch_sz = 0
     
+    print(f'\nEpoch {i}, Training Metrics')
+    print(f'Loss: {np.mean(loss_list)}')
+    print(f'Binary Accuracy: {np.mean(acc_list)}')
+    print(f'AUC: {np.mean(auc_list)}')
+    print(f'F1: {np.mean(F1_list)}')
     
     loss_list = []
     acc_list = []
@@ -125,11 +136,11 @@ for i in range(num_epochs):
         auc_list.append(auc)
         F1_list.append(F1)
     
-    print(f'Epoch {i}, Validation Metrics')
+    print(f'\nEpoch {i}, Validation Metrics')
     print(f'Loss: {np.mean(loss_list)}')
     print(f'Binary Accuracy: {np.mean(acc_list)}')
     print(f'AUC: {np.mean(auc_list)}')
-    print(f'F1: {np.mean(F1_list)}')
+    print(f'F1: {np.mean(F1_list)}\n')
     
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
