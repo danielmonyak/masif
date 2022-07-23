@@ -67,6 +67,7 @@ cur_batch_sz = 0
 print(f'Running training data, epoch {i}')
 for i in range(num_epochs):
     train_j = 0
+    batch_i = 0
     #############################################################
     ###################     TRAINING DATA     ###################
     #############################################################
