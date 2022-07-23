@@ -45,6 +45,9 @@ class LSResNet(Model):
         
         self.scale = params['scale']
         self.max_dist = params['max_dist']
+        
+        self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+        self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
 
         self.convBlock0 = [
             ConvLayer(5, [self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
@@ -98,7 +101,7 @@ class LSResNet(Model):
         #####################################
         #####################################
         
-        self.lastConvLayer = layers.Conv3D(filters=1, kernel_size=1, activation='tanh')
+        self.lastConvLayer = layers.Conv3D(filters=1, kernel_size=1)
         
     def call(self, X_packed, training=False):
         X, xyz_coords = X_packed
