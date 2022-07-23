@@ -93,7 +93,7 @@ for i in range(num_epochs):
             if cur_batch_sz == train_batch_sz_threshold:
                 print(f'Epoch {i}, training on {cur_batch_sz} pdbs, batch {batch_i}')
                 
-                history = model.fit(dataset.padded_batch(cur_batch_sz, padding_values=params['defaultCode']).take(1), verbose = 2)
+                history = model.fit(dataset.padded_batch(cur_batch_sz, padding_values=float(params['defaultCode'])).take(1), verbose = 2)
                 loss_list.extend(history.history['loss'])
                 acc_list.extend(history.history['binary_accuracy'])
                 auc_list.extend(history.history['auc'])
@@ -107,7 +107,7 @@ for i in range(num_epochs):
     if cur_batch_sz > 0:
         print(f'Epoch {i}, training on {cur_batch_sz} pdbs, batch {batch_i}')
         
-        history = model.fit(dataset.padded_batch(cur_batch_sz, padding_values=params['defaultCode']).take(1), verbose = 2)
+        history = model.fit(dataset.padded_batch(cur_batch_sz, padding_values=float(params['defaultCode'])).take(1), verbose = 2)
         loss_list.extend(history.history['loss'])
         acc_list.extend(history.history['binary_accuracy'])
         auc_list.extend(history.history['auc'])
