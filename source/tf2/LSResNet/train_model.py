@@ -1,9 +1,6 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
-import importlib
-from IPython.core.debugger import set_trace
-import pickle
 import numpy as np
 from scipy import spatial
 import tensorflow as tf
@@ -13,15 +10,13 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from tf2.LSResNet.LSResNet import LSResNet
+from LSResNet_deep import LSResNet
 from get_data import get_data
 #############################################
 continue_training = (len(sys.argv) > 1) and (sys.argv[1] == 'continue')
-#read_metrics = False
 #############################################
 
-#params = masif_opts["ligand"]
-params = masif_opts["ligand_site"]
+params = masif_opts["LSResNet"]
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
@@ -30,7 +25,7 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 
 #############################################
 #############################################
-num_epochs = 20                 #############
+num_epochs = 40                 #############
 starting_epoch = 0              #############
 use_sample_weight = False        #############
 #############################################
@@ -58,16 +53,6 @@ model.compile(optimizer = model.opt,
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
-
-'''
-if read_metrics:
-    with open(ckpStatePath, 'rb') as handle:
-        ckpState = pickle.load(handle)
-    starting_epoch = ckpState['last_epoch']
-    print(f'Resuming epoch {i} of training\nValidation accuracy: {best_acc}')
-else:
-    i = 0
-    best_acc = 0'''
 
 training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/train_pdbs_sequence.npy')
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/val_pdbs_sequence.npy')
