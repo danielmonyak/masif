@@ -50,6 +50,10 @@ model.compile(optimizer = model.opt,
   metrics=[binAcc, auc, F1]
 )
 
+code32 = tf.cast(params['defaultCode'], dtype=tf.float32)
+code64 = tf.cast(params['defaultCode'], dtype=tf.float64)
+dataset_padding = (((code64, code64, code64, code64), code64), code32)
+
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
