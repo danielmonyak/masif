@@ -148,12 +148,12 @@ for i in range(num_epochs):
             continue
             
         X, y = data
-        loss, acc, auc, F1_25_, F1, F1_75_ = model.evaluate(X, y, verbose=0)[:6]
+        loss, acc, auc, F1_25_, F1_, F1_75_ = model.evaluate(X, y, verbose=0)[:6]
         loss_list.append(loss)
         acc_list.append(acc)
         auc_list.append(auc)
         F1_25_list.append(F1_25_)
-        F1_list.append(F1)
+        F1_list.append(F1_)
         F1_75_list.append(F1_75_)
     
     print(f'\nEpoch {i}, Validation Metrics')
