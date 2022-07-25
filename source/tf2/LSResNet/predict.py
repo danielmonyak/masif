@@ -55,7 +55,7 @@ else:
 #modelDir = 'kerasModel'
 #ckpPath = os.path.join(modelDir, 'ckp')
 
-def predict(ckpPath, pdb, threshold=0.5):
+def predict(model, pdb, threshold=0.5):
     data = get_data(pdb.rstrip('_'), training=False)
     if data is None:
         print('Data couldn\'t be retrieved')
