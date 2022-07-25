@@ -6,5 +6,5 @@ masif_source=$masif_root/source
 export PYTHONPATH=$PYTHONPATH:$masif_source
 
 python -u evaluate.py > evaluate.out 2> evaluate.err &
-echo $! > evaluate.pid
+echo $! > evaluate_pid.txt
 disown -h $!
