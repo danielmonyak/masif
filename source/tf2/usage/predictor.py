@@ -1,8 +1,7 @@
 import os
 import numpy as np
 from default_config.util import *
-#from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
-from tf2.ligand_site_one.sep_layers.MaSIF_ligand_site_one import MaSIF_ligand_site
+from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
 from time import process_time
 
 params = masif_opts['ligand']
@@ -19,9 +18,7 @@ class Predictor:
         feat_mask=params["feat_mask"],
         n_thetas=4,
         n_rhos=3,
-        learning_rate = 1e-4,
-        n_rotations=4,
-        reg_val = 0
+        n_rotations=4
     )
     from_logits = model.loss_fn.get_config()['from_logits']
     binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
