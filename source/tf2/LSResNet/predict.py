@@ -109,3 +109,12 @@ for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
     p_mol=pybel.Molecule(mol)
     p_mol.write(file_format,path+'/pocket'+str(i)+'.'+file_format, overwrite=True)
     i+=1
+
+
+mask = (density >  threshold) & (y == 1)
+overlap = np.sum(mask)
+recall = overlap/np.sum(y)
+precision = overlap/np.sum(density)
+
+print(f'Recall: {recall}')
+print(f'Precision: {precision}')
