@@ -1,9 +1,6 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
-import importlib
-from IPython.core.debugger import set_trace
-import pickle
 import numpy as np
 from scipy import spatial
 import tensorflow as tf
@@ -11,7 +8,6 @@ import tensorflow as tf
 from skimage.segmentation import clear_border
 from skimage.morphology import closing
 from skimage.measure import label
-
 import openbabel
 import pybel
 
