@@ -26,7 +26,7 @@ ckpPath = os.path.join(modelDir, 'ckp')
 #############################################
 num_epochs = 20                 #############
 starting_epoch = 0              #############
-use_sample_weight = True        #############
+use_sample_weight = False        #############
 #############################################
 #############################################
 
@@ -70,7 +70,7 @@ for i in range(num_epochs):
     ###################     TRAINING DATA     ###################
     #############################################################
     for pdb_id in training_list:
-        data = get_data(pdb_id, make_sample_weight = False)
+        data = get_data(pdb_id)
         if data is None:
             continue
         
