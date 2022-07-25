@@ -137,6 +137,8 @@ for dataset in ['test', 'val', 'train']:
         
         ####################
         LS_RN_pocket_coords = predict(LSRN_model, pdb, threshold=LSRN_threshold)
+        if LS_RN_pocket_coords is None:
+            n_pockets_pred = 0
         n_pockets_pred = len(LS_RN_pocket_coords)
         
         ##########
