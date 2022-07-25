@@ -76,7 +76,7 @@ if not os.path.exists(outdir):
 dataset_dict = {'train' : train_list, 'test' : test_list, 'val' : val_list}
 
 #for dataset in dataset_dict.keys():
-for dataset in ['test', 'val', 'test']:
+for dataset in ['test', 'val', 'train']:
     data = dataset_dict[dataset]
     n_data = len(data)
     
@@ -134,7 +134,8 @@ for dataset in ['test', 'val', 'test']:
             pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
             if len(pocket_points_pred) > 0:
                 PU_RN_pp_pred.append(pocket_points_pred)
-            
+        
+        ####################
         LS_RN_pocket_coords = predict(LSRN_model, pdb, threshold=LSRN_threshold)
         n_pockets_pred = len(LS_RN_pocket_coords)
         
@@ -147,31 +148,33 @@ for dataset in ['test', 'val', 'test']:
             BIG_n_pockets_pred.append(0)
             BIG_matched.append(0)
             continue
-        ##########
         
+        ##########
         LS_RN_pp_pred = []
         for coords in LS_RN_pocket_coords:
             pocket_points_pred = tree.query_ball_point(coords, 3.0)
             pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
             if len(pocket_points_pred) > 0:
                 LS_RN_pp_pred.append(pocket_points_pred)
-        ###########################################
         
+        ###########################################
         final_pp_pred_list = []
         for i, LS_pp in enumerate(LS_RN_pp_pred):
             matched_pred_pocket = -1
             for i, PU_pp in enumerate(PU_RN_pp_pred):
+                print(i)
                 overlap = np.intersect1d(PU_pp, LS_pp)
                 recall_1 = len(overlap)/len(PU_pp)
                 recall_2 = len(overlap)/len(LS_pp)
                 if (recall_1 > 0.25) or (recall_2 > 0.25):
+                    print('here')
                     matched_pred_pocket = i
                     final_pp_pred_list.append(overlap)
                     break
             if matched_pred_pocket == -1:
                 final_pp_pred_list.append(LS_pp)
             else:
-                del LS_RN_pp_pred[matched_pred_pocket]
+                del PU_RN_pp_pred[matched_pred_pocket]
         
         ###########################################
         matched = 0
