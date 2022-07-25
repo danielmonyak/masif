@@ -127,7 +127,7 @@ class LSResNet(Model):
         ret = tf.nn.relu(ret)
         
         ### Extra Layers
-        if extra_conv_layers:
+        if not self.extraConvLayers is None:
             ret = runLayers(self.extraConvLayers, ret)
         ###
         
