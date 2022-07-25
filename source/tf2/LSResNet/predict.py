@@ -17,7 +17,7 @@ for phys_g in phys_gpus:
 
 from default_config.util import *
 #from tf2.LSResNet.LSResNet import LSResNet
-from tf2.LSResNetget_data import get_data
+from tf2.LSResNet.get_data import get_data
 
 params = masif_opts["LSResNet"]
 ligand_coord_dir = params["ligand_coords_dir"]
