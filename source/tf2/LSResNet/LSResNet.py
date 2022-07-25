@@ -22,7 +22,8 @@ class LSResNet(Model):
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
         reg_val = 1e-4,
-        reg_type = 'l2'
+        reg_type = 'l2',
+        extra_conv_layers = True
     ):
         ## Call super - model initializer
         super(LSResNet, self).__init__()
@@ -99,11 +100,14 @@ class LSResNet(Model):
         ]
         
         ###
-        self.extraConvLayers = [
-            layers.Conv3D(1, kernel_size=1, activation='relu'),
-            layers.Conv3D(1, kernel_size=1, activation='relu'),
-            layers.Conv3D(1, kernel_size=1, activation='relu')
-        ]
+        if extra_conv_layers:
+            self.extraConvLayers = [
+                layers.Conv3D(1, kernel_size=1, activation='relu'),
+                layers.Conv3D(1, kernel_size=1, activation='relu'),
+                layers.Conv3D(1, kernel_size=1, activation='relu')
+            ]
+        else:
+            self.extraConvLayers = None
         ###
         
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1)
@@ -123,7 +127,8 @@ class LSResNet(Model):
         ret = tf.nn.relu(ret)
         
         ### Extra Layers
-        ret = runLayers(self.extraConvLayers, ret)
+        if extra_conv_layers:
+            ret = runLayers(self.extraConvLayers, ret)
         ###
         
         ret = self.lastConvLayer(ret)
