@@ -12,15 +12,29 @@ for phys_g in phys_gpus:
 
 from default_config.util import *
 from tf2.usage.predictor import Predictor
+from tf2.LSResNet.LSResNet import LSResNet
+from tf2.LSResNet.predict import predict
 
-params = masif_opts['ligand_site']
+params = masif_opts['LSResNet']
 ligand_list = params['ligand_list']
 
 ligand_coord_dir = params["ligand_coords_dir"]
 precom_dir = params['masif_precomputation_dir']
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
-pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/l2/kerasModel/savedModel')
+pred = Predictor()
+
+LSRN_model = LSResNet(
+    params["max_distance"],
+    feat_mask=params["feat_mask"],
+    n_thetas=4,
+    n_rhos=3,
+    n_rotations=4,
+    extra_conv_layers = False
+)
+ckpPath = 'kerasModel/ckp'
+load_status = LSRN_model.load_weights(ckpPath)
+load_status.expect_partial()
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
 train_file = 'train_pdbs_sequence.npy'
@@ -33,14 +47,9 @@ test_list = np.char.add(np.load(os.path.join(listDir, test_file)).astype(str), '
 
 
 pdb_list = []
-true_pocket_list = []
-pred_pocket_list = []
 dataset_list = []
 recall_list = []
 precision_list = []
-ligandIdx_true_list = []
-true_pts_ligandIdx_pred_list = []
-pred_pts_ligandIdx_pred_list = []
 npoints_true_list = []
 npoints_pred_list = []
 
@@ -50,7 +59,7 @@ BIG_n_pockets_true = []
 BIG_n_pockets_pred = []
 BIG_matched = []
 
-columns = ['pdb_list', 'true_pocket_list', 'pred_pocket_list', 'dataset_list', 'recall_list', 'precision_list', 'ligandIdx_true_list', 'true_pts_ligandIdx_pred_list', 'pred_pts_ligandIdx_pred_list', 'npoints_true_list', 'npoints_pred_list']
+columns = ['pdb_list', 'dataset_list', 'recall_list', 'precision_list', 'npoints_true_list', 'npoints_pred_list']
 BIG_columns = ['BIG_pdb_list', 'BIG_dataset_list', 'BIG_n_pockets_true', 'BIG_n_pockets_pred', 'BIG_matched']
 
 outdir = 'results'
@@ -110,7 +119,20 @@ for dataset in ['test', 'val', 'test']:
         ####################
         pdb_pnet_dir = os.path.join(binding_dir, pdb.rstrip("_"))
         files = os.listdir(pdb_pnet_dir)
-        if len(files) == 0:
+
+        PU_RN_pp_pred = []
+        for pocket in range(np.sum(np.char.endswith(files, '.txt'))):
+            coords = np.loadtxt(os.path.join(pdb_pnet_dir, f'pocket{pocket}.txt'), dtype=float)
+            pocket_points_pred = tree.query_ball_point(coords, 3.0)
+            pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
+            if len(pocket_points_pred) > 0:
+                PU_RN_pp_pred.append(pocket_points_pred)
+            
+        LS_RN_pocket_coords = predict(LSRN_model, pdb)
+        n_pockets_pred = len(LS_RN_pocket_coords)
+        
+        ##########
+        if n_pockets_pred == 0:
             print('Zero pockets were predicted...')
             BIG_pdb_list.append(pdb)
             BIG_dataset_list.append(dataset)
@@ -118,21 +140,35 @@ for dataset in ['test', 'val', 'test']:
             BIG_n_pockets_pred.append(0)
             BIG_matched.append(0)
             continue
-
-        n_pockets_pred = np.sum(np.char.endswith(files, '.txt'))
+        ##########
         
-        #unmatched = 0
-        matched = 0
-        
-        for pocket in range(n_pockets_pred):
-            pnet_coords = np.loadtxt(os.path.join(pdb_pnet_dir, f'pocket{pocket}.txt'), dtype=float)
-            pocket_points_pred = tree.query_ball_point(pnet_coords, 3.0)
+        LS_RN_pp_pred = []
+        for coords in LS_RN_pocket_coords:
+            pocket_points_pred = tree.query_ball_point(coords, 3.0)
             pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
-            
-            npoints_pred = len(pocket_points_pred)
-            if npoints_pred == 0:
-                continue
-            
+            if len(pocket_points_pred) > 0:
+                LS_RN_pp_pred.append(pocket_points_pred)
+        ###########################################
+        
+        final_pp_pred_list = []
+        for i, LS_pp in enumerate(LS_RN_pp_pred):
+            matched_pred_pocket = -1
+            for i, PU_pp in enumerate(PU_RN_pp_pred):
+                overlap = np.intersect1d(PU_pp, LS_pp)
+                recall_1 = len(overlap)/len(PU_pp)
+                recall_2 = len(overlap)/len(LS_pp)
+                if (recall_1 > 0.25) or (recall_2 > 0.25):
+                    matched_pred_pocket = i
+                    final_pp_pred_list.append(overlap)
+                    break
+            if matched_pred_pocket == -1:
+                final_pp_pred_list.append(LS_pp)
+            else:
+                del LS_RN_pp_pred[matched_pred_pocket]
+        
+        ###########################################
+        matched = 0
+        for pocket_points_pred in final_pp_pred_list:
             f1_highest = 0
             for ppt_idx, pocket_points_true in enumerate(pp_true_list):
                 overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
@@ -148,7 +184,6 @@ for dataset in ['test', 'val', 'test']:
                     ppt_idx_best = ppt_idx
             
             if f1_highest == 0:
-                #unmatched += 1
                 continue
                 
             matched += 1
@@ -162,41 +197,19 @@ for dataset in ['test', 'val', 'test']:
             recall = len(overlap)/npoints_true
             precision = len(overlap)/npoints_pred
             
-            try:
-                true_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_true)).numpy()
-                pred_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_pred)).numpy()
-            except:
-                print('Something went wrong with ligand prediction...')
-                continue
-            
-            ligand_true = all_ligand_types[ppt_idx_best]
-            ligandIdx_true = ligand_list.index(ligand_true)
-            
             ###############
             print(f'Predicted pocket: {pocket}')
             print(f'True pocket: {ppt_idx_best}')
             print(f'Recall: {recall}')
             print(f'Precision: {precision}')
-            print(f'True ligand: {ligandIdx_true}')
-            print(f'Prediction from true pocket points: {true_pts_ligandIdx_pred}')
-            print(f'Prediction from predicted pocket points: {pred_pts_ligandIdx_pred}\n')
-
+            
             pdb_list.append(pdb)
-            true_pocket_list.append(ppt_idx_best)
-            pred_pocket_list.append(pocket)
             dataset_list.append(dataset)
             recall_list.append(recall)
             precision_list.append(precision)
-            ligandIdx_true_list.append(ligandIdx_true)
-            true_pts_ligandIdx_pred_list.append(true_pts_ligandIdx_pred)
-            pred_pts_ligandIdx_pred_list.append(pred_pts_ligandIdx_pred)
             npoints_true_list.append(npoints_true)
             npoints_pred_list.append(npoints_pred)
             
-        #missed = len(pp_true_list)
-        
-        #print(f'{unmatched} unmatched predicted pockets')
-        #print(f'{missed} missed true pockets')
         print(f'{matched} matched pockets of {n_pockets_true} true and {n_pockets_pred} predicted')
         
         BIG_pdb_list.append(pdb)
@@ -205,7 +218,6 @@ for dataset in ['test', 'val', 'test']:
         BIG_n_pockets_pred.append(n_pockets_pred)
         BIG_matched.append(matched)
         
-        print(f'\ni: {i}, (i > 0) and (i \% 50 == 0): {(i > 0) and (i % 50 == 0)}\n')
         if (i > 0) and (i % 50 == 0):
             results = pd.DataFrame(dict(zip([col.partition('_list')[0] for col in columns], [eval(col) for col in columns])))
             results.to_csv(os.path.join(outdir, 'results.csv'), index=False)
