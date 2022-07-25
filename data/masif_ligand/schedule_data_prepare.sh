@@ -4,7 +4,7 @@ if [ ! -d $out ]; then mkdir $out; fi
 if [ ! -d $err ]; then mkdir $err; fi
 
 batchSize=10
-sleep_time=20
+sleep_time=60
 
 i=0
 unset running

@@ -7,31 +7,18 @@ import pickle
 import numpy as np
 from scipy import spatial
 import tensorflow as tf
+import myMetrics
 
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
-
-dev = '/GPU:1'
-cpu = '/CPU:0'
-'''
-log_gpus = tf.config.list_logical_devices('GPU')
-gpu_strs = [g.name for g in log_gpus]
-strategy = tf.distribute.MirroredStrategy(gpu_strs)
-'''
-
-#tf.config.set_soft_device_placement(True)
-#tf.debugging.set_log_device_placement(True)
-
+from tf2.ligand_site_one.sep_layers.MaSIF_ligand_site_one import MaSIF_ligand_site
+from get_data import get_data
 #############################################
 continue_training = False
 #read_metrics = False
-
-starting_sample = 0
-starting_epoch = 0
 #############################################
 
 #params = masif_opts["ligand"]
@@ -46,34 +33,33 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 #############################################
 #############################################
 num_epochs = 20                 #############
-pdb_ckp_thresh = 10             #############
+starting_epoch = 0              #############
+use_sample_weight = True        #############
 #############################################
 #############################################
 
-cv_batch_sz = None
-
-#with tf.device(dev):
-#with strategy.scope():
 model = MaSIF_ligand_site(
     params["max_distance"],
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
+    learning_rate = 1e-4,
     n_rotations=4,
-    learning_rate = 1e-3,
-    n_conv_layers = params['n_conv_layers'],
-    conv_batch_size = cv_batch_sz,
-    reg_val = 1e-4,
-    reg_type = 'l2'
+    reg_val = 0
 )
 
 from_logits = model.loss_fn.get_config()['from_logits']
-binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
+thresh = (not from_logits) * 0.5
+binAcc = tf.keras.metrics.BinaryAccuracy(threshold = thresh)
 auc = tf.keras.metrics.AUC(from_logits = from_logits)
+TP = myMetrics.TruePositives(from_logits = from_logits)
+TN = myMetrics.TrueNegatives(from_logits = from_logits)
+FP = myMetrics.FalsePositives(from_logits = from_logits)
+FN = myMetrics.FalseNegatives(from_logits = from_logits)
 
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=[binAcc, auc]
+  metrics=[binAcc, auc, TP, FN]
 )
 
 if continue_training:
@@ -91,6 +77,7 @@ else:
     best_acc = 0'''
 
 training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/train_pdbs_sequence.npy')
+val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/val_pdbs_sequence.npy')
 
 #######################################
 #######################################
@@ -99,81 +86,56 @@ training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/li
 i = starting_epoch
 
 print(f'Running training data, epoch {i}')
-while i < num_epochs:
+for i in range(num_epochs):
     train_j = 0
     #############################################################
     ###################     TRAINING DATA     ###################
     #############################################################
     for pdb_id in training_list:
+        data = get_data(pdb_id)
+        if data is None:
+            continue
+        
+        X, y, sample_weight = data
+        if not use_sample_weight:
+            sample_weight = None
+        
         print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
         
-        mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
-        
-        mask = np.load(os.path.join(mydir, "p1_mask.npy"))
-        n_samples = mask.shape[0]
-
-        if n_samples > 8000:
-            print('Too many patches to train on...')
-            continue
-
-        input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
-        theta_wrt_center = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
-        rho_wrt_center = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
-        mask = np.expand_dims(mask, 2)
-        indices = np.load(os.path.join(mydir, "p1_list_indices.npy"), encoding="latin1", allow_pickle = True)
-        # indices is (n_verts x <30), it should be
-        indices = pad_indices(indices, mask.shape[1]).astype(np.int32)
-
-        data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [input_feat, rho_wrt_center, theta_wrt_center, mask])
-        indices = np.expand_dims(indices, axis=0)
-
-        X = (data_tsrs, indices)
-
-        ###############################################################
-        ###############################################################
-        X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
-        Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
-        Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
-        xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
-        tree = spatial.KDTree(xyz_coords)
-        coordsPath = os.path.join(
-            params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
-        )
-        try:
-            all_ligand_coords = np.load(coordsPath)
-        except:
-            print(f'Problem opening {coordsPath}')
-            continue
-        pocket_points = []
-        for j, structure_ligand in enumerate(all_ligand_coords):
-            ligand_coords = all_ligand_coords[j]
-            temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
-            temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
-            pocket_points.extend(temp_pocket_points)
-
-        y = np.zeros([1, n_samples, 1], dtype=np.int32)
-        y[0, pocket_points, 0] = 1
-
-        if (np.mean(y) > 0.75) or (np.sum(y) < 30):
-            print('Too many pocket points or not enough patches...')
-            continue
-
         # TRAIN MODEL
         ################################################
-        model.fit(X, y, verbose = 2)    ################
+        model.fit(X, y, verbose = 2,
+                  sample_weight = sample_weight)
         ################################################
-        
+
         train_j += 1
-
-        if train_j % pdb_ckp_thresh == 0:
-            print(f'Saving model weights to {ckpPath}')
-            model.save_weights(ckpPath)
-
-    train_j = 0
-    i += 1
-
+        
+    loss_list = []
+    acc_list = []
+    auc_list = []
+    for pdb_id in val_list:
+        data = get_data(pdb_id)
+        if data is None:
+            continue
+        
+        if len(data) == 3:
+            X, y, sample_weight = data
+            sample_weight = sample_weight
+        else:
+            sample_weight = None
+            X, y = data
+        
+        loss, acc, auc = model.evaluate(X, y, verbose=0)[:3]
+        loss_list.append(loss)
+        acc_list.append(acc)
+        auc_list.append(auc)
+    
+    print(f'Epoch {i}, Validation Metrics')
+    print(f'Loss: {np.mean(loss_list)}')
+    print(f'Binary Accuracy: {np.mean(acc_list)}')
+    print(f'AUC: {np.mean(auc_list)}')
+    
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
 
-print(f'Saving model to to {modelPath_endTraining}')
-model.save(modelPath_endTraining)
+print(f'Finished {num_epochs} training epochs!')
