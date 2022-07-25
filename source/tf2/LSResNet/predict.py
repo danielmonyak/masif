@@ -112,7 +112,7 @@ for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
 
 
 y_pred = density > threshold
-mask = y_pred & y
+mask = y_pred & y.astype(bool)
 overlap = np.sum(mask)
 recall = overlap/np.sum(y)
 precision = overlap/np.sum(y_pred)
