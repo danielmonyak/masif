@@ -16,8 +16,8 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from tf2.LSResNet.LSResNet import LSResNet
-from get_data import get_data
+#from tf2.LSResNet.LSResNet import LSResNet
+from tf2.LSResNetget_data import get_data
 
 params = masif_opts["LSResNet"]
 ligand_coord_dir = params["ligand_coords_dir"]
