@@ -124,6 +124,3 @@ for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
     p_mol=pybel.Molecule(mol)
     p_mol.write(file_format,path+'/pocket'+str(i)+'.'+file_format, overwrite=True)
     i+=1
-
-    
-~/software/masif/source/tf2/masif_ligand/l2/kerasModel/savedModel/
