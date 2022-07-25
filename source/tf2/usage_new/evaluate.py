@@ -1,9 +1,19 @@
+
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
 import numpy as np
 import pandas as pd
 from scipy import spatial
+import tensorflow as tf
+
+phys_gpus = tf.config.list_physical_devices('GPU')
+for phys_g in phys_gpus:
+    tf.config.experimental.set_memory_growth(phys_g, True)
+
 from default_config.util import *
+from tf2.LSResNet.LSResNet import LSResNet
+from get_data import get_data
 from tf2.usage.predictor import Predictor
 
 params = masif_opts['ligand']
@@ -13,8 +23,7 @@ ligand_coord_dir = params["ligand_coords_dir"]
 precom_dir = params['masif_precomputation_dir']
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
-#pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/usage/masif_ligand_model/savedModel')
-pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/10/kerasModel/savedModel')
+pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/l2/kerasModel/savedModel')
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
 train_file = 'train_pdbs_sequence.npy'
@@ -54,7 +63,7 @@ if not os.path.exists(outdir):
 dataset_dict = {'train' : train_list, 'test' : test_list, 'val' : val_list}
 
 #for dataset in dataset_dict.keys():
-for dataset in ['test']:
+for dataset in ['test', 'val', 'test']:
     data = dataset_dict[dataset]
     n_data = len(data)
     
