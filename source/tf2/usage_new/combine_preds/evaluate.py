@@ -126,11 +126,9 @@ for dataset in ['test', 'val', 'train']:
         ####################
         pdb_pnet_dir = os.path.join(binding_dir, pdb.rstrip("_"))
         files = os.listdir(pdb_pnet_dir)
-
         PU_RN_pp_pred = []
-        n_txt_files = np.sum(np.char.endswith(files, '.txt'))
-        if n_txt_files > 0:
-            for pocket in range(n_txt_files):
+        if files > 0:
+            for pocket in range(np.sum(np.char.endswith(files, '.txt'))):
                 coords = np.loadtxt(os.path.join(pdb_pnet_dir, f'pocket{pocket}.txt'), dtype=float)
                 pocket_points_pred = tree.query_ball_point(coords, 3.0)
                 pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
