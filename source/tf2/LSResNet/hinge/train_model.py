@@ -27,8 +27,8 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 
 #############################################
 #############################################
-num_epochs = 40                 #############
-starting_epoch = 0               ############
+num_epochs = 100                 #############
+starting_epoch = 40               ############
 use_sample_weight = False        ############
 train_batch_sz_threshold = 10   #############
 #############################################
@@ -59,16 +59,6 @@ model.compile(optimizer = 'adam',
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
-
-'''
-if read_metrics:
-    with open(ckpStatePath, 'rb') as handle:
-        ckpState = pickle.load(handle)
-    starting_epoch = ckpState['last_epoch']
-    print(f'Resuming epoch {i} of training\nValidation accuracy: {best_acc}')
-else:
-    i = 0
-    best_acc = 0'''
 
 training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/train_pdbs_sequence.npy')
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/val_pdbs_sequence.npy')
