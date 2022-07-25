@@ -1,29 +1,28 @@
+
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
-import importlib
-from IPython.core.debugger import set_trace
-import pickle
 import numpy as np
 from scipy import spatial
 import tensorflow as tf
-
-from skimage.segmentation import clear_border
-from skimage.morphology import closing
-from skimage.measure import label
-
-import openbabel
-import pybel
+import myMetrics
 
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from tf2.LSResNet.LSResNet import LSResNet
+from MaSIF_ligand_site_one import MaSIF_ligand_site
 from get_data import get_data
 
+from skimage.segmentation import clear_border
+from skimage.morphology import closing
+from skimage.measure import label
+import openbabel
+import pybel
+
 params = masif_opts["LSResNet"]
+
 ligand_coord_dir = params["ligand_coords_dir"]
 ligand_list = params['ligand_list']
 
@@ -35,7 +34,7 @@ pdb = sys.argv[1]
 
 print('pdb:', pdb)
 
-model = LSResNet(
+model = MaSIF_ligand_site(
     params["max_distance"],
     feat_mask=params["feat_mask"],
     n_thetas=4,
@@ -44,13 +43,18 @@ model = LSResNet(
     n_rotations=4,
     reg_val = 0
 )
+
+def F1_04(y_true, y_pred): return F1(y_true, y_pred, threshold=0.4)
+def F1_06(y_true, y_pred): return F1(y_true, y_pred, threshold=0.6)
+
 from_logits = model.loss_fn.get_config()['from_logits']
 thresh = (not from_logits) * 0.5
 binAcc = tf.keras.metrics.BinaryAccuracy(threshold = thresh)
 auc = tf.keras.metrics.AUC(from_logits = from_logits)
+
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=[binAcc, auc]
+  metrics=[binAcc, auc, F1_04, F1, F1_06]
 )
 
 
@@ -64,12 +68,19 @@ data = get_data(pdb.rstrip('_'), training=False)
 if data is None:
     sys.exit('Data couldn\'t be retrieved')
 
-X, y, centroid = data
-prot_coords = np.squeeze(X[1])
+X, y = data
+X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
+Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
+Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
+xyz_coords = np.vstack([X_coords, Y_coords, Z_coords]).T
 
-density = tf.sigmoid(model.predict(X)).numpy()
+probs = tf.sigmoid(model.predict(X)).numpy()
 
-origin = (centroid - params['max_dist'])
+resolution = 1. / params['scale']
+density = tfbio.data.make_grid(xyz_coords, probs, max_dist=params['max_dist'], grid_resolution=resolution)
+
+
+#origin = (centroid - params['max_dist'])
 step = np.array([1.0 / params['scale']] * 3)
 
 if len(sys.argv) > 2:
@@ -102,7 +113,7 @@ i=0
 for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
     indices = np.argwhere(pockets == pocket_label).astype('float32')
     indices *= step
-    indices += origin
+    #indices += origin
     
     np.savetxt(path+'/pocket'+str(i)+'.txt', indices)
     
