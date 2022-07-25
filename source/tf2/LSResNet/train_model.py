@@ -42,16 +42,15 @@ model = LSResNet(
     reg_val = 0
 )
 
-def F1_04(y_true, y_pred): return F1(y_true, y_pred, threshold=0.4)
-def F1_06(y_true, y_pred): return F1(y_true, y_pred, threshold=0.6)
-
+def F1_25(y_true, y_pred): return F1(y_true, y_pred, threshold=0.25)
+def F1_75(y_true, y_pred): return F1(y_true, y_pred, threshold=0.75)
 
 from_logits = model.loss_fn.get_config()['from_logits']
 binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
 auc = tf.keras.metrics.AUC(from_logits = from_logits)
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=[binAcc, auc, F1_04, F1, F1_06]
+  metrics=[binAcc, auc, F1_25, F1, F1_75]
 )
 
 code32 = tf.cast(params['defaultCode'], dtype=tf.float32)
@@ -85,9 +84,9 @@ for i in range(num_epochs):
     loss_list = []
     acc_list = []
     auc_list = []
-    F1_04_list = []
+    F1_25_list = []
     F1_list = []
-    F1_06_list = []
+    F1_75_list = []
     for pdb_id in training_list:
         data = get_data(pdb_id)
         if data is None:
@@ -107,9 +106,9 @@ for i in range(num_epochs):
                 loss_list.extend(history.history['loss'])
                 acc_list.extend(history.history['binary_accuracy'])
                 auc_list.extend(history.history['auc'])
-                F1_04_list.extend(history.history['F1_04'])
+                F1_25_list.extend(history.history['F1_25'])
                 F1_list.extend(history.history['F1'])
-                F1_06_list.extend(history.history['F1_06'])
+                F1_75_list.extend(history.history['F1_75'])
                 
                 cur_batch_sz = 0
                 batch_i += 1
@@ -123,9 +122,9 @@ for i in range(num_epochs):
         loss_list.extend(history.history['loss'])
         acc_list.extend(history.history['binary_accuracy'])
         auc_list.extend(history.history['auc'])
-        F1_04_list.extend(history.history['F1_04'])
+        F1_25_list.extend(history.history['F1_25'])
         F1_list.extend(history.history['F1'])
-        F1_06_list.extend(history.history['F1_06'])
+        F1_75_list.extend(history.history['F1_75'])
         
         cur_batch_sz = 0
     
@@ -133,37 +132,37 @@ for i in range(num_epochs):
     print(f'Loss: {np.mean(loss_list)}')
     print(f'Binary Accuracy: {np.mean(acc_list)}')
     print(f'AUC: {np.mean(auc_list)}')
-    print(f'F1_04: {np.mean(F1_04_list)}\n')
+    print(f'F1_25: {np.mean(F1_25_list)}\n')
     print(f'F1: {np.mean(F1_list)}\n')
-    print(f'F1_06: {np.mean(F1_06_list)}\n')
+    print(f'F1_75: {np.mean(F1_75_list)}\n')
     
     loss_list = []
     acc_list = []
     auc_list = []
-    F1_04_list = []
+    F1_25_list = []
     F1_list = []
-    F1_06_list = []
+    F1_75_list = []
     for pdb_id in val_list:
         data = get_data(pdb_id)
         if data is None:
             continue
             
         X, y = data
-        loss, acc, auc, F1_04, F1, F1_06 = model.evaluate(X, y, verbose=0)[:6]
+        loss, acc, auc, F1_25_, F1, F1_75_ = model.evaluate(X, y, verbose=0)[:6]
         loss_list.append(loss)
         acc_list.append(acc)
         auc_list.append(auc)
-        F1_04_list.append(F1_04)
+        F1_25_list.append(F1_25_)
         F1_list.append(F1)
-        F1_06_list.append(F1_06)
+        F1_75_list.append(F1_75_)
     
     print(f'\nEpoch {i}, Validation Metrics')
     print(f'Loss: {np.mean(loss_list)}')
     print(f'Binary Accuracy: {np.mean(acc_list)}')
     print(f'AUC: {np.mean(auc_list)}')
-    print(f'F1_04: {np.mean(F1_04_list)}\n')
+    print(f'F1_25: {np.mean(F1_25_list)}\n')
     print(f'F1: {np.mean(F1_list)}\n')
-    print(f'F1_06: {np.mean(F1_06_list)}\n')
+    print(f'F1_75: {np.mean(F1_75_list)}\n')
     
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
