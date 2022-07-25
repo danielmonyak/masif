@@ -98,6 +98,14 @@ class LSResNet(Model):
             layers.BatchNormalization(axis=bn_axis)]
         ]
         
+        ###
+        self.extraConvLayers = [
+            layers.Conv3D(1, kernel_size=1, activation='relu'),
+            layers.Conv3D(1, kernel_size=1, activation='relu'),
+            layers.Conv3D(1, kernel_size=1, activation='relu')
+        ]
+        ###
+        
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1)
         
     def call(self, X_packed, training=False):
@@ -113,6 +121,11 @@ class LSResNet(Model):
         ret = tf.add(ret1, residue)
         
         ret = tf.nn.relu(ret)
+        
+        ### Extra Layers
+        ret = runLayers(self.extraConvLayers, ret)
+        ###
+        
         ret = self.lastConvLayer(ret)
         
         return ret
