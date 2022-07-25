@@ -167,7 +167,6 @@ for dataset in ['test', 'val', 'train']:
                 recall_1 = len(overlap)/len(PU_pp)
                 recall_2 = len(overlap)/len(LS_pp)
                 if (recall_1 > 0.25) or (recall_2 > 0.25):
-                    print('here')
                     matched_pred_pocket = i
                     final_pp_pred_list.append(overlap)
                     break
@@ -179,6 +178,8 @@ for dataset in ['test', 'val', 'train']:
         ###########################################
         matched = 0
         for pocket_points_pred in final_pp_pred_list:
+            npoints_pred = len(pocket_points_pred)
+            
             f1_highest = 0
             for ppt_idx, pocket_points_true in enumerate(pp_true_list):
                 overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
