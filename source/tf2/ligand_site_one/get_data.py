@@ -5,13 +5,13 @@ from default_config.util import *
 
 params = masif_opts["ligand_site"]
 
-def get_data(pdb_id):
+def get_data(pdb_id, training = True, make_sample_weight = False):
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
 
     mask = np.load(os.path.join(mydir, "p1_mask.npy"))
     n_samples = mask.shape[0]
 
-    if n_samples > 8000:
+    if training and n_samples > 8000:
         return None
 
     input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
@@ -39,6 +39,8 @@ def get_data(pdb_id):
     try:
         all_ligand_coords = np.load(coordsPath)
     except:
+        if not training:
+            print(f'Problem opening {coordsPath}')
         return None
 
     pocket_points = []
@@ -54,11 +56,14 @@ def get_data(pdb_id):
     if (np.mean(y) > 0.75) or (np.sum(y) < 30):
         return None
     
-    n_pockets = np.sum(y)
-    n_empty = n_samples - n_pockets
+    if make_sample_weight:
+        n_pockets = np.sum(y)
+        n_empty = n_samples - n_pockets
+
+        sample_weight = np.empty(shape=y.shape, dtype=np.float32)
+        sample_weight.fill(n_samples/(2*n_empty))
+        sample_weight[0, pocket_points, 0] = n_samples/(2*n_pockets)
+
+        return X, y, sample_weight
     
-    sample_weight = np.empty(shape=y.shape, dtype=np.float32)
-    sample_weight.fill(n_samples/(2*n_empty))
-    sample_weight[0, pocket_points, 0] = n_samples/(2*n_pockets)
-    
-    return X, y, sample_weight
+    return X, y
