@@ -33,9 +33,9 @@ def pad_indices(indices, max_verts):
         )
     return np.stack(ret_list)
 
-def F1(y_true, y_pred, threshold=0.0):
-    y_true = tf.squeeze(y_true) > threshold
-    y_pred = tf.squeeze(y_pred) > threshold
+def F1(y_true, y_pred, threshold=0.5):
+    y_true = tf.sigmoid(y_true) > threshold
+    y_pred = tf.sigmoid(y_pred) > threshold
     overlap = tf.reduce_sum(tf.cast(y_true & y_pred, dtype=tf.float32))
     n_true = tf.reduce_sum(tf.cast(y_true, dtype=tf.float32))
     n_pred = tf.reduce_sum(tf.cast(y_pred, dtype=tf.float32))
