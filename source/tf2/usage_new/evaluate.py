@@ -14,7 +14,7 @@ for phys_g in phys_gpus:
 from default_config.util import *
 from tf2.usage.predictor import Predictor
 
-params = masif_opts['ligand']
+params = masif_opts['ligand_site']
 ligand_list = params['ligand_list']
 
 ligand_coord_dir = params["ligand_coords_dir"]
