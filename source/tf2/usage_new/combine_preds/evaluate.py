@@ -15,6 +15,13 @@ from tf2.usage.predictor import Predictor
 from tf2.LSResNet.LSResNet import LSResNet
 from tf2.LSResNet.predict import predict
 
+
+
+LSRN_threshold = 0.4
+
+
+
+
 params = masif_opts['LSResNet']
 ligand_list = params['ligand_list']
 
@@ -128,7 +135,7 @@ for dataset in ['test', 'val', 'test']:
             if len(pocket_points_pred) > 0:
                 PU_RN_pp_pred.append(pocket_points_pred)
             
-        LS_RN_pocket_coords = predict(LSRN_model, pdb)
+        LS_RN_pocket_coords = predict(LSRN_model, pdb, threshold=LSRN_threshold)
         n_pockets_pred = len(LS_RN_pocket_coords)
         
         ##########
