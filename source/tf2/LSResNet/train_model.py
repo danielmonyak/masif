@@ -149,7 +149,7 @@ for i in range(num_epochs):
             continue
             
         X, y = data
-        loss, acc, auc, F1_04, F1, F1_06 = model.evaluate(X, y, verbose=0)[:4]
+        loss, acc, auc, F1_04, F1, F1_06 = model.evaluate(X, y, verbose=0)[:6]
         loss_list.append(loss)
         acc_list.append(acc)
         auc_list.append(auc)
