@@ -163,12 +163,12 @@ for dataset in ['test', 'val', 'test']:
             recall = len(overlap)/npoints_true
             precision = len(overlap)/npoints_pred
             
-            try:
-                true_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_true)).numpy()
-                pred_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_pred)).numpy()
-            except:
-                print('Something went wrong with ligand prediction...')
-                continue
+            #try:
+            true_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_true)).numpy()
+            pred_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_pred)).numpy()
+            #except:
+            #    print('Something went wrong with ligand prediction...')
+            #    continue
             
             ligand_true = all_ligand_types[ppt_idx_best]
             ligandIdx_true = ligand_list.index(ligand_true)
