@@ -68,13 +68,13 @@ load_status = model.load_weights(ckpPath)
 load_status.expect_partial()
 
 
-outdir = 'outdir'
+outdir = f'outdir_{pdb}'
 file_format = 'mol2'
 if os.path.exists(outdir):
     os.rmdir(outdir)
 os.mkdir(outdir)
 
-ligand_coords_arr = predict(model, pdb, threshold=threshold, min_size=50)
+ligand_coords_arr = predict(model, pdb, threshold, min_size)
 for i, indices in enumerate(ligand_coords_arr):
     mol=openbabel.OBMol()
     for idx in indices:
