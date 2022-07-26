@@ -17,7 +17,7 @@ from tf2.LSResNet.predict import predict
 
 
 
-LSRN_threshold = 0.3
+LSRN_threshold = 0.5
 
 
 
@@ -39,7 +39,7 @@ LSRN_model = LSResNet(
     n_rotations=4,
     extra_conv_layers = False
 )
-ckpPath = 'kerasModel/ckp'
+ckpPath = '../combine_preds/kerasModel/ckp'
 load_status = LSRN_model.load_weights(ckpPath)
 load_status.expect_partial()
 
