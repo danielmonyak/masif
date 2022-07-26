@@ -64,6 +64,7 @@ minPockets = params['minPockets']
 outdir = '/data02/daniel/masif/datasets/tf2/masif_ligand/extraLigands'
 if not os.path.exists(outdir):
     os.mkdir(outdir)
+
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 def helper(feed_dict):
@@ -140,6 +141,7 @@ for dataset in dataset_list.keys():
             pocket_points = tree.query_ball_point(ligand_coords, 3.0)
             pocket_points = list(set([pp for p in pocket_points for pp in p]))
             npoints = len(pocket_points)
+            
             if npoints < minPockets:
                 continue
             #
