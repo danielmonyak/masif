@@ -1,3 +1,6 @@
+out=datasets
+if [ ! -d $out ]; then mkdir $out; fi
+
 source /apps01/anaconda3/etc/profile.d/conda.sh
 conda activate venv_tf
 
@@ -5,13 +8,9 @@ masif_root=$(git rev-parse --show-toplevel)
 masif_source=$masif_root/source
 export PYTHONPATH=$PYTHONPATH:$masif_source
 
-job_name=train_model
+job_name=prep_data_fromDirs
 
-script=${job_name}.py
-
-#####
-python input_helper.py
-#####
+script=${job_name}.py 
 
 python -u $script > ${job_name}.out 2>${job_name}.err &
 disown -h $!

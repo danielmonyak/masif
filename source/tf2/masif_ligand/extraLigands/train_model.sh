@@ -7,11 +7,7 @@ export PYTHONPATH=$PYTHONPATH:$masif_source
 
 job_name=train_model
 
-script=${job_name}.py
-
-#####
-python input_helper.py
-#####
+script=${job_name}.py 
 
 python -u $script > ${job_name}.out 2>${job_name}.err &
 disown -h $!
