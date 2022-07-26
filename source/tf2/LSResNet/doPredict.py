@@ -71,7 +71,7 @@ load_status.expect_partial()
 outdir = 'outdir'
 file_format = 'mol2'
 if os.path.exists(outdir):
-    os.rmdir(outdir)
+    _ = os.system(f'rm -r {outdir}')
 os.mkdir(outdir)
 
 ligand_coords_arr = predict(model, pdb, threshold, min_size)
