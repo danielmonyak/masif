@@ -162,7 +162,7 @@ for dataset in ['test', 'val', 'train']:
         
         ###########################################
         final_pp_pred_list = []
-        for i, LS_pp in enumerate(LS_RN_pp_pred):
+        for LS_pp in LS_RN_pp_pred:
             matched_pred_pocket = -1
             for i, PU_pp in enumerate(PU_RN_pp_pred):
                 print(i)
