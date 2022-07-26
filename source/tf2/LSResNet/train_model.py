@@ -28,7 +28,12 @@ train_batch_sz_threshold = 32   #############
 #############################################
 #############################################
 
-from input_helper import *
+from train_vars import train_vars
+
+continue_training = train_vars['continue_training']
+num_epochs = train_vars['num_epochs']
+starting_epoch = train_vars['starting_epoch']
+ckpPath = train_vars['ckpPath']
 
 print(f'Training for {num_epochs} epochs')
 if continue_training:
