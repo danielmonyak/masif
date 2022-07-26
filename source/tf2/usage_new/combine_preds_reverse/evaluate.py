@@ -152,11 +152,12 @@ for dataset in ['test', 'val', 'train']:
         ##########
         
         LS_RN_pp_pred = []
-        for coords in LS_RN_pocket_coords:
-            pocket_points_pred = tree.query_ball_point(coords, 3.0)
-            pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
-            if len(pocket_points_pred) > 0:
-                LS_RN_pp_pred.append(pocket_points_pred)
+        if not LS_RN_pocket_coords is None: 
+            for coords in LS_RN_pocket_coords:
+                pocket_points_pred = tree.query_ball_point(coords, 3.0)
+                pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
+                if len(pocket_points_pred) > 0:
+                    LS_RN_pp_pred.append(pocket_points_pred)
         
         ###########################################
         final_pp_pred_list = []
