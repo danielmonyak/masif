@@ -1,10 +1,14 @@
 # Header variables and parameters.
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
-
 import sys
 import numpy as np
 import tensorflow as tf
+
+phys_gpus = tf.config.list_physical_devices('GPU')
+for phys_g in phys_gpus:
+    tf.config.experimental.set_memory_growth(phys_g, True)
+
 from default_config.util import *
 from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 
@@ -29,6 +33,21 @@ train_y = np.load(genPath.format('train', 'y'))
 val_X = np.load(genPath.format('val', 'X'))
 val_y = np.load(genPath.format('val', 'y'))
 
+####
+solvents_datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand/extraLigands'
+solvents_genPath = os.path.join(datadir, '{}_{}.npy')
+
+solvents_train_X = np.load(genPath.format('train', 'X'))
+solvents_train_y = np.load(genPath.format('train', 'y'))
+solvents_val_X = np.load(genPath.format('val', 'X'))
+solvents_val_y = np.load(genPath.format('val', 'y'))
+
+train_X = np.concatenate([train_X, solvents_train_X])
+train_y = np.concatenate([train_y, solvents_train_y])
+val_X = np.concatenate([val_X, solvents_val_X])
+val_y = np.concatenate([val_y, solvents_val_y])
+####
+
 with tf.device(cpu):
   train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
   val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
@@ -37,14 +56,14 @@ with tf.device(cpu):
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 modelPath = os.path.join(modelDir, 'savedModel')
-
+'''
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy([gpus_str[1],gpus_str[3]])
-
+'''
 num_epochs = 200
-#with tf.device(dev):
-with strategy.scope():
+with tf.device(dev):
+#with strategy.scope():
   model = MaSIF_ligand(
     params["max_distance"],
     params["n_classes"],
@@ -66,18 +85,18 @@ with strategy.scope():
   saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
     ckpPath,
     monitor = 'val_categorical_accuracy',
-    save_best_only = True,
+    #save_best_only = True,
     verbose = 1,
     initial_value_threshold = initValThresh
   )
-    
-  history = model.fit(x = train_X, y = train_y,
+
+  model.fit(x = train_X, y = train_y,
     epochs = num_epochs,
     initial_epoch = last_epoch,
     validation_data = (val_X, val_y),
     callbacks = [saveCheckpoints],
     verbose = 2,
-    use_multiprocessing = True
+    use_multiprocessing = False
   )
 
 model.save(modelPath)
