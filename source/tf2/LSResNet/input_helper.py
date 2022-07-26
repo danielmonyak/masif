@@ -20,15 +20,20 @@ if continue_training:
                 sys.exit('Please enter a valid choice...')
     else:
         ckpPath = input('Enter checkpoint path: ')
+    
     starting_epoch = int(input('Starting epoch: '))
+    if starting_epoch < 0:
+        sys.exit('Please enter a valid number 0 or greater...')
 else:
     ckpPath = os.path.join('kerasModel', 'ckp')
     starting_epoch = 0
 
 num_epochs = int(input('Enter the number of epochs to train for: '))
+if num_epochs <= starting_epoch:
+    sys.exit(f'Please enter a valid number greater than {starting_epoch}...')
 
-
-print(f'continue_training = {continue_training}')
-print(f'ckpPath = "{ckpPath}"')
-print(f'starting_epoch = {starting_epoch}')
-print(f'num_epochs = {num_epochs}')
+with open('train_vars.py', 'w') as f:
+    f.write(f'continue_training = {continue_training}')
+    f.write(f'ckpPath = "{ckpPath}"')
+    f.write(f'starting_epoch = {starting_epoch}')
+    f.write(f'num_epochs = {num_epochs}')
