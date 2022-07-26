@@ -8,6 +8,8 @@ phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
+import openbabel
+import pybel
 
 from default_config.util import *
 from tf2.LSResNet.LSResNet import LSResNet
