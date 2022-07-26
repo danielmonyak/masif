@@ -10,7 +10,7 @@ import tensorflow as tf
 params = masif_opts["ligand"]
 
 ####
-#ligands = masif_opts['ligand_list']
+#ligand_list = masif_opts['ligand_list']
 ligand_list = masif_opts['all_ligands']
 n_classes = len(ligand_list)
 ####
