@@ -135,12 +135,7 @@ for dataset in ['test', 'val', 'train']:
                 if len(pocket_points_pred) > 0:
                     PU_RN_pp_pred.append(pocket_points_pred)
         
-        ####################
-        LS_RN_pocket_coords = predict(LSRN_model, pdb, threshold=LSRN_threshold)
-        if LS_RN_pocket_coords is None:
-            n_pockets_pred = 0
-        else:
-            n_pockets_pred = len(LS_RN_pocket_coords)
+        n_pockets_pred = len(PU_RN_pp_pred)
         
         ##########
         if n_pockets_pred == 0:
@@ -152,7 +147,10 @@ for dataset in ['test', 'val', 'train']:
             BIG_matched.append(0)
             continue
         
+        ####################
+        LS_RN_pocket_coords = predict(LSRN_model, pdb, threshold=LSRN_threshold)
         ##########
+        
         LS_RN_pp_pred = []
         for coords in LS_RN_pocket_coords:
             pocket_points_pred = tree.query_ball_point(coords, 3.0)
@@ -162,9 +160,9 @@ for dataset in ['test', 'val', 'train']:
         
         ###########################################
         final_pp_pred_list = []
-        for i, LS_pp in enumerate(LS_RN_pp_pred):
+        for PU_pp in PU_RN_pp_pred:
             matched_pred_pocket = -1
-            for i, PU_pp in enumerate(PU_RN_pp_pred):
+            for i, LS_pp in enumerate(LS_RN_pp_pred):
                 print(i)
                 overlap = np.intersect1d(PU_pp, LS_pp)
                 recall_1 = len(overlap)/len(PU_pp)
@@ -174,9 +172,9 @@ for dataset in ['test', 'val', 'train']:
                     final_pp_pred_list.append(overlap)
                     break
             if matched_pred_pocket == -1:
-                final_pp_pred_list.append(LS_pp)
+                final_pp_pred_list.append(PU_pp)
             else:
-                del PU_RN_pp_pred[matched_pred_pocket]
+                del LS_RN_pp_pred[matched_pred_pocket]
         
         ###########################################
         matched = 0
