@@ -11,7 +11,7 @@ else:
 
 if continue_training:
     ckpPath = os.path.join('kerasModel', 'ckp')
-    if os.path.exists(ckpPath):
+    if os.path.exists(ckpPath + '.index'):
         ckpKey = input(f'Use checkpoint at "{ckpPath}"? ([y]/n): ')
         if (ckpKey != '') and (ckpKey != 'y'):
             if ckpKey == 'n':
