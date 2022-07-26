@@ -73,4 +73,4 @@ for i, indices in enumerate(ligand_coords_arr):
         a=mol.NewAtom()
         a.SetVector(float(idx[0]),float(idx[1]),float(idx[2]))
     p_mol=pybel.Molecule(mol)
-    p_mol.write(file_format, os.path.join(outdir, f'pocket{i}.{file_format}', overwrite=True)
+    p_mol.write(file_format, os.path.join(outdir, f'pocket{i}.{file_format}'), overwrite=True)
