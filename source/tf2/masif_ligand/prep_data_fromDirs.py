@@ -12,7 +12,7 @@ params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 
-outdir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
+outdir = '/data02/daniel/masif/datasets/tf2/masif_ligand/extraLigands'
 if not os.path.exists(outdir):
     os.mkdir(outdir)
 genOutPath = os.path.join(outdir, '{}_{}.npy')
