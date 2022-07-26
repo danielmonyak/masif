@@ -35,10 +35,10 @@ num_epochs = train_vars['num_epochs']
 starting_epoch = train_vars['starting_epoch']
 ckpPath = train_vars['ckpPath']
 
+
 print(f'Training for {num_epochs} epochs')
 if continue_training:
     print(f'Resuming training from checkpoint at {ckpPath}, starting at epoch {starting_epoch}')
-
 
 model = LSResNet(
     params["max_distance"],
