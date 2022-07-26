@@ -2,7 +2,6 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
 import numpy as np
-from scipy import spatial
 import tensorflow as tf
 
 from skimage.segmentation import clear_border
