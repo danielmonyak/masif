@@ -22,23 +22,16 @@ possible_train_pdbs = ['4X7G_A_', '4RLR_A_', '3OWC_A_', '3SC6_A_', '1TU9_A_']
 pos_list = {'test' : possible_test_pdbs, 'train' : possible_train_pdbs}
 '''
 
-model = LSResNet(
-    params["max_distance"],
-    feat_mask=params["feat_mask"],
-    n_thetas=4,
-    n_rhos=3,
-    n_rotations=4
-)
-
-modelDir = 'kerasModel'
-ckpPath = os.path.join(modelDir, 'ckp')
-load_status = model.load_weights(ckpPath)
-load_status.expect_partial()
-
 ########################
 pdb = input(f'Enter pdb: ')
 if pdb == '':
     sys.exit('Must enter a valid pdb...')
+
+modelDir = '/home/daniel.monyak/software/masif/source/tf2/usage_new/combine_preds/kerasModel'
+modelDir_key = input(f'Enter directory with model checkpoint [{modelDir}]: ')
+if modelDir_key != '':
+    modelDir = modelDir_key
+ckpPath = os.path.join(modelDir, 'ckp')
 
 threshold = 0.5
 threshold_key = input(f'Enter threshold [{threshold}]: ')
@@ -60,6 +53,17 @@ if min_size_key != '':
     except:
         sys.exit('Must be a number greater than 0...')
 ########################
+
+model = LSResNet(
+    params["max_distance"],
+    feat_mask=params["feat_mask"],
+    n_thetas=4,
+    n_rhos=3,
+    n_rotations=4
+)
+load_status = model.load_weights(ckpPath)
+load_status.expect_partial()
+
 
 outdir = 'outdir'
 file_format = 'mol2'
