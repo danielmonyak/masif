@@ -14,7 +14,7 @@ from default_config.util import *
 from LSResNet import LSResNet
 from get_data import get_data
 #############################################
-continue_training = (len(sys.argv) > 1) and (sys.argv[1] == 'continue')
+#continue_training = (len(sys.argv) > 1) and (sys.argv[1] == 'continue')
 #############################################
 
 params = masif_opts["LSResNet"]
@@ -22,16 +22,19 @@ params = masif_opts["LSResNet"]
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 
-modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
-
 #############################################
 #############################################
 num_epochs = 200                #############
-starting_epoch = 120             #############
+starting_epoch = 0              #############
 use_sample_weight = False       #############
 train_batch_sz_threshold = 32   #############
 #############################################
 #############################################
+
+continue_key = input('Enter "y" to continue training and "n" to start over') 
+num_epochs = int(input('Enter the number of epochs to train for: '))
+
+
 
 model = LSResNet(
     params["max_distance"],
