@@ -56,14 +56,14 @@ with tf.device(cpu):
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 modelPath = os.path.join(modelDir, 'savedModel')
-'''
+
 gpus = tf.config.experimental.list_logical_devices('GPU')
 gpus_str = [g.name for g in gpus]
-strategy = tf.distribute.MirroredStrategy([gpus_str[1],gpus_str[3]])
-'''
+strategy = tf.distribute.MirroredStrategy(gpus_str[2:4])
+
 num_epochs = 200
-with tf.device(dev):
-#with strategy.scope():
+#with tf.device(dev):
+with strategy.scope():
   model = MaSIF_ligand(
     params["max_distance"],
     params["n_classes"],
@@ -96,7 +96,7 @@ with tf.device(dev):
     validation_data = (val_X, val_y),
     callbacks = [saveCheckpoints],
     verbose = 2,
-    use_multiprocessing = False
+    use_multiprocessing = True
   )
 
 model.save(modelPath)
