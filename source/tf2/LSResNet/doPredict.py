@@ -48,7 +48,7 @@ if not os.path.exists(outdir):
     os.mkdir(outdir)
 
 ligand_coords_arr = predict(model, pdb, threshold=threshold, min_size=50)
-for indices in ligand_coords_arr:
+for i, indices in enumerate(ligand_coords_arr):
     mol=openbabel.OBMol()
     for idx in indices:
         a=mol.NewAtom()
