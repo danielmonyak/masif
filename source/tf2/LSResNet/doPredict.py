@@ -68,7 +68,7 @@ load_status = model.load_weights(ckpPath)
 load_status.expect_partial()
 
 
-outdir = f'outdir_{pdb}'
+outdir = 'outdir'
 file_format = 'mol2'
 if os.path.exists(outdir):
     os.rmdir(outdir)
