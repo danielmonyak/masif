@@ -3,8 +3,6 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
 import numpy as np
-from IPython.core.debugger import set_trace
-import importlib
 import sys
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
