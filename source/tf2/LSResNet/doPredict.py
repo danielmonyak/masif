@@ -62,9 +62,9 @@ if min_size_key != '':
 
 outdir = 'outdir'
 file_format = 'mol2'
-if not os.path.exists(outdir):
+if os.path.exists(outdir):
     os.rmdir(outdir)
-    os.mkdir(outdir)
+os.mkdir(outdir)
 
 ligand_coords_arr = predict(model, pdb, threshold=threshold, min_size=50)
 for i, indices in enumerate(ligand_coords_arr):
