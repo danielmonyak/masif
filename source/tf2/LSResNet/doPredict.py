@@ -59,7 +59,8 @@ model = LSResNet(
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
-    n_rotations=4
+    n_rotations=4,
+    extra_conv_layers = False
 )
 load_status = model.load_weights(ckpPath)
 load_status.expect_partial()
