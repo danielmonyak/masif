@@ -26,8 +26,8 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 
 #############################################
 #############################################
-num_epochs = 40                 #############
-starting_epoch = 0              #############
+num_epochs = 200                #############
+starting_epoch = 80             #############
 use_sample_weight = False       #############
 train_batch_sz_threshold = 32   #############
 #############################################
