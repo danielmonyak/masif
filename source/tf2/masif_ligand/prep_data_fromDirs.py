@@ -3,12 +3,58 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 
 import numpy as np
+from scipy import spatial
 import sys
 from default_config.util import *
 from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
 
 params = masif_opts["ligand"]
+
+####
+#ligands = params['ligand_list']
+ligands = params['all_ligands']
+####
+labels_dict = dict(zip(ligands, range(1, len(ligands)+1)))
+
+all_pdbs = os.listdir(params["masif_precomputation_dir"])
+
+# Structures are randomly assigned to train, validation and test sets
+shuffle(all_pdbs)
+train = int(len(all_pdbs) * params["train_fract"])
+val = int(len(all_pdbs) * params["val_fract"])
+test = int(len(all_pdbs) * params["test_fract"])
+print("Train", train)
+print("Validation", val)
+print("Test", test)
+train_pdbs = all_pdbs[:train]
+val_pdbs = all_pdbs[train : train + val]
+test_pdbs = all_pdbs[train + val : train + val + test]
+
+
+# Edited by Daniel Monyak
+#### Had to be formatted correctly so that the rest of the code works
+train_pdbs = np.char.rstrip(train_pdbs, '_')
+val_pdbs = np.char.rstrip(val_pdbs, '_')
+test_pdbs = np.char.rstrip(test_pdbs, '_')
+####
+
+
+#
+# Edited by Daniel Monyak
+# Uncommented these save statements so that the lists would be redone
+np.save('extraLigands_lists/train_pdbs_sequence.npy',train_pdbs)
+np.save('extraLigands_lists/val_pdbs_sequence.npy',val_pdbs)
+np.save('extraLigands_lists/test_pdbs_sequence.npy',test_pdbs)
+
+# For this run use the train, validation and test sets actually used
+train_pdbs = np.load("extraLigands_lists/train_pdbs_sequence.npy").astype(str)
+val_pdbs = np.load("extraLigands_lists/val_pdbs_sequence.npy").astype(str)
+test_pdbs = np.load("extraLigands_lists/test_pdbs_sequence.npy").astype(str)
+
+precom_dir = params["masif_precomputation_dir"]
+ligand_coord_dir = params["ligand_coords_dir"]
+
 defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 
@@ -30,7 +76,7 @@ def compile_and_save(feed_list, y_list, dataset):
     np.save(genOutPath.format(dataset, 'y'), y)
 
 
-dataset_list = {'train' : "training_data_sequenceSplit_30.tfrecord", 'val' : "validation_data_sequenceSplit_30.tfrecord", 'test' : "testing_data_sequenceSplit_30.tfrecord"}
+dataset_list = {'train' : train_pdbs, 'val' : val_pdbs, 'test' : test_pdbs}
 
 for dataset in dataset_list.keys():
     i = 0
@@ -38,19 +84,63 @@ for dataset in dataset_list.keys():
     feed_list = []
     y_list = []
 
-    temp_data = tf.data.TFRecordDataset(os.path.join(params["tfrecords_dir"], dataset_list[dataset])).map(_parse_function)
-    temp_iterator = iter(temp_data)
-    optional = temp_iterator.get_next_as_optional()
-    while optional.has_value():
-        data_element = optional.get_value()
+    temp_data = dataset_list[dataset]
+    n_pdbs = len(temp_data)
+    for i, pdb in enumerate(temp_data):
+        print(f'{dataset} record {i} of {n_pdbs}, {pdb}')
+        try:
+            # Load precomputed data
+            input_feat = np.load(
+                os.path.join(precom_dir, pdb + "_", "p1_input_feat.npy")
+            )
+            rho_wrt_center = np.load(
+                os.path.join(precom_dir, pdb + "_", "p1_rho_wrt_center.npy")
+            )
+            theta_wrt_center = np.load(
+                os.path.join(precom_dir, pdb + "_", "p1_theta_wrt_center.npy")
+            )
+            mask = np.expand_dims(np.load(os.path.join(precom_dir, pdb + "_", "p1_mask.npy")),-1)
+            X = np.load(os.path.join(precom_dir, pdb + "_", "p1_X.npy"))
+            Y = np.load(os.path.join(precom_dir, pdb + "_", "p1_Y.npy"))
+            Z = np.load(os.path.join(precom_dir, pdb + "_", "p1_Z.npy"))
+            all_ligand_coords = np.load(
+                os.path.join(
+                    ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
+                )
+            )
+            all_ligand_types = np.load(
+                os.path.join(
+                    ligand_coord_dir, "{}_ligand_types.npy".format(pdb.split("_")[0])
+                )
+            ).astype(str)
+        except:
+            continue
         
-        print('{} record {}'.format(dataset, i))
+        if len(all_ligand_types) == 0:
+            continue
+            
         
-        labels = data_element[4]
-        n_ligands = labels.shape[1]
-        for j in range(n_ligands):
-            pocket_points = flatten(tf.where(labels[:, j] != 0))
-            label = np.max(labels[:, j]) - 1
+        xyz_coords = np.vstack([X, Y, Z]).T
+        tree = spatial.KDTree(xyz_coords)
+        pocket_labels = np.zeros(
+            (xyz_coords.shape[0], len(all_ligand_types)), dtype=np.int
+        )
+        # Label points on surface within 3A distance from ligand with corresponding ligand type
+        for j, structure_ligand in enumerate(all_ligand_types):
+            ligand_coords = all_ligand_coords[j]
+            pocket_points = tree.query_ball_point(ligand_coords, 3.0)
+            pocket_points = list(set([pp for p in pocket_points for pp in p]))
+            #pocket_labels[pocket_points_flatten, j] = labels_dict[structure_ligand]
+        
+        
+        
+        #labels = data_element[4]
+        #n_ligands = labels.shape[1]
+        #for j in range(n_ligands):
+            #pocket_points = flatten(tf.where(labels[:, j] != 0))
+            #label = np.max(labels[:, j]) - 1
+            
+            label = labels_dict[structure_ligand]
             
             print(f'Ligand: {label}')
             
@@ -61,16 +151,13 @@ for dataset in dataset_list.keys():
                 continue
 
             feed_dict = {
-                'input_feat' : tf.gather(data_element[0], pocket_points, axis = 0),
-                'rho_coords' : tf.gather(data_element[1], pocket_points, axis = 0),
-                'theta_coords' : tf.gather(data_element[2], pocket_points, axis = 0),
-                'mask' : tf.gather(data_element[3], pocket_points, axis = 0)
+                'input_feat' : tf.gather(input_feat, pocket_points, axis = 0),
+                'rho_coords' : tf.gather(rho_wrt_center, pocket_points, axis = 0),
+                'theta_coords' : tf.gather(theta_wrt_center, pocket_points, axis = 0),
+                'mask' : tf.gather(mask, pocket_points, axis = 0)
             }
             feed_list.append(feed_dict)
             y_list.append(pocket_labels)
-        
-        i += 1
-        optional = temp_iterator.get_next_as_optional()
         
     compile_and_save(feed_list, y_list, dataset)
 
