@@ -25,3 +25,8 @@ else:
 
 num_epochs = int(input('Enter the number of epochs to train for: '))
 
+
+print(f'continue_training = {continue_training}')
+print(f'ckpPath = {ckpPath}')
+print(f'starting_epoch = {starting_epoch}')
+print(f'num_epochs = {num_epochs}')
