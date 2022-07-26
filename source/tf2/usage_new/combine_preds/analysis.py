@@ -9,7 +9,9 @@ else:
     outdir = 'results'
 
 results = pd.read_csv(os.path.join(outdir, 'results.csv'))
-BIG_results = pd.read_csv(os.path.join(outdir, 'BIG_results.csv'))
+BIG_results = pd.read_csv(os.path.join(outdir, 'BIG_results.csv'), index_col = 0)
+
+
 
 BIG_results['precision'] = BIG_results['matched']/BIG_results['n_pockets_pred']
 BIG_results['recall'] = BIG_results['matched']/BIG_results['n_pockets_true']
