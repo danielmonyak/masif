@@ -19,21 +19,43 @@ from get_data import get_data
 
 params = masif_opts["LSResNet"]
 
-modelDir = 'kerasModel'
-ckpPath = os.path.join(modelDir, 'ckp')
+
 
 #############################################
 #############################################
-num_epochs = 200                #############
-starting_epoch = 0              #############
+#num_epochs = 200                #############
+#starting_epoch = 0              #############
 use_sample_weight = False       #############
 train_batch_sz_threshold = 32   #############
 #############################################
 #############################################
 
-continue_key = input('Enter "y" to continue training and "n" to start over') 
+continue_key = input('Enter "y" to continue training from checkpoint and "n" to start over: ')
+if continue_key.lower() in ('y', 'n'):
+    continue_training = continue_key == 'y'
+else:
+    sys.exit('Please enter a valid choice...')
+
+if continue_training:
+    ckpPath = os.path.join('kerasModel', 'ckp')
+    ckpKey = input(f'Using checkpoint at {ckpPath}? ([y]/n): ')
+    if (ckpKey != '') and (ckpKey != 'y'):
+        if ckpKey == 'n':
+            ckpPath = input('Enter checkpoint path: ')
+        else:
+            sys.exit('Please enter a valid choice...')
+    
+    starting_epoch = int(input('Starting epoch: '))
+else:
+    ckpPath = os.path.join('kerasModel', 'ckp')
+    starting_epoch = 0
+
 num_epochs = int(input('Enter the number of epochs to train for: '))
 
+
+print(f'Training for {num_epochs} epochs')
+if continue_training:
+    print(f'Resuming training from checkpoint at {ckpPath}, starting at epoch {starting_epoch}')
 
 
 model = LSResNet(
