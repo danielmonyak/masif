@@ -17,7 +17,7 @@ from tf2.LSResNet.predict import predict
 
 
 
-LSRN_threshold = 0.4
+LSRN_threshold = 0.5
 
 
 
