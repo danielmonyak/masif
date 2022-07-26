@@ -33,7 +33,7 @@ if num_epochs <= starting_epoch:
     sys.exit(f'Please enter a valid number greater than {starting_epoch}...')
 
 with open('train_vars.py', 'w') as f:
-    f.write(f'train_vars = {}')
+    f.write('train_vars = {}')
     f.write(f'train_vars["continue_training"] = {continue_training}\n')
     f.write(f'train_vars["ckpPath"] = "{ckpPath}"\n')
     f.write(f'train_vars["starting_epoch"] = {starting_epoch}\n')
