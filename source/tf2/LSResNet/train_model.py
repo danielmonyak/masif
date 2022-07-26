@@ -33,7 +33,7 @@ train_batch_sz_threshold = 32   #############
 continue_key = input('Continue training from checkpoint? (y/[n]): ')
 if (continue_key == '') or (continue_key == 'n'):
     continue_training = False
-elif continue_key = 'y':
+elif continue_key == 'y':
     continue_training = True
 else:
     sys.exit('Please enter a valid choice...')
