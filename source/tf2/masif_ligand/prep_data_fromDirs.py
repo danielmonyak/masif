@@ -47,9 +47,9 @@ if not os.path.exists(listdir):
 
 
 # Uncommented these save statements so that the lists would be redone
-np.save(os.path.join(listdir, 'train_pdbs_sequence.npy',train_pdbs))
-np.save(os.path.join(listdir, 'val_pdbs_sequence.npy',val_pdbs))
-np.save(os.path.join(listdir, 'test_pdbs_sequence.npy',test_pdbs))
+np.save(os.path.join(listdir, 'train_pdbs_sequence.npy'), train_pdbs)
+np.save(os.path.join(listdir, 'val_pdbs_sequence.npy'), val_pdbs)
+np.save(os.path.join(listdir, 'test_pdbs_sequence.npy'), test_pdbs)
 
 # For this run use the train, validation and test sets actually used
 train_pdbs = np.load(os.path.join(listdir, 'train_pdbs_sequence.npy')).astype(str)
