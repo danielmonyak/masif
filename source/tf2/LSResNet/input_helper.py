@@ -11,13 +11,15 @@ else:
 
 if continue_training:
     ckpPath = os.path.join('kerasModel', 'ckp')
-    ckpKey = input(f'Using checkpoint at {ckpPath}? ([y]/n): ')
-    if (ckpKey != '') and (ckpKey != 'y'):
-        if ckpKey == 'n':
-            ckpPath = input('Enter checkpoint path: ')
-        else:
-            sys.exit('Please enter a valid choice...')
-    
+    if os.path.exists(ckpPath):
+        ckpKey = input(f'Use checkpoint at "{ckpPath}"? ([y]/n): ')
+        if (ckpKey != '') and (ckpKey != 'y'):
+            if ckpKey == 'n':
+                ckpPath = input('Enter checkpoint path: ')
+            else:
+                sys.exit('Please enter a valid choice...')
+    else:
+        ckpPath = input('Enter checkpoint path: ')
     starting_epoch = int(input('Starting epoch: '))
 else:
     ckpPath = os.path.join('kerasModel', 'ckp')
