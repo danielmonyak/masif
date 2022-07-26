@@ -46,14 +46,14 @@ if not os.path.exists(listdir):
 
 
 # Uncommented these save statements so that the lists would be redone
-np.save(os.path.join(listdir, 'train_pdbs_sequence.npy',train_pdbs)
-np.save(os.path.join(listdir, 'val_pdbs_sequence.npy',val_pdbs)
-np.save(os.path.join(listdir, 'test_pdbs_sequence.npy',test_pdbs)
+np.save(os.path.join(listdir, 'train_pdbs_sequence.npy',train_pdbs))
+np.save(os.path.join(listdir, 'val_pdbs_sequence.npy',val_pdbs))
+np.save(os.path.join(listdir, 'test_pdbs_sequence.npy',test_pdbs))
 
 # For this run use the train, validation and test sets actually used
-train_pdbs = np.load(os.path.join(listdir, 'train_pdbs_sequence.npy').astype(str)
-val_pdbs = np.load(os.path.join(listdir, 'val_pdbs_sequence.npy').astype(str)
-test_pdbs = np.load(os.path.join(listdir, 'test_pdbs_sequence.npy').astype(str)
+train_pdbs = np.load(os.path.join(listdir, 'train_pdbs_sequence.npy')).astype(str)
+val_pdbs = np.load(os.path.join(listdir, 'val_pdbs_sequence.npy')).astype(str)
+test_pdbs = np.load(os.path.join(listdir, 'test_pdbs_sequence.npy')).astype(str)
 
 precom_dir = params["masif_precomputation_dir"]
 ligand_coord_dir = params["ligand_coords_dir"]
@@ -68,13 +68,17 @@ genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 def helper(feed_dict):
     flat_list = list(map(lambda tsr_key : feed_dict[tsr_key].flatten(), data_order))
-    return tf.concat(flat_list, axis = 0)
+    return np.concatenate(flat_list, axis = 0)
 
-def compile_and_save(feed_list, y_list, dataset):
+def compile_and_save(feed_list, y_list, dataset, len_list):
     tsr_list = list(map(helper, feed_list))
-    with tf.device('/CPU:0'):
-        X = tf.ragged.stack(tsr_list).to_tensor(default_value = defaultCode)
-        y = tf.stack(y_list, axis = 0)
+    #
+    X = np.empty([len(tsr_list), max(len_list)])
+    X.fill(defaultCode)
+    for i, tsr in enumerate(tsr_list):
+        X[i, :len(tsr)] = tsr
+    #
+    y = np.stack(y_list)
     np.save(genOutPath.format(dataset, 'X'), X)
     np.save(genOutPath.format(dataset, 'y'), y)
 
@@ -86,6 +90,7 @@ for dataset in dataset_list.keys():
     
     feed_list = []
     y_list = []
+    len_list = []
 
     temp_data = dataset_list[dataset]
     n_pdbs = len(temp_data)
@@ -134,26 +139,26 @@ for dataset in dataset_list.keys():
             ligand_coords = all_ligand_coords[j]
             pocket_points = tree.query_ball_point(ligand_coords, 3.0)
             pocket_points = list(set([pp for p in pocket_points for pp in p]))
-            #
-            label = ligand_list.index(structure_ligand)
-            #
-            print(f'Ligand: {label}')
-            #
-            pocket_labels = np.zeros(n_classes, dtype=np.float32)
-            pocket_labels[label] = 1.0
             npoints = len(pocket_points)
             if npoints < minPockets:
                 continue
             #
+            label = ligand_list.index(structure_ligand)
+            print(f'Ligand: {label}')
+            #
+            pocket_labels = np.zeros(n_classes, dtype=np.float32)
+            pocket_labels[label] = 1.0
+            #
             feed_dict = {
-                'input_feat' : tf.gather(input_feat, pocket_points, axis = 0),
-                'rho_coords' : tf.gather(rho_wrt_center, pocket_points, axis = 0),
-                'theta_coords' : tf.gather(theta_wrt_center, pocket_points, axis = 0),
-                'mask' : tf.gather(mask, pocket_points, axis = 0)
+                'input_feat' : input_feat[pocket_points],
+                'rho_coords' : rho_wrt_center[pocket_points],
+                'theta_coords' : theta_wrt_center[pocket_points],
+                'mask' : mask[pocket_points]
             }
             feed_list.append(feed_dict)
             y_list.append(pocket_labels)
+            len_list.append(feed_dict['input_feat'].size + feed_dict['rho_coords'].size + feed_dict['theta_coords'].size + feed_dict['mask'].size)
         
-    compile_and_save(feed_list, y_list, dataset)
+    compile_and_save(feed_list, y_list, dataset, len_list)
 
 print('Finished!')
