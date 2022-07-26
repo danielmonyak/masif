@@ -5,7 +5,6 @@ import numpy as np
 from scipy import spatial
 from random import shuffle
 from default_config.util import *
-from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
 
 params = masif_opts["ligand"]
