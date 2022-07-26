@@ -15,6 +15,8 @@ ligand_list = masif_opts['all_ligands']
 n_classes = len(ligand_list)
 ####
 
+angstrom_dist = 7.0
+
 
 all_pdbs = os.listdir(params["masif_precomputation_dir"])
 
@@ -137,7 +139,7 @@ for dataset in dataset_list.keys():
         # Label points on surface within 3A distance from ligand with corresponding ligand type
         for j, structure_ligand in enumerate(all_ligand_types):
             ligand_coords = all_ligand_coords[j]
-            pocket_points = tree.query_ball_point(ligand_coords, 3.0)
+            pocket_points = tree.query_ball_point(ligand_coords, angstrom_dist)
             pocket_points = list(set([pp for p in pocket_points for pp in p]))
             npoints = len(pocket_points)
             
