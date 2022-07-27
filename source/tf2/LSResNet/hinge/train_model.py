@@ -82,7 +82,6 @@ for i in range(num_epochs):
     
     loss_list = []
     acc_list = []
-    auc_list = []
     F1_list = []
     for pdb_id in training_list:
         data = get_data(pdb_id)
@@ -104,7 +103,6 @@ for i in range(num_epochs):
                 history = model.fit(dataset, verbose = 2)
                 loss_list.extend(history.history['loss'])
                 acc_list.extend(history.history['hinge_accuracy'])
-                auc_list.extend(history.history['auc'])
                 F1.extend(history.history['F1'])
                 
                 cur_batch_sz = 0
@@ -118,7 +116,6 @@ for i in range(num_epochs):
         history = model.fit(dataset, verbose = 2)
         loss_list.extend(history.history['loss'])
         acc_list.extend(history.history['hinge_accuracy'])
-        auc_list.extend(history.history['auc'])
         F1.extend(history.history['F1'])
         
         cur_batch_sz = 0
@@ -126,12 +123,10 @@ for i in range(num_epochs):
     print(f'\nEpoch {i}, Training Metrics')
     print(f'Loss: {np.mean(loss_list)}')
     print(f'Hinge Accuracy: {np.mean(acc_list)}')
-    print(f'AUC: {np.mean(auc_list)}')
     print(f'F1: {np.mean(F1_list)}\n')
     
     loss_list = []
     acc_list = []
-    auc_list = []
     F1_list = []
     for pdb_id in val_list:
         data = get_data(pdb_id)
@@ -139,16 +134,14 @@ for i in range(num_epochs):
             continue
             
         X, y = data
-        loss, auc, f1, acc = model.evaluate(X, y, verbose=0)
+        loss, f1, acc = model.evaluate(X, y, verbose=0)
         loss_list.append(loss)
         acc_list.append(acc)
-        auc_list.append(auc)
         F1.append(f1)
     
     print(f'\nEpoch {i}, Validation Metrics')
     print(f'Loss: {np.mean(loss_list)}')
     print(f'Hinge Accuracy: {np.mean(acc_list)}')
-    print(f'AUC: {np.mean(auc_list)}')
     print(f'F1: {np.mean(F1_list)}\n')
     
     print(f'Saving model weights to {ckpPath}')
