@@ -63,3 +63,5 @@ source/tf2/*/*.txt
 source/tf2/*/*/*.txt
 source/tf2/*/l2*
 source/tf2/*/*/l2*
+source/tf2/*/kerasModel*
+source/tf2/*/*/kerasModel*
