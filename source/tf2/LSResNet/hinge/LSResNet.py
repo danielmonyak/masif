@@ -29,11 +29,13 @@ class LSResNet(Model):
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
         
         self.loss_tracker.update_state(loss)
-        for m in self.metrics[1:]:
-            m.update_state(y, y_pred)
+        #for m in self.metrics[1:]:
+        #    m.update_state(y, y_pred)
+        self.f1_metric.update_state(F1(y, y_pred))
+        self.hinge_acc_metric.update_state(y, y_pred)
+        
         return {m.name: m.result() for m in self.metrics}
-        #return {}
-    
+        
     @property
     def metrics(self):
         return [self.loss_tracker, self.f1_metric, self.hinge_acc_metric]
@@ -79,7 +81,8 @@ class LSResNet(Model):
         self.hinge_p = hinge_p
         
         self.loss_tracker = metrics.Mean(name="loss")
-        self.f1_metric = F1_Metric()
+        #self.f1_metric = F1_Metric()
+        self.f1_metric = metrics.Mean(name='f1_score')
         self.hinge_acc_metric = HingeAccuracy()
         
         self.conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
@@ -438,7 +441,7 @@ class HingeAccuracy(metrics.Metric):
     def result(self):
         self.hinge_acc_score = self.n_matching/self.n_total
         return self.hinge_acc_score
-
+'''
 class F1_Metric(metrics.Metric):
     def __init__(self, name='F1', **kwargs):
         super(F1_Metric, self).__init__(name=name, **kwargs)
@@ -460,3 +463,4 @@ class F1_Metric(metrics.Metric):
     def result(self):
         #self.f1_score = tf.cast(tf.reduce_mean(tf.stack(self.f1_score_list, axis=0), axis=0), self.dtype)
         return self.f1_score
+'''
