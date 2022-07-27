@@ -11,13 +11,15 @@ def runLayers(layers, x):
         x = l(x)
     return x
 
+hinge_inst = losses.Hinge()
+
 class LSResNet(Model):
     def train_step(self, data):
         x, y = data
 
         with tf.GradientTape() as tape:
             y_pred = self(x, training=True)
-            loss = tf.pow(losses.Hinge(y, y_pred), self.hinge_p)
+            loss = tf.pow(hinge_inst(y, y_pred), self.hinge_p)
             if not self.specialNeuron is None:
                 loss += self.specialNeuron.reg_loss()
 
