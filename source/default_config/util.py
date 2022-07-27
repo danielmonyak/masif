@@ -2,6 +2,8 @@ import numpy as np
 import tensorflow as tf
 from default_config.masif_opts import masif_opts
 
+minPockets = masif_opts['ligand']['minPockets']
+
 inputFeatSpec = tf.RaggedTensorSpec(shape=[None, 200, 5], dtype=tf.float32)
 restSpec = tf.RaggedTensorSpec(shape=[None, 200, 1], dtype=tf.float32)
 sampleSpec = tf.TensorSpec([minPockets], dtype=tf.int32)
