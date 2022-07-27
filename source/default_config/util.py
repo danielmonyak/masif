@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras import metrics
 from default_config.masif_opts import masif_opts
 
 minPockets = masif_opts['ligand']['minPockets']
