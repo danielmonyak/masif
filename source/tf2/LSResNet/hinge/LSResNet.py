@@ -1,5 +1,5 @@
 import numpy as np
-from tensorflow.keras import layers, Sequential, initializers, Model, regularizers
+from tensorflow.keras import layers, Sequential, initializers, Model, regularizers, losses, metrics
 import tensorflow as tf
 from tensorflow.keras import backend as K
 import functools
@@ -12,6 +12,27 @@ def runLayers(layers, x):
     return x
 
 class LSResNet(Model):
+    def train_step(self, data):
+        x, y = data
+
+        with tf.GradientTape() as tape:
+            y_pred = self(x, training=True)  # Forward pass
+            # Compute our own loss
+            loss = tf.pow(losses.Hinge(y, y_pred), self.hinge_p)
+
+        # Compute gradients
+        trainable_vars = self.trainable_variables
+        gradients = tape.gradient(loss, trainable_vars)
+
+        # Update weights
+        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
+
+        # Compute our own metrics
+        loss_tracker.update_state(loss)
+        self.auc_metric.update_state(y, y_pred)
+        hinge_acc.update_state(y, y_pred)
+        return {"loss": loss_tracker.result(), "mae": mae_metric.result()}
+
     def __init__(
         self,
         max_rho,
@@ -21,7 +42,8 @@ class LSResNet(Model):
         n_rotations=16,
         keep_prob = 1.0,
         reg_val = 0.0,
-        reg_type = 'l2'
+        reg_type = 'l2',
+        hinge_p = 3
     ):
         ## Call super - model initializer
         super(LSResNet, self).__init__()
@@ -44,7 +66,12 @@ class LSResNet(Model):
         self.max_dist = 35
         
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-        self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
+        #self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
+        
+        self.hinge_p = hinge_p
+        self.auc_metric = metrics.AUC()
+        self.f1_metric = F1_Metric()
+        self.hinge_acc_metric = HingeAccuracy()
         
         self.conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
                        [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
@@ -106,7 +133,7 @@ class LSResNet(Model):
             layers.BatchNormalization(axis=bn_axis)]
         ]
         
-        self.lastConvLayer = layers.Conv3D(1, kernel_size=1, activation)
+        self.lastConvLayer = layers.Conv3D(1, kernel_size=1, activation='tanh')
         
     def call(self, X_packed, training=False):
         X, xyz_coords = X_packed
@@ -380,6 +407,36 @@ class EXP_Neuron(layers.Layer):
     def call(self, inputs):
         return self.a * tf.exp(tf.matmul(inputs, self.w) + self.b)
 
-        
-        
-        
+class HingeAccuracy(metrics.Metric):
+    def __init__(self, name='hinge_accuracy', **kwargs):
+        super(HingeAccuracy, self).__init__(name=name, **kwargs)
+        self.hinge_acc_score = self.add_weight(name='hinge_acc_score', initializer='zeros')
+    def update_state(self, y_true, y_pred):
+        y_true = tf.squeeze(y_true) > 0.0
+        y_pred = tf.squeeze(y_pred) > 0.0
+        result = tf.cast(y_true == y_pred, tf.float32)
+        ret = tf.reduce_mean(result)
+        ret = tf.cast(ret, self.dtype)
+        self.hinge_acc_score.assign_add(tf.reduce_sum(ret))
+    def result(self):
+        return self.hinge_acc_score
+
+class F1_Metric(metrics.Metric):
+    def __init__(self, name='F1', threshold=0.5, **kwargs):
+        super(F1_Metric, self).__init__(name=name, **kwargs)
+        self.f1_score = self.add_weight(name='f1_score', initializer='zeros')
+        self.threshold = threshold
+    def update_state(self, y_true, y_pred):
+        y_true = tf.squeeze(y_true) > 0.0
+        y_pred = tf.squeeze(y_pred) > 0.0
+        overlap = tf.reduce_sum(tf.cast(y_true & y_pred, dtype=tf.float32))
+        n_true = tf.reduce_sum(tf.cast(y_true, dtype=tf.float32))
+        n_pred = tf.reduce_sum(tf.cast(y_pred, dtype=tf.float32))
+        recall = overlap/n_true
+        precision = overlap/n_pred
+        f1 = 2*precision*recall / (precision + recall)
+        f1 = tf.where(tf.math.is_nan(f1), tf.zeros_like(f1), f1)
+        self.f1_score.assign_add(tf.reduce_sum(f1))
+    def result(self):
+        return self.f1_score
+    
