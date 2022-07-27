@@ -50,7 +50,19 @@ class LSResNet(Model):
         self.hinge_acc_metric.update_state(y, y_pred)
         
         return {m.name: m.result() for m in self.metrics}
-        
+    
+    def test_step(self, data):
+        x, y = data
+        y_pred = self(x, training=False)
+        loss = tf.pow(hinge_inst(y, y_pred), self.hinge_p)
+        if not self.specialNeuron is None:
+            loss += self.specialNeuron.reg_loss()
+            
+        self.loss_tracker.update_state(loss)
+        self.f1_metric.update_state(y, y_pred)
+        self.hinge_acc_metric.update_state(y, y_pred)
+        return {m.name: m.result() for m in self.metrics}
+    
     @property
     def metrics(self):
         return [self.loss_tracker, self.f1_metric, self.hinge_acc_metric]
