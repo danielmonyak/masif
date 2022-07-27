@@ -12,7 +12,8 @@ phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
-from default_config.util import *
+import default_config.util as util
+from default_config.masif_opts import masif_opts
 from tf2.LSResNet.get_data import get_data
 
 params = masif_opts["LSResNet"]
