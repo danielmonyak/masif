@@ -59,3 +59,7 @@ source/tf2/ligand_site_one/batched/auc.txt
 source/tf2/ligand_site_one/batched/kerasModel
 source/tf2/ligand_site_one/batched/loss.txt
 source/tf2/ligand_site_one/batched/make*
+source/tf2/*/*.txt
+source/tf2/*/*/*.txt
+source/tf2/*/l2*
+source/tf2/*/*/l2*
