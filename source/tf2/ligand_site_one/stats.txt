@@ -1,3 +1,0 @@
-Average number of total points: 11400.618448637317
-Average number of pocket points: 376.87106918238993
-Average fraction of points that are pocket points: 0.039
