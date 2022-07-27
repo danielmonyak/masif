@@ -442,8 +442,8 @@ class HingeAccuracy(metrics.Metric):
 class F1_Metric(metrics.Metric):
     def __init__(self, name='F1', **kwargs):
         super(F1_Metric, self).__init__(name=name, **kwargs)
-        self.f1_score_list = []
-        self.f1_score = self.add_weight(name='f1_score', initializer='zeros')
+        #self.f1_score_list = []
+        self.f1_score = metrics.Mean(name='f1_score')
     def update_state(self, y_true, y_pred):
         y_true = tf.greater(tf.squeeze(y_true), 0.0)
         y_pred = tf.greater(tf.squeeze(y_pred), 0.0)
@@ -455,7 +455,8 @@ class F1_Metric(metrics.Metric):
         f1 = 2*precision*recall / (precision + recall)
         f1 = tf.where(tf.math.is_nan(f1), tf.zeros_like(f1), f1)
         #self.f1_score.assign_add(tf.reduce_sum(f1))
-        self.f1_score_list.append(f1)
+        #self.f1_score_list.append(f1)
+        self.f1_score.update_state(f1)
     def result(self):
-        self.f1_score = tf.cast(tf.reduce_mean(tf.stack(self.f1_score_list, axis=0), axis=0), self.dtype)
+        #self.f1_score = tf.cast(tf.reduce_mean(tf.stack(self.f1_score_list, axis=0), axis=0), self.dtype)
         return self.f1_score
