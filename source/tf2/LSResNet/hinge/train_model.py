@@ -27,34 +27,35 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 
 #############################################
 #############################################
-num_epochs = 100                 #############
-starting_epoch = 40               ############
+lr = 1e-4
+
 use_sample_weight = False        ############
 train_batch_sz_threshold = 10   #############
 #############################################
 #############################################
+
+from train_vars import train_vars
+
+continue_training = train_vars['continue_training']
+num_epochs = train_vars['num_epochs']
+starting_epoch = train_vars['starting_epoch']
+ckpPath = train_vars['ckpPath']
+
+print(f'Training for {num_epochs} epochs')
+if continue_training:
+    print(f'Resuming training from checkpoint at {ckpPath}, starting at epoch {starting_epoch}')
 
 model = LSResNet(
     params["max_distance"],
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
-    learning_rate = 1e-4,
+    learning_rate = lr,
     n_rotations=4,
     reg_val = 0
 )
 
-def hinge_accuracy(y_true, y_pred):
-    y_true = tf.squeeze(y_true) > 0.0
-    y_pred = tf.squeeze(y_pred) > 0.0
-    result = tf.cast(y_true == y_pred, tf.float32)
-    return tf.reduce_mean(result)
-
-binAcc = tf.keras.metrics.BinaryAccuracy(threshold = 0)
-model.compile(optimizer = 'adam',
-  loss = 'squared_hinge',
-  metrics=[hinge_accuracy, F1]
-)
+model.compile(optimizer = 'adam')
 
 if continue_training:
     model.load_weights(ckpPath)
@@ -83,9 +84,12 @@ for i in range(num_epochs):
     
     np.random.shuffle(training_list)
     
+    loss_list = []
+    acc_list = []
+    auc_list = []
+    F1_list = []
     for pdb_id in training_list:
         data = get_data(pdb_id)
-        
         
         if data is None:
             continue
@@ -100,28 +104,38 @@ for i in range(num_epochs):
             cur_batch_sz += 1
             if cur_batch_sz == train_batch_sz_threshold:
                 print(f'Epoch {i}, training on {cur_batch_sz} pdbs, batch {batch_i}')
-                model.fit(dataset, verbose = 2)
+                
+                history = model.fit(dataset, verbose = 2)
+                loss_list.extend(history.history['loss'])
+                acc_list.extend(history.history['hinge_accuracy'])
+                auc_list.extend(history.history['auc'])
+                F1.extend(history.history['F1'])
+                
                 cur_batch_sz = 0
                 batch_i += 1
         
-        #print(f'Epoch {i}, train pdb {train_j}, {pdb_id}')
-        
-        # TRAIN MODEL
-        ################################################
-        #model.fit(X, y, verbose = 2)
-        ################################################
-
         train_j += 1
     
     if cur_batch_sz > 0:
         print(f'Epoch {i}, training on {cur_batch_sz} pdbs, batch {batch_i}')
-        model.fit(dataset, verbose = 2)
-        cur_batch_sz = 0
         
-    print(f'Epoch {i}, calculating validation metrics...')
+        history = model.fit(dataset, verbose = 2)
+        loss_list.extend(history.history['loss'])
+        acc_list.extend(history.history['hinge_accuracy'])
+        auc_list.extend(history.history['auc'])
+        F1.extend(history.history['F1'])
+        
+        cur_batch_sz = 0
+    
+    print(f'\nEpoch {i}, Training Metrics')
+    print(f'Loss: {np.mean(loss_list)}')
+    print(f'Hinge Accuracy: {np.mean(acc_list)}')
+    print(f'AUC: {np.mean(auc_list)}')
+    print(f'F1: {np.mean(F1_list)}\n')
     
     loss_list = []
     acc_list = []
+    auc_list = []
     F1_list = []
     for pdb_id in val_list:
         data = get_data(pdb_id)
@@ -129,15 +143,17 @@ for i in range(num_epochs):
             continue
             
         X, y = data
-        loss, acc, F1 = model.evaluate(X, y, verbose=0)[:3]
+        loss, auc, f1, acc = model.evaluate(X, y, verbose=0)
         loss_list.append(loss)
         acc_list.append(acc)
-        F1_list.append(F1)
+        auc_list.append(auc)
+        F1.append(f1)
     
-    
+    print(f'\nEpoch {i}, Validation Metrics')
     print(f'Loss: {np.mean(loss_list)}')
-    print(f'Accuracy: {np.mean(acc_list)}')
-    print(f'F1: {np.nanmean(F1_list)}')
+    print(f'Hinge Accuracy: {np.mean(acc_list)}')
+    print(f'AUC: {np.mean(auc_list)}')
+    print(f'F1: {np.mean(F1_list)}\n')
     
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
