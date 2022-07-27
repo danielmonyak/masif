@@ -40,6 +40,7 @@ class LSResNet(Model):
         n_rhos=5,
         learning_rate=1e-4,
         n_rotations=16,
+        feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
         reg_val = 0.0,
         reg_type = 'l2',
