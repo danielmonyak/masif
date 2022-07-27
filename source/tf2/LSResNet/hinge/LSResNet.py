@@ -447,11 +447,11 @@ class EXP_Neuron(layers.Layer):
     def __init__(self, input_dim, units, reg_const):
         super(EXP_Neuron, self).__init__()
         self.reg_const = reg_const
-        self.a = self.add_weight(initializer="random_normal", trainable=True)
-        self.w = self.add_weight(
+        self.a = self.add_weight('EXP_a', initializer="random_normal", trainable=True)
+        self.w = self.add_weight('EXP_w',
             shape=(input_dim, units), initializer="random_normal", trainable=True
         )
-        self.b = self.add_weight(shape=(units), initializer="zeros", trainable=True)
+        self.b = self.add_weight('EXP_b', shape=(units), initializer="zeros", trainable=True)
     def call(self, inputs):
         return self.a * tf.exp(tf.matmul(inputs, self.w) + self.b)
     def reg_loss(self):
@@ -496,4 +496,3 @@ class F1_Metric(metrics.Metric):
         self.count.assign_add(tf.cast(1, self.dtype))
     def result(self):
         return self.total/self.count
-
