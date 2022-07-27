@@ -31,7 +31,7 @@ class LSResNet(Model):
     
     @property
     def metrics(self):
-        return = [self.loss_tracker, self.auc_metric, self.f1_metric, self.hinge_acc_metric]
+        return [self.loss_tracker, self.auc_metric, self.f1_metric, self.hinge_acc_metric]
     
     def __init__(
         self,
