@@ -15,6 +15,10 @@ hinge_inst = losses.Hinge()
 
 class LSResNet(Model):
     def train_step(self, data):
+        for m in self.metrics:
+            m.reset_state()
+            print('reset')
+        
         x, y = data
 
         with tf.GradientTape() as tape:
