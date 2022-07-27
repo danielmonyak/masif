@@ -426,14 +426,19 @@ class HingeAccuracy(metrics.Metric):
     def __init__(self, name='hinge_accuracy', **kwargs):
         super(HingeAccuracy, self).__init__(name=name, **kwargs)
         self.hinge_acc_score = self.add_weight(name='hinge_acc_score', initializer='zeros')
+        self.n_matching = self.add_weight(name='n_matching', initializer='zeros')
+        self.n_total = self.add_weight(name='n_total', initializer='zeros')
     def update_state(self, y_true, y_pred):
         y_true = tf.greater(tf.squeeze(y_true), 0.0)
         y_pred = tf.greater(tf.squeeze(y_pred), 0.0)
         result = tf.cast(y_true == y_pred, tf.float32)
         ret = tf.reduce_mean(result)
-        ret = tf.cast(ret, self.dtype)
+        self.n_matching.assign_add(ret)
+        self.n_total.assign_add(tf.shape(y_true)[0])
+        #ret = tf.cast(ret, self.dtype)
         self.hinge_acc_score.assign_add(tf.reduce_sum(ret))
     def result(self):
+        self.hinge_acc_score = self.n_matching/self.n_total
         return self.hinge_acc_score
 
 class F1_Metric(metrics.Metric):
