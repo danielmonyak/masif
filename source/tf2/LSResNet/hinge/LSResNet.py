@@ -428,8 +428,8 @@ class HingeAccuracy(metrics.Metric):
         super(HingeAccuracy, self).__init__(name=name, **kwargs)
         self.hinge_acc_score = self.add_weight(name='hinge_acc_score', initializer='zeros')
     def update_state(self, y_true, y_pred):
-        y_true = tf.squeeze(y_true) > 0.0
-        y_pred = tf.squeeze(y_pred) > 0.0
+        y_true = tf.greater(tf.squeeze(y_true), 0.0)
+        y_pred = tf.greater(tf.squeeze(y_pred), 0.0)
         result = tf.cast(y_true == y_pred, tf.float32)
         ret = tf.reduce_mean(result)
         ret = tf.cast(ret, self.dtype)
@@ -442,8 +442,8 @@ class F1_Metric(metrics.Metric):
         super(F1_Metric, self).__init__(name=name, **kwargs)
         self.f1_score = self.add_weight(name='f1_score', initializer='zeros')
     def update_state(self, y_true, y_pred):
-        y_true = tf.squeeze(y_true) > 0.0
-        y_pred = tf.squeeze(y_pred) > 0.0
+        y_true = tf.greater(tf.squeeze(y_true), 0.0)
+        y_pred = tf.greater(tf.squeeze(y_pred), 0.0)
         overlap = tf.reduce_sum(tf.cast(y_true & y_pred, dtype=tf.float32))
         n_true = tf.reduce_sum(tf.cast(y_true, dtype=tf.float32))
         n_pred = tf.reduce_sum(tf.cast(y_pred, dtype=tf.float32))
