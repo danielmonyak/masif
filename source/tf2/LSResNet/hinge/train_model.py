@@ -50,8 +50,17 @@ model = LSResNet(
     n_rotations=4,
     reg_val = 0
 )
-
 model.compile(optimizer = 'adam')
+'''
+hinge_inst = losses.Hinge()
+hinge_p = 3
+def polynomialHingeLoss(y, y_pred):
+    return tf.pow(hinge_inst(y, y_pred), hinge_p)
+
+model.compile(optimizer = 'adam',
+             loss = polynomialHingeLoss,
+             metrics = [F1, )
+'''
 
 if continue_training:
     model.load_weights(ckpPath)
