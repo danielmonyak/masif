@@ -14,10 +14,10 @@ def runLayers(layers, x):
 hinge_inst = losses.Hinge()
 
 class LSResNet(Model):
-    '''def train_step(self, data):
-        for m in self.metrics:
+    def train_step(self, data):
+        '''for m in self.metrics:
             m.reset_states()
-            print('reset')
+            print('reset')'''
         
         x, y = data
 
@@ -42,7 +42,7 @@ class LSResNet(Model):
         
     @property
     def metrics(self):
-        return [self.loss_tracker, self.f1_metric, self.hinge_acc_metric]'''
+        return [self.loss_tracker, self.f1_metric, self.hinge_acc_metric]
     
     def __init__(
         self,
@@ -444,7 +444,7 @@ class HingeAccuracy(metrics.Metric):
         y_true = tf.greater(tf.squeeze(y_true), 0.0)
         y_pred = tf.greater(tf.squeeze(y_pred), 0.0)
         result = tf.cast(y_true == y_pred, tf.float32)
-        ret = tf.reduce_mean(result)
+        ret = tf.reduce_sum(result)
         self.n_matching.assign_add(tf.cast(ret, self.dtype))
         self.n_total.assign_add(tf.cast(tf.shape(y_true)[0], self.dtype))
     def result(self):
