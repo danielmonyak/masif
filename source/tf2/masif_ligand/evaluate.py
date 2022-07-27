@@ -11,7 +11,9 @@ import numpy as np
 from IPython.core.debugger import set_trace
 import importlib
 import sys
-from default_config.util import *
+
+import default_config.util as util
+from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score
 from scipy.stats import mode
