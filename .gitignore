@@ -67,3 +67,5 @@ source/tf2/*/kerasModel*
 source/tf2/*/*/kerasModel*
 source/tf2/*/*.tar.gz
 source/tf2/*/*/*.tar.gz
+source/tf2/*/outdir
+source/tf2/*/*/outdir
