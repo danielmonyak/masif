@@ -29,10 +29,10 @@ class LSResNet(Model):
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
         
         self.loss_tracker.update_state(loss)
-        #for m in self.metrics[1:]:
-        #    m.update_state(y, y_pred)
-        #return {m.name: m.result() for m in self.metrics}
-        return {}
+        for m in self.metrics[1:]:
+            m.update_state(y, y_pred)
+        return {m.name: m.result() for m in self.metrics}
+        #return {}
     
     @property
     def metrics(self):
