@@ -137,7 +137,7 @@ for i in range(num_epochs):
         loss, f1, acc = model.evaluate(X, y, verbose=0)
         loss_list.append(loss)
         acc_list.append(acc)
-        F1.append(f1)
+        F1_list.append(f1)
     
     print(f'\nEpoch {i}, Validation Metrics')
     print(f'Loss: {np.mean(loss_list)}')
