@@ -16,23 +16,23 @@ class LSResNet(Model):
         x, y = data
 
         with tf.GradientTape() as tape:
-            y_pred = self(x, training=True)  # Forward pass
-            # Compute our own loss
-            loss = tf.pow(losses.Hinge(y, y_pred), self.hinge_p)
+            y_pred = self(x, training=True)
+            loss = tf.pow(losses.Hinge(y, y_pred), self.hinge_p) + self.specialNeuron.reg_loss()
 
-        # Compute gradients
         trainable_vars = self.trainable_variables
         gradients = tape.gradient(loss, trainable_vars)
 
-        # Update weights
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
-
-        # Compute our own metrics
-        loss_tracker.update_state(loss)
-        self.auc_metric.update_state(y, y_pred)
-        hinge_acc.update_state(y, y_pred)
-        return {"loss": loss_tracker.result(), "mae": mae_metric.result()}
-
+        
+        self.loss_tracker.update_state(loss)
+        for m in self.metrics()[1:]:
+            m.update_state(y, y_pred)
+        return {m.name: m.result() for m in self.metrics}
+    
+    @property
+    def metrics(self):
+        return = [self.loss_tracker, self.auc_metric, self.f1_metric, self.hinge_acc_metric]
+    
     def __init__(
         self,
         max_rho,
@@ -43,7 +43,8 @@ class LSResNet(Model):
         keep_prob = 1.0,
         reg_val = 0.0,
         reg_type = 'l2',
-        hinge_p = 3
+        hinge_p = 3,
+        reg_const = 1e-2
     ):
         ## Call super - model initializer
         super(LSResNet, self).__init__()
@@ -69,6 +70,8 @@ class LSResNet(Model):
         #self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
         
         self.hinge_p = hinge_p
+        
+        self.loss_tracker = metrics.Mean(name="loss")
         self.auc_metric = metrics.AUC()
         self.f1_metric = F1_Metric()
         self.hinge_acc_metric = HingeAccuracy()
@@ -98,13 +101,11 @@ class LSResNet(Model):
         resolution = 1. / self.scale
         self.myMakeGrid = MakeGrid(max_dist=self.max_dist, grid_resolution=resolution)
         
+        self.box_size = 36
+        
         ####
-        box_size = 36
-        self.specialNeuron = [
-            layers.Flatten(),
-            self.EXP_skip_neuron = EXP_Neuron(box_size**3, box_size**3),
-            layers.Reshape((box_size, box_size, box_size))
-        ]
+        self.flatten = layers.Flatten()
+        self.specialNeuron = EXP_Neuron(self.box_size**3, self.box_size**3, reg_const=reg_const)
         ####
         
         if K.image_data_format()=='channels_last':
@@ -144,7 +145,9 @@ class LSResNet(Model):
         ret = self.myMakeGrid(xyz_coords, ret)
         
         #####
-        expOutput = self.specialNeuron(ret)
+        flatRet = self.flatten(ret)
+        expOutput = self.specialNeuron(flatRet)
+        expOutput = tf.reshape(expOutput, (self.box_size, self.box_size, self.box_size))
         #####
         
         ret1 = runLayers(self.RNConvBlock[0], ret)
@@ -395,17 +398,18 @@ class MakeGrid(layers.Layer):
         return grid
 
 class EXP_Neuron(layers.Layer):
-    def __init__(self, input_dim, units):
+    def __init__(self, input_dim, units, reg_const):
         super(EXP_Neuron, self).__init__()
-        self.a = self.add_weight(
-            shape=(1), initializer="random_normal", trainable=True
-        )
+        self.reg_const = reg_const
+        self.a = self.add_weight(initializer="random_normal", trainable=True)
         self.w = self.add_weight(
             shape=(input_dim, units), initializer="random_normal", trainable=True
         )
         self.b = self.add_weight(shape=(units), initializer="zeros", trainable=True)
     def call(self, inputs):
         return self.a * tf.exp(tf.matmul(inputs, self.w) + self.b)
+    def reg_loss(self):
+        return self.reg_const * tf.square(self.a) / 2
 
 class HingeAccuracy(metrics.Metric):
     def __init__(self, name='hinge_accuracy', **kwargs):
@@ -422,7 +426,7 @@ class HingeAccuracy(metrics.Metric):
         return self.hinge_acc_score
 
 class F1_Metric(metrics.Metric):
-    def __init__(self, name='F1', threshold=0.5, **kwargs):
+    def __init__(self, name='F1', **kwargs):
         super(F1_Metric, self).__init__(name=name, **kwargs)
         self.f1_score = self.add_weight(name='f1_score', initializer='zeros')
         self.threshold = threshold
