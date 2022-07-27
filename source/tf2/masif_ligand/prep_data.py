@@ -4,7 +4,9 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
 import numpy as np
 import sys
-from default_config.util import *
+
+import default_config.util as util
+from default_config.masif_opts import masif_opts
 from tf2.read_ligand_tfrecords import _parse_function
 import tensorflow as tf
 
@@ -18,7 +20,7 @@ if not os.path.exists(outdir):
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
 def helper(feed_dict):
-    flat_list = list(map(lambda tsr_key : flatten(feed_dict[tsr_key]), data_order))
+    flat_list = list(map(lambda tsr_key : util.flatten(feed_dict[tsr_key]), util.data_order))
     return tf.concat(flat_list, axis = 0)
 
 def compile_and_save(feed_list, y_list, dataset):
@@ -49,7 +51,7 @@ for dataset in dataset_list.keys():
         labels = data_element[4]
         n_ligands = labels.shape[1]
         for j in range(n_ligands):
-            pocket_points = flatten(tf.where(labels[:, j] != 0))
+            pocket_points = util.flatten(tf.where(labels[:, j] != 0))
             label = np.max(labels[:, j]) - 1
             
             print(f'Ligand: {label}')
