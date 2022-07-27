@@ -20,7 +20,7 @@ class LSResNet(Model):
         learning_rate=1e-4,
         n_rotations=16,
         keep_prob = 1.0,
-        reg_val = 1e-4,
+        reg_val = 0.0,
         reg_type = 'l2'
     ):
         ## Call super - model initializer
