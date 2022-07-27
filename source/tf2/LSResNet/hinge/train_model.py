@@ -23,7 +23,7 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 
 #############################################
 #############################################
-lr = 1e-4
+lr = 1e-2
 
 use_sample_weight = False        ############
 train_batch_sz_threshold = 10   #############
