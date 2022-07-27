@@ -132,7 +132,7 @@ class LSResNet(Model):
         if use_special_neuron:
             self.reshapeBefore = layers.Reshape((self.box_size**3, 5))
             self.specialNeuron = EXP_Neuron(input_dim=5, units=1, reg_const=reg_const)
-            self.reshapeAfter = layers.Reshape((self.box_size, self.box_size, self.box_size, 5))
+            self.reshapeAfter = layers.Reshape((self.box_size, self.box_size, self.box_size, 1))
         else:
             self.specialNeuron = None
         ####
