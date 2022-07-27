@@ -17,7 +17,9 @@ class LSResNet(Model):
 
         with tf.GradientTape() as tape:
             y_pred = self(x, training=True)
-            loss = tf.pow(losses.Hinge(y, y_pred), self.hinge_p) + self.specialNeuron.reg_loss()
+            loss = tf.pow(losses.Hinge(y, y_pred), self.hinge_p)
+            if not self.specialNeuron is None:
+                loss += self.specialNeuron.reg_loss()
 
         trainable_vars = self.trainable_variables
         gradients = tape.gradient(loss, trainable_vars)
@@ -45,6 +47,7 @@ class LSResNet(Model):
         reg_val = 0.0,
         reg_type = 'l2',
         hinge_p = 3,
+        use_special_neuron = False
         reg_const = 1e-2
     ):
         ## Call super - model initializer
@@ -106,7 +109,10 @@ class LSResNet(Model):
         
         ####
         self.flatten = layers.Flatten()
-        self.specialNeuron = EXP_Neuron(self.box_size**3, self.box_size**3, reg_const=reg_const)
+        if use_special_neuron:
+            self.specialNeuron = EXP_Neuron(self.box_size**3, self.box_size**3, reg_const=reg_const)
+        else:
+            self.specialNeuron = None
         ####
         
         if K.image_data_format()=='channels_last':
@@ -146,9 +152,10 @@ class LSResNet(Model):
         ret = self.myMakeGrid(xyz_coords, ret)
         
         #####
-        flatRet = self.flatten(ret)
-        expOutput = self.specialNeuron(flatRet)
-        expOutput = tf.reshape(expOutput, (self.box_size, self.box_size, self.box_size))
+        if not self.specialNeuron is None:
+            flatRet = self.flatten(ret)
+            expOutput = self.specialNeuron(flatRet)
+            expOutput = tf.reshape(expOutput, (self.box_size, self.box_size, self.box_size))
         #####
         
         ret1 = runLayers(self.RNConvBlock[0], ret)
@@ -159,7 +166,8 @@ class LSResNet(Model):
         ret = self.lastConvLayer(ret)
         
         #####
-        ret = tf.add(ret, expOutput)
+        if not self.specialNeuron is None:
+            ret = tf.add(ret, expOutput)
         #####
         
         return ret
