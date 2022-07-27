@@ -2,7 +2,9 @@ import numpy as np
 import functools
 import tensorflow as tf
 from tensorflow.keras import layers, Sequential, initializers, Model, regularizers
-from default_config.util import *
+
+import default_config.util as util
+from default_config.masif_opts import masif_opts
 
 #tf.debugging.set_log_device_placement(True)
 params = masif_opts["ligand"]
@@ -137,11 +139,11 @@ class ConvLayer(layers.Layer):
         for i in range(self.n_feat):
             self.mu_rho.append(
                 self.add_weight(name="mu_rho_{}".format(i), shape=tf.shape(mu_rho_initial),
-                                initializer = ValueInit(mu_rho_initial), trainable = True)
+                                initializer = util.ValueInit(mu_rho_initial), trainable = True)
             )  # 1, n_gauss
             self.mu_theta.append(
                 self.add_weight(name="mu_theta_{}".format(i), shape=tf.shape(mu_theta_initial),
-                                initializer = ValueInit(mu_theta_initial), trainable = True)
+                                initializer = util.ValueInit(mu_theta_initial), trainable = True)
             )  # 1, n_gauss
             self.sigma_rho.append(
                 self.add_weight(name="sigma_rho_{}".format(i), shape=tf.shape(mu_rho_initial),
@@ -172,15 +174,15 @@ class ConvLayer(layers.Layer):
         n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
         bigShape = [n_pockets, 200, self.n_feat]
         smallShape = [n_pockets, 200, 1]
-        idx = tf.cast(functools.reduce(prodFunc, bigShape), dtype = tf.int32)
+        idx = tf.cast(functools.reduce(util.prodFunc, bigShape), dtype = tf.int32)
         input_feat = tf.reshape(row[:idx], bigShape)
         rest = tf.reshape(row[idx:], [3] + smallShape)
         sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        data_list = [makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
+        data_list = [util.makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
         return [data_list, sample]
     
     def unpack_x(self, x):
-        data_list, sample = tf.map_fn(fn=self.map_func, elems = x, fn_output_signature = [[inputFeatSpec, restSpec, restSpec, restSpec], sampleSpec])
+        data_list, sample = tf.map_fn(fn=self.map_func, elems = x, fn_output_signature = [[util.inputFeatSpec, util.restSpec, util.restSpec, util.restSpec], util.sampleSpec])
         return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
     
     def call(self, x):
