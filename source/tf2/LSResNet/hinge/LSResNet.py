@@ -4,7 +4,7 @@ import tensorflow as tf
 from tensorflow.keras import backend as K
 import functools
 from operator import add
-from default_config.util import *
+import default_config.util as util
 
 def runLayers(layers, x):
     for l in layers:
@@ -255,11 +255,11 @@ class ConvLayer(layers.Layer):
         for i in range(self.weights_num):
             self.mu_rho.append(
                 self.add_weight("mu_rho_{}".format(i), shape=tf.shape(mu_rho_initial),
-                                initializer = ValueInit(mu_rho_initial), trainable = True, regularizer=reg)
+                                initializer = util.ValueInit(mu_rho_initial), trainable = True, regularizer=reg)
             )  # 1, n_gauss
             self.mu_theta.append(
                 self.add_weight("mu_theta_{}".format(i), shape=tf.shape(mu_theta_initial),
-                                initializer = ValueInit(mu_theta_initial), trainable = True, regularizer=reg)
+                                initializer = util.ValueInit(mu_theta_initial), trainable = True, regularizer=reg)
             )  # 1, n_gauss
             self.sigma_rho.append(
                 self.add_weight("sigma_rho_{}".format(i), shape=tf.shape(mu_rho_initial),
