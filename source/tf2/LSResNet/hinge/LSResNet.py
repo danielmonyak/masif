@@ -45,7 +45,8 @@ class LSResNet(Model):
         self.loss_tracker.update_state(loss)
         #for m in self.metrics[1:]:
         #    m.update_state(y, y_pred)
-        self.f1_metric.update_state(myF1(y, y_pred))
+        #self.f1_metric.update_state(myF1(y, y_pred))
+        self.f1_metric.update_state(y, y_pred)
         self.hinge_acc_metric.update_state(y, y_pred)
         
         return {m.name: m.result() for m in self.metrics}
@@ -95,8 +96,8 @@ class LSResNet(Model):
         self.hinge_p = hinge_p
         
         self.loss_tracker = metrics.Mean(name="loss")
-        #self.f1_metric = F1_Metric()
-        self.f1_metric = metrics.Mean(name='F1')
+        self.f1_metric = F1_Metric()
+        #self.f1_metric = metrics.Mean(name='F1')
         self.hinge_acc_metric = HingeAccuracy()
         
         self.conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
@@ -462,12 +463,13 @@ class HingeAccuracy(metrics.Metric):
     def result(self):
         self.hinge_acc_score = self.n_matching/self.n_total
         return self.hinge_acc_score
-'''
+
 class F1_Metric(metrics.Metric):
     def __init__(self, name='F1', **kwargs):
         super(F1_Metric, self).__init__(name=name, **kwargs)
-        #self.f1_score_list = []
-        self.f1_score = metrics.Mean(name='f1_score')
+        self.f1_score = self.add_weight(name='f1_score', initializer='zeros')
+        self.total = self.add_weight(name='total', initializer='zeros')
+        self.count = self.add_weight(name='count', initializer='zeros')
     def update_state(self, y_true, y_pred):
         y_true = tf.reshape(y_true, [-1]) > 0.0
         y_pred = tf.reshape(y_pred, [-1]) > 0.0
@@ -478,10 +480,8 @@ class F1_Metric(metrics.Metric):
         precision = overlap/n_pred
         f1 = 2*precision*recall / (precision + recall)
         f1 = tf.where(tf.math.is_nan(f1), tf.zeros_like(f1), f1)
-        #self.f1_score.assign_add(tf.reduce_sum(f1))
-        #self.f1_score_list.append(f1)
-        self.f1_score.update_state(f1)
+        self.total.assign_add(tf.cast(f1, self.dtype))
+        self.count.assign_add(tf.cast(1, self.dtype))
     def result(self):
-        #self.f1_score = tf.cast(tf.reduce_mean(tf.stack(self.f1_score_list, axis=0), axis=0), self.dtype)
-        return self.f1_score
-'''
+        return self.total/self.count
+
