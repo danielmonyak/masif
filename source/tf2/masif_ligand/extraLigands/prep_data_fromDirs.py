@@ -4,7 +4,9 @@ import sys
 import numpy as np
 from scipy import spatial
 from random import shuffle
-from default_config.util import *
+
+import default_config.util as util
+from default_config.masif_opts import masif_opts
 import tensorflow as tf
 
 params = masif_opts["ligand"]
