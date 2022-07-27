@@ -47,7 +47,7 @@ class LSResNet(Model):
         reg_val = 0.0,
         reg_type = 'l2',
         hinge_p = 3,
-        use_special_neuron = False
+        use_special_neuron = False,
         reg_const = 1e-2
     ):
         ## Call super - model initializer
