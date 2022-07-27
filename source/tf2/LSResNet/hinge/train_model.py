@@ -103,7 +103,7 @@ for i in range(num_epochs):
                 history = model.fit(dataset, verbose = 2)
                 loss_list.extend(history.history['loss'])
                 acc_list.extend(history.history['hinge_accuracy'])
-                F1.extend(history.history['F1'])
+                F1_list.extend(history.history['F1'])
                 
                 cur_batch_sz = 0
                 batch_i += 1
@@ -116,7 +116,7 @@ for i in range(num_epochs):
         history = model.fit(dataset, verbose = 2)
         loss_list.extend(history.history['loss'])
         acc_list.extend(history.history['hinge_accuracy'])
-        F1.extend(history.history['F1'])
+        F1_list.extend(history.history['F1'])
         
         cur_batch_sz = 0
     
