@@ -14,7 +14,7 @@ def runLayers(layers, x):
 hinge_inst = losses.Hinge()
 
 class LSResNet(Model):
-    def train_step(self, data):
+    '''def train_step(self, data):
         for m in self.metrics:
             m.reset_states()
             print('reset')
@@ -42,7 +42,7 @@ class LSResNet(Model):
         
     @property
     def metrics(self):
-        return [self.loss_tracker, self.f1_metric, self.hinge_acc_metric]
+        return [self.loss_tracker, self.f1_metric, self.hinge_acc_metric]'''
     
     def __init__(
         self,
