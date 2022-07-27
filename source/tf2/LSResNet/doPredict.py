@@ -11,7 +11,8 @@ for phys_g in phys_gpus:
 import openbabel
 import pybel
 
-from default_config.util import *
+import default_config.util as util
+from default_config.masif_opts import masif_opts
 from tf2.LSResNet.LSResNet import LSResNet
 from tf2.LSResNet.predict import predict
 
