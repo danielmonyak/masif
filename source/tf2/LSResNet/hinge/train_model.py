@@ -24,7 +24,7 @@ modelPath_endTraining = os.path.join(modelDir, 'savedModel_endTraining')
 
 #############################################
 #############################################
-lr = 1e-2
+lr = 1e-4
 
 use_sample_weight = False        ############
 train_batch_sz_threshold = 10   #############
@@ -50,7 +50,8 @@ model = LSResNet(
     learning_rate = lr,
     n_rotations=4,
     reg_val = 0,
-    use_special_neuron = True
+    use_special_neuron = True,
+    reg_const = 1
 )
 model.compile(optimizer = 'adam')
 
