@@ -430,7 +430,6 @@ class F1_Metric(metrics.Metric):
     def __init__(self, name='F1', **kwargs):
         super(F1_Metric, self).__init__(name=name, **kwargs)
         self.f1_score = self.add_weight(name='f1_score', initializer='zeros')
-        self.threshold = threshold
     def update_state(self, y_true, y_pred):
         y_true = tf.squeeze(y_true) > 0.0
         y_pred = tf.squeeze(y_pred) > 0.0
