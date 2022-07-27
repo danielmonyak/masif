@@ -15,7 +15,7 @@ from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 #lr = 1e-3
 # Try this learning rate after
 
-reg_val = 0.00001
+reg_val = 0.0001
 reg_type = 'l2'
 
 continue_training = False
