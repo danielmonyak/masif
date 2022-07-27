@@ -19,7 +19,6 @@ class LSResNet(Model):
         n_rhos=5,
         learning_rate=1e-4,
         n_rotations=16,
-        feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
         reg_val = 1e-4,
         reg_type = 'l2'
@@ -72,6 +71,15 @@ class LSResNet(Model):
         resolution = 1. / self.scale
         self.myMakeGrid = MakeGrid(max_dist=self.max_dist, grid_resolution=resolution)
         
+        ####
+        box_size = 36
+        self.specialNeuron = [
+            layers.Flatten(),
+            self.EXP_skip_neuron = EXP_Neuron(box_size**3, box_size**3),
+            layers.Reshape((box_size, box_size, box_size))
+        ]
+        ####
+        
         if K.image_data_format()=='channels_last':
             bn_axis=4
         else:
@@ -98,7 +106,7 @@ class LSResNet(Model):
             layers.BatchNormalization(axis=bn_axis)]
         ]
         
-        self.lastConvLayer = layers.Conv3D(1, kernel_size=1, activation='tanh')
+        self.lastConvLayer = layers.Conv3D(1, kernel_size=1, activation)
         
     def call(self, X_packed, training=False):
         X, xyz_coords = X_packed
@@ -108,12 +116,20 @@ class LSResNet(Model):
         
         ret = self.myMakeGrid(xyz_coords, ret)
         
+        #####
+        expOutput = self.specialNeuron(ret)
+        #####
+        
         ret1 = runLayers(self.RNConvBlock[0], ret)
         residue = runLayers(self.RNConvBlock[1], ret)
         ret = tf.add(ret1, residue)
         
         ret = tf.nn.relu(ret)
         ret = self.lastConvLayer(ret)
+        
+        #####
+        ret = tf.add(ret, expOutput)
+        #####
         
         return ret
 
@@ -350,3 +366,20 @@ class MakeGrid(layers.Layer):
         grid = tf.scatter_nd(indices=idx, updates=features_IN, shape=(batches, self.box_size, self.box_size, self.box_size, num_features))
         
         return grid
+
+class EXP_Neuron(layers.Layer):
+    def __init__(self, input_dim, units):
+        super(EXP_Neuron, self).__init__()
+        self.a = self.add_weight(
+            shape=(1), initializer="random_normal", trainable=True
+        )
+        self.w = self.add_weight(
+            shape=(input_dim, units), initializer="random_normal", trainable=True
+        )
+        self.b = self.add_weight(shape=(units), initializer="zeros", trainable=True)
+    def call(self, inputs):
+        return self.a * tf.exp(tf.matmul(inputs, self.w) + self.b)
+
+        
+        
+        
