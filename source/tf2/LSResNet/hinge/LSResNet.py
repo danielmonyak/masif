@@ -82,7 +82,7 @@ class LSResNet(Model):
         
         self.loss_tracker = metrics.Mean(name="loss")
         #self.f1_metric = F1_Metric()
-        self.f1_metric = metrics.Mean(name='f1_score')
+        self.f1_metric = metrics.Mean(name='F1')
         self.hinge_acc_metric = HingeAccuracy()
         
         self.conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
