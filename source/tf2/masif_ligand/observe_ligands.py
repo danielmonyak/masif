@@ -3,7 +3,9 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import sys
 import numpy as np
 from scipy import spatial
-from default_config.util import *
+
+import default_config.util as util
+from default_config.masif_opts import masif_opts
 import tensorflow as tf
 
 params = masif_opts["ligand"]
