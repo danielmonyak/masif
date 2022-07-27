@@ -103,8 +103,14 @@ class LSResNet(Model):
         if extra_conv_layers:
             self.extraConvLayers = [
                 layers.Conv3D(1, kernel_size=1, activation='relu'),
+                layers.BatchNormalization(axis=bn_axis),
+                layers.ReLU(),
                 layers.Conv3D(1, kernel_size=1, activation='relu'),
-                layers.Conv3D(1, kernel_size=1, activation='relu')
+                layers.BatchNormalization(axis=bn_axis),
+                layers.ReLU(),
+                layers.Conv3D(1, kernel_size=1, activation='relu'),
+                layers.BatchNormalization(axis=bn_axis),
+                layers.ReLU()
             ]
         else:
             self.extraConvLayers = None
