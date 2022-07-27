@@ -113,9 +113,11 @@ class LSResNet(Model):
         self.box_size = 36
         
         ####
-        self.flatten = layers.Flatten()
+        #self.flatten = layers.Flatten()
         if use_special_neuron:
+            self.reshapeBefore = layers.reshape((self.box_size**3, -1))
             self.specialNeuron = EXP_Neuron(self.box_size**3, self.box_size**3, reg_const=reg_const)
+            self.reshapeAfter = layers.reshape((self.box_size, self.box_size, self.box_size, 1))
         else:
             self.specialNeuron = None
         ####
@@ -151,6 +153,8 @@ class LSResNet(Model):
     def call(self, X_packed, training=False):
         X, xyz_coords = X_packed
         
+        batches = t.shape(X[0])[0]
+        
         ret = runLayers(self.convBlock0, X)
         ret = runLayers(self.denseReduce, ret)
         
@@ -158,9 +162,12 @@ class LSResNet(Model):
         
         #####
         if not self.specialNeuron is None:
-            flatRet = self.flatten(ret)
+            #flatRet = self.flatten(ret)
+            #flatRet = tf.reshape(ret, (self.box_size**3, -1))
+            flatRet = self.reshapeBefore(ret)
             expOutput = self.specialNeuron(flatRet)
-            expOutput = tf.reshape(expOutput, (self.box_size, self.box_size, self.box_size))
+            expOutput = self.reshapeAfter(expOutput)
+            #expOutput = tf.reshape(expOutput, (self.box_size, self.box_size, self.box_size, 1))
         #####
         
         ret1 = runLayers(self.RNConvBlock[0], ret)
