@@ -5,6 +5,7 @@ from tensorflow.keras import backend as K
 import functools
 from operator import add
 import default_config.util as util
+from default_config.masif_opts import masif_opts
 
 def runLayers(layers, x):
     for l in layers:
