@@ -29,9 +29,9 @@ else:
     starting_epoch = 0
 
 num_epochs = 200
-num_epochs_key = int(input('Enter the number of epochs to train for [200]: '))
+num_epochs_key = input('Enter the number of epochs to train for [200]: ')
 if num_epochs_key != '':
-    num_epochs = num_epochs_key
+    num_epochs = int(num_epochs_key)
     if num_epochs <= starting_epoch:
         sys.exit(f'Please enter a valid number greater than {starting_epoch}...')
 
