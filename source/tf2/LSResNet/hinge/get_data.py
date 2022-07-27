@@ -12,8 +12,8 @@ def get_data(pdb_id, training = True):
     mask = np.load(os.path.join(mydir, "p1_mask.npy"))
     n_samples = mask.shape[0]
 
-    #if training and n_samples > 8000:
-    #    return None
+    if training and n_samples > 8000:
+        return None
 
     input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
     rho_coords = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
