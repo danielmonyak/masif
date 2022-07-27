@@ -48,9 +48,11 @@ model = LSResNet(
     n_rhos=3,
     learning_rate = lr,
     n_rotations=4,
-    reg_val = 0
+    reg_val = 0,
+    use_special_neuron = True
 )
 model.compile(optimizer = 'adam')
+
 '''
 hinge_inst = losses.Hinge()
 hinge_p = 3
