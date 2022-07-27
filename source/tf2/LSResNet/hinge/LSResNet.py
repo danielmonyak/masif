@@ -36,7 +36,7 @@ class LSResNet(Model):
     
     @property
     def metrics(self):
-        return [self.loss_tracker, self.auc_metric, self.f1_metric, self.hinge_acc_metric]
+        return [self.loss_tracker, self.f1_metric, self.hinge_acc_metric]
     
     def __init__(
         self,
@@ -79,7 +79,6 @@ class LSResNet(Model):
         self.hinge_p = hinge_p
         
         self.loss_tracker = metrics.Mean(name="loss")
-        self.auc_metric = metrics.AUC()
         self.f1_metric = F1_Metric()
         self.hinge_acc_metric = HingeAccuracy()
         
