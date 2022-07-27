@@ -16,7 +16,7 @@ hinge_inst = losses.Hinge()
 class LSResNet(Model):
     def train_step(self, data):
         for m in self.metrics:
-            m.reset_state()
+            m.reset_states()
             print('reset')
         
         x, y = data
