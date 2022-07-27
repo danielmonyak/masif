@@ -441,12 +441,14 @@ class HingeAccuracy(metrics.Metric):
         self.n_matching = self.add_weight(name='n_matching', initializer='zeros')
         self.n_total = self.add_weight(name='n_total', initializer='zeros')
     def update_state(self, y_true, y_pred):
-        y_true = tf.greater(tf.squeeze(y_true), 0.0)
-        y_pred = tf.greater(tf.squeeze(y_pred), 0.0)
+        y_true = tf.squeeze(y_true) > 0.0
+        y_pred = tf.squeeze(y_pred) > 0.0
         result = tf.cast(y_true == y_pred, tf.float32)
-        ret = tf.reduce_sum(result)
-        self.n_matching.assign_add(tf.cast(ret, self.dtype))
-        self.n_total.assign_add(tf.cast(tf.shape(y_true)[0], self.dtype))
+        n_matching = tf.reduce_sum(result)
+        n_total = tf.shape(result)[0]
+        
+        self.n_matching.assign_add(tf.cast(n_matching, self.dtype))
+        self.n_total.assign_add(tf.cast(n_total, self.dtype))
     def result(self):
         self.hinge_acc_score = self.n_matching/self.n_total
         return self.hinge_acc_score
