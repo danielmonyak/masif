@@ -157,8 +157,6 @@ class LSResNet(Model):
     def call(self, X_packed, training=False):
         X, xyz_coords = X_packed
         
-        batches = t.shape(X[0])[0]
-        
         ret = runLayers(self.convBlock0, X)
         ret = runLayers(self.denseReduce, ret)
         
