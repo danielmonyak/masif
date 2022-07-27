@@ -13,16 +13,14 @@ from default_config.util import *
 #from LSResNet_deep import LSResNet
 from LSResNet import LSResNet
 from get_data import get_data
-#############################################
-#continue_training = (len(sys.argv) > 1) and (sys.argv[1] == 'continue')
-#############################################
 
 params = masif_opts["LSResNet"]
 
 #############################################
 #############################################
-#num_epochs = 200                #############
-#starting_epoch = 0              #############
+#lr = 1e-3
+lr = 1e-4
+
 use_sample_weight = False       #############
 train_batch_sz_threshold = 32   #############
 #############################################
@@ -45,7 +43,7 @@ model = LSResNet(
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
-    learning_rate = 1e-3,
+    learning_rate = lr,
     n_rotations=4,
     reg_val = 0
 )
