@@ -109,9 +109,9 @@ class LSResNet(Model):
         self.hinge_p = hinge_p
         
         self.loss_tracker = metrics.Mean(name="loss")
-        self.f1_metric = F1_Metric()
+        self.f1_metric = util.F1_Metric()
         #self.f1_metric = metrics.Mean(name='F1')
-        self.hinge_acc_metric = HingeAccuracy()
+        self.hinge_acc_metric = util.HingeAccuracy()
         
         self.conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
                        [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
@@ -457,43 +457,3 @@ class EXP_Neuron(layers.Layer):
         return self.a * tf.exp(tf.matmul(inputs, self.w) + self.b)
     def reg_loss(self):
         return self.reg_const * tf.square(self.a) / 2
-
-class HingeAccuracy(metrics.Metric):
-    def __init__(self, name='hinge_accuracy', **kwargs):
-        super(HingeAccuracy, self).__init__(name=name, **kwargs)
-        self.hinge_acc_score = self.add_weight(name='hinge_acc_score', initializer='zeros')
-        self.n_matching = self.add_weight(name='n_matching', initializer='zeros')
-        self.n_total = self.add_weight(name='n_total', initializer='zeros')
-    def update_state(self, y_true, y_pred):
-        y_true = tf.reshape(y_true, [-1]) > 0.0
-        y_pred = tf.reshape(y_pred, [-1]) > 0.0
-        result = tf.cast(y_true == y_pred, tf.float32)
-        n_matching = tf.reduce_sum(result)
-        n_total = tf.shape(result)[0]
-        
-        self.n_matching.assign_add(tf.cast(n_matching, self.dtype))
-        self.n_total.assign_add(tf.cast(n_total, self.dtype))
-    def result(self):
-        self.hinge_acc_score = self.n_matching/self.n_total
-        return self.hinge_acc_score
-
-class F1_Metric(metrics.Metric):
-    def __init__(self, name='F1', **kwargs):
-        super(F1_Metric, self).__init__(name=name, **kwargs)
-        self.f1_score = self.add_weight(name='f1_score', initializer='zeros')
-        self.total = self.add_weight(name='total', initializer='zeros')
-        self.count = self.add_weight(name='count', initializer='zeros')
-    def update_state(self, y_true, y_pred):
-        y_true = tf.reshape(y_true, [-1]) > 0.0
-        y_pred = tf.reshape(y_pred, [-1]) > 0.0
-        overlap = tf.reduce_sum(tf.cast(y_true & y_pred, dtype=tf.float32))
-        n_true = tf.reduce_sum(tf.cast(y_true, dtype=tf.float32))
-        n_pred = tf.reduce_sum(tf.cast(y_pred, dtype=tf.float32))
-        recall = overlap/n_true
-        precision = overlap/n_pred
-        f1 = 2*precision*recall / (precision + recall)
-        f1 = tf.where(tf.math.is_nan(f1), tf.zeros_like(f1), f1)
-        self.total.assign_add(tf.cast(f1, self.dtype))
-        self.count.assign_add(tf.cast(1, self.dtype))
-    def result(self):
-        return self.total/self.count
