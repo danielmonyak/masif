@@ -12,6 +12,16 @@ def runLayers(layers, x):
     return x
 
 hinge_inst = losses.Hinge()
+def myF1(y_true, y_pred, threshold=0.5):
+    y_true = tf.reshape(y_true, [-1]) > 0.0
+    y_pred = tf.reshape(y_pred, [-1]) > 0.0
+    overlap = tf.reduce_sum(tf.cast(y_true & y_pred, dtype=tf.float32))
+    n_true = tf.reduce_sum(tf.cast(y_true, dtype=tf.float32))
+    n_pred = tf.reduce_sum(tf.cast(y_pred, dtype=tf.float32))
+    recall = overlap/n_true
+    precision = overlap/n_pred
+    f1 = 2*precision*recall / (precision + recall)
+    return tf.where(tf.math.is_nan(f1), tf.zeros_like(f1), f1)
 
 class LSResNet(Model):
     def train_step(self, data):
@@ -35,7 +45,7 @@ class LSResNet(Model):
         self.loss_tracker.update_state(loss)
         #for m in self.metrics[1:]:
         #    m.update_state(y, y_pred)
-        self.f1_metric.update_state(F1(y, y_pred))
+        self.f1_metric.update_state(myF1(y, y_pred))
         self.hinge_acc_metric.update_state(y, y_pred)
         
         return {m.name: m.result() for m in self.metrics}
@@ -441,8 +451,8 @@ class HingeAccuracy(metrics.Metric):
         self.n_matching = self.add_weight(name='n_matching', initializer='zeros')
         self.n_total = self.add_weight(name='n_total', initializer='zeros')
     def update_state(self, y_true, y_pred):
-        y_true = tf.squeeze(y_true) > 0.0
-        y_pred = tf.squeeze(y_pred) > 0.0
+        y_true = tf.reshape(y_true, [-1]) > 0.0
+        y_pred = tf.reshape(y_pred, [-1]) > 0.0
         result = tf.cast(y_true == y_pred, tf.float32)
         n_matching = tf.reduce_sum(result)
         n_total = tf.shape(result)[0]
@@ -459,8 +469,8 @@ class F1_Metric(metrics.Metric):
         #self.f1_score_list = []
         self.f1_score = metrics.Mean(name='f1_score')
     def update_state(self, y_true, y_pred):
-        y_true = tf.greater(tf.squeeze(y_true), 0.0)
-        y_pred = tf.greater(tf.squeeze(y_pred), 0.0)
+        y_true = tf.reshape(y_true, [-1]) > 0.0
+        y_pred = tf.reshape(y_pred, [-1]) > 0.0
         overlap = tf.reduce_sum(tf.cast(y_true & y_pred, dtype=tf.float32))
         n_true = tf.reduce_sum(tf.cast(y_true, dtype=tf.float32))
         n_pred = tf.reduce_sum(tf.cast(y_pred, dtype=tf.float32))
