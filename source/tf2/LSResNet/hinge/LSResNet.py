@@ -433,10 +433,8 @@ class HingeAccuracy(metrics.Metric):
         y_pred = tf.greater(tf.squeeze(y_pred), 0.0)
         result = tf.cast(y_true == y_pred, tf.float32)
         ret = tf.reduce_mean(result)
-        self.n_matching.assign_add(ret)
-        self.n_total.assign_add(tf.shape(y_true)[0])
-        #ret = tf.cast(ret, self.dtype)
-        self.hinge_acc_score.assign_add(tf.reduce_sum(ret))
+        self.n_matching.assign_add(tf.cast(ret, self.dtype))
+        self.n_total.assign_add(tf.cast(tf.shape(y_true)[0], self.dtype))
     def result(self):
         self.hinge_acc_score = self.n_matching/self.n_total
         return self.hinge_acc_score
@@ -444,6 +442,7 @@ class HingeAccuracy(metrics.Metric):
 class F1_Metric(metrics.Metric):
     def __init__(self, name='F1', **kwargs):
         super(F1_Metric, self).__init__(name=name, **kwargs)
+        self.f1_score_list = []
         self.f1_score = self.add_weight(name='f1_score', initializer='zeros')
     def update_state(self, y_true, y_pred):
         y_true = tf.greater(tf.squeeze(y_true), 0.0)
@@ -455,7 +454,8 @@ class F1_Metric(metrics.Metric):
         precision = overlap/n_pred
         f1 = 2*precision*recall / (precision + recall)
         f1 = tf.where(tf.math.is_nan(f1), tf.zeros_like(f1), f1)
-        self.f1_score.assign_add(tf.reduce_sum(f1))
+        #self.f1_score.assign_add(tf.reduce_sum(f1))
+        self.f1_score_list.append(f1)
     def result(self):
+        self.f1_score = tf.cast(tf.reduce_mean(tf.stack(self.f1_score_list, axis=0), axis=0), self.dtype)
         return self.f1_score
-    
