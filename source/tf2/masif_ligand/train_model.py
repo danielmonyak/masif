@@ -5,7 +5,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import sys
 import numpy as np
 import tensorflow as tf
-from default_config.util import *
+import default_config.util as util
+from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 
 #lr = 1e-3
