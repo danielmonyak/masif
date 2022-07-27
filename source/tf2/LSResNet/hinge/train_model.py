@@ -51,7 +51,7 @@ model = LSResNet(
     n_rotations=4,
     reg_val = 0,
     use_special_neuron = True,
-    reg_const = 1
+    reg_const = 1e-2
 )
 model.compile(optimizer = 'adam')
 
