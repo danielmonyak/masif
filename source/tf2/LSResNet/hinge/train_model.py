@@ -9,13 +9,9 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-#from LSResNet import LSResNet
-from LSResNet_deep import LSResNet
+from LSResNet import LSResNet
+#from LSResNet_deep import LSResNet
 from get_data import get_data
-#############################################
-continue_training = (len(sys.argv) > 1) and (sys.argv[1] == 'continue')
-#read_metrics = False
-#############################################
 
 #params = masif_opts["ligand"]
 params = masif_opts["LSResNet"]
