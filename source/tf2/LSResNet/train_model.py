@@ -50,15 +50,15 @@ model = LSResNet(
     extra_conv_layers = False
 )
 
-def F1_04(y_true, y_pred): return F1(y_true, y_pred, threshold=0.4)
-def F1_06(y_true, y_pred): return F1(y_true, y_pred, threshold=0.6)
+def F1_04(y_true, y_pred): return util.F1(y_true, y_pred, threshold=0.4)
+def F1_06(y_true, y_pred): return util.F1(y_true, y_pred, threshold=0.6)
 
 from_logits = model.loss_fn.get_config()['from_logits']
 binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
 auc = tf.keras.metrics.AUC(from_logits = from_logits)
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=[binAcc, auc, F1_04, F1, F1_06]
+  metrics=[binAcc, auc, F1_04, util.F1, F1_06]
 )
 
 code32 = tf.cast(params['defaultCode'], dtype=tf.float32)
