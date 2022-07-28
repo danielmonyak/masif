@@ -46,7 +46,8 @@ model = LSResNet(
     n_rhos=3,
     learning_rate = lr,
     n_rotations=4,
-    reg_val = 0
+    reg_val = 0,
+    extra_conv_layers = False
 )
 
 def F1_04(y_true, y_pred): return F1(y_true, y_pred, threshold=0.4)
