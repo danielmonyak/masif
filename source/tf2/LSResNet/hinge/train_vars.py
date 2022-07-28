@@ -1,5 +1,5 @@
 train_vars = {}
 train_vars["continue_training"] = True
 train_vars["ckpPath"] = "kerasModel/ckp"
-train_vars["starting_epoch"] = 99
-train_vars["num_epochs"] = 200
+train_vars["starting_epoch"] = 120
+train_vars["num_epochs"] = 400
