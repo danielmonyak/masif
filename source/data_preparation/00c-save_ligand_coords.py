@@ -49,8 +49,6 @@ for chain in structure.chains:
             structure_ligands_coords.append(het.all_coordinates)
 
 if len(structure_ligands_type) > 0:
-    structure_ligands_type = np.array(structure_ligands_type)
-    structure_ligands_coords = np.stack(structure_ligands_coords, axis=0)
     np.save(
         os.path.join(
             params["ligand_coords_dir"], "{}_ligand_types.npy".format(pdb_id)
