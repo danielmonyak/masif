@@ -20,7 +20,7 @@ params = masif_opts["LSResNet"]
 #############################################
 #############################################
 #lr = 1e-3
-lr = 1e-2
+lr = 1e-4
 
 use_sample_weight = False       #############
 train_batch_sz_threshold = 32   #############
