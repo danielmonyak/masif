@@ -77,8 +77,6 @@ val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/v
 #######################################
 #######################################
 
-i = starting_epoch
-
 cur_batch_sz = 0
 print(f'Running training data, epoch {i}')
 for i in range(num_epochs):
