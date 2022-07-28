@@ -39,8 +39,8 @@ def get_data(pdb_id, training = True):
     try:
         all_ligand_coords = np.load(coordsPath)
     except:
-        if not training:
-            print(f'Problem opening {coordsPath}')
+        #if not training:
+            #print(f'Problem opening {coordsPath}')
         return None
 
     pocket_points = []
