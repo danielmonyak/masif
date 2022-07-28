@@ -62,8 +62,11 @@ if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
 
-training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/train_pdbs_sequence.npy')
-val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/val_pdbs_sequence.npy')
+#training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/train_pdbs_sequence.npy')
+#val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/val_pdbs_sequence.npy')
+
+training_list = np.load('/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/newLists/train.npy')
+val_list = np.load('/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/newLists/val.npy')
 
 #######################################
 #######################################
