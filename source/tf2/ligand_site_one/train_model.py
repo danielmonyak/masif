@@ -91,7 +91,7 @@ for i in range(num_epochs):
     F1_upper_list = []
     
     for pdb_id in training_list:
-        data = get_data(pdb_id)
+        data = get_data(pdb_id.rstrip('_'))
         if data is None:
             continue
         
