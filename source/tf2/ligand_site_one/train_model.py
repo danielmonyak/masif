@@ -68,6 +68,8 @@ if continue_training:
 
 #training_list = np.load('/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/newLists/train.npy')
 #val_list = np.load('/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/newLists/val.npy')
+training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/pdb_summary/lists/train.npy')
+val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/pdb_summary/lists/val.npy')
 
 #######################################
 #######################################
@@ -91,7 +93,7 @@ for i in range(num_epochs):
     F1_upper_list = []
     
     for pdb_id in training_list:
-        data = get_data(pdb_id.rstrip('_'))
+        data = get_data(pdb_id)
         if data is None:
             continue
         
