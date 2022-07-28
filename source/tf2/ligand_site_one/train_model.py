@@ -71,8 +71,6 @@ val_list = np.load('/home/daniel.monyak/software/masif/source/tf2/ligand_site_on
 #######################################
 #######################################
 #######################################
-
-print(f'Running training data, epoch {i}')
 for i in range(num_epochs):
     if i < starting_epoch:
         continue
