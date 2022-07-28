@@ -37,7 +37,7 @@ def get_data(pdb_id, training = True):
         params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
     )
     try:
-        all_ligand_coords = np.load(coordsPath)
+        all_ligand_coords = np.load(coordsPath, allow_pickle=True, encoding='latin1')
     except:
         #if not training:
             #print(f'Problem opening {coordsPath}')
