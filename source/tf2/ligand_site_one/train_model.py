@@ -11,8 +11,8 @@ for phys_g in phys_gpus:
 
 import default_config.util as util
 from default_config.masif_opts import masif_opts
-from MaSIF_ligand_site_one import MaSIF_ligand_site
-from get_data import get_data
+from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
+from tf2.ligand_site_one.get_data import get_data
 
 params = masif_opts["ligand_site"]
 
@@ -46,6 +46,7 @@ model = MaSIF_ligand_site(
 )
 
 def F1_lower(y_true, y_pred): return util.F1(y_true, y_pred, threshold=0.4)
+
 def F1_upper(y_true, y_pred): return util.F1(y_true, y_pred, threshold=0.6)
 
 from_logits = model.loss_fn.get_config()['from_logits']
@@ -65,8 +66,8 @@ if continue_training:
 #training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/train_pdbs_sequence.npy')
 #val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/val_pdbs_sequence.npy')
 
-training_list = np.load('/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/newLists/train.npy')
-val_list = np.load('/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/newLists/val.npy')
+#training_list = np.load('/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/newLists/train.npy')
+#val_list = np.load('/home/daniel.monyak/software/masif/source/tf2/ligand_site_one/newLists/val.npy')
 
 #######################################
 #######################################
