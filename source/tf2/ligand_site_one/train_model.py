@@ -4,7 +4,6 @@ import sys
 import numpy as np
 from scipy import spatial
 import tensorflow as tf
-import myMetrics
 
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
@@ -90,7 +89,7 @@ for i in range(num_epochs):
     F1_upper_list = []
     
     for pdb_id in training_list:
-        data = get_data(pdb_id)
+        data = get_data(pdb_id, training=False)
         if data is None:
             continue
         
