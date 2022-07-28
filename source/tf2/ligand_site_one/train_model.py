@@ -56,7 +56,7 @@ auc = tf.keras.metrics.AUC(from_logits = from_logits)
 
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=[binAcc, auc, F1_lower, F1, F1_upper]
+  metrics=[binAcc, auc, F1_lower, util.F1, F1_upper]
 )
 
 if continue_training:
