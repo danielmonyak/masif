@@ -10,32 +10,38 @@ phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
-from default_config.util import *
+from default_config.util as util
+from default_config.masif_opts import masif_opts
 from MaSIF_ligand_site_one import MaSIF_ligand_site
 from get_data import get_data
-#############################################
-continue_training = False
-#############################################
 
 params = masif_opts["ligand_site"]
 
-modelDir = 'kerasModel'
-ckpPath = os.path.join(modelDir, 'ckp')
+#############################################
+#############################################
+lr = 1e-4
 
-#############################################
-#############################################
-num_epochs = 100                 #############
-starting_epoch = 0              #############
 use_sample_weight = False        #############
 #############################################
 #############################################
+
+from train_vars import train_vars
+
+continue_training = train_vars['continue_training']
+num_epochs = train_vars['num_epochs']
+starting_epoch = train_vars['starting_epoch']
+ckpPath = train_vars['ckpPath']
+
+print(f'Training for {num_epochs} epochs')
+if continue_training:
+    print(f'Resuming training from checkpoint at {ckpPath}, starting at epoch {starting_epoch}')
 
 model = MaSIF_ligand_site(
     params["max_distance"],
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
-    learning_rate = 1e-4,
+    learning_rate = lr,
     n_rotations=4,
     reg_val = 0
 )
