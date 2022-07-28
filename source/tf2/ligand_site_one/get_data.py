@@ -50,7 +50,7 @@ def get_data(pdb_id, training = True):
         if len(temp_pocket_points) > 32:
             pocket_points.extend(temp_pocket_points)
 
-    if len(pocket_points) > 0:
+    if len(pocket_points) == 0:
         print(f'{pdb_id} has no pockets big enough...')
         return None
             
