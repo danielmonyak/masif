@@ -70,6 +70,7 @@ with strategy.scope():
     params["n_classes"],
     feat_mask=params["feat_mask"],
     reg_val = reg_val, reg_type = reg_type
+    keep_prob=0.8
   )
   model.compile(optimizer = model.opt,
     loss = model.loss_fn,
