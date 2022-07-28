@@ -90,7 +90,7 @@ for i in range(num_epochs):
     F1_upper_list = []
     
     for pdb_id in training_list:
-        data = get_data(pdb_id, training=False)
+        data = get_data(pdb_id)
         if data is None:
             continue
         
@@ -129,7 +129,7 @@ for i in range(num_epochs):
     F1_upper_list = []
     
     for pdb_id in val_list:
-        data = get_data(pdb_id)
+        data = get_data(pdb_id, training=False)
         if data is None:
             continue
         
