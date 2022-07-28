@@ -76,10 +76,18 @@ print(f'Running training data, epoch {i}')
 for i in range(num_epochs):
     train_j = 0
     
-    np.random.shuffle(training_list)
     #############################################################
     ###################     TRAINING DATA     ###################
     #############################################################
+    np.random.shuffle(training_list)
+    
+    loss_list = []
+    acc_list = []
+    auc_list = []
+    F1_lower_list = []
+    F1_list = []
+    F1_upper_list = []
+    
     for pdb_id in training_list:
         data = get_data(pdb_id)
         if data is None:
@@ -93,18 +101,32 @@ for i in range(num_epochs):
         
         # TRAIN MODEL
         ################################################
-        model.fit(X, y, verbose = 2,
-                  sample_weight = sample_weight)
+        history = model.fit(X, y, verbose = 2, sample_weight = sample_weight)
         ################################################
+        loss_list.extend(history.history['loss'])
+        acc_list.extend(history.history['binary_accuracy'])
+        auc_list.extend(history.history['auc'])
+        F1_lower_list.extend(history.history['F1_lower'])
+        F1_list.extend(history.history['F1'])
+        F1_upper_list.extend(history.history['F1_upper'])
 
         train_j += 1
-        
+    
+    print(f'\nEpoch {i}, Training Metrics')
+    print(f'Loss: {np.mean(loss_list)}')
+    print(f'Binary Accuracy: {np.mean(acc_list)}')
+    print(f'AUC: {np.mean(auc_list)}')
+    print(f'F1_lower: {np.mean(F1_lower_list)}\n')
+    print(f'F1: {np.mean(F1_list)}\n')
+    print(f'F1_upper: {np.mean(F1_upper_list)}\n')
+    
     loss_list = []
     acc_list = []
     auc_list = []
     F1_lower_list = []
     F1_list = []
     F1_upper_list = []
+    
     for pdb_id in val_list:
         data = get_data(pdb_id)
         if data is None:
