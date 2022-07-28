@@ -24,7 +24,7 @@ ckpPath = os.path.join(modelDir, 'ckp')
 
 #############################################
 #############################################
-num_epochs = 20                 #############
+num_epochs = 100                 #############
 starting_epoch = 0              #############
 use_sample_weight = False        #############
 #############################################
@@ -40,8 +40,8 @@ model = MaSIF_ligand_site(
     reg_val = 0
 )
 
-def F1_25(y_true, y_pred): return F1(y_true, y_pred, threshold=0.25)
-def F1_75(y_true, y_pred): return F1(y_true, y_pred, threshold=0.75)
+def F1_lower(y_true, y_pred): return util.F1(y_true, y_pred, threshold=0.4)
+def F1_upper(y_true, y_pred): return util.F1(y_true, y_pred, threshold=0.6)
 
 from_logits = model.loss_fn.get_config()['from_logits']
 thresh = (not from_logits) * 0.5
@@ -50,7 +50,7 @@ auc = tf.keras.metrics.AUC(from_logits = from_logits)
 
 model.compile(optimizer = model.opt,
   loss = model.loss_fn,
-  metrics=[binAcc, auc, F1_25, F1, F1_75]
+  metrics=[binAcc, auc, F1_lower, F1, F1_upper]
 )
 
 if continue_training:
@@ -96,9 +96,9 @@ for i in range(num_epochs):
     loss_list = []
     acc_list = []
     auc_list = []
-    F1_25_list = []
+    F1_lower_list = []
     F1_list = []
-    F1_75_list = []
+    F1_upper_list = []
     for pdb_id in val_list:
         data = get_data(pdb_id)
         if data is None:
@@ -111,21 +111,21 @@ for i in range(num_epochs):
             sample_weight = None
             X, y = data
         
-        loss, acc, auc, F1_25_, F1_, F1_75_  = model.evaluate(X, y, verbose=0)[:6]
+        loss, acc, auc, F1_lower_, F1_, F1_upper_  = model.evaluate(X, y, verbose=0)[:6]
         loss_list.append(loss)
         acc_list.append(acc)
         auc_list.append(auc)
-        F1_25_list.append(F1_25_)
+        F1_lower_list.append(F1_lower_)
         F1_list.append(F1_)
-        F1_75_list.append(F1_75_)
+        F1_upper_list.append(F1_upper_)
     
     print(f'Epoch {i}, Validation Metrics')
     print(f'Loss: {np.mean(loss_list)}')
     print(f'Binary Accuracy: {np.mean(acc_list)}')
     print(f'AUC: {np.mean(auc_list)}')
-    print(f'F1_25_list: {np.mean(F1_25_list)}')
+    print(f'F1_lower_list: {np.mean(F1_lower_list)}')
     print(f'F1: {np.mean(F1_list)}')
-    print(f'F1_75_list: {np.mean(F1_75_list)}')
+    print(f'F1_upper_list: {np.mean(F1_upper_list)}')
     
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
