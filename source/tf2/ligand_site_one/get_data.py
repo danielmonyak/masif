@@ -47,12 +47,17 @@ def get_data(pdb_id, training = True):
         ligand_coords = all_ligand_coords[j]
         temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
         temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
-        pocket_points.extend(temp_pocket_points)
+        if len(temp_pocket_points) > 32:
+            pocket_points.extend(temp_pocket_points)
 
+    if len(pocket_points) > 0:
+        print(f'{pdb_id} has no pockets big enough...')
+        return None
+            
     y = np.zeros([1, n_samples, 1], dtype=np.int32)
     y[0, pocket_points, 0] = 1
 
-    if (np.mean(y) > 0.75) or (np.sum(y) < 30):
+    if np.mean(y) > 0.75:
         print(f'{pdb_id} is weird...')
         return None
     
