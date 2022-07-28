@@ -53,6 +53,7 @@ def get_data(pdb_id, training = True):
     y[0, pocket_points, 0] = 1
 
     if (np.mean(y) > 0.75) or (np.sum(y) < 30):
+        print(f'{pdb_id} is weird...')
         return None
     
     n_pockets = np.sum(y)
