@@ -10,7 +10,7 @@ phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
-from default_config.util as util
+import default_config.util as util
 from default_config.masif_opts import masif_opts
 from MaSIF_ligand_site_one import MaSIF_ligand_site
 from get_data import get_data
