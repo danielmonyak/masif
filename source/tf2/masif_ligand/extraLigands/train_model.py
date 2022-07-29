@@ -1,4 +1,3 @@
-# Header variables and parameters.
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
@@ -16,7 +15,7 @@ from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 #lr = 1e-3
 # Try this learning rate after
 
-reg_val = 0.01
+reg_val = 0.0
 reg_type = 'l2'
 
 continue_training = False
@@ -29,23 +28,22 @@ defaultCode = params['defaultCode']
 datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
-train_X = np.load(genPath.format('train', 'X'), dtype=np.float32)
-train_y = np.load(genPath.format('train', 'y'), dtype = np.int32)
-val_X = np.load(genPath.format('val', 'X'), dtype=np.float32)
-val_y = np.load(genPath.format('val', 'y'), dtype = np.int32)
+train_X = np.load(genPath.format('train', 'X')).astype(np.float32)
+train_y = np.load(genPath.format('train', 'y')).astype(np.int32)
+val_X = np.load(genPath.format('val', 'X')).astype(np.float32)
+val_y = np.load(genPath.format('val', 'y')).astype(np.int32)
 
 ####
 solvents_datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand/extraLigands'
 solvents_genPath = os.path.join(solvents_datadir, '{}_{}.npy')
 
-solvents_train_X = np.load(solvents_genPath.format('train', 'X'), dtype=np.float32)
-solvents_train_y = np.load(solvents_genPath.format('train', 'y'), dtype = np.int32)
-solvents_val_X = np.load(solvents_genPath.format('val', 'X'), dtype=np.float32)
-solvents_val_y = np.load(solvents_genPath.format('val', 'y'), dtype = np.int32)
+solvents_train_X = np.load(solvents_genPath.format('train', 'X')).astype(np.float32)
+solvents_train_y = np.load(solvents_genPath.format('train', 'y')).astype(np.int32)
+solvents_val_X = np.load(solvents_genPath.format('val', 'X')).astype(np.float32)
+solvents_val_y = np.load(solvents_genPath.format('val', 'y')).astype(np.int32)
 
 train_y = np.concatenate([train_y, np.zeros([train_y.shape[0], solvents_train_y.shape[1] - train_y.shape[1]])], axis=1)
 val_y = np.concatenate([val_y, np.zeros([val_y.shape[0], solvents_train_y.shape[1] - val_y.shape[1]])], axis=1)
-
 
 ####
 
@@ -54,11 +52,10 @@ with tf.device(cpu):
   val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
   solvents_train_X = tf.RaggedTensor.from_tensor(solvents_train_X, padding=defaultCode)
   solvents_val_X = tf.RaggedTensor.from_tensor(solvents_val_X, padding=defaultCode)
+  train_X = tf.concat([train_X, solvents_train_X], axis=0)
+  val_X = tf.concat([val_X, solvents_val_X], axis=0)
 
-
-train_X = tf.concat([train_X, solvents_train_X], axis=0)
 train_y = np.concatenate([train_y, solvents_train_y])
-val_X = np.concatenate([val_X, solvents_val_X])
 val_y = np.concatenate([val_y, solvents_val_y])
 
 
@@ -75,10 +72,10 @@ num_epochs = 200
 with strategy.scope():
   model = MaSIF_ligand(
     params["max_distance"],
-    params["n_classes"],
+    train_y.shape[1],
     feat_mask=params["feat_mask"],
     reg_val = reg_val, reg_type = reg_type,
-    keep_prob=0.8
+    keep_prob=1.0
   )
   model.compile(optimizer = model.opt,
     loss = model.loss_fn,
