@@ -38,10 +38,12 @@ val_y = np.load(genPath.format('val', 'y'))
 solvents_datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand/extraLigands'
 solvents_genPath = os.path.join(datadir, '{}_{}.npy')
 
-solvents_train_X = np.load(genPath.format('train', 'X'))
-solvents_train_y = np.load(genPath.format('train', 'y'))
-solvents_val_X = np.load(genPath.format('val', 'X'))
-solvents_val_y = np.load(genPath.format('val', 'y'))
+solvents_train_X = np.load(solvents_genPath.format('train', 'X'))
+solvents_train_y = np.load(solvents_genPath.format('train', 'y'))
+solvents_val_X = np.load(solvents_genPath.format('val', 'X'))
+solvents_val_y = np.load(solvents_genPath.format('val', 'y'))
+
+train_y = np.concatenate([train_y, 
 
 train_X = np.concatenate([train_X, solvents_train_X])
 train_y = np.concatenate([train_y, solvents_train_y])
