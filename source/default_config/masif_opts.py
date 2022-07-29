@@ -22,8 +22,8 @@ masif_opts["feature_interpolation"] = True
 
 ####
 masif_opts['ligand_list'] = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
-#masif_opts['extra_ligands'] = ['IMP', 'EPE', 'FMN', 'TRS', 'PGE', 'ACT', 'NAG', 'EDO', 'GOL', 'SO4']
-masif_opts['solvents'] = ['EPE', 'FMN', 'TRS', 'PGE', 'NAG', 'ACT', 'EDO']
+masif_opts['solvents'] = ['IMP', 'EPE', 'FMN', 'TRS', 'PGE', 'ACT', 'NAG', 'EDO', 'GOL', 'SO4']
+#masif_opts['solvents'] = ['EPE', 'FMN', 'TRS', 'PGE', 'NAG', 'ACT', 'EDO']
 masif_opts['all_ligands'] = masif_opts['ligand_list'] + masif_opts['solvents']
 ####
 
