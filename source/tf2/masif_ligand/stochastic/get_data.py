@@ -4,6 +4,8 @@ from scipy import spatial
 from default_config.util import *
 
 params = masif_opts["ligand"]
+minPockets = params['minPockets']
+ligand_list = masif_opts['all_ligands']
 
 def get_data(pdb_id):
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
@@ -47,4 +49,11 @@ def get_data(pdb_id):
         #print(f'{pdb_id} has no pockets big enough...')
         return None
 
-    return X, pocket_points
+    all_ligand_types = np.load(
+        os.path.join(
+            params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
+        )
+    ).astype(str)
+    y = [ligand_list.index(lig) for lig in all_ligand_types]
+    
+    return X, pocket_points, y
