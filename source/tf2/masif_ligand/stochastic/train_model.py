@@ -97,25 +97,52 @@ while iterations < 1e4:
         except:
             train_iter = iter(training)
         
-        X, pocket_points = get_data(pdb_id, training=True)
+        X, pocket_points, y = get_data(pdb_id)
         n_samples = X[0].shape[1]
-        y = np.empty([1, n_samples, 1], dtype=np.int32)
-        for pp in pocket_points:
-            X_temp = tuple(arr[:, pp] for arr in X)
-            y.fill(0)
-            y[0, pp, 0] = 1
-            loss_value = train_step(X_temp, y)
+        for k, pp in enumerate(pocket_points):
+            pp_rand = np.random.choice(pp, minPockets, replace=False)
+            X_temp = tuple(arr[:, pp_rand] for arr in X)
+            y_temp = y[k]
+            loss_value = train_step(X_temp, y_temp)
             loss_list.append(loss_value)
     
     mean_loss = np.mean(loss_list)
     train_acc = train_acc_metric.result()
     
     print('Training results over {n_train} PDBs') 
-    print('Loss: %.4f" % (mean_loss,))
+    print("Loss: %.4f" % (mean_loss,))
     print("Accuracy: %.4f" % (float(train_acc),))
     
     loss_list = []
     train_acc_metric.reset_states()
+    
+    #####################################
+    #####################################
+    
+    for i in range(n_val):
+        try:
+            pdb_id = next(val_iter)
+        except:
+            val_iter = iter(val)
+        
+        X, pocket_points, y = get_data(pdb_id)
+        n_samples = X[0].shape[1]
+        for k, pp in enumerate(pocket_points):
+            pp_rand = np.random.choice(pp, minPockets, replace=False)
+            X_temp = tuple(arr[:, pp_rand] for arr in X)
+            y_temp = y[k]
+            loss_value = test_step(X_temp, y_temp)
+            loss_list.append(loss_value)
+    
+    mean_loss = np.mean(loss_list)
+    train_acc = val_acc_metric.result()
+    
+    print('Training results over {n_train} PDBs') 
+    print('Loss: %.4f" % (mean_loss,))
+    print("Accuracy: %.4f" % (float(train_acc),))
+    
+    loss_list = []
+    val_acc_metric.reset_states()
         
         
 model.save(modelPath)
