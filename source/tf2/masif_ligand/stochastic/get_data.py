@@ -5,7 +5,7 @@ from default_config.util import *
 
 params = masif_opts["ligand"]
 
-def get_data(pdb_id, training = True):
+def get_data(pdb_id):
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
 
     mask = np.load(os.path.join(mydir, "p1_mask.npy"))
