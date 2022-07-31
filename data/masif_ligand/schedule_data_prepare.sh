@@ -4,7 +4,7 @@ if [ ! -d $out ]; then mkdir $out; fi
 if [ ! -d $err ]; then mkdir $err; fi
 
 batchSize=10
-sleep_time=60
+sleep_time=150
 
 i=0
 unset running
@@ -29,8 +29,8 @@ while read p; do
 	disown -h $!
 	running+=($!)
 	i=$((i+1))
-done < solvents/todo.txt
-#done < solvents/solvent_PDBs.txt
 #done < lists/sequence_split_list_UNIQUE.txt
+#done < newPDBs/filtered_pdbs.txt
+done < newPDBs/todo.txt
 
 echo Finished!

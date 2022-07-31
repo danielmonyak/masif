@@ -1,0 +1,1240 @@
+{
+  "data": {
+    "entries": [
+      {
+        "rcsb_id": "7AZW",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 13390,
+                "identity": 100
+              },
+              {
+                "cluster_id": 13717,
+                "identity": 95
+              },
+              {
+                "cluster_id": 12809,
+                "identity": 90
+              },
+              {
+                "cluster_id": 11903,
+                "identity": 70
+              },
+              {
+                "cluster_id": 11328,
+                "identity": 50
+              },
+              {
+                "cluster_id": 4929,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AZT",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A"
+              ],
+              "auth_asym_ids": [
+                "A"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 5641,
+                "identity": 100
+              },
+              {
+                "cluster_id": 4420,
+                "identity": 95
+              },
+              {
+                "cluster_id": 4536,
+                "identity": 90
+              },
+              {
+                "cluster_id": 4296,
+                "identity": 70
+              },
+              {
+                "cluster_id": 1230,
+                "identity": 50
+              },
+              {
+                "cluster_id": 1155,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AYV",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A"
+              ],
+              "auth_asym_ids": [
+                "A"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 5641,
+                "identity": 100
+              },
+              {
+                "cluster_id": 4420,
+                "identity": 95
+              },
+              {
+                "cluster_id": 4536,
+                "identity": 90
+              },
+              {
+                "cluster_id": 4296,
+                "identity": 70
+              },
+              {
+                "cluster_id": 1230,
+                "identity": 50
+              },
+              {
+                "cluster_id": 1155,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AZ8",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 538,
+                "identity": 100
+              },
+              {
+                "cluster_id": 621,
+                "identity": 95
+              },
+              {
+                "cluster_id": 664,
+                "identity": 90
+              },
+              {
+                "cluster_id": 761,
+                "identity": 70
+              },
+              {
+                "cluster_id": 678,
+                "identity": 50
+              },
+              {
+                "cluster_id": 559,
+                "identity": 30
+              }
+            ]
+          },
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "2",
+              "asym_ids": [
+                "C",
+                "D"
+              ],
+              "auth_asym_ids": [
+                "H",
+                "I"
+              ]
+            },
+            "rcsb_cluster_membership": null
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AZ6",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A"
+              ],
+              "auth_asym_ids": [
+                "A"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 538,
+                "identity": 100
+              },
+              {
+                "cluster_id": 621,
+                "identity": 95
+              },
+              {
+                "cluster_id": 664,
+                "identity": 90
+              },
+              {
+                "cluster_id": 761,
+                "identity": 70
+              },
+              {
+                "cluster_id": 678,
+                "identity": 50
+              },
+              {
+                "cluster_id": 559,
+                "identity": 30
+              }
+            ]
+          },
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "2",
+              "asym_ids": [
+                "B"
+              ],
+              "auth_asym_ids": [
+                "H"
+              ]
+            },
+            "rcsb_cluster_membership": null
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AYS",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A"
+              ],
+              "auth_asym_ids": [
+                "A"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 5,
+                "identity": 100
+              },
+              {
+                "cluster_id": 10,
+                "identity": 95
+              },
+              {
+                "cluster_id": 12,
+                "identity": 90
+              },
+              {
+                "cluster_id": 14,
+                "identity": 70
+              },
+              {
+                "cluster_id": 30,
+                "identity": 50
+              },
+              {
+                "cluster_id": 4,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AYQ",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 2149,
+                "identity": 100
+              },
+              {
+                "cluster_id": 2789,
+                "identity": 95
+              },
+              {
+                "cluster_id": 2779,
+                "identity": 90
+              },
+              {
+                "cluster_id": 2778,
+                "identity": 70
+              },
+              {
+                "cluster_id": 1775,
+                "identity": 50
+              },
+              {
+                "cluster_id": 1823,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AYX",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 63236,
+                "identity": 100
+              },
+              {
+                "cluster_id": 45814,
+                "identity": 95
+              },
+              {
+                "cluster_id": 54998,
+                "identity": 90
+              },
+              {
+                "cluster_id": 60886,
+                "identity": 70
+              },
+              {
+                "cluster_id": 41985,
+                "identity": 50
+              },
+              {
+                "cluster_id": 80,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AYY",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+              ],
+              "auth_asym_ids": [
+                "AAA",
+                "BBB",
+                "CCC",
+                "DDD",
+                "EEE"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 4247,
+                "identity": 100
+              },
+              {
+                "cluster_id": 1302,
+                "identity": 95
+              },
+              {
+                "cluster_id": 1323,
+                "identity": 90
+              },
+              {
+                "cluster_id": 1225,
+                "identity": 70
+              },
+              {
+                "cluster_id": 1206,
+                "identity": 50
+              },
+              {
+                "cluster_id": 1240,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "2TNF",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B",
+                "C"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B",
+                "C"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 17360,
+                "identity": 100
+              },
+              {
+                "cluster_id": 16726,
+                "identity": 95
+              },
+              {
+                "cluster_id": 17267,
+                "identity": 90
+              },
+              {
+                "cluster_id": 10807,
+                "identity": 70
+              },
+              {
+                "cluster_id": 10141,
+                "identity": 50
+              },
+              {
+                "cluster_id": 1030,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AZE",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 538,
+                "identity": 100
+              },
+              {
+                "cluster_id": 621,
+                "identity": 95
+              },
+              {
+                "cluster_id": 664,
+                "identity": 90
+              },
+              {
+                "cluster_id": 761,
+                "identity": 70
+              },
+              {
+                "cluster_id": 678,
+                "identity": 50
+              },
+              {
+                "cluster_id": 559,
+                "identity": 30
+              }
+            ]
+          },
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "2",
+              "asym_ids": [
+                "C",
+                "D"
+              ],
+              "auth_asym_ids": [
+                "H",
+                "I"
+              ]
+            },
+            "rcsb_cluster_membership": null
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AZF",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 538,
+                "identity": 100
+              },
+              {
+                "cluster_id": 621,
+                "identity": 95
+              },
+              {
+                "cluster_id": 664,
+                "identity": 90
+              },
+              {
+                "cluster_id": 761,
+                "identity": 70
+              },
+              {
+                "cluster_id": 678,
+                "identity": 50
+              },
+              {
+                "cluster_id": 559,
+                "identity": 30
+              }
+            ]
+          },
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "2",
+              "asym_ids": [
+                "E",
+                "F",
+                "G",
+                "H"
+              ],
+              "auth_asym_ids": [
+                "H",
+                "I",
+                "J",
+                "K"
+              ]
+            },
+            "rcsb_cluster_membership": null
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AZC",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 538,
+                "identity": 100
+              },
+              {
+                "cluster_id": 621,
+                "identity": 95
+              },
+              {
+                "cluster_id": 664,
+                "identity": 90
+              },
+              {
+                "cluster_id": 761,
+                "identity": 70
+              },
+              {
+                "cluster_id": 678,
+                "identity": 50
+              },
+              {
+                "cluster_id": 559,
+                "identity": 30
+              }
+            ]
+          },
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "2",
+              "asym_ids": [
+                "E",
+                "F",
+                "G",
+                "H"
+              ],
+              "auth_asym_ids": [
+                "H",
+                "I",
+                "J",
+                "K"
+              ]
+            },
+            "rcsb_cluster_membership": null
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AZN",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A"
+              ],
+              "auth_asym_ids": [
+                "A"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 94378,
+                "identity": 100
+              },
+              {
+                "cluster_id": 38021,
+                "identity": 95
+              },
+              {
+                "cluster_id": 62306,
+                "identity": 90
+              },
+              {
+                "cluster_id": 29579,
+                "identity": 70
+              },
+              {
+                "cluster_id": 26360,
+                "identity": 50
+              },
+              {
+                "cluster_id": 17035,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AZK",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "C",
+                "E",
+                "G"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 538,
+                "identity": 100
+              },
+              {
+                "cluster_id": 621,
+                "identity": 95
+              },
+              {
+                "cluster_id": 664,
+                "identity": 90
+              },
+              {
+                "cluster_id": 761,
+                "identity": 70
+              },
+              {
+                "cluster_id": 678,
+                "identity": 50
+              },
+              {
+                "cluster_id": 559,
+                "identity": 30
+              }
+            ]
+          },
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "2",
+              "asym_ids": [
+                "B",
+                "D",
+                "F",
+                "H"
+              ],
+              "auth_asym_ids": [
+                "H",
+                "I",
+                "J",
+                "K"
+              ]
+            },
+            "rcsb_cluster_membership": null
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AZL",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 538,
+                "identity": 100
+              },
+              {
+                "cluster_id": 621,
+                "identity": 95
+              },
+              {
+                "cluster_id": 664,
+                "identity": 90
+              },
+              {
+                "cluster_id": 761,
+                "identity": 70
+              },
+              {
+                "cluster_id": 678,
+                "identity": 50
+              },
+              {
+                "cluster_id": 559,
+                "identity": 30
+              }
+            ]
+          },
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "2",
+              "asym_ids": [
+                "E",
+                "F",
+                "G",
+                "H"
+              ],
+              "auth_asym_ids": [
+                "E",
+                "F",
+                "G",
+                "H"
+              ]
+            },
+            "rcsb_cluster_membership": null
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AY6",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 2089,
+                "identity": 100
+              },
+              {
+                "cluster_id": 598,
+                "identity": 95
+              },
+              {
+                "cluster_id": 631,
+                "identity": 90
+              },
+              {
+                "cluster_id": 310,
+                "identity": 70
+              },
+              {
+                "cluster_id": 319,
+                "identity": 50
+              },
+              {
+                "cluster_id": 143,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7B9U",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A"
+              ],
+              "auth_asym_ids": [
+                "A"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 267,
+                "identity": 100
+              },
+              {
+                "cluster_id": 307,
+                "identity": 95
+              },
+              {
+                "cluster_id": 324,
+                "identity": 90
+              },
+              {
+                "cluster_id": 348,
+                "identity": 70
+              },
+              {
+                "cluster_id": 348,
+                "identity": 50
+              },
+              {
+                "cluster_id": 367,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7B9W",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B"
+              ],
+              "auth_asym_ids": [
+                "AAA",
+                "BBB"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 2469,
+                "identity": 100
+              },
+              {
+                "cluster_id": 2681,
+                "identity": 95
+              },
+              {
+                "cluster_id": 2731,
+                "identity": 90
+              },
+              {
+                "cluster_id": 2831,
+                "identity": 70
+              },
+              {
+                "cluster_id": 2705,
+                "identity": 50
+              },
+              {
+                "cluster_id": 2242,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AY9",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 304,
+                "identity": 100
+              },
+              {
+                "cluster_id": 185,
+                "identity": 95
+              },
+              {
+                "cluster_id": 194,
+                "identity": 90
+              },
+              {
+                "cluster_id": 151,
+                "identity": 70
+              },
+              {
+                "cluster_id": 177,
+                "identity": 50
+              },
+              {
+                "cluster_id": 11,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "2TMD",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 14129,
+                "identity": 100
+              },
+              {
+                "cluster_id": 10740,
+                "identity": 95
+              },
+              {
+                "cluster_id": 9538,
+                "identity": 90
+              },
+              {
+                "cluster_id": 9398,
+                "identity": 70
+              },
+              {
+                "cluster_id": 9956,
+                "identity": 50
+              },
+              {
+                "cluster_id": 5737,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AYG",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 58734,
+                "identity": 100
+              },
+              {
+                "cluster_id": 25225,
+                "identity": 95
+              },
+              {
+                "cluster_id": 24409,
+                "identity": 90
+              },
+              {
+                "cluster_id": 26751,
+                "identity": 70
+              },
+              {
+                "cluster_id": 4072,
+                "identity": 50
+              },
+              {
+                "cluster_id": 3717,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AYB",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A"
+              ],
+              "auth_asym_ids": [
+                "A"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 16516,
+                "identity": 100
+              },
+              {
+                "cluster_id": 13181,
+                "identity": 95
+              },
+              {
+                "cluster_id": 14041,
+                "identity": 90
+              },
+              {
+                "cluster_id": 13461,
+                "identity": 70
+              },
+              {
+                "cluster_id": 12192,
+                "identity": 50
+              },
+              {
+                "cluster_id": 9635,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "2TMK",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 20468,
+                "identity": 100
+              },
+              {
+                "cluster_id": 21703,
+                "identity": 95
+              },
+              {
+                "cluster_id": 21142,
+                "identity": 90
+              },
+              {
+                "cluster_id": 16074,
+                "identity": 70
+              },
+              {
+                "cluster_id": 12471,
+                "identity": 50
+              },
+              {
+                "cluster_id": 4153,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rcsb_id": "7AYA",
+        "polymer_entities": [
+          {
+            "rcsb_polymer_entity_container_identifiers": {
+              "entity_id": "1",
+              "asym_ids": [
+                "A",
+                "B"
+              ],
+              "auth_asym_ids": [
+                "A",
+                "B"
+              ]
+            },
+            "rcsb_cluster_membership": [
+              {
+                "cluster_id": 304,
+                "identity": 100
+              },
+              {
+                "cluster_id": 185,
+                "identity": 95
+              },
+              {
+                "cluster_id": 194,
+                "identity": 90
+              },
+              {
+                "cluster_id": 151,
+                "identity": 70
+              },
+              {
+                "cluster_id": 177,
+                "identity": 50
+              },
+              {
+                "cluster_id": 11,
+                "identity": 30
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

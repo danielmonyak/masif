@@ -1,10 +1,12 @@
 import numpy as np
 import os
-files = os.listdir()
+
+dir = 'solvent_pdbs'
+files = os.listdir(dir)
+outdir = 'newLists'
+if not os.path.exists(outdir):
+    os.mkdir(outdir)
 
 for fi in files:
-    arr = np.loadtxt(fi, dtype=str, delimiter=',')
-    arr = arr[np.char.partition(arr, '_')[:,-1] == '1']
-    arr = np.char.replace(arr, '_1', '_A_')
-    np.savetxt(fi, arr, fmt='%s')
-
+    arr = np.loadtxt(os.path.join(dir, fi), dtype=str, delimiter=',')
+    np.savetxt(os.path.join(outdir, fi), arr, fmt='%s')

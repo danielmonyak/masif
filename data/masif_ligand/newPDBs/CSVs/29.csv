@@ -1,0 +1,900 @@
+Identifier,Polymer EntityData,,,,,,,,,,,,,,
+Entry ID,Entity ID,Asym ID,Auth Asym ID,Database Name,Accession Code(s),Sequence Cluster  ID,Sequence Cluster Identity Threshold,Macromolecule Name,Provenance Source,Gene Name,Source Organism,Taxonomy ID,Value,Provenance Code,
+"7BFA","1","A","AAA","UniProt","P00918",3,100,"Carbonic anhydrase 2","PDB Primary Data","CA2","Homo sapiens",9606,"Carbonic anhydrase 2","up:Protein.up:recommendedName.up:fullName"
+,,,,,,1,95,,"UniProt","CA2"
+,,,,,,4,90
+,,,,,,6,70
+,,,,,,5,50
+,,,,,,8,30
+"7BFB","1","A, B","A, B","UniProt","P0DTD1",6,100,"Main Protease","PDB Primary Data","rep","Severe acute respiratory syndrome coronavirus 2",2697049,"Replicase polyprotein 1ab","up:Protein.up:recommendedName.up:fullName"
+,,,,,,5,95,,"PDB Primary Data","1a-1b"
+,,,,,,8,90,,"UniProt","rep"
+,,,,,,11,70,,"UniProt","1a-1b"
+,,,,,,21,50
+,,,,,,28,30
+"7BG1","1","A","H",,,87336,100,"anti-FLAG M2 heavy chain","PDB Primary Data","IGHV1-04/IGHJ2","Mus musculus",10090
+,,,,,,47182,95
+,,,,,,45444,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"2","B","L",,,87337,100,"anti-FLAG M2 light chain",,,"Mus musculus",10090
+,,,,,,190,95
+,,,,,,186,90
+,,,,,,2,70
+,,,,,,1,50
+,,,,,,1,30
+"7BFN","1","A","A","UniProt","A0A286RIX1",4752,100,"Esterase","UniProt","THTE_3306","Thermogutta terrifontis",1331910,"Putative lipase/esterase","up:Protein.up:submittedName.up:fullName"
+,,,,,,4656,95
+,,,,,,5081,90
+,,,,,,4803,70
+,,,,,,4692,50
+,,,,,,4589,30
+"7BFZ","1","A","A","UniProt","Q04609",480,100,"Glutamate carboxypeptidase 2","PDB Primary Data","FOLH1","Homo sapiens",9606,"Glutamate carboxypeptidase 2","up:Protein.up:recommendedName.up:fullName"
+,,,,,,456,95,,"PDB Primary Data","FOLH"
+,,,,,,484,90,,"PDB Primary Data","NAALAD1"
+,,,,,,487,70,,"PDB Primary Data","PSM"
+,,,,,,484,50,,"PDB Primary Data","PSMA"
+,,,,,,504,30,,"PDB Primary Data","GIG27"
+,,,,,,,,,"UniProt","FOLH1"
+,,,,,,,,,"UniProt","FOLH"
+,,,,,,,,,"UniProt","NAALAD1"
+,,,,,,,,,"UniProt","PSM"
+,,,,,,,,,"UniProt","PSMA"
+,,,,,,,,,"UniProt","GIG27"
+"7BG5","1","A","AAA","UniProt","P00918",3,100,"Carbonic anhydrase 2","PDB Primary Data","CA2","Homo sapiens",9606,"Carbonic anhydrase 2","up:Protein.up:recommendedName.up:fullName"
+,,,,,,1,95,,"UniProt","CA2"
+,,,,,,4,90
+,,,,,,6,70
+,,,,,,5,50
+,,,,,,8,30
+"7BEB","1","A","AAA","UniProt","P00698",1,100,"Lysozyme","UniProt","LYZ","Gallus gallus",9031,"Lysozyme C","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3,95
+,,,,,,3,90
+,,,,,,7,70
+,,,,,,4,50
+,,,,,,7,30
+"7BDZ","1","A","AAA","UniProt","P00698",1,100,"Lysozyme","UniProt","LYZ","Gallus gallus",9031,"Lysozyme C","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3,95
+,,,,,,3,90
+,,,,,,7,70
+,,,,,,4,50
+,,,,,,7,30
+"7BEH","1","A","E","UniProt","P0DTC2",120,100,"Spike glycoprotein","PDB Primary Data","S","Severe acute respiratory syndrome coronavirus 2",2697049,"Spike glycoprotein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,120,95,,"PDB Primary Data","2"
+,,,,,,95,90,,"UniProt","S"
+,,,,,,156,70,,"UniProt","2"
+,,,,,,168,50
+,,,,,,189,30
+,"2","B","H",,,27754,100,"COVOX-316 heavy chain",,,"Homo sapiens",9606
+,,,,,,1559,95
+,,,,,,134,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"3","C","L",,,27755,100,"COVOX-316 light chain",,,"Homo sapiens",9606
+,,,,,,2124,95
+,,,,,,233,90
+,,,,,,8,70
+,,,,,,1,50
+,,,,,,1,30
+"7BEJ","1","A","H",,,14567,100,"COVOX-158 heavy chain",,,"Homo sapiens",9606
+,,,,,,11803,95
+,,,,,,6,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"2","B","L",,,14568,100,"COVOX-158 light chain",,,"Homo sapiens",9606
+,,,,,,11,95
+,,,,,,1,90
+,,,,,,2,70
+,,,,,,1,50
+,,,,,,1,30
+,"3","C","E","UniProt","P0DTC2",120,100,"Spike glycoprotein","PDB Primary Data","S","Severe acute respiratory syndrome coronavirus 2",2697049,"Spike glycoprotein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,120,95,,"PDB Primary Data","2"
+,,,,,,95,90,,"UniProt","S"
+,,,,,,156,70,,"UniProt","2"
+,,,,,,168,50
+,,,,,,189,30
+"7BEI","1","A","H",,,10383,100,"COVOX-150 heavy chain",,,"Homo sapiens",9606
+,,,,,,391,95
+,,,,,,6,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"3","C","E","UniProt","P0DTC2",120,100,"Spike glycoprotein","PDB Primary Data","S","Severe acute respiratory syndrome coronavirus 2",2697049,"Spike glycoprotein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,120,95,,"PDB Primary Data","2"
+,,,,,,95,90,,"UniProt","S"
+,,,,,,156,70,,"UniProt","2"
+,,,,,,168,50
+,,,,,,189,30
+,"2","B","L",,,10384,100,"COVOX-150 light chain",,,"Homo sapiens",9606
+,,,,,,11,95
+,,,,,,1,90
+,,,,,,2,70
+,,,,,,1,50
+,,,,,,1,30
+"7BED","1","A, B","A, B","UniProt","P61964",240,100,"WD repeat-containing protein 5","PDB Primary Data","WDR5","Homo sapiens",9606,"WD repeat-containing protein 5","up:Protein.up:recommendedName.up:fullName"
+,,,,,,269,95,,"PDB Primary Data","BIG3"
+,,,,,,273,90,,"UniProt","WDR5"
+,,,,,,302,70,,"UniProt","BIG3"
+,,,,,,317,50
+,,,,,,334,30
+"7BEC","1","A","AAA","UniProt","P00698",1,100,"Lysozyme","UniProt","LYZ","Gallus gallus",9031,"Lysozyme C","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3,95
+,,,,,,3,90
+,,,,,,7,70
+,,,,,,4,50
+,,,,,,7,30
+"7BEP","1","A, F","C, E","UniProt","P0DTC2",120,100,"Spike glycoprotein","PDB Primary Data","S","Severe acute respiratory syndrome coronavirus 2",2697049,"Spike glycoprotein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,120,95,,"PDB Primary Data","2"
+,,,,,,95,90,,"UniProt","S"
+,,,,,,156,70,,"UniProt","2"
+,,,,,,168,50
+,,,,,,189,30
+,"2","B, G","A, D",,,28899,100,"COVOX-384 heavy chain",,,"Homo sapiens",9606
+,,,,,,25706,95
+,,,,,,6,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"3","C, H","B, F",,,28900,100,"COVOX-384 light chain",,,"Homo sapiens",9606
+,,,,,,11,95
+,,,,,,1,90
+,,,,,,2,70
+,,,,,,1,50
+,,,,,,1,30
+,"4","D, I","G, H",,,5462,100,"S309 heavy chain",,,"Homo sapiens",9606
+,,,,,,5752,95
+,,,,,,134,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"5","E, J","I, L",,,4670,100,"S309 light chain",,,"Homo sapiens",9606
+,,,,,,125,95
+,,,,,,1,90
+,,,,,,2,70
+,,,,,,1,50
+,,,,,,1,30
+"7BEO","1","A, F","R, X","UniProt","P0DTC2",120,100,"Spike glycoprotein","PDB Primary Data","S","Severe acute respiratory syndrome coronavirus 2",2697049,"Spike glycoprotein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,120,95,,"PDB Primary Data","2"
+,,,,,,95,90,,"UniProt","S"
+,,,,,,156,70,,"UniProt","2"
+,,,,,,168,50
+,,,,,,189,30
+,"2","B, G","C, H",,,6411,100,"COVOX-253H55L heavy chain",,,"Homo sapiens",9606
+,,,,,,1821,95
+,,,,,,1833,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"3","C, H","D, L",,,20241,100,"COVOX-253H55L light chain",,,"Homo sapiens",9606
+,,,,,,125,95
+,,,,,,1,90
+,,,,,,2,70
+,,,,,,1,50
+,,,,,,1,30
+,"4","D, I","A, E",,,15567,100,"COVOX-75 heavy chain",,,"Homo sapiens",9606
+,,,,,,19618,95
+,,,,,,6,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"5","E, J","B, F",,,15568,100,"COVOX-75 light chain",,,"Homo sapiens",9606
+,,,,,,11,95
+,,,,,,1,90
+,,,,,,2,70
+,,,,,,1,50
+,,,,,,1,30
+"7BF3","1","A, B, C, D, E","A, B, C, D, E","UniProt","P0DTD1",8,100,"NSP3 macrodomain","PDB Primary Data","rep","Severe acute respiratory syndrome coronavirus 2",2697049,"Replicase polyprotein 1ab","up:Protein.up:recommendedName.up:fullName"
+,,,,,,15,95,,"PDB Primary Data","1a-1b"
+,,,,,,18,90,,"UniProt","rep"
+,,,,,,24,70,,"UniProt","1a-1b"
+,,,,,,49,50
+,,,,,,74,30
+"7BEL","1","A, F","R, X","UniProt","P0DTC2",120,100,"Spike glycoprotein","PDB Primary Data","S","Severe acute respiratory syndrome coronavirus 2",2697049,"Spike glycoprotein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,120,95,,"PDB Primary Data","2"
+,,,,,,95,90,,"UniProt","S"
+,,,,,,156,70,,"UniProt","2"
+,,,,,,168,50
+,,,,,,189,30
+,"2","B, G","A, C",,,19461,100,"COVOX-45 heavy chain",,,"Homo sapiens",9606
+,,,,,,19409,95
+,,,,,,6,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"3","C, H","E, H",,,23228,100,"COVOX-88 heavy chain",,,"Homo sapiens",9606
+,,,,,,33884,95
+,,,,,,360,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"4","D, I","F, L",,,23229,100,"COVOX-88 light chain",,,"Homo sapiens",9606
+,,,,,,10257,95
+,,,,,,188,90
+,,,,,,8,70
+,,,,,,1,50
+,,,,,,1,30
+,"5","E, J","B, D",,,18638,100,"COVOX-45 light chain",,,"Homo sapiens",9606
+,,,,,,732,95
+,,,,,,1,90
+,,,,,,2,70
+,,,,,,1,50
+,,,,,,1,30
+"7BEK","1","A","H",,,14567,100,"COVOX-158 heavy chain",,,"Homo sapiens",9606
+,,,,,,11803,95
+,,,,,,6,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"2","B","L",,,14568,100,"COVOX-158 light chain",,,"Homo sapiens",9606
+,,,,,,11,95
+,,,,,,1,90
+,,,,,,2,70
+,,,,,,1,50
+,,,,,,1,30
+,"3","C","E","UniProt","P0DTC2",120,100,"Spike glycoprotein","PDB Primary Data","S","Severe acute respiratory syndrome coronavirus 2",2697049,"Spike glycoprotein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,120,95,,"PDB Primary Data","2"
+,,,,,,95,90,,"UniProt","S"
+,,,,,,156,70,,"UniProt","2"
+,,,,,,168,50
+,,,,,,189,30
+"7BEN","1","A, F","C, E","UniProt","P0DTC2",120,100,"Spike glycoprotein","PDB Primary Data","S","Severe acute respiratory syndrome coronavirus 2",2697049,"Spike glycoprotein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,120,95,,"PDB Primary Data","2"
+,,,,,,95,90,,"UniProt","S"
+,,,,,,156,70,,"UniProt","2"
+,,,,,,168,50
+,,,,,,189,30
+,"2","B, G","D, H",,,6411,100,"COVOX-253 heavy chain",,,"Homo sapiens",9606
+,,,,,,1821,95
+,,,,,,1833,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"3","C, H","F, L",,,19462,100,"COVOX-253 light chain",,,"Homo sapiens",9606
+,,,,,,125,95
+,,,,,,1,90
+,,,,,,2,70
+,,,,,,1,50
+,,,,,,1,30
+,"4","D, I","A, G",,,15567,100,"COVOX-75 heavy chain",,,"Homo sapiens",9606
+,,,,,,19618,95
+,,,,,,6,90
+,,,,,,1,70
+,,,,,,1,50
+,,,,,,1,30
+,"5","E, J","B, I",,,15568,100,"COVOX-75 light chain",,,"Homo sapiens",9606
+,,,,,,11,95
+,,,,,,1,90
+,,,,,,2,70
+,,,,,,1,50
+,,,,,,1,30
+"7BEM","1","A","H",,,65311,100,"COVOX-269 Vh domain",,,"Homo sapiens",9606
+,,,,,,43888,95
+,,,,,,44431,90
+,,,,,,4,70
+,,,,,,2,50
+,,,,,,2,30
+,"2","B","L",,,65312,100,"COVOX-269 Vl domain",,,"Homo sapiens",9606
+,,,,,,43889,95
+,,,,,,44432,90
+,,,,,,53809,70
+,,,,,,3973,50
+,,,,,,2,30
+,"3","C","E","UniProt","P0DTC2",120,100,"Spike glycoprotein","PDB Primary Data","S","Severe acute respiratory syndrome coronavirus 2",2697049,"Spike glycoprotein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,120,95,,"PDB Primary Data","2"
+,,,,,,95,90,,"UniProt","S"
+,,,,,,156,70,,"UniProt","2"
+,,,,,,168,50
+,,,,,,189,30
+"7BEX","1","A","A","UniProt","Q0P8L1",32859,100,"Glyceraldehyde-3-phosphate dehydrogenase","PDB Primary Data","gapA","Campylobacter jejuni subsp. jejuni NCTC 11168 = ATCC 700819",192222,"Glyceraldehyde-3-phosphate dehydrogenase","up:Protein.up:recommendedName.up:fullName"
+,,,,,,31511,95,,"PDB Primary Data","Cj1403c"
+,,,,,,27963,90,,"UniProt","gapA"
+,,,,,,22980,70,,"UniProt","Cj1403c"
+,,,,,,19512,50
+,,,,,,257,30
+"7BEW","1","A","A","UniProt","Q0P8L1",32859,100,"Glyceraldehyde-3-phosphate dehydrogenase","PDB Primary Data","gapA","Campylobacter jejuni subsp. jejuni NCTC 11168 = ATCC 700819",192222,"Glyceraldehyde-3-phosphate dehydrogenase","up:Protein.up:recommendedName.up:fullName"
+,,,,,,31511,95,,"PDB Primary Data","Cj1403c"
+,,,,,,27963,90,,"UniProt","gapA"
+,,,,,,22980,70,,"UniProt","Cj1403c"
+,,,,,,19512,50
+,,,,,,257,30
+"7BF8","1","A, B","AAA, BBB","UniProt","P02754",39056,100,"Beta-lactoglobulin","PDB Primary Data","LGB","Bos taurus",9913,"Beta-lactoglobulin","up:Protein.up:recommendedName.up:fullName"
+,,,,,,386,95,,"UniProt","LGB"
+,,,,,,404,90
+,,,,,,413,70
+,,,,,,390,50
+,,,,,,414,30
+"7BEY","1","A, C","A, C",,,15622,100,"'Positive' Strand",,,"synthetic construct",32630
+,,,,,,21659,95
+,,,,,,7840,90
+,,,,,,7281,70
+,,,,,,6805,50
+,,,,,,6419,30
+,"2","B, D","B, D",,,32147,100,"'Cys-N2-SO3-' Strand",,,"synthetic construct",32630
+,,,,,,21660,95
+,,,,,,7840,90
+,,,,,,7281,70
+,,,,,,6805,50
+,,,,,,6419,30
+"7BF5","1","A, B, C, D, E","A, B, C, D, E","UniProt","P0DTD1",8,100,"NSP3 macrodomain","PDB Primary Data","rep","Severe acute respiratory syndrome coronavirus 2",2697049,"Replicase polyprotein 1ab","up:Protein.up:recommendedName.up:fullName"
+,,,,,,15,95,,"PDB Primary Data","1a-1b"
+,,,,,,18,90,,"UniProt","rep"
+,,,,,,24,70,,"UniProt","1a-1b"
+,,,,,,49,50
+,,,,,,74,30
+"7BF4","1","A","A","UniProt","P0DTD1",8,100,"NSP3 macrodomain","PDB Primary Data","rep","Severe acute respiratory syndrome coronavirus 2",2697049,"Replicase polyprotein 1ab","up:Protein.up:recommendedName.up:fullName"
+,,,,,,15,95,,"PDB Primary Data","1a-1b"
+,,,,,,18,90,,"UniProt","rep"
+,,,,,,24,70,,"UniProt","1a-1b"
+,,,,,,49,50
+,,,,,,74,30
+"7BF7","1","A","AAA","UniProt","P02754",20893,100,"Beta-lactoglobulin","PDB Primary Data","LGB","Bos taurus",9913,"Beta-lactoglobulin","up:Protein.up:recommendedName.up:fullName"
+,,,,,,386,95,,"UniProt","LGB"
+,,,,,,404,90
+,,,,,,413,70
+,,,,,,390,50
+,,,,,,414,30
+"7BF6","1","A, B, C","A, B, C","UniProt","P0DTD1",8,100,"Papain-like protease nsp3","PDB Primary Data","rep","Severe acute respiratory syndrome coronavirus 2",2697049,"Replicase polyprotein 1ab","up:Protein.up:recommendedName.up:fullName"
+,,,,,,15,95,,"PDB Primary Data","1a-1b"
+,,,,,,18,90,,"UniProt","rep"
+,,,,,,24,70,,"UniProt","1a-1b"
+,,,,,,49,50
+,,,,,,74,30
+"7BDA","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BCZ","1","A, B, C, D","A, B, C, D","UniProt","Q9I4H2",59117,100,"4'-phosphopantetheinyl transferase EntD","PDB Primary Data","EM867_30290","Pseudomonas aeruginosa",287,"Enterobactin synthase component D","up:Protein.up:recommendedName.up:fullName"
+,,,,,,54677,95,,"PDB Primary Data","HAP34_19570"
+,,,,,,46197,90,,"PDB Primary Data","HP562_05455"
+,,,,,,39249,70
+,,,,,,33162,50
+,,,,,,41272,30
+"7BDG","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BDF","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BDH","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BDC","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BDB","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BDE","1","A","A","UniProt","P41182",1233,100,"Isoform 2 of B-cell lymphoma 6 protein","PDB Primary Data","BCL6","Homo sapiens",9606,"B-cell lymphoma 6 protein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,717,95,,"PDB Primary Data","BCL5"
+,,,,,,561,90,,"PDB Primary Data","LAZ3"
+,,,,,,622,70,,"PDB Primary Data","ZBTB27"
+,,,,,,607,50,,"PDB Primary Data","ZNF51"
+,,,,,,630,30,,"UniProt","BCL6"
+,,,,,,,,,"UniProt","BCL5"
+,,,,,,,,,"UniProt","LAZ3"
+,,,,,,,,,"UniProt","ZBTB27"
+,,,,,,,,,"UniProt","ZNF51"
+"7BDD","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BE0","1","A","AAA","UniProt","P00698",1,100,"Lysozyme","UniProt","LYZ","Gallus gallus",9031,"Lysozyme C","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3,95
+,,,,,,3,90
+,,,,,,7,70
+,,,,,,4,50
+,,,,,,7,30
+"7BE2","1","A","AAA","UniProt","P00698",1,100,"Lysozyme","UniProt","LYZ","Gallus gallus",9031,"Lysozyme C","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3,95
+,,,,,,3,90
+,,,,,,7,70
+,,,,,,4,50
+,,,,,,7,30
+"7BDQ","1","A","A","UniProt","P47811",315,100,"Mitogen-activated protein kinase 14","PDB Primary Data","Mapk14","Mus musculus",10090,"Mitogen-activated protein kinase 14","up:Protein.up:recommendedName.up:fullName"
+,,,,,,46,95,,"PDB Primary Data","Crk1"
+,,,,,,50,90,,"PDB Primary Data","Csbp1"
+,,,,,,73,70,,"PDB Primary Data","Csbp2"
+,,,,,,83,50,,"UniProt","Mapk14"
+,,,,,,48,30,,"UniProt","Crk1"
+,,,,,,,,,"UniProt","Csbp1"
+,,,,,,,,,"UniProt","Csbp2"
+"7BE1","1","A","AAA","UniProt","P00698",1,100,"Lysozyme","UniProt","LYZ","Gallus gallus",9031,"Lysozyme C","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3,95
+,,,,,,3,90
+,,,,,,7,70
+,,,,,,4,50
+,,,,,,7,30
+"7BDK","1","A","B","UniProt","O75643",2805,100,"U5 small nuclear ribonucleoprotein 200 kDa helicase","PDB Primary Data","SNRNP200","Homo sapiens",9606,"U5 small nuclear ribonucleoprotein 200 kDa helicase","up:Protein.up:recommendedName.up:fullName"
+,,,,,,2532,95,,"PDB Primary Data","ASCC3L1"
+,,,,,,2557,90,,"PDB Primary Data","HELIC2"
+,,,,,,2595,70,,"PDB Primary Data","KIAA0788"
+,,,,,,2097,50,,"UniProt","SNRNP200"
+,,,,,,2017,30,,"UniProt","ASCC3L1"
+,,,,,,,,,"UniProt","HELIC2"
+,,,,,,,,,"UniProt","KIAA0788"
+,"2","B","J","UniProt","Q6P2Q9",4456,100,"Pre-mRNA-processing-splicing factor 8","PDB Primary Data","PRPF8","Homo sapiens",9606,"Pre-mRNA-processing-splicing factor 8","up:Protein.up:recommendedName.up:fullName"
+,,,,,,5516,95,,"PDB Primary Data","PRPC8"
+,,,,,,5676,90,,"UniProt","PRPF8"
+,,,,,,4391,70,,"UniProt","PRPC8"
+,,,,,,3810,50
+,,,,,,2514,30
+"7BDM","1","A","A","UniProt","P00698",1,100,"Lysozyme","UniProt","LYZ","Gallus gallus",9031,"Lysozyme C","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3,95
+,,,,,,3,90
+,,,,,,7,70
+,,,,,,4,50
+,,,,,,7,30
+"7BDW","1","A","A","UniProt","B1MD73",4393,100,"Possible 4'-phosphopantetheinyl transferase",,,"Mycobacterium tuberculosis",1773,"Possible 4'-phosphopantetheinyl transferase","up:Protein.up:submittedName.up:fullName"
+,,,,,,5721,95
+,,,,,,5290,90
+,,,,,,5291,70
+,,,,,,2477,50
+,,,,,,2490,30
+,"2","B","B","UniProt","A0A2I7WB16",34146,100,"Phthiocerol synthesis polyketide synthase type I PpsC","PDB Primary Data","ppsC","Mycobacterium tuberculosis",1773,"Phthiocerol synthesis polyketide synthase type I PpsC","up:Protein.up:submittedName.up:fullName"
+,,,,,,22107,95,,"PDB Primary Data","CAB90_03283"
+,,,,,,31266,90,,"UniProt","ppsC"
+,,,,,,28816,70,,"UniProt","CAB90_03283"
+,,,,,,26611,50
+,,,,,,582,30
+"7BE8","1","A, B","A, B","UniProt","P69506",8221,100,"Iron-sulfur cluster repair protein YtfE","PDB Primary Data","ytfE","Escherichia coli K-12",83333,"Iron-sulfur cluster repair protein YtfE","up:Protein.up:recommendedName.up:fullName"
+,,,,,,5853,95,,"PDB Primary Data","b4209"
+,,,,,,6141,90,,"PDB Primary Data","JW4167"
+,,,,,,5916,70,,"UniProt","ytfE"
+,,,,,,5980,50,,"UniProt","b4209"
+,,,,,,5187,30,,"UniProt","JW4167"
+"7BE7","1","A, B","A, B","UniProt","P0DTD1",6,100,"3C-like proteinase","PDB Primary Data","rep","Severe acute respiratory syndrome coronavirus 2",2697049,"Replicase polyprotein 1ab","up:Protein.up:recommendedName.up:fullName"
+,,,,,,5,95,,"PDB Primary Data","1a-1b"
+,,,,,,8,90,,"UniProt","rep"
+,,,,,,11,70,,"UniProt","1a-1b"
+,,,,,,21,50
+,,,,,,28,30
+"7BDS","1","A","A","UniProt","W1EPV7",39242,100,"Beta-lactamase",,,"Klebsiella pneumoniae IS53",1432554,"Beta-lactamase","up:Protein.up:recommendedName.up:fullName"
+,,,,,,1393,95
+,,,,,,319,90
+,,,,,,250,70
+,,,,,,136,50
+,,,,,,61,30
+"7BE3","1","A","A","UniProt","P17931",325,100,"Galectin-3","PDB Primary Data","LGALS3","Homo sapiens",9606,"Galectin-3","up:Protein.up:recommendedName.up:fullName"
+,,,,,,402,95,,"PDB Primary Data","MAC2"
+,,,,,,424,90,,"UniProt","LGALS3"
+,,,,,,437,70,,"UniProt","MAC2"
+,,,,,,422,50
+,,,,,,156,30
+"7BDR","1","A","A","UniProt","W1EPV7",33159,100,"Beta-lactamase",,,"Klebsiella pneumoniae IS53",1432554,"Beta-lactamase","up:Protein.up:recommendedName.up:fullName"
+,,,,,,1393,95
+,,,,,,319,90
+,,,,,,250,70
+,,,,,,136,50
+,,,,,,61,30
+"7BE6","1","A","A","UniProt","Q08345",2780,100,"Epithelial discoidin domain-containing receptor 1","PDB Primary Data","DDR1","Homo sapiens",9606,"Epithelial discoidin domain-containing receptor 1","up:Protein.up:recommendedName.up:fullName"
+,,,,,,1420,95,,"PDB Primary Data","CAK"
+,,,,,,1505,90,,"PDB Primary Data","EDDR1"
+,,,,,,1510,70,,"PDB Primary Data","NEP"
+,,,,,,1438,50,,"PDB Primary Data","NTRK4"
+,,,,,,1494,30,,"PDB Primary Data","PTK3A"
+,,,,,,,,,"PDB Primary Data","RTK6"
+,,,,,,,,,"PDB Primary Data","TRKE"
+,,,,,,,,,"UniProt","DDR1"
+,,,,,,,,,"UniProt","CAK"
+,,,,,,,,,"UniProt","EDDR1"
+,,,,,,,,,"UniProt","NEP"
+,,,,,,,,,"UniProt","NTRK4"
+,,,,,,,,,"UniProt","PTK3A"
+,,,,,,,,,"UniProt","RTK6"
+,,,,,,,,,"UniProt","TRKE"
+"7BE5","1","A","A","UniProt","P47811",315,100,"Mitogen-activated protein kinase 14","PDB Primary Data","Mapk14","Mus musculus",10090,"Mitogen-activated protein kinase 14","up:Protein.up:recommendedName.up:fullName"
+,,,,,,46,95,,"PDB Primary Data","Crk1"
+,,,,,,50,90,,"PDB Primary Data","Csbp1"
+,,,,,,73,70,,"PDB Primary Data","Csbp2"
+,,,,,,83,50,,"UniProt","Mapk14"
+,,,,,,48,30,,"UniProt","Crk1"
+,,,,,,,,,"UniProt","Csbp1"
+,,,,,,,,,"UniProt","Csbp2"
+"7BBX","1","A","A","UniProt","Q5F6E9",88405,100,"Transaldolase","PDB Primary Data","tal","Neisseria gonorrhoeae",485,"Transaldolase","up:Protein.up:recommendedName.up:fullName"
+,,,,,,4028,95,,"PDB Primary Data","E8M68_10680"
+,,,,,,3979,90,,"PDB Primary Data","F9Z35_1423"
+,,,,,,4073,70,,"PDB Primary Data","TUM15744_11190"
+,,,,,,3839,50,,"PDB Primary Data","TUM15745_13730"
+,,,,,,3537,30,,"PDB Primary Data","TUM15746_13410"
+,,,,,,,,,"PDB Primary Data","TUM15747_14120"
+,,,,,,,,,"PDB Primary Data","TUM15749_15370"
+,,,,,,,,,"PDB Primary Data","TUM15750_11410"
+,,,,,,,,,"PDB Primary Data","TUM15751_15520"
+,,,,,,,,,"PDB Primary Data","TUM15759_11670"
+,,,,,,,,,"PDB Primary Data","TUM15760_12360"
+,,,,,,,,,"PDB Primary Data","TUM15761_09930"
+,,,,,,,,,"PDB Primary Data","TUM15764_14310"
+,,,,,,,,,"PDB Primary Data","TUM15765_13050"
+,,,,,,,,,"PDB Primary Data","TUM15766_06460"
+,,,,,,,,,"PDB Primary Data","TUM15768_14740"
+,,,,,,,,,"PDB Primary Data","TUM15770_09320"
+,,,,,,,,,"PDB Primary Data","TUM15771_08190"
+,,,,,,,,,"PDB Primary Data","TUM15772_10900"
+,,,,,,,,,"PDB Primary Data","TUM15774_13280"
+,,,,,,,,,"PDB Primary Data","TUM15776_12130"
+,,,,,,,,,"PDB Primary Data","TUM15780_14920"
+,,,,,,,,,"PDB Primary Data","TUM15781_07470"
+,,,,,,,,,"PDB Primary Data","TUM15782_07520"
+,,,,,,,,,"PDB Primary Data","TUM15784_12210"
+,,,,,,,,,"PDB Primary Data","TUM15785_13660"
+,,,,,,,,,"PDB Primary Data","TUM15786_07850"
+,,,,,,,,,"PDB Primary Data","TUM15787_13260"
+,,,,,,,,,"PDB Primary Data","TUM15789_13310"
+,,,,,,,,,"PDB Primary Data","TUM15790_01750"
+,,,,,,,,,"PDB Primary Data","TUM15791_13450"
+,,,,,,,,,"PDB Primary Data","TUM15792_03840"
+,,,,,,,,,"PDB Primary Data","TUM15793_14160"
+,,,,,,,,,"PDB Primary Data","TUM15796_12040"
+,,,,,,,,,"PDB Primary Data","TUM15797_11040"
+,,,,,,,,,"PDB Primary Data","TUM15798_01870"
+,,,,,,,,,"PDB Primary Data","WHOO_01512"
+,,,,,,,,,"PDB Primary Data","WHOO_01712"
+"7BC9","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BCF","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BCH","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BCD","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BCC","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BD0","1","A","A","UniProt","P00698",1,100,"Lysozyme","UniProt","LYZ","Gallus gallus",9031,"Lysozyme C","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3,95
+,,,,,,3,90
+,,,,,,7,70
+,,,,,,4,50
+,,,,,,7,30
+"7BCI","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BCL","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BCK","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BD7","1","A","A","UniProt","P02791",585,100,"Ferritin light chain","UniProt","FTL","Equus caballus",9796,"Ferritin light chain","up:Protein.up:recommendedName.up:fullName"
+,,,,,,387,95
+,,,,,,408,90
+,,,,,,380,70
+,,,,,,146,50
+,,,,,,164,30
+"7BD6","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BD9","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BCW","1","A, B","A, B","UniProt","P60752",3853,100,"ATP-dependent lipid A-core flippase","PDB Primary Data","msbA","Escherichia coli K-12",83333,"ATP-dependent lipid A-core flippase","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3152,95,,"PDB Primary Data","b0914"
+,,,,,,3233,90,,"PDB Primary Data","JW0897"
+,,,,,,3223,70,,"UniProt","msbA"
+,,,,,,2836,50,,"UniProt","b0914"
+,,,,,,428,30,,"UniProt","JW0897"
+"7BD8","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BD3","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BD2","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BD5","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BD4","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BAX","1","A","A","UniProt","D3KTZ8",59040,100,"LysM type receptor kinase","PDB Primary Data","LYS11","Lotus japonicus",34305,"LysM type receptor kinase","up:Protein.up:submittedName.up:fullName"
+,,,,,,67622,95,,"UniProt","LYS11"
+,,,,,,54462,90
+,,,,,,41177,70
+,,,,,,20951,50
+,,,,,,21595,30
+"7BB8","1","A, B","A, B","UniProt","A0A292DHH8",84535,100,"Neutral metalloprotease","PDB Primary Data","EQ812_06155","Staphylococcus lugdunensis",28035,"Neutral metalloprotease","up:Protein.up:submittedName.up:fullName"
+,,,,,,30880,95
+,,,,,,25232,90
+,,,,,,25454,70
+,,,,,,20748,50
+,,,,,,22701,30
+"7BAW","1","A, B, C, D, E, F, G","A, B, C, D, E, F, G",,,84456,100,"CC-Type2-(GgIaId)4",,,"synthetic construct",32630
+,,,,,,27774,95
+,,,,,,27721,90
+,,,,,,956,70
+,,,,,,555,50
+,,,,,,581,30
+"7BAZ","1","A","A","UniProt","P00698",1,100,"Lysozyme","UniProt","LYZ","Gallus gallus",9031,"Lysozyme C","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3,95
+,,,,,,3,90
+,,,,,,7,70
+,,,,,,4,50
+,,,,,,7,30
+"7BAY","1","A","AA","UniProt","Q8DR52",6110,100,"Choline-binding protein F","PDB Primary Data","cbpF","Streptococcus pneumoniae R6",171101,"Choline-binding protein F","up:Protein.up:submittedName.up:fullName"
+,,,,,,7176,95,,"PDB Primary Data","spr0337"
+,,,,,,7656,90,,"UniProt","cbpF"
+,,,,,,6370,70,,"UniProt","spr0337"
+,,,,,,5772,50
+,,,,,,5363,30
+"7BBA","1","A, B, C, D","A, B, C, D","UniProt","D3GUV9",71674,100,"Putative type VI secretion protein","PDB Primary Data","EC042_4528","Escherichia coli",562,"Putative type VI secretion protein","up:Protein.up:submittedName.up:fullName"
+,,,,,,61813,95
+,,,,,,65506,90
+,,,,,,31551,70
+,,,,,,54046,50
+,,,,,,42636,30
+"7BBM","1","A","A","UniProt","O64527",58859,100,"UPF0678 fatty acid-binding protein-like protein At1g79260","PDB Primary Data","At1g79260","Arabidopsis thaliana",3702,"Peroxynitrite isomerase Rv2717c","up:Protein.up:recommendedName.up:fullName"
+,,,,,,4177,95,,"PDB Primary Data","YUP8H12R.14"
+,,,,,,4254,90,,"UniProt","At1g79260"
+,,,,,,4127,70,,"UniProt","YUP8H12R.14"
+,,,,,,3978,50
+,,,,,,4132,30
+"7BBO","1","A, B","AAA, BBB","UniProt","Q8WWQ0",1411,100,"PH-interacting protein","PDB Primary Data","PHIP","Homo sapiens",9606,"PH-interacting protein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,1659,95,,"PDB Primary Data","DCAF14"
+,,,,,,383,90,,"PDB Primary Data","WDR11"
+,,,,,,1772,70,,"UniProt","PHIP"
+,,,,,,1706,50,,"UniProt","DCAF14"
+,,,,,,1784,30,,"UniProt","WDR11"
+"7BBH","1","A, B, C","A, B, C","UniProt","A0A6M3G9R1",108999,100,"Surface glycoprotein","UniProt","S","Pangolin coronavirus",2708335,"Spike glycoprotein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,53644,95
+,,,,,,7,90
+,,,,,,12,70
+,,,,,,29,50
+,,,,,,49,30
+"7BBU","1","A","A","UniProt","P07814",2521,100,"Bifunctional glutamate/proline--tRNA ligase","PDB Primary Data","EPRS1","Homo sapiens",9606,"Bifunctional glutamate/proline--tRNA ligase","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3236,95,,"PDB Primary Data","EPRS"
+,,,,,,3210,90,,"PDB Primary Data","GLNS"
+,,,,,,3263,70,,"PDB Primary Data","PARS"
+,,,,,,975,50,,"PDB Primary Data","QARS"
+,,,,,,845,30,,"PDB Primary Data","QPRS"
+,,,,,,,,,"PDB Primary Data","PIG32"
+,,,,,,,,,"UniProt","EPRS1"
+,,,,,,,,,"UniProt","EPRS"
+,,,,,,,,,"UniProt","GLNS"
+,,,,,,,,,"UniProt","PARS"
+,,,,,,,,,"UniProt","QARS"
+,,,,,,,,,"UniProt","QPRS"
+,,,,,,,,,"UniProt","PIG32"
+"7BC8","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BBW","1","A, B","A, B","UniProt","Q5F6E9",105630,100,"Transaldolase","PDB Primary Data","tal","Neisseria gonorrhoeae",485,"Transaldolase","up:Protein.up:recommendedName.up:fullName"
+,,,,,,4028,95,,"PDB Primary Data","E8M68_10680"
+,,,,,,3979,90,,"PDB Primary Data","F9Z35_1423"
+,,,,,,4073,70,,"PDB Primary Data","TUM15744_11190"
+,,,,,,3839,50,,"PDB Primary Data","TUM15745_13730"
+,,,,,,3537,30,,"PDB Primary Data","TUM15746_13410"
+,,,,,,,,,"PDB Primary Data","TUM15747_14120"
+,,,,,,,,,"PDB Primary Data","TUM15749_15370"
+,,,,,,,,,"PDB Primary Data","TUM15750_11410"
+,,,,,,,,,"PDB Primary Data","TUM15751_15520"
+,,,,,,,,,"PDB Primary Data","TUM15759_11670"
+,,,,,,,,,"PDB Primary Data","TUM15760_12360"
+,,,,,,,,,"PDB Primary Data","TUM15761_09930"
+,,,,,,,,,"PDB Primary Data","TUM15764_14310"
+,,,,,,,,,"PDB Primary Data","TUM15765_13050"
+,,,,,,,,,"PDB Primary Data","TUM15766_06460"
+,,,,,,,,,"PDB Primary Data","TUM15768_14740"
+,,,,,,,,,"PDB Primary Data","TUM15770_09320"
+,,,,,,,,,"PDB Primary Data","TUM15771_08190"
+,,,,,,,,,"PDB Primary Data","TUM15772_10900"
+,,,,,,,,,"PDB Primary Data","TUM15774_13280"
+,,,,,,,,,"PDB Primary Data","TUM15776_12130"
+,,,,,,,,,"PDB Primary Data","TUM15780_14920"
+,,,,,,,,,"PDB Primary Data","TUM15781_07470"
+,,,,,,,,,"PDB Primary Data","TUM15782_07520"
+,,,,,,,,,"PDB Primary Data","TUM15784_12210"
+,,,,,,,,,"PDB Primary Data","TUM15785_13660"
+,,,,,,,,,"PDB Primary Data","TUM15786_07850"
+,,,,,,,,,"PDB Primary Data","TUM15787_13260"
+,,,,,,,,,"PDB Primary Data","TUM15789_13310"
+,,,,,,,,,"PDB Primary Data","TUM15790_01750"
+,,,,,,,,,"PDB Primary Data","TUM15791_13450"
+,,,,,,,,,"PDB Primary Data","TUM15792_03840"
+,,,,,,,,,"PDB Primary Data","TUM15793_14160"
+,,,,,,,,,"PDB Primary Data","TUM15796_12040"
+,,,,,,,,,"PDB Primary Data","TUM15797_11040"
+,,,,,,,,,"PDB Primary Data","TUM15798_01870"
+,,,,,,,,,"PDB Primary Data","WHOO_01512"
+,,,,,,,,,"PDB Primary Data","WHOO_01712"
+"7BBP","1","A, B, C, D","AAA, BBB, CCC, DDD","UniProt","Q8WWQ0",1411,100,"PH-interacting protein","PDB Primary Data","PHIP","Homo sapiens",9606,"PH-interacting protein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,1659,95,,"PDB Primary Data","DCAF14"
+,,,,,,383,90,,"PDB Primary Data","WDR11"
+,,,,,,1772,70,,"UniProt","PHIP"
+,,,,,,1706,50,,"UniProt","DCAF14"
+,,,,,,1784,30,,"UniProt","WDR11"
+,"2","E, F","FFF, GGG","UniProt","Q0VAS5",15036,100,"Histone H4","UniProt","HIST1H4H","Homo sapiens",9606,"Histone H4","up:Protein.up:recommendedName.up:fullName"
+,,,,,,20541,95
+,,,,,,20675,90
+,,,,,,18042,70
+,,,,,,13493,50
+,,,,,,13222,30
+"7BC1","1","A","A","UniProt","A9CEY6",13597,100,"Aryl-alcohol dehydrogenase","PDB Primary Data","Atu3278","Agrobacterium fabrum str. C58",176299,"Aryl-alcohol dehydrogenase","up:Protein.up:submittedName.up:fullName"
+,,,,,,12811,95,,"UniProt","Atu3278"
+,,,,,,11663,90
+,,,,,,13936,70
+,,,,,,12243,50
+,,,,,,5657,30
+"7BC4","1","A","A","UniProt","C4QY10",29162,100,"Fatty acid synthase subunit alpha","UniProt","PAS_chr1-4_0295","Komagataella phaffii GS115",644223,"Fatty acid synthase subunit alpha","up:Protein.up:recommendedName.up:fullName"
+,,,,,,32772,95
+,,,,,,21415,90
+,,,,,,23739,70
+,,,,,,2274,50
+,,,,,,2284,30
+,"2","B","B","UniProt","C4QVT8",40915,100,"Fatty acid synthase subunit beta","UniProt","PAS_chr1-1_0008","Komagataella phaffii GS115",644223,"Fatty acid synthase subunit beta","up:Protein.up:recommendedName.up:fullName"
+,,,,,,39195,95
+,,,,,,42726,90
+,,,,,,43638,70
+,,,,,,2595,50
+,,,,,,2570,30
+"7BAC","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BAF","1","A","A","UniProt","B6GXZ8",10981,100,"Antifungal protein","PDB Primary Data","afp","Penicillium rubens Wisconsin 54-1255",500485,"Antifungal protein","up:Protein.up:recommendedName.up:fullName"
+,,,,,,12616,95,,"PDB Primary Data","Pc12g08290"
+,,,,,,14304,90,,"UniProt","afp"
+,,,,,,12167,70,,"UniProt","Pc12g08290"
+,,,,,,12310,50
+,,,,,,11391,30
+"7BAN","1","A, B","A, B","UniProt","Q6N022",25616,100,"Teneurin-4","PDB Primary Data","TENM4","Homo sapiens",9606,"Teneurin-4","up:Protein.up:recommendedName.up:fullName"
+,,,,,,19120,95,,"PDB Primary Data","KIAA1302"
+,,,,,,16420,90,,"PDB Primary Data","ODZ4"
+,,,,,,16429,70,,"PDB Primary Data","TNM4"
+,,,,,,5035,50,,"UniProt","TENM4"
+,,,,,,4936,30,,"UniProt","KIAA1302"
+,,,,,,,,,"UniProt","ODZ4"
+,,,,,,,,,"UniProt","TNM4"
+"7BAM","1","A, B","A, B","UniProt","Q6N022",60710,100,"Teneurin-4","PDB Primary Data","TENM4","Homo sapiens",9606,"Teneurin-4","up:Protein.up:recommendedName.up:fullName"
+,,,,,,19120,95,,"PDB Primary Data","KIAA1302"
+,,,,,,16420,90,,"PDB Primary Data","ODZ4"
+,,,,,,16429,70,,"PDB Primary Data","TNM4"
+,,,,,,5035,50,,"UniProt","TENM4"
+,,,,,,4936,30,,"UniProt","KIAA1302"
+,,,,,,,,,"UniProt","ODZ4"
+,,,,,,,,,"UniProt","TNM4"
+"7BAG","1","A","A","UniProt","P01024",1546,100,"Complement C3","UniProt","C3","Homo sapiens",9606,"Complement C3","up:Protein.up:recommendedName.up:fullName"
+,,,,,,1309,95,,"UniProt","CPAMD1"
+,,,,,,1324,90
+,,,,,,1386,70
+,,,,,,1384,50
+,,,,,,1321,30
+,"2","B","B","UniProt","P01024",3114,100,"Complement C3","UniProt","C3","Homo sapiens",9606,"Complement C3","up:Protein.up:recommendedName.up:fullName"
+,,,,,,1763,95,,"UniProt","CPAMD1"
+,,,,,,1794,90
+,,,,,,1829,70
+,,,,,,1794,50
+,,,,,,1843,30
+,"3","C","C",,,73714,100,"Compstatin CP40",,,"synthetic construct",32630
+,,,,,,57304,95
+,,,,,,54216,90
+,,,,,,62400,70
+,,,,,,32968,50
+,,,,,,36468,30
+"7BB4","1","A","A","UniProt","Q7N8J0",5515,100,"PLL lectin","PDB Primary Data","CKY10_20885","Photorhabdus laumondii",2218628,"Uncharacterized protein","up:Protein.up:submittedName.up:fullName"
+,,,,,,5470,95
+,,,,,,5141,90
+,,,,,,5155,70
+,,,,,,1801,50
+,,,,,,1806,30
+"7BB1","1","A","A","UniProt","P00698",1,100,"Lysozyme","UniProt","LYZ","Gallus gallus",9031,"Lysozyme C","up:Protein.up:recommendedName.up:fullName"
+,,,,,,3,95
+,,,,,,3,90
+,,,,,,7,70
+,,,,,,4,50
+,,,,,,7,30
+"7BAP","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"7BAO","1","A","A","UniProt","Q6N022",25616,100,"Teneurin-4","PDB Primary Data","TENM4","Homo sapiens",9606,"Teneurin-4","up:Protein.up:recommendedName.up:fullName"
+,,,,,,19120,95,,"PDB Primary Data","KIAA1302"
+,,,,,,16420,90,,"PDB Primary Data","ODZ4"
+,,,,,,16429,70,,"PDB Primary Data","TNM4"
+,,,,,,5035,50,,"UniProt","TENM4"
+,,,,,,4936,30,,"UniProt","KIAA1302"
+,,,,,,,,,"UniProt","ODZ4"
+,,,,,,,,,"UniProt","TNM4"
+"7BB2","1","A, B","A, B","UniProt","P0DTD1",6,100,"3C-like proteinase","PDB Primary Data","rep","Severe acute respiratory syndrome coronavirus 2",2697049,"Replicase polyprotein 1ab","up:Protein.up:recommendedName.up:fullName"
+,,,,,,5,95,,"PDB Primary Data","1a-1b"
+,,,,,,8,90,,"UniProt","rep"
+,,,,,,11,70,,"UniProt","1a-1b"
+,,,,,,21,50
+,,,,,,28,30
+"7BA1","1","A","A","UniProt","Q6P988",267,100,"Palmitoleoyl-protein carboxylesterase NOTUM","PDB Primary Data","NOTUM","Homo sapiens",9606,"Palmitoleoyl-protein carboxylesterase NOTUM","up:Protein.up:recommendedName.up:fullName"
+,,,,,,307,95,,"PDB Primary Data","OK/SW-CL.30"
+,,,,,,324,90,,"UniProt","NOTUM"
+,,,,,,348,70,,"UniProt","OK/SW-CL.30"
+,,,,,,348,50
+,,,,,,367,30
+"2TPT","1","A","A","UniProt","P07650",6211,100,"THYMIDINE PHOSPHORYLASE","UniProt","deoA","Escherichia coli K-12",83333,"Thymidine phosphorylase","up:Protein.up:recommendedName.up:fullName"
+,,,,,,4084,95,,"UniProt","tpp"
+,,,,,,4213,90,,"UniProt","ttg"
+,,,,,,3888,70,,"UniProt","b4382"
+,,,,,,3798,50,,"UniProt","JW4345"
+,,,,,,2143,30
+"2TPR","1","A, B","A, B","UniProt","P39040",103200,100,"TRYPANOTHIONE REDUCTASE","UniProt","TPR","Crithidia fasciculata",5656,"Trypanothione reductase","up:Protein.up:recommendedName.up:fullName"
+,,,,,,8213,95
+,,,,,,8124,90
+,,,,,,895,70
+,,,,,,903,50
+,,,,,,299,30

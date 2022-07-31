@@ -34,12 +34,14 @@ print(f'Loaded model from {modelPath}')
 datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
-'''train_X = np.load(genPath.format('train', 'X'))
-train_y = np.load(genPath.format('train', 'y'))'''
-val_X = np.load(genPath.format('val', 'X'))
-val_y = np.load(genPath.format('val', 'y'))
-'''test_X = np.load(genPath.format('test', 'X'))
-test_y = np.load(genPath.format('test', 'y'))'''
+if len(sys.argv) > 2:
+    dataset = sys.argv[2]
+else:
+    dataset = 'test'
+
+
+X = np.load(genPath.format(dataset, 'X'))
+y = np.load(genPath.format(dataset, 'y'))
 
 defaultCode = params['defaultCode']
 gpu = '/GPU:3'
@@ -48,22 +50,16 @@ cpu = '/CPU:0'
 n_pred = 100
 
 with tf.device(cpu):
-  #train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
-  val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
-  #test_X = tf.RaggedTensor.from_tensor(test_X, padding=defaultCode)
+  X = tf.RaggedTensor.from_tensor(X, padding=defaultCode)
 
 
 with tf.device(gpu):
-  '''print('train')
-  train_res = model.evaluate(train_X, train_y, verbose=2)
-  print('val')
-  val_res = model.evaluate(val_X, val_y, verbose=2)'''
-  print(f'Making {n_pred} predictions for each val protein...')
+  print(f'Making {n_pred} predictions for each {dataset} protein...')
   probs_list = []
   for i in range(n_pred):
-    print(i)
-    #test_res = model.evaluate(test_X, test_y, verbose=2)
-    y_pred_probs_temp = tf.nn.softmax(model.predict(val_X))
+    if i % 10 == 0:
+      print(i)
+    y_pred_probs_temp = tf.nn.softmax(model.predict(X))
     probs_list.append(y_pred_probs_temp)
 
 probs_tsr = tf.stack(probs_list, axis=-1)
