@@ -11,6 +11,7 @@ for phys_g in phys_gpus:
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
+from tf2.masif_ligand.stochastic.get_data import get_data
 
 #lr = 1e-3
 # Try this learning rate after
@@ -25,8 +26,6 @@ cpu = '/CPU:0'
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
-precom_dir = params['masif_precomputation_dir']
-
 training = np.load('')
 val = np.load('')
 
@@ -37,13 +36,6 @@ modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 modelPath = os.path.join(modelDir, 'savedModel')
 
-gpus = tf.config.experimental.list_logical_devices('GPU')
-gpus_str = [g.name for g in gpus]
-strategy = tf.distribute.MirroredStrategy(gpus_str[2:4])
-
-num_epochs = 200
-#with tf.device(dev):
-with strategy.scope():
 model = MaSIF_ligand(
     params["max_distance"],
     train_y.shape[1],
@@ -97,5 +89,14 @@ while iterations < 1e4:
         except:
             train_iter = iter(training)
         
-
+        X, pocket_points = get_data(pdb_id, training=True)
+        n_samples = X[0].shape[1]
+        y = np.empty([1, n_samples, 1], dtype=np.int32)
+        for pp in pocket_points:
+            X_temp = tuple(arr[:, pp] for arr in X)
+            y.fill(0)
+            y[0, pp, 0] = 1
+            loss_value = train_step(X_temp, y)
+        
+        
 model.save(modelPath)
