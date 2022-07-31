@@ -6,7 +6,6 @@ from tensorflow.keras import layers, Sequential, initializers, Model, regularize
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 
-#tf.debugging.set_log_device_placement(True)
 params = masif_opts["ligand"]
 minPockets = params['minPockets']
 
@@ -170,23 +169,8 @@ class ConvLayer(layers.Layer):
                 )
             )
     
-    def map_func(self, row):
-        n_pockets = tf.cast(tf.shape(row)[0]/(8*200), dtype = tf.int32)
-        bigShape = [n_pockets, 200, self.n_feat]
-        smallShape = [n_pockets, 200, 1]
-        idx = tf.cast(functools.reduce(util.prodFunc, bigShape), dtype = tf.int32)
-        input_feat = tf.reshape(row[:idx], bigShape)
-        rest = tf.reshape(row[idx:], [3] + smallShape)
-        sample = tf.random.shuffle(tf.range(n_pockets))[:minPockets]
-        data_list = [util.makeRagged(tsr) for tsr in [input_feat, rest[0], rest[1], rest[2]]]
-        return [data_list, sample]
-    
-    def unpack_x(self, x):
-        data_list, sample = tf.map_fn(fn=self.map_func, elems = x, fn_output_signature = [[util.inputFeatSpec, util.restSpec, util.restSpec, util.restSpec], util.sampleSpec])
-        return [tf.gather(params = data, indices = sample, axis = 1, batch_dims = 1).to_tensor() for data in data_list]
-    
-    def call(self, x):
-        input_feat, rho_coords, theta_coords, mask = self.unpack_x(x)
+    def call(self, x_packed):
+        input_feat, rho_coords, theta_coords, mask = x_packed
         
         ret = []
         
