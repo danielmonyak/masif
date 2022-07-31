@@ -80,8 +80,16 @@ def train_step(x, y):
     train_acc_metric.update_state(y, logits)
     return loss_value
 
+@tf.function
+def test_step(x, y):
+    val_logits = model(x, training=False)
+    val_acc_metric.update_state(y, val_logits)
+
 iterations = 0
 n_train = 100
+n_val = 20
+
+loss_list = []
 while iterations < 1e4:
     for i in range(n_train):
         try:
@@ -97,6 +105,17 @@ while iterations < 1e4:
             y.fill(0)
             y[0, pp, 0] = 1
             loss_value = train_step(X_temp, y)
+            loss_list.append(loss_value)
+    
+    mean_loss = np.mean(loss_list)
+    train_acc = train_acc_metric.result()
+    
+    print('Training results over {n_train} PDBs') 
+    print('Loss: %.4f" % (mean_loss,))
+    print("Accuracy: %.4f" % (float(train_acc),))
+    
+    loss_list = []
+    train_acc_metric.reset_states()
         
         
 model.save(modelPath)
