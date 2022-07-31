@@ -10,6 +10,7 @@ job_name=train_model
 script=${job_name}.py
 
 #####
+rm train_vars.py
 python input_helper.py
 #####
 
