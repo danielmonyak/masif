@@ -30,6 +30,9 @@ precom_dir = params['masif_precomputation_dir']
 training = np.load('')
 val = np.load('')
 
+train_iter = iter(training)
+val_iter = iter(val)
+
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
 modelPath = os.path.join(modelDir, 'savedModel')
@@ -86,7 +89,13 @@ def train_step(x, y):
     return loss_value
 
 iterations = 0
+n_train = 100
 while iterations < 1e4:
-    
+    for i in range(n_train):
+        try:
+            pdb_id = next(train_iter)
+        except:
+            train_iter = iter(training)
+        
 
 model.save(modelPath)
