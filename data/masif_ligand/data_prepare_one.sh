@@ -29,7 +29,7 @@ python2.7 $masif_source/data_preparation/00c-save_ligand_coords.py $1 ligand all
 
 conda deactivate
 
-python $masif_source/data_preparation/01-pdb_extract_and_triangulate.py $PDB_ID\_$CHAIN1 masif_ligand
+python $masif_source/data_preparation/01-pdb_extract_and_triangulate.py $PDB_ID\_$CHAIN1 masif_ligand </dev/null
 python $masif_source/data_preparation/04-masif_precompute.py masif_ligand $1
 
 conda deactivate
