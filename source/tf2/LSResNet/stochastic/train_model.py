@@ -57,10 +57,6 @@ model = LSResNet(
     reg_val = 0,
     extra_conv_layers = False
 )
-'''model.compile(optimizer = model.opt,
-  loss = model.loss_fn,
-  metrics=[binAcc, auc, F1_04, util.F1, F1_06]
-)'''
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
