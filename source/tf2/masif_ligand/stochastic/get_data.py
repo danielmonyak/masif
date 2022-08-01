@@ -39,10 +39,23 @@ def get_data(pdb_id):
         print(f'Problem opening {coordsPath}')
         return None
 
+    all_ligand_types = np.load(
+        os.path.join(
+            params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
+        )
+    ).astype(str)
+    
     pocket_points = []
-    for j, structure_ligand in enumerate(all_ligand_coords):
+    y = []
+    for j, structure_ligand in enumerate(all_ligand_types):
+        ligIdx = ligand_list.index(structure_ligand)
+        y.append(ligIdx)
+        if ligIdx < 7:
+            dist = 3.0
+        else:
+            dist = 7.0
         ligand_coords = all_ligand_coords[j]
-        temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
+        temp_pocket_points = tree.query_ball_point(ligand_coords, dist)
         temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
         temp_npoints = len(temp_pocket_points)
         if (temp_npoints > minPockets) and (temp_npoints/n_samples < 0.75):
@@ -51,12 +64,5 @@ def get_data(pdb_id):
     if len(pocket_points) == 0:
         #print(f'{pdb_id} has no pockets big enough...')
         return None
-
-    all_ligand_types = np.load(
-        os.path.join(
-            params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
-        )
-    ).astype(str)
-    y = [ligand_list.index(lig) for lig in all_ligand_types]
     
     return X, pocket_points, y
