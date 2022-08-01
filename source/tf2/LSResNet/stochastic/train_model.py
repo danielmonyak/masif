@@ -144,104 +144,41 @@ while iterations < num_iterations:
     train_auc_metric.reset_states()
     train_F1_lower_metric.reset_states()
     train_F1_metric.reset_states()
+    
+    #####################################
+    #####################################
+    
+    i = 0
+    while i < n_val:
+        try:
+            pdb_id = next(val_iter)
+        except:
+            val_iter = iter(val_list)
+            continue
             
-print(f'Running training data, epoch {i}')
-for i in range(num_epochs):
-    if i < starting_epoch:
-        continue
-
-    train_j = 0
-    batch_i = 0
-    #############################################################
-    ###################     TRAINING DATA     ###################
-    #############################################################
-
-    np.random.shuffle(training_list)
-
-    loss_list = []
-    acc_list = []
-    auc_list = []
-    F1_04_list = []
-    F1_list = []
-    F1_06_list = []
-    for pdb_id in training_list:
         data = get_data(pdb_id)
         if data is None:
             continue
-
-        dataset_temp = tf.data.Dataset.from_tensors(data)
-        if cur_batch_sz == 0:
-            dataset = dataset_temp
-            cur_batch_sz += 1
-        else:
-            dataset = dataset.concatenate(dataset_temp)
-            cur_batch_sz += 1
-            if cur_batch_sz == train_batch_sz_threshold:
-                print(f'Epoch {i}, training on {cur_batch_sz} pdbs, batch {batch_i}')
-
-                history = model.fit(dataset, verbose = 2)
-                loss_list.extend(history.history['loss'])
-                acc_list.extend(history.history['binary_accuracy'])
-                auc_list.extend(history.history['auc'])
-                F1_04_list.extend(history.history['F1_04'])
-                F1_list.extend(history.history['F1'])
-                F1_06_list.extend(history.history['F1_06'])
-
-                cur_batch_sz = 0
-                batch_i += 1
-
-        train_j += 1
-
-    if cur_batch_sz > 0:
-        print(f'Epoch {i}, training on {cur_batch_sz} pdbs, batch {batch_i}')
-
-        history = model.fit(dataset, verbose = 2)
-        loss_list.extend(history.history['loss'])
-        acc_list.extend(history.history['binary_accuracy'])
-        auc_list.extend(history.history['auc'])
-        F1_04_list.extend(history.history['F1_04'])
-        F1_list.extend(history.history['F1'])
-        F1_06_list.extend(history.history['F1_06'])
-
-        cur_batch_sz = 0
-
-    print(f'\nEpoch {i}, Training Metrics')
-    print(f'Loss: {np.mean(loss_list)}')
-    print(f'Binary Accuracy: {np.mean(acc_list)}')
-    print(f'AUC: {np.mean(auc_list)}')
-    print(f'F1_04: {np.mean(F1_04_list)}\n')
-    print(f'F1: {np.mean(F1_list)}\n')
-    print(f'F1_06: {np.mean(F1_06_list)}\n')
-
-    loss_list = []
-    acc_list = []
-    auc_list = []
-    F1_04_list = []
-    F1_list = []
-    F1_06_list = []
-    for pdb_id in val_list:
-        data = get_data(pdb_id)
-        if data is None:
-            continue
-
+        
         X, y = data
-        loss, acc, auc, F1_04_, F1_, F1_06_ = model.evaluate(X, y, verbose=0)[:6]
-        loss_list.append(loss)
-        acc_list.append(acc)
-        auc_list.append(auc)
-        F1_04_list.append(F1_04_)
-        F1_list.append(F1_)
-        F1_06_list.append(F1_06_)
-
-    print(f'\nEpoch {i}, Validation Metrics')
-    print(f'Loss: {np.mean(loss_list)}')
-    print(f'Binary Accuracy: {np.mean(acc_list)}')
-    print(f'AUC: {np.mean(auc_list)}')
-    print(f'F1_04: {np.mean(F1_04_list)}\n')
-    print(f'F1: {np.mean(F1_list)}\n')
-    print(f'F1_06: {np.mean(F1_06_list)}\n')
-
+        test_step(X, y)
+        i += 1
+    
+    val_acc = val_acc_metric.result()
+    val_auc = val_auc_metric.result()
+    val_F1_lower = val_F1_lower_metric.result()
+    val_F1 = val_F1_metric.result()
+    
+    print(f'\nVALIDATION results over {i} PDBs') 
+    print("Accuracy ----------------- %.4f" % (float(val_acc),))
+    print("AUC      ----------------- %.4f" % (float(val_auc),))
+    print("F1 Lower ----------------- %.4f" % (float(val_F1_lower),))
+    print("F1       ----------------- %.4f" % (float(val_F1),))
+    
+    train_acc_metric.reset_states()
+    train_auc_metric.reset_states()
+    train_F1_lower_metric.reset_states()
+    train_F1_metric.reset_states()
+    
     print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
-
-print(f'Finished {num_epochs} training epochs!')
