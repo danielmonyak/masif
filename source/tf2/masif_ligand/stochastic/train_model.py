@@ -15,7 +15,7 @@ from tf2.masif_ligand.stochastic.get_data import get_data
 
 params = masif_opts["ligand"]
 
-lr = 1e-3
+lr = 1e-2
 
 n_train = 300
 n_val = 50
