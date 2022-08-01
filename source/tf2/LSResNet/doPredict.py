@@ -91,3 +91,6 @@ for i, indices in enumerate(ligand_coords_arr):
     p_mol=pybel.Molecule(mol)
     p_mol.write(file_format, os.path.join(outdir, f'pocket{i}.{file_format}'))
     np.save(os.path.join(outdir, f'pocket{i}.npy'), indices)
+
+
+#MaSIF_ligand_model = tf.keras.models.load_model('/home/daniel.monyak/software/masif/source/tf2/masif_ligand/l2/kerasModel/savedModel')
