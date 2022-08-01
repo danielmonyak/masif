@@ -67,7 +67,7 @@ model.compile(optimizer = model.opt,
 )'''
 if continue_training:
     model.load_weights(ckpPath)
-
+    print(f'Loaded model from {ckpPath}')
 
 optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
