@@ -32,7 +32,7 @@ if continue_training:
             sys.exit('Please enter a valid number 0 or greater...')
     
 
-num_iterations = 10**4
+num_iterations = 10**5
 num_iterations_key = input(f'Enter the number of iterations to train for [{num_iterations}]: ')
 if num_iterations_key != '':
     try:
