@@ -94,10 +94,9 @@ class F1_Metric(metrics.Metric):
         self.threshold = threshold
     def update_state(self, y_true, y_pred):
         if self.from_logits:
-            y_true = tf.reshape(tf.sigmoid(y_true), [-1])
-            y_pred = tf.reshape(tf.sigmoid(y_pred), [-1])
-        y_true = y_true > threshold
-        y_pred = y_pred > threshold
+            y_pred = tf.sigmoid(y_pred)
+        y_true = tf.reshape(y_true, [-1]) > threshold
+        y_pred = tf.reshape(y_pred, [-1]) > threshold
         
         overlap = tf.reduce_sum(tf.cast(y_true & y_pred, dtype=tf.float32))
         n_true = tf.reduce_sum(tf.cast(y_true, dtype=tf.float32))
