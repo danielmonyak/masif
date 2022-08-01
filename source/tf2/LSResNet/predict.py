@@ -20,7 +20,7 @@ params = masif_opts["LSResNet"]
 ligand_coord_dir = params["ligand_coords_dir"]
 
 def predict(model, pdb, threshold=0.5, min_size=50, make_y=True):
-    data = get_data(pdb.rstrip('_'), training=False, make_y)
+    data = get_data(pdb.rstrip('_'), training=False, make_y=make_y)
     if data is None:
         print('Data couldn\'t be retrieved')
         return None
