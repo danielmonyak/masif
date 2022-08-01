@@ -36,7 +36,7 @@ def get_data(pdb_id):
     try:
         all_ligand_coords = np.load(coordsPath, allow_pickle=True, encoding='latin1')
     except:
-        print(f'Problem opening {coordsPath}')
+        #print(f'Problem opening {coordsPath}')
         return None
 
     all_ligand_types = np.load(
