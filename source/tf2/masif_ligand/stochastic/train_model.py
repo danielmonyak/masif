@@ -99,6 +99,7 @@ n_val = 50
 
 while iterations < num_iterations:
     i = 0
+    pdb_count = 0
     loss_list = []
     while i < n_train:
         try:
@@ -124,11 +125,12 @@ while iterations < num_iterations:
             
             i += 1
             iterations += 1
+        pdb_count += 1
     
     mean_loss = np.mean(loss_list)
     train_acc = train_acc_metric.result()
     
-    print(f'\nTRAINING results over {i} PDBs') 
+    print(f'\nTRAINING results over {i} pockets from {pdb_count} PDBs') 
     print("Loss --------------------- %.4f" % (mean_loss,))
     print("Accuracy ----------------- %.4f" % (float(train_acc),))
     
@@ -139,6 +141,7 @@ while iterations < num_iterations:
     #####################################
     #####################################
     i = 0
+    pdb_count = 0
     while i < n_val:
         try:
             pdb_id = next(val_iter)
@@ -160,10 +163,11 @@ while iterations < num_iterations:
             test_step(X_temp, y_temp)
             
             i += 1
+        pdb_count += 1
     
     train_acc = val_acc_metric.result()
     
-    print(f'\nVALIDATION results over {i} PDBs') 
+    print(f'\nVALIDATION results over {i} pockets from {pdb_count} PDBs') 
     print('Accuracy ----------------- %.4f' % (float(train_acc),))
     
     loss_list = []
