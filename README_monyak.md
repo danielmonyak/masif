@@ -94,7 +94,7 @@ TF2 - Tensorflow 2 (also involving the use of Keras)
 - masif_opts.py - Contains a dictionary with useful paths and constants, which is imported in all Python scripts - Edited by me<br>
 - util.py       - Contains several useful constants, functions, and classes - Created by me<br>
 
-**source/data_preparation**:Scripts to do all preprocessing of proteins<br>
+**source/data_preparation**: Scripts to do all preprocessing of proteins<br>
 - 00-pdb_download.py - Retrieve raw PDB file<br>
 - 00b-generate_assembly.py - Reads and builds the biological assembly of a protein structure<br>
 - 00c-save_ligand_coords.py - Saves a protein's ligand types and coordinates in 3-d space<br>
@@ -106,8 +106,10 @@ TF2 - Tensorflow 2 (also involving the use of Keras)
 **source/masif_modules**: TF1 models and useful functions - NOT necessary for TF2<br>
 **source/masif_ligand**: Scripts for training and predicting with the TF1 model<br>
 
-**source/tf2**: MOST IMPORTANT - Scripts, work, and saved models for TF2 models
-
+**source/tf2**: MOST IMPORTANT - Scripts, work, and saved models for TF2 models<br>
+**source/tf2/masif_ligand**:<br>
+**source/tf2/ligand_site_one**:<br>
+**source/tf2/LSResNet**:<br>
 
 ### Data Preparation
 
