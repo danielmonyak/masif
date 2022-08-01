@@ -1,22 +1,24 @@
 # Record of Masif Installation and Use
 
 ## Software Management/Installation:
-Three virtual environments are required, and should be created using anaconda/miniconda:
+Two virtual environments are required, and should be created using anaconda/miniconda:
 ```
-conda create -n venv_latest python=3.9
-conda create -n venv_sbi python=2.7
-conda create -n venv_tf19 python=3.6 tensorflow-gpu=1.9 anaconda
+conda create -n venv_tf_new python=3.7 tensorflow-gpu=2.4.1
+conda create -n venv_sbi python=2.7 
 ```
-**venv_latest** was used for most of the data preparation, **venv_sbi** was used for running StrBioInfo, since it requires Python 2.7, and **venv_tf19** was used to train the TensorFlow model, since it requires TensorFlow 1.9.
+**venv_tf_new** was used for most of the data preparation and training the models and **venv_sbi** was used for running StrBioInfo, since it requires Python 2.7
 
-### venv_latest
+### venv_tf_new
 Activate environment:
 ```
-conda activate venv_latest
+conda activate venv_tf_new
+```
+Fix probelm with "gast" package (this is necessary for eing able to Autograph tensorflow tf.functions:
+```
+pip install gast==0.3.3
 ```
 Install third party dependencies:
 ```
-conda activate venv_latest
 conda install -c schrodinger pdb2pqr
 conda install -c bioconda msms
 conda install -c conda-forge scikit-learn
@@ -81,7 +83,8 @@ pip install scipy==1.2.1
 
 ### Data Preparation
 
-Alter the "source/default_config/masif_opts.py" file to change the directory where the output files are generated. Up to 400 GB of disk space will be needed. In my version of the script, I have added a line at the top where you can change the value of "$basedir", which will alter the output directory just for masif_ligand. <br>
+Alter the "source/default_config/masif_opts.py" file to change the directory where the output files are generated. Up to 400 GB of disk space will be needed.
+<br>
 
 data_prepare_one.sh had to be run for each protein, so manual scheduling with a script was used, as Slurm is not available. Jobs were run such that a maximum of 8 were running at any one time.
 ```
