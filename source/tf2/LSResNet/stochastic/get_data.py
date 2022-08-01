@@ -4,6 +4,7 @@ from scipy import spatial
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 import tfbio.data
+import tensorflow as tf
 
 params = masif_opts["LSResNet"]
 
@@ -21,7 +22,7 @@ def get_data(pdb_id, training = True):
     theta_coords = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
     mask = np.expand_dims(mask, 2)
 
-    data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [input_feat, rho_coords, theta_coords, mask])
+    data_tsrs = tuple(tf.expand_dims(arr, axis=0) for arr in [input_feat, rho_coords, theta_coords, mask])
     
     ###############################################################
     ###############################################################
@@ -57,12 +58,15 @@ def get_data(pdb_id, training = True):
     xyz_coords -= centroid
     ###
     
+    X = (data_tsrs, tf.expand_dims(xyz_coords, axis=0))
+    
     resolution = 1. / params['scale']
     y = tfbio.data.make_grid(xyz_coords, labels, max_dist=params['max_dist'], grid_resolution=resolution)
     
     y[y > 0] = 1
     
-    X = (data_tsrs, np.expand_dims(xyz_coords, axis=0))
+    y = tf.constant(y)
+    centroid = tf.constant(centroid)
 
     if training:
         return X, y
