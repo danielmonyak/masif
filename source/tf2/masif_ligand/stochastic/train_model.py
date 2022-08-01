@@ -100,21 +100,26 @@ def test_step(x, y):
     val_logits = model(x, training=False)
     val_acc_metric.update_state(y, val_logits)
 
-iterations = 0
+iterations = starting_iteration
 n_train = 100
 n_val = 20
 
 loss_list = []
-while iterations < 1e4:
-    for i in range(n_train):
+while iterations < num_iterations:
+    i = 0
+    while i < n_train:
         try:
             pdb_id = next(train_iter)
         except:
             np.random.shuffle(train_list)
             train_iter = iter(train_list)
-            pdb_id = next(train_iter)
+            continue
         
-        X, pocket_points, y = get_data(pdb_id)
+        data = get_data(pdb_id)
+        if data is None:
+            
+            
+        X, pocket_points, y = data
         n_samples = X[0].shape[1]
         for k, pp in enumerate(pocket_points):
             pp_rand = np.random.choice(pp, minPockets, replace=False)
@@ -122,13 +127,18 @@ while iterations < 1e4:
             y_temp = y[k]
             loss_value = train_step(X_temp, y_temp)
             loss_list.append(loss_value)
+            
+            i += 1
+            iterations += 1
     
     mean_loss = np.mean(loss_list)
     train_acc = train_acc_metric.result()
     
-    print('Training results over {n_train} PDBs') 
+    print(f'Training results over {i} PDBs') 
     print("Loss: %.4f" % (mean_loss,))
     print("Accuracy: %.4f" % (float(train_acc),))
+    
+    print(f'{iterations} iterations completed')
     
     loss_list = []
     train_acc_metric.reset_states()
