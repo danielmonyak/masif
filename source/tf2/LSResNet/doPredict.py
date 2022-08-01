@@ -82,7 +82,7 @@ if os.path.exists(outdir):
     _ = os.system(f'rm -r {outdir}')
 os.mkdir(outdir)
 
-ligand_coords_arr = predict(model, pdb, threshold, min_size)
+ligand_coords_arr = predict(model, pdb, threshold, min_size, make_y)
 for i, indices in enumerate(ligand_coords_arr):
     mol=openbabel.OBMol()
     for idx in indices:
