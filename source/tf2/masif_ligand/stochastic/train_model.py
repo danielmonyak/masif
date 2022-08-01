@@ -97,9 +97,9 @@ iterations = starting_iteration
 n_train = 100
 n_val = 20
 
-loss_list = []
 while iterations < num_iterations:
     i = 0
+    loss_list = []
     while i < n_train:
         try:
             pdb_id = next(train_iter)
@@ -119,7 +119,6 @@ while iterations < num_iterations:
             pp_rand = np.random.choice(pp, minPockets, replace=False)
             X_temp = tuple(arr[:, pp_rand] for arr in X)
             y_temp = y[k]
-            print('Training...')
             loss_value = train_step(X_temp, y_temp)
             loss_list.append(loss_value)
             
@@ -135,7 +134,6 @@ while iterations < num_iterations:
     
     print(f'{iterations} iterations completed')
     
-    loss_list = []
     train_acc_metric.reset_states()
     
     #####################################
@@ -159,16 +157,13 @@ while iterations < num_iterations:
             pp_rand = np.random.choice(pp, minPockets, replace=False)
             X_temp = tuple(arr[:, pp_rand] for arr in X)
             y_temp = y[k]
-            loss_value = test_step(X_temp, y_temp)
-            loss_list.append(loss_value)
+            test_step(X_temp, y_temp)
             
             i += 1
     
-    mean_loss = np.mean(loss_list)
     train_acc = val_acc_metric.result()
     
     print('Training results over {n_train} PDBs') 
-    print('Loss: %.4f' % (mean_loss,))
     print('Accuracy: %.4f' % (float(train_acc),))
     
     loss_list = []
