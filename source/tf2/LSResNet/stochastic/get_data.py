@@ -7,11 +7,16 @@ import tfbio.data
 import tensorflow as tf
 
 params = masif_opts["LSResNet"]
+ligand_list = masif_opts['all_ligands']
 
 def get_data(pdb_id, training = True):
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
 
-    mask = np.load(os.path.join(mydir, "p1_mask.npy"))
+    try:
+        mask = np.load(os.path.join(mydir, "p1_mask.npy"))
+    except:
+        return None
+    
     n_samples = mask.shape[0]
 
     if training and n_samples > 8000:
@@ -37,21 +42,34 @@ def get_data(pdb_id, training = True):
     try:
         all_ligand_coords = np.load(coordsPath, allow_pickle=True, encoding='latin1')
     except:
-        print(f'Problem opening {coordsPath}')
+        #print(f'Problem opening {coordsPath}')
         return None
-
+    
+    all_ligand_types = np.load(
+        os.path.join(
+            params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
+        )
+    ).astype(str)
+    
     pocket_points = []
-    for j, structure_ligand in enumerate(all_ligand_coords):
+    for j, structure_ligand in enumerate(all_ligand_types):
+        ligIdx = ligand_list.index(structure_ligand)
+        if ligIdx < 7:
+            dist = 3.0
+        else:
+            dist = 7.0
         ligand_coords = all_ligand_coords[j]
-        temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
+        temp_pocket_points = tree.query_ball_point(ligand_coords, dist)
         temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
         pocket_points.extend(temp_pocket_points)
-
+    
+    npoints = len(pocket_points)
+    if (npoints/n_samples > 0.75) or (npoints < 30):
+        return None
+    
     labels = np.zeros([n_samples, 1], dtype=np.int32)
     labels[pocket_points, 0] = 1
 
-    if (np.mean(labels) > 0.75) or (np.sum(labels) < 30):
-        return None
     
     ###
     centroid = xyz_coords.mean(axis=0)
