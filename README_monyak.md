@@ -81,12 +81,15 @@ pip install scipy==1.2.1
 
 ## Use of Masif
 
-### Directories
+### Important Directories
 
+**data**: Scripts for data prepartion<br>
+**data/masif_ligand**: Scripts to do data preparation for MaSIF-Ligand<br>
 
-**data**: Scripts to execute data prepartion steps are located here.
-**data/masif_ligand**: S
-
+**source**: Most python source files<br>
+**source/default_config**:<br>
+--- masif_opts.py - Contains a dictionary with useful paths and constants, which is imported in all Python scripts - Edited by me<br>
+--- util.py       - Contains several constants, functions, and classes - Created by me<br>
 
 ### Data Preparation
 
