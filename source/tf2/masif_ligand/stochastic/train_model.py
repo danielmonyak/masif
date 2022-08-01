@@ -13,7 +13,7 @@ from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
 from tf2.masif_ligand.stochastic.get_data import get_data
 
-#lr = 1e-3
+lr = 1e-3
 
 reg_val = 0.0
 reg_type = 'l2'
@@ -24,6 +24,8 @@ cpu = '/CPU:0'
 
 params = masif_opts["ligand"]
 
+minPockets = params['minPockets']
+
 train_list = np.load('lists/train_pdbs.npy')
 val_list = np.load('lists/val_pdbs.npy')
 
@@ -33,8 +35,6 @@ val_iter = iter(val_list)
 
 modelDir = 'kerasModel'
 modelPath = os.path.join(modelDir, 'savedModel')
-
-
 
 ##########################################
 ##########################################
@@ -51,13 +51,6 @@ if continue_training:
 
 ##########################################
 ##########################################
-
-
-
-
-
-
-
 
 model = MaSIF_ligand(
     params["max_distance"],
@@ -79,11 +72,11 @@ else:
     initValThresh = 0
 
 
-optimizer = keras.optimizers.SGD(learning_rate=1e-3)
-loss_fn = keras.losses.CategoricalCrossentropy(from_logits=True)
+optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
+loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
-train_acc_metric = tf.keras.metrics.CategoricalAccuracy()
-val_acc_metric = keras.metrics.CategoricalAccuracy()
+train_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
+val_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
 
 @tf.function
 def train_step(x, y):
@@ -113,11 +106,12 @@ while iterations < num_iterations:
         except:
             np.random.shuffle(train_list)
             train_iter = iter(train_list)
+            printf('Reshuffling training set...')
             continue
         
         data = get_data(pdb_id)
         if data is None:
-            
+            continue
             
         X, pocket_points, y = data
         n_samples = X[0].shape[1]
@@ -145,13 +139,13 @@ while iterations < num_iterations:
     
     #####################################
     #####################################
-    
-    for i in range(n_val):
+    i = 0
+    while i < n_val:
         try:
             pdb_id = next(val_iter)
         except:
             val_iter = iter(val_list)
-            pdb_id = next(train_iter)
+            continue
         
         X, pocket_points, y = get_data(pdb_id)
         n_samples = X[0].shape[1]
@@ -161,6 +155,9 @@ while iterations < num_iterations:
             y_temp = y[k]
             loss_value = test_step(X_temp, y_temp)
             loss_list.append(loss_value)
+            
+            i += 1
+            iterations += 1
     
     mean_loss = np.mean(loss_list)
     train_acc = val_acc_metric.result()
