@@ -59,17 +59,13 @@ model = MaSIF_ligand(
     reg_val = reg_val, reg_type = reg_type,
     keep_prob=1.0
 )
+'''
 model.compile(optimizer = model.opt,
     loss = model.loss_fn,
     metrics = ['categorical_accuracy']
-)  
+)'''
 if continue_training:
     model.load_weights(ckpPath)
-    last_epoch = 18
-    initValThresh = 0.71429
-else:
-    last_epoch = 0
-    initValThresh = 0
 
 
 optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
