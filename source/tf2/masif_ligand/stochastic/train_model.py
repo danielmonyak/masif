@@ -23,10 +23,7 @@ n_val = 50
 reg_val = 0.0
 reg_type = 'l2'
 
-continue_training = False
 dev = '/GPU:3'
-cpu = '/CPU:0'
-
 
 minPockets = params['minPockets']
 
