@@ -62,7 +62,7 @@ class HingeAccuracy(metrics.Metric):
         self.hinge_acc_score = self.n_matching/self.n_total
         return self.hinge_acc_score
 
-class F1_Metric(metrics.Metric):
+class F1_Metric_Hinge(metrics.Metric):
     def __init__(self, name='F1', **kwargs):
         super(F1_Metric, self).__init__(name=name, **kwargs)
         self.f1_score = self.add_weight(name='f1_score', initializer='zeros')
@@ -80,5 +80,33 @@ class F1_Metric(metrics.Metric):
         f1 = tf.where(tf.math.is_nan(f1), tf.zeros_like(f1), f1)
         self.total.assign_add(tf.cast(f1, self.dtype))
         self.count.assign_add(tf.cast(1, self.dtype))
+    def result(self):
+        return self.total/self.count
+
+  
+class F1_Metric(metrics.Metric):
+    def __init__(self, name='F1', from_logits=False, threshold=0.5, **kwargs):
+        super(F1_Metric, self).__init__(name=name, **kwargs)
+        self.f1_score = self.add_weight(name='f1_score', initializer='zeros')
+        self.total = self.add_weight(name='total', initializer='zeros')
+        self.count = self.add_weight(name='count', initializer='zeros')
+        self.from_logits = from_logits
+        self.threshold = threshold
+    def update_state(self, y_true, y_pred):
+        if self.from_logits:
+            y_true = tf.reshape(tf.sigmoid(y_true), [-1])
+            y_pred = tf.reshape(tf.sigmoid(y_pred), [-1])
+        y_true = y_true > threshold
+        y_pred = y_pred > threshold
+        
+        overlap = tf.reduce_sum(tf.cast(y_true & y_pred, dtype=tf.float32))
+        n_true = tf.reduce_sum(tf.cast(y_true, dtype=tf.float32))
+        n_pred = tf.reduce_sum(tf.cast(y_pred, dtype=tf.float32))
+        recall = overlap/n_true
+        precision = overlap/n_pred
+        f1 = 2*precision*recall / (precision + recall)
+        f1 = tf.where(tf.math.is_nan(f1), tf.zeros_like(f1), f1)
+        self.total += tf.cast(f1, self.dtype)
+        self.count += tf.cast(1, self.dtype)
     def result(self):
         return self.total/self.count
