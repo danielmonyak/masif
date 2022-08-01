@@ -128,9 +128,9 @@ while iterations < num_iterations:
     mean_loss = np.mean(loss_list)
     train_acc = train_acc_metric.result()
     
-    print(f'\nTraining results over {i} PDBs') 
-    print("Loss: %.4f" % (mean_loss,))
-    print("Accuracy: %.4f" % (float(train_acc),))
+    print(f'\TRAINING results over {i} PDBs') 
+    print("Loss --------------------- %.4f" % (mean_loss,))
+    print("Accuracy ----------------- %.4f" % (float(train_acc),))
     
     print(f'{iterations} iterations completed')
     
@@ -163,12 +163,13 @@ while iterations < num_iterations:
     
     train_acc = val_acc_metric.result()
     
-    print(f'\nValidation results over {i} PDBs') 
-    print('Accuracy: %.4f' % (float(train_acc),))
+    print(f'\nVALIDATION results over {i} PDBs') 
+    print('Accuracy ----------------- %.4f' % (float(train_acc),))
     
     loss_list = []
     val_acc_metric.reset_states()
-          
+    
+    print(f'Saving model weights to {ckpPath}')
     model.save_weights(ckpPath)
         
         
