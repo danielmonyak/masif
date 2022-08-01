@@ -27,12 +27,37 @@ params = masif_opts["ligand"]
 train_list = np.load('lists/train_pdbs.npy')
 val_list = np.load('lists/val_pdbs.npy')
 
+np.random.shuffle(train_list)
 train_iter = iter(train_list)
 val_iter = iter(val_list)
 
 modelDir = 'kerasModel'
-ckpPath = os.path.join(modelDir, 'ckp')
 modelPath = os.path.join(modelDir, 'savedModel')
+
+
+
+##########################################
+##########################################
+from train_vars import train_vars
+
+continue_training = train_vars['continue_training']
+ckpPath = train_vars['ckpPath']
+num_iterations = train_vars['num_iterations']
+starting_iteration = train_vars['starting_iteration']
+
+print(f'Training for {num_iterations} iterations')
+if continue_training:
+    print(f'Resuming training from checkpoint at {ckpPath}, starting at iteration {starting_iteration}')
+
+##########################################
+##########################################
+
+
+
+
+
+
+
 
 model = MaSIF_ligand(
     params["max_distance"],
