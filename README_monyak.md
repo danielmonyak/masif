@@ -101,7 +101,12 @@ TF2 - Tensorflow 2 (also involving the use of Keras)
 - 01-pdb_extract_and_triangulate.py - Extract helices, protonate and charge PDB<br>
 - 01b-helix_extract_and_triangulate.py - Not used in MaSIF-Ligand (preprocessing step for MaSIF-Site)<br>
 - 04-masif_precompute.py - Computes features, angular coordinates of all vertices of all patches, protein coordinates in 3-d space<br>
-- 04b-make_ligand_tfrecords.py - Compiles data of all proteins in TFRecordDataset objects - Not necessary for TF2 w
+- 04b-make_ligand_tfrecords.py - Compiles data of all proteins in TFRecordDataset objects - NOT necessary for TF2<br>
+
+**source/masif_modules**: TF1 models and useful functions - NOT necessary for TF2<br>
+**source/masif_ligand**: Scripts for training and predicting with the TF1 model<br>
+
+**source/tf2**: MOST IMPORTANT - Scripts, work, and saved models for TF2 models
 
 
 ### Data Preparation
@@ -114,16 +119,3 @@ data_prepare_one.sh had to be run for each protein, so manual scheduling with a 
 ./run_data_prepare.sh
 ```
 Runs the scheduling script in the background and stores the pid of the job in "schedule_data_prepare_pid.txt". Examine the current jobs with "ps aux". Proteins that have been started and then finished are listed in "started_proteins.txt" and "finished_proteins.txt". Be aware that there are a few duplicates in "sequence_split_list.txt", so there will be less output folders than proteins in the list.
-
-#### Make TF Records
-
-```
-./run_make_tfrecord.sh
-```
-Runs the make_tfrecord.slurm script in the background (not as a slurm job) and stores the pid in "make_tfrecord_pid.txt". It splits the data into training, test, and validation sets, generating output in "$basedir/data_preparation/tfrecords".
-
-### Training Model
-```
-./run_train_model.sh
-```
-Runs the train_model.slurm script in the backround and stores the pid in "train_model_pid.txt". It will automatically use the TF Records that were generated earlier.
