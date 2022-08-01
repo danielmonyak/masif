@@ -81,6 +81,13 @@ pip install scipy==1.2.1
 
 ## Use of Masif
 
+### Directories
+
+
+**data**: Scripts to execute data prepartion steps are located here.
+**data/masif_ligand**: S
+
+
 ### Data Preparation
 
 Alter the "source/default_config/masif_opts.py" file to change the directory where the output files are generated. Up to 400 GB of disk space will be needed.
