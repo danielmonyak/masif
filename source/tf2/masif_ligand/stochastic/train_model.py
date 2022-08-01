@@ -117,8 +117,8 @@ while iterations < num_iterations:
         n_samples = X[0].shape[1]
         for k, pp in enumerate(pocket_points):
             pp_rand = np.random.choice(pp, minPockets, replace=False)
-            X_temp = tuple(arr[:, pp_rand] for arr in X)
-            y_temp = y[k]
+            X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
+            y_temp = tf.constant(y[k])
             loss_value = train_step(X_temp, y_temp)
             loss_list.append(loss_value)
             
@@ -155,8 +155,8 @@ while iterations < num_iterations:
         
         for k, pp in enumerate(pocket_points):
             pp_rand = np.random.choice(pp, minPockets, replace=False)
-            X_temp = tuple(arr[:, pp_rand] for arr in X)
-            y_temp = y[k]
+            X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
+            y_temp = tf.constant(y[k])
             test_step(X_temp, y_temp)
             
             i += 1
