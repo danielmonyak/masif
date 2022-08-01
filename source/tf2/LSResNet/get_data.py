@@ -7,7 +7,7 @@ import tfbio.data
 
 params = masif_opts["LSResNet"]
 
-def get_data(pdb_id, training = True):
+def get_data(pdb_id, training = True, make_y = True):
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
 
     mask = np.load(os.path.join(mydir, "p1_mask.npy"))
@@ -29,6 +29,8 @@ def get_data(pdb_id, training = True):
     Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
     Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
     xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
+    
+    if make_y:
     tree = spatial.KDTree(xyz_coords)
     coordsPath = os.path.join(
         params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
@@ -57,11 +59,14 @@ def get_data(pdb_id, training = True):
     xyz_coords -= centroid
     ###
     
-    resolution = 1. / params['scale']
-    y = tfbio.data.make_grid(xyz_coords, labels, max_dist=params['max_dist'], grid_resolution=resolution)
+    if make_y:
+        resolution = 1. / params['scale']
+        y = tfbio.data.make_grid(xyz_coords, labels, max_dist=params['max_dist'], grid_resolution=resolution)
     
-    y[y > 0] = 1
-    
+        y[y > 0] = 1
+    else:
+        y = None
+
     X = (data_tsrs, np.expand_dims(xyz_coords, axis=0))
 
     if training:

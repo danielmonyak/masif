@@ -17,7 +17,6 @@ from tf2.LSResNet.LSResNet import LSResNet
 from tf2.LSResNet.predict import predict
 
 params = masif_opts["LSResNet"]
-ligand_coord_dir = params["ligand_coords_dir"]
 
 '''
 possible_test_pdbs = ['2VRB_AB_', '1FCD_AC_', '1FNN_A_', '1RI4_A_', '4PGH_AB_']
