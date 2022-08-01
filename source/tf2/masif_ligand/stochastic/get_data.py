@@ -45,7 +45,7 @@ def get_data(pdb_id):
         if (temp_npoints > minPockets) and (temp_npoints/n_samples < 0.75):
             pocket_points.append(temp_pocket_points)
 
-    if len(pocket_points) < minPockets:
+    if len(pocket_points) == 0:
         #print(f'{pdb_id} has no pockets big enough...')
         return None
 
