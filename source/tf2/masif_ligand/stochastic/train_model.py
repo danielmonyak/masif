@@ -13,7 +13,12 @@ from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
 from tf2.masif_ligand.stochastic.get_data import get_data
 
+params = masif_opts["ligand"]
+
 lr = 1e-3
+
+n_train = 300
+n_val = 50
 
 reg_val = 0.0
 reg_type = 'l2'
@@ -22,7 +27,6 @@ continue_training = False
 dev = '/GPU:3'
 cpu = '/CPU:0'
 
-params = masif_opts["ligand"]
 
 minPockets = params['minPockets']
 
@@ -90,9 +94,6 @@ def test_step(x, y):
     val_acc_metric.update_state(y, val_logits)
 
 iterations = starting_iteration
-n_train = 300
-n_val = 50
-
 while iterations < num_iterations:
     i = 0
     pdb_count = 0
