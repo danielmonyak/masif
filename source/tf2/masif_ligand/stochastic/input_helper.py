@@ -22,15 +22,23 @@ if continue_training:
     else:
         ckpPath = input('Enter checkpoint path: ')
     
-    starting_iteration = int(input(f'Starting iteration [{starting_iteration}]: '))
-    if starting_iteration < 0:
-        sys.exit('Please enter a valid number 0 or greater...')
+    starting_iteration_key = input(f'Starting iteration [{starting_iteration}]: ')
+    if starting_iteration_key != '':
+        try:
+            starting_iteration = int(starting_iteration_key)
+        except:
+            sys.exit('Please enter a valid number 0 or greater...')
+        if starting_iteration < 0:
+            sys.exit('Please enter a valid number 0 or greater...')
     
 
 num_iterations = 10**4
 num_iterations_key = input(f'Enter the number of iterations to train for [{num_iterations}]: ')
 if num_iterations_key != '':
-    num_iterations = int(num_iterations_key)
+    try:
+        num_iterations = int(num_iterations_key)
+    except:
+        sys.exit(f'Please enter a valid number greater than {starting_iteration}...')
     if num_iterations <= starting_iteration:
         sys.exit(f'Please enter a valid number greater than {starting_iteration}...')
 
