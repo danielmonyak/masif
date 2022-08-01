@@ -14,7 +14,6 @@ from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
 from tf2.masif_ligand.stochastic.get_data import get_data
 
 #lr = 1e-3
-# Try this learning rate after
 
 reg_val = 0.0
 reg_type = 'l2'
@@ -24,10 +23,9 @@ dev = '/GPU:3'
 cpu = '/CPU:0'
 
 params = masif_opts["ligand"]
-defaultCode = params['defaultCode']
 
-train_list = np.load('train_pdbs.npy')
-val_list = np.load('val_pdbs.npy')
+train_list = np.load('lists/train_pdbs.npy')
+val_list = np.load('lists/val_pdbs.npy')
 
 train_iter = iter(train_list)
 val_iter = iter(val_list)
@@ -38,7 +36,7 @@ modelPath = os.path.join(modelDir, 'savedModel')
 
 model = MaSIF_ligand(
     params["max_distance"],
-    train_y.shape[1],
+    len(masif_opts['all_ligands']),
     feat_mask=params["feat_mask"],
     reg_val = reg_val, reg_type = reg_type,
     keep_prob=1.0
@@ -54,14 +52,6 @@ if continue_training:
 else:
     last_epoch = 0
     initValThresh = 0
-
-saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
-    ckpPath,
-    monitor = 'val_categorical_accuracy',
-    #save_best_only = True,
-    verbose = 1,
-    initial_value_threshold = initValThresh
-)
 
 
 optimizer = keras.optimizers.SGD(learning_rate=1e-3)
@@ -146,6 +136,8 @@ while iterations < 1e4:
     
     loss_list = []
     val_acc_metric.reset_states()
+          
+    model.save_weights(ckpPath)
         
         
 model.save(modelPath)
