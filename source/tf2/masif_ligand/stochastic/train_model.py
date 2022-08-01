@@ -106,7 +106,7 @@ while iterations < num_iterations:
         except:
             np.random.shuffle(train_list)
             train_iter = iter(train_list)
-            print('Reshuffling training set...')
+            print('\nReshuffling training set...')
             continue
         
         data = get_data(pdb_id)
@@ -128,7 +128,7 @@ while iterations < num_iterations:
     mean_loss = np.mean(loss_list)
     train_acc = train_acc_metric.result()
     
-    print(f'Training results over {i} PDBs') 
+    print(f'\nTraining results over {i} PDBs') 
     print("Loss: %.4f" % (mean_loss,))
     print("Accuracy: %.4f" % (float(train_acc),))
     
@@ -163,7 +163,7 @@ while iterations < num_iterations:
     
     train_acc = val_acc_metric.result()
     
-    print('Training results over {n_train} PDBs') 
+    print(f'\nValidation results over {i} PDBs') 
     print('Accuracy: %.4f' % (float(train_acc),))
     
     loss_list = []
