@@ -49,7 +49,6 @@ def get_data(pdb_id):
     y = []
     for j, structure_ligand in enumerate(all_ligand_types):
         ligIdx = ligand_list.index(structure_ligand)
-        y.append(ligIdx)
         if ligIdx < 7:
             dist = 3.0
         else:
@@ -60,6 +59,7 @@ def get_data(pdb_id):
         temp_npoints = len(temp_pocket_points)
         if (temp_npoints > minPockets) and (temp_npoints/n_samples < 0.75):
             pocket_points.append(temp_pocket_points)
+            y.append(ligIdx)
 
     if len(pocket_points) == 0:
         #print(f'{pdb_id} has no pockets big enough...')
