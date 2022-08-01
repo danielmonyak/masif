@@ -11,8 +11,7 @@ for phys_g in phys_gpus:
 
 import default_config.util as util
 from default_config.masif_opts import masif_opts
-#from LSResNet_deep import LSResNet
-from LSResNet import LSResNet
+from tf2.LSResNet.LSResNet import LSResNet
 from get_data import get_data
 
 params = masif_opts["LSResNet"]
@@ -22,8 +21,7 @@ params = masif_opts["LSResNet"]
 #lr = 1e-3
 lr = 1e-4
 
-use_sample_weight = False       #############
-train_batch_sz_threshold = 32   #############
+train_batch_sz_threshold = 1   #############
 #############################################
 #############################################
 
