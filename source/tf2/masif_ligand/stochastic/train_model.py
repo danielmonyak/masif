@@ -109,7 +109,6 @@ while iterations < num_iterations:
             continue
             
         X, pocket_points, y = data
-        n_samples = X[0].shape[1]
         for k, pp in enumerate(pocket_points):
             pp_rand = np.random.choice(pp, minPockets, replace=False)
             X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
@@ -148,8 +147,6 @@ while iterations < num_iterations:
             continue
             
         X, pocket_points, y = data
-        n_samples = X[0].shape[1]
-        
         for k, pp in enumerate(pocket_points):
             pp_rand = np.random.choice(pp, minPockets, replace=False)
             X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
