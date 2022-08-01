@@ -1,5 +1,5 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import sys
 import numpy as np
 from scipy import spatial
@@ -66,15 +66,15 @@ optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
 loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits=from_logits)
 
 
-train_acc_metric = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
-train_auc_metric = tf.keras.metrics.AUC(from_logits=from_logits)
-train_F1_lower_metric = util.F1_Metric(from_logits=from_logits, threshold = 0.3)
-train_F1_metric = util.F1_Metric(from_logits=from_logits, threshold = 0.5)
+train_acc_metric = tf.keras.metrics.BinaryAccuracy()
+train_auc_metric = tf.keras.metrics.AUC()
+train_F1_lower_metric = util.F1_Metric(threshold = 0.3)
+train_F1_metric = util.F1_Metric(threshold = 0.5)
 
-val_acc_metric = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
-val_auc_metric = tf.keras.metrics.AUC(from_logits=from_logits)
-val_F1_lower_metric = util.F1_Metric(from_logits=from_logits, threshold = 0.3)
-val_F1_metric = util.F1_Metric(from_logits=from_logits, threshold = 0.5)
+val_acc_metric = tf.keras.metrics.BinaryAccuracy()
+val_auc_metric = tf.keras.metrics.AUC()
+val_F1_lower_metric = util.F1_Metric(threshold = 0.3)
+val_F1_metric = util.F1_Metric(threshold = 0.5)
 
 @tf.function
 def train_step(x, y):
@@ -83,20 +83,22 @@ def train_step(x, y):
         loss_value = loss_fn(y, logits)
     grads = tape.gradient(loss_value, model.trainable_weights)
     optimizer.apply_gradients(zip(grads, model.trainable_weights))
-    train_acc_metric.update_state(y, logits)
-    train_auc_metric.update_state(y, logits)
-    train_F1_lower_metric.update_state(y, logits)
-    train_F1_metric.update_state(y, logits)
+    
+    y_pred = tf.sigmoid(logits)
+    train_acc_metric.update_state(y, y_pred)
+    train_auc_metric.update_state(y, y_pred)
+    train_F1_lower_metric.update_state(y, y_pred)
+    train_F1_metric.update_state(y, y_pred)
     return loss_value
 
 @tf.function
 def test_step(x, y):
-    val_logits = model(x, training=False)
-    val_acc_metric.update_state(y, val_logits)
-    val_acc_metric.update_state(y, logits)
-    val_auc_metric.update_state(y, logits)
-    val_F1_lower_metric.update_state(y, logits)
-    val_F1_metric.update_state(y, logits)
+    logits = model(x, training=False)
+    y_pred = tf.sigmoid(logits)
+    val_acc_metric.update_state(y, y_pred)
+    val_auc_metric.update_state(y, y_pred)
+    val_F1_lower_metric.update_state(y, y_pred)
+    val_F1_metric.update_state(y, y_pred)
 
 iterations = starting_iteration
 while iterations < num_iterations:
