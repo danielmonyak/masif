@@ -66,7 +66,6 @@ def get_data(pdb_id, training = True):
     y[y > 0] = 1
     
     y = tf.constant(y)
-    centroid = tf.constant(centroid)
 
     if training:
         return X, y
