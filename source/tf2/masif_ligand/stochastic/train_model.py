@@ -163,8 +163,8 @@ while iterations < num_iterations:
     train_acc = val_acc_metric.result()
     
     print('Training results over {n_train} PDBs') 
-    print('Loss: %.4f" % (mean_loss,))
-    print("Accuracy: %.4f" % (float(train_acc),))
+    print('Loss: %.4f' % (mean_loss,))
+    print('Accuracy: %.4f' % (float(train_acc),))
     
     loss_list = []
     val_acc_metric.reset_states()
