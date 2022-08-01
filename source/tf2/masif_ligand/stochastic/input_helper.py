@@ -25,7 +25,6 @@ if continue_training:
     starting_iteration = int(input(f'Starting iteration [{starting_iteration}]: '))
     if starting_iteration < 0:
         sys.exit('Please enter a valid number 0 or greater...')
-else:
     
 
 num_iterations = 1e4
