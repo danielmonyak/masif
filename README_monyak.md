@@ -98,9 +98,9 @@ TF2 - Tensorflow 2 (also involving the use of Keras)
 --- 00b-generate_assembly.py              - Reads and builds the biological assembly of a protein structure<br>
 --- 00c-save_ligand_coords.py             - Saves a protein's ligand types and coordinates in 3-d space<br>
 --- 01-pdb_extract_and_triangulate.py     - Extract helices, protonate and charge PDB<br>
---- 01b-helix_extract_and_triangulate.py  - Not used in MaSIF-Ligand (preprocessing step for MaSIF-Site)<br>
---- 04-masif_precompute.py                - Computes features, angular coordinates of all vertices of all patches, protein coordinates in 3-d space<br>
---- 04b-make_ligand_tfrecords.py          - Compiles data of all proteins in TFRecordDataset objects - Not necessary for TF2 w
+--- 01b-helix_extract_and_triangulate.py\t- Not used in MaSIF-Ligand (preprocessing step for MaSIF-Site)<br>
+--- 04-masif_precompute.py \t\t\t\t\t - Computes features, angular coordinates of all vertices of all patches, protein coordinates in 3-d space<br>
+--- 04b-make_ligand_tfrecords.py \t\t\t\t - Compiles data of all proteins in TFRecordDataset objects - Not necessary for TF2 w
 
 
 ### Data Preparation
