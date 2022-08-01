@@ -128,7 +128,7 @@ while iterations < num_iterations:
     mean_loss = np.mean(loss_list)
     train_acc = train_acc_metric.result()
     
-    print(f'\TRAINING results over {i} PDBs') 
+    print(f'\nTRAINING results over {i} PDBs') 
     print("Loss --------------------- %.4f" % (mean_loss,))
     print("Accuracy ----------------- %.4f" % (float(train_acc),))
     
