@@ -119,6 +119,7 @@ while iterations < num_iterations:
             pp_rand = np.random.choice(pp, minPockets, replace=False)
             X_temp = tuple(arr[:, pp_rand] for arr in X)
             y_temp = y[k]
+            print('Training...')
             loss_value = train_step(X_temp, y_temp)
             loss_list.append(loss_value)
             
