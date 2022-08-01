@@ -15,8 +15,8 @@ while read p; do
 	i=$((i+1))
 	if [ $i -eq $batchSize ]; then
 		sleep $sleep_time
+		i=0
 	fi
-	i=0
 #done < lists/sequence_split_list_UNIQUE.txt
 #done < newPDBs/filtered_pdbs.txt
 done < newPDBs/todo.txt
