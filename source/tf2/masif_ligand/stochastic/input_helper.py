@@ -29,7 +29,7 @@ else:
     
 
 num_iterations = 1e4
-num_iterations_key = input(f'Enter the number of epochs to train for [{num_iterations}]: ')
+num_iterations_key = input(f'Enter the number of iterations to train for [{num_iterations}]: ')
 if num_iterations_key != '':
     num_iterations = int(num_iterations_key)
     if num_iterations <= starting_iteration:
