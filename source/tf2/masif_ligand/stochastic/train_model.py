@@ -60,11 +60,6 @@ model = MaSIF_ligand(
     reg_val = reg_val, reg_type = reg_type,
     keep_prob=1.0
 )
-'''
-model.compile(optimizer = model.opt,
-    loss = model.loss_fn,
-    metrics = ['categorical_accuracy']
-)'''
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
