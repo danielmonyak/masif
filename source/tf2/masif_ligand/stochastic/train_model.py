@@ -148,8 +148,13 @@ while iterations < num_iterations:
             val_iter = iter(val_list)
             continue
         
-        X, pocket_points, y = get_data(pdb_id)
+        data = get_data(pdb_id)
+        if data is None:
+            continue
+            
+        X, pocket_points, y = data
         n_samples = X[0].shape[1]
+        
         for k, pp in enumerate(pocket_points):
             pp_rand = np.random.choice(pp, minPockets, replace=False)
             X_temp = tuple(arr[:, pp_rand] for arr in X)
@@ -158,7 +163,6 @@ while iterations < num_iterations:
             loss_list.append(loss_value)
             
             i += 1
-            iterations += 1
     
     mean_loss = np.mean(loss_list)
     train_acc = val_acc_metric.result()
