@@ -106,7 +106,7 @@ while iterations < num_iterations:
         except:
             np.random.shuffle(train_list)
             train_iter = iter(train_list)
-            printf('Reshuffling training set...')
+            print('Reshuffling training set...')
             continue
         
         data = get_data(pdb_id)
