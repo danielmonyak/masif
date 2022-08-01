@@ -26,11 +26,11 @@ cpu = '/CPU:0'
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
-training = np.load('')
-val = np.load('')
+train_list = np.load('train_pdbs.npy')
+val_list = np.load('val_pdbs.npy')
 
-train_iter = iter(training)
-val_iter = iter(val)
+train_iter = iter(train_list)
+val_iter = iter(val_list)
 
 modelDir = 'kerasModel'
 ckpPath = os.path.join(modelDir, 'ckp')
@@ -95,7 +95,9 @@ while iterations < 1e4:
         try:
             pdb_id = next(train_iter)
         except:
-            train_iter = iter(training)
+            np.random.shuffle(train_list)
+            train_iter = iter(train_list)
+            pdb_id = next(train_iter)
         
         X, pocket_points, y = get_data(pdb_id)
         n_samples = X[0].shape[1]
@@ -123,7 +125,8 @@ while iterations < 1e4:
         try:
             pdb_id = next(val_iter)
         except:
-            val_iter = iter(val)
+            val_iter = iter(val_list)
+            pdb_id = next(train_iter)
         
         X, pocket_points, y = get_data(pdb_id)
         n_samples = X[0].shape[1]
