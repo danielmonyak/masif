@@ -141,6 +141,9 @@ while iterations < num_iterations:
     print(f'{iterations} iterations completed')
     
     train_acc_metric.reset_states()
+    train_auc_metric.reset_states()
+    train_F1_lower_metric.reset_states()
+    train_F1_metric.reset_states()
             
 print(f'Running training data, epoch {i}')
 for i in range(num_epochs):
