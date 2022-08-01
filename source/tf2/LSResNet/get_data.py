@@ -29,37 +29,35 @@ def get_data(pdb_id, training = True, make_y = True):
     Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
     Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
     xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
-    
-    if make_y:
-    tree = spatial.KDTree(xyz_coords)
-    coordsPath = os.path.join(
-        params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
-    )
-    try:
-        all_ligand_coords = np.load(coordsPath, allow_pickle=True, encoding='latin1')
-    except:
-        print(f'Problem opening {coordsPath}')
-        return None
-
-    pocket_points = []
-    for j, structure_ligand in enumerate(all_ligand_coords):
-        ligand_coords = all_ligand_coords[j]
-        temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
-        temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
-        pocket_points.extend(temp_pocket_points)
-
-    labels = np.zeros([n_samples, 1], dtype=np.int32)
-    labels[pocket_points, 0] = 1
-
-    if (np.mean(labels) > 0.75) or (np.sum(labels) < 30):
-        return None
-    
     ###
     centroid = xyz_coords.mean(axis=0)
     xyz_coords -= centroid
     ###
     
     if make_y:
+        tree = spatial.KDTree(xyz_coords)
+        coordsPath = os.path.join(
+            params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
+        )
+        try:
+            all_ligand_coords = np.load(coordsPath, allow_pickle=True, encoding='latin1')
+        except:
+            print(f'Problem opening {coordsPath}')
+            return None
+
+        pocket_points = []
+        for j, structure_ligand in enumerate(all_ligand_coords):
+            ligand_coords = all_ligand_coords[j]
+            temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
+            temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
+            pocket_points.extend(temp_pocket_points)
+
+        labels = np.zeros([n_samples, 1], dtype=np.int32)
+        labels[pocket_points, 0] = 1
+
+        if (np.mean(labels) > 0.75) or (np.sum(labels) < 30):
+            return None
+    
         resolution = 1. / params['scale']
         y = tfbio.data.make_grid(xyz_coords, labels, max_dist=params['max_dist'], grid_resolution=resolution)
     
