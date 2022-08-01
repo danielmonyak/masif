@@ -94,8 +94,8 @@ def test_step(x, y):
     val_acc_metric.update_state(y, val_logits)
 
 iterations = starting_iteration
-n_train = 100
-n_val = 20
+n_train = 300
+n_val = 50
 
 while iterations < num_iterations:
     i = 0
