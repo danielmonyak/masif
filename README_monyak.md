@@ -81,6 +81,9 @@ pip install scipy==1.2.1
 
 ## Use of Masif
 
+TF1 - Tensorflow 1
+TF2 - Tensorflow 2 (also involving the use of Keras)
+
 ### Important Directories
 
 **data**: Scripts for data prepartion<br>
@@ -89,7 +92,16 @@ pip install scipy==1.2.1
 **source**: Most python source files<br>
 **source/default_config**:<br>
 --- masif_opts.py - Contains a dictionary with useful paths and constants, which is imported in all Python scripts - Edited by me<br>
---- util.py       - Contains several constants, functions, and classes - Created by me<br>
+--- util.py       - Contains several useful constants, functions, and classes - Created by me<br>
+**source/data_preparation**:Scripts to do all preprocessing of proteins<br>
+--- 00-pdb_download.py                    - Retrieve raw PDB file<br>
+--- 00b-generate_assembly.py              - Reads and builds the biological assembly of a protein structure<br>
+--- 00c-save_ligand_coords.py             - Saves a protein's ligand types and coordinates in 3-d space<br>
+--- 01-pdb_extract_and_triangulate.py     - Extract helices, protonate and charge PDB<br>
+--- 01b-helix_extract_and_triangulate.py  - Not used in MaSIF-Ligand (preprocessing step for MaSIF-Site)<br>
+--- 04-masif_precompute.py                - Computes features, angular coordinates of all vertices of all patches, protein coordinates in 3-d space<br>
+--- 04b-make_ligand_tfrecords.py          - Compiles data of all proteins in TFRecordDataset objects - Not necessary for TF2 w
+
 
 ### Data Preparation
 
