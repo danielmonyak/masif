@@ -76,9 +76,13 @@ from_logits = True
 
 train_acc_metric = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
 train_auc_metric = tf.keras.metrics.AUC(from_logits = from_logits)
+train_F1_lower_metric = util.F1_Metric(from_logits = from_logits, threshold = 0.3)
+train_F1_metric = util.F1_Metric(from_logits = from_logits, threshold = 0.5)
 
 val_acc_metric = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
 val_auc_metric = tf.keras.metrics.AUC(from_logits = from_logits)
+val_F1_lower_metric = util.F1_Metric(from_logits = from_logits, threshold = 0.3)
+val_F1_metric = util.F1_Metric(from_logits = from_logits, threshold = 0.5)
 
 
 
