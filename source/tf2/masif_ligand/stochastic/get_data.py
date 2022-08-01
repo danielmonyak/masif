@@ -9,14 +9,17 @@ ligand_list = masif_opts['all_ligands']
 
 def get_data(pdb_id):
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
-
-    mask = np.load(os.path.join(mydir, "p1_mask.npy"))
-    n_samples = mask.shape[0]
-
-    input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
-    rho_coords = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
-    theta_coords = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
+    
+    try:
+        input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
+        rho_coords = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
+        theta_coords = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
+        mask = np.load(os.path.join(mydir, "p1_mask.npy"))
+    except:
+        return None
+    
     mask = np.expand_dims(mask, 2)
+    n_samples = mask.shape[0]
     
     X = tuple(np.expand_dims(tsr, axis=0) for tsr in [input_feat, rho_coords, theta_coords, mask])
     
