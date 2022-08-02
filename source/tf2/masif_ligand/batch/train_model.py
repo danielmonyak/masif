@@ -123,6 +123,7 @@ while iterations < num_iterations:
         pdb_count += 1
         
         if i >= batch_sz:
+            print(f'Training batch {j} - {i} pockets')
             grads = grads_sum/i
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
             train_acc_metric.update_state(y, logits)
@@ -133,7 +134,7 @@ while iterations < num_iterations:
     mean_loss = np.mean(loss_list)
     train_acc = train_acc_metric.result()
     
-    print(f'\nTRAINING results over {i} pockets from {pdb_count} PDBs') 
+    print(f'\nTRAINING results over {j} batches, {pdb_count} total PDBs') 
     print("Loss --------------------- %.4f" % (mean_loss,))
     print("Accuracy ----------------- %.4f" % (float(train_acc),))
     
