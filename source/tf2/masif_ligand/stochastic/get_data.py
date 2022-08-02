@@ -5,9 +5,14 @@ from default_config.util import *
 
 params = masif_opts["ligand"]
 minPockets = params['minPockets']
-ligand_list = masif_opts['all_ligands']
+#
 
-def get_data(pdb_id):
+def get_data(pdb_id, include_solvents=True):
+    if include_solvents:
+        ligand_list = masif_opts['all_ligands']
+    else:
+        ligand_list = masif_opts['ligand_list']
+    
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
     
     try:
