@@ -24,8 +24,8 @@ n_pdbs = len(pdb_list)
 
 #for k, fi in enumerate(pdb_files):
 for k, pdb_id in enumerate(pdb_list):
-    if k == 10:
-        break
+    #if k == 10:
+    #    break
     if k % 50 == 0:
         print('Working on {} of {} proteins...'.format(k, n_pdbs))
     try:
