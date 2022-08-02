@@ -64,6 +64,7 @@ model = MaSIF_ligand(
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
+print()
 
 optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
@@ -175,7 +176,7 @@ while iterations < num_iterations:
     loss_list = []
     val_acc_metric.reset_states()
     
-    print(f'Saving model weights to {ckpPath}')
+    print(f'Saving model weights to {ckpPath}\n')
     model.save_weights(ckpPath)
         
         
