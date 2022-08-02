@@ -13,14 +13,20 @@ pdb_list = os.listdir(params["masif_precomputation_dir"])
 
 bad_coords = []
 wrong_ligands = []
+no_precomp = []
 
 n_pdbs = len(pdb_list)
 for k, pdb_id in enumerate(pdb_list):
     print(f'Working on {k} of {n_pdbs} proteins...')
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
-    X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
-    Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
-    Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
+    try:
+        X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
+        Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
+        Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
+    except:
+        no_precomp.append(pdb_id)
+        continue
+
     xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
     tree = spatial.KDTree(xyz_coords)
     coordsPath = os.path.join(
