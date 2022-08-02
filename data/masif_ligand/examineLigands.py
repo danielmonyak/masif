@@ -18,6 +18,8 @@ no_precomp = []
 
 n_pdbs = len(pdb_list)
 for k, pdb_id in enumerate(pdb_list):
+    if k == 500:
+        break
     if k % 50 == 0:
         print(f'Working on {k} of {n_pdbs} proteins...')
 
