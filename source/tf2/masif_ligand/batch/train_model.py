@@ -110,7 +110,7 @@ while iterations < num_iterations:
             pp_rand = np.random.choice(pp, minPockets, replace=False)
             X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
             y_temp = tf.constant(y[k])
-            grads, loss_value = train_step(X_temp, y_temp)
+            loss_value, grads = train_step(X_temp, y_temp)
             loss_list.append(loss_value)
             
             if i == 0:
