@@ -69,3 +69,17 @@ with open('freq_dict.pickle', 'wb') as handle:
 np.save('bad_coords.npy', bad_coords)
 np.save('wrong_ligands.npy', wrong_ligands)
 np.save('no_precomp.npy', no_precomp)
+
+with open('freq_dict.pickle', 'rb') as handle:
+    freq_dict = pickle.load(handle)
+
+bad_coords = np.load('bad_coords.npy')
+wrong_ligands = np.load('wrong_ligands.npy')
+no_precomp = np.load('no_precomp.npy')
+
+for lig in ligand_list:
+    print(lig)
+    for dist in pos_dists:
+        mean_npoints = np.mean(freq_dict[lig][dist])
+        print(f'{dist}: {mean_npoints}')
+        
