@@ -2,6 +2,7 @@ import os
 import numpy as np
 from scipy import spatial
 from default_config.util import *
+import pickle
 
 params = masif_opts["ligand"]
 ligand_list = masif_opts['all_ligands']
@@ -17,7 +18,9 @@ no_precomp = []
 
 n_pdbs = len(pdb_list)
 for k, pdb_id in enumerate(pdb_list):
-    print(f'Working on {k} of {n_pdbs} proteins...')
+    if k % 50 == 0:
+        print(f'Working on {k} of {n_pdbs} proteins...')
+
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
     try:
         X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
@@ -58,3 +61,9 @@ for k, pdb_id in enumerate(pdb_list):
             temp_npoints = len(temp_pocket_points)
             freq_dict[structure_ligand][dist].append(temp_npoints)
 
+with open('freq_dict.pickle', 'wb') as handle:
+    pickle.dump(freq_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+np.save('bad_coords.npy', bad_coords)
+np.save('wrong_ligands.npy', wrong_ligands)
+np.save('no_precomp.npy', no_precomp)
