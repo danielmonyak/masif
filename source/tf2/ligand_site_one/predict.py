@@ -65,8 +65,8 @@ def predict(model, pdb, threshold=0.5, min_size=50, make_y=True):
     
     for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
         indices = np.argwhere(pockets == pocket_label).astype('float32')
-        indices *= step
-        indices += origin
+        #indices *= step
+        #indices += origin
         ligand_coords_arr.append(indices)
 
     return ligand_coords_arr
