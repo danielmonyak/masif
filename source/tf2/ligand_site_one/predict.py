@@ -61,17 +61,12 @@ def predict(model, pdb, threshold=0.5, min_size=50, make_y=True):
     pockets = label_image'''
     
     pockets = np.squeeze(density) > threshold
-    
-    print(f'density: {density.shape}')
-    print(f'pockets: {pockets.shape}')
-    print(f'step: {step.shape}')
 
     pocket_label_arr = np.unique(pockets)
     ligand_coords_arr = []
     
     for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
         indices = np.argwhere(pockets == pocket_label).astype('float32')
-        print(f'indices: {indices.shape}')
         indices *= step
         indices += origin
         ligand_coords_arr.append(indices)
