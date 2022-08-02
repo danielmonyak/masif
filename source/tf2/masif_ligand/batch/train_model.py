@@ -54,9 +54,16 @@ if continue_training:
 ##########################################
 ##########################################
 
+include_solvents = False
+
+if include_solvents:
+    ligand_list = masif_opts['all_ligands']
+else:
+    ligand_list = masif_opts['ligand_list']
+
 model = MaSIF_ligand(
     params["max_distance"],
-    len(masif_opts['all_ligands']),
+    len(ligand_list),
     feat_mask=params["feat_mask"],
     reg_val = reg_val, reg_type = reg_type,
     keep_prob=1.0
@@ -103,7 +110,7 @@ while iterations < num_iterations:
             print('\nReshuffling training set...')
             continue
         
-        data = get_data(pdb_id)
+        data = get_data(pdb_id, include_solvents)
         if data is None:
             continue
             
