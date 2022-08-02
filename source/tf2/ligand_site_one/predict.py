@@ -5,7 +5,7 @@ import sys
 import numpy as np
 from scipy import spatial
 import tensorflow as tf
-import myMetrics
+import tfbio.data
 
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
