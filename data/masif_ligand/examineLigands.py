@@ -12,6 +12,8 @@ freq_dict = dict(zip(ligand_list, [dict(zip(pos_dists, [[] for j in range(len(po
 
 pdb_list = os.listdir(params["masif_precomputation_dir"])
 
+pdbs_normal_ligands = 0
+
 bad_coords = []
 wrong_ligands = []
 no_precomp = []
@@ -20,7 +22,7 @@ n_pdbs = len(pdb_list)
 for k, pdb_id in enumerate(pdb_list):
     #if k == 500:
     #    break
-    if k % 50 == 0:
+    if k % 500 == 0:
         print(f'Working on {k} of {n_pdbs} proteins...')
 
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
@@ -32,8 +34,8 @@ for k, pdb_id in enumerate(pdb_list):
         no_precomp.append(pdb_id)
         continue
 
-    xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
-    tree = spatial.KDTree(xyz_coords)
+    #xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
+    #tree = spatial.KDTree(xyz_coords)
     coordsPath = os.path.join(
         params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
     )
@@ -43,14 +45,18 @@ for k, pdb_id in enumerate(pdb_list):
         bad_coords.append(pdb_id)
         continue
 
-    all_ligand_types = np.load(
+    '''all_ligand_types = np.load(
         os.path.join(
             params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
         )
-    ).astype(str)
+    ).astype(str)'''
 
+    normal_ligands = 0
     for j, structure_ligand in enumerate(all_ligand_types):
-        if not structure_ligand in ligand_list:
+        if structure_ligand in masif_opts['ligand_list']:
+            normal_ligands = 1
+        
+        '''if not structure_ligand in ligand_list:
             wrong_ligands.append(pdb_id)
             continue
 
@@ -61,15 +67,20 @@ for k, pdb_id in enumerate(pdb_list):
             temp_pocket_points = tree.query_ball_point(ligand_coords, dist)
             temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
             temp_npoints = len(temp_pocket_points)
-            freq_dict[structure_ligand][dist].append(temp_npoints)
+            freq_dict[structure_ligand][dist].append(temp_npoints)'''
+    
+    pdbs_normal_ligands += normal_ligands
 
+'''
 with open('freq_dict.pickle', 'wb') as handle:
     pickle.dump(freq_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 np.save('bad_coords.npy', bad_coords)
 np.save('wrong_ligands.npy', wrong_ligands)
 np.save('no_precomp.npy', no_precomp)
+'''
 
+'''
 with open('freq_dict.pickle', 'rb') as handle:
     freq_dict = pickle.load(handle)
 
@@ -80,6 +91,10 @@ no_precomp = np.load('no_precomp.npy')
 for lig in ligand_list:
     print(lig)
     for dist in pos_dists:
-        mean_npoints = np.mean(freq_dict[lig][dist])
-        print(f'{dist}: {mean_npoints}')
-        
+        npoints_list = np.array(freq_dict[lig][dist])
+        mean_npoints = round(np.mean(npoints_list))
+        frac_zero = round(np.mean(npoints_list == 0), 2)
+        print(f'{dist}: {mean_npoints}, fraction with zero pp: {frac_zero}')
+'''
+print(f'Proteins with normal ligands: {pdbs_normal_ligands}')
+print(f'All proteins: {n_pdbs}')
