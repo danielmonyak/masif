@@ -21,9 +21,9 @@ pdb_files = os.listdir('/data02/daniel/masif/masif_ligand/data_preparation/00b-p
 
 n_pdbs = len(pdb_files)
 for k, fi in enumerate(pdb_files):
-    if k == 10:
-        break
-    if k % 500 == 0:
+    #if k == 10:
+    #    break
+    if k % 50 == 0:
         print('Working on {} of {} proteins...'.format(k, n_pdbs))
     try:
         structure = PDB(
