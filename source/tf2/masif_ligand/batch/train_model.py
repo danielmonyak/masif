@@ -17,7 +17,8 @@ params = masif_opts["ligand"]
 
 lr = 1e-2
 
-n_train = 300
+n_train_batches = 10
+batch_sz = 32
 n_val = 50
 
 reg_val = 1e-4
@@ -70,15 +71,15 @@ loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 train_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
 val_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
 
+grads = None
+
 @tf.function
 def train_step(x, y):
     with tf.GradientTape() as tape:
         logits = model(x, training=True)
         loss_value = loss_fn(y, logits)
-    grads = tape.gradient(loss_value, model.trainable_weights)
-    optimizer.apply_gradients(zip(grads, model.trainable_weights))
-    train_acc_metric.update_state(y, logits)
-    return loss_value
+    return loss_value, tape.gradient(loss_value, model.trainable_weights)
+    #return loss_value
 
 @tf.function
 def test_step(x, y):
@@ -88,9 +89,10 @@ def test_step(x, y):
 iterations = starting_iteration
 while iterations < num_iterations:
     i = 0
+    j = 0
     pdb_count = 0
     loss_list = []
-    while i < n_train:
+    while j < n_train_batches:
         try:
             pdb_id = next(train_iter)
         except:
@@ -108,12 +110,25 @@ while iterations < num_iterations:
             pp_rand = np.random.choice(pp, minPockets, replace=False)
             X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
             y_temp = tf.constant(y[k])
-            loss_value = train_step(X_temp, y_temp)
+            grads, loss_value = train_step(X_temp, y_temp)
             loss_list.append(loss_value)
+            
+            if i == 0:
+                grads_sum = grads
+            else:
+                grads_sum += grads
             
             i += 1
             iterations += 1
         pdb_count += 1
+        
+        if i >= batch_sz:
+            grads = grads_sum/i
+            optimizer.apply_gradients(zip(grads, model.trainable_weights))
+            train_acc_metric.update_state(y, logits)
+            i = 0
+            j += 1
+    
     
     mean_loss = np.mean(loss_list)
     train_acc = train_acc_metric.result()
