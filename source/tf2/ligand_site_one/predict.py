@@ -38,12 +38,14 @@ def predict(model, pdb, threshold=0.5, min_size=50, make_y=True):
     Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
     xyz_coords = np.vstack([X_coords, Y_coords, Z_coords]).T
 
+    centroid = xyz_coords.mean(axis=0)
+    xyz_coords -= centroid
+    
     probs = tf.sigmoid(model.predict(X)).numpy()
 
     resolution = 1. / params['scale']
     density = tfbio.data.make_grid(xyz_coords, probs[0], max_dist=params['max_dist'], grid_resolution=resolution)
 
-    centroid = xyz_coords.mean(axis=0)
     origin = (centroid - params['max_dist'])
     step = np.array([1.0 / params['scale']] * 3)
     '''
