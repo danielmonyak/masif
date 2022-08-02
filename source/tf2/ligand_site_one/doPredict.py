@@ -8,6 +8,9 @@ phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
+import openbabel
+import pybel
+
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.ligand_site_one.predict import predict
