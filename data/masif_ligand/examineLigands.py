@@ -40,16 +40,16 @@ for k, pdb_id in enumerate(pdb_list):
         params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
     )
     try:
-        all_ligand_coords = np.load(coordsPath, allow_pickle=True, encoding='latin1')
+        all_ligand_types = np.load(
+            os.path.join(
+                params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
+            )
+        ).astype(str)
     except:
         bad_coords.append(pdb_id)
         continue
 
-    '''all_ligand_types = np.load(
-        os.path.join(
-            params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
-        )
-    ).astype(str)'''
+    all_ligand_coords = np.load(coordsPath, allow_pickle=True, encoding='latin1')
 
     normal_ligands = 0
     for j, structure_ligand in enumerate(all_ligand_types):
