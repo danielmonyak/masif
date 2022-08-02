@@ -33,7 +33,7 @@ for k, fi in enumerate(pdb_files):
         bad_pdbs.append(fi)
         continue
     for chain in structure.chains:
-        for het in chain.heteroatoms
+        for het in chain.heteroatoms:
             if het.type in all_ligands:
                 all_lig_count += 1
                 if het.type in reg_ligands:
