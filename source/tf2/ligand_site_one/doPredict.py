@@ -13,6 +13,7 @@ from default_config.masif_opts import masif_opts
 from tf2.ligand_site_one.predict import predict
 from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
 
+params = masif_opts["LSResNet"]
 
 ########################
 pdb = input(f'Enter pdb: ')
