@@ -19,7 +19,12 @@ bad_pdbs = []
 #pdb_list = np.loadtxt('filtered_pdbs.txt', dtype=str)
 pdb_files = os.listdir('/data02/daniel/masif/masif_ligand/data_preparation/00b-pdbs_assembly')
 
-for fi in pdb_files:
+n_pdbs = len(pdb_files)
+for k, fi in enumerate(pdb_files):
+    if k == 10:
+        break
+    if k % 500 == 0:
+        print(f'Working on {k} of {n_pdbs} proteins...')
     try:
         structure = PDB(
             os.path.join(params["assembly_dir"], fi)
@@ -35,3 +40,7 @@ for fi in pdb_files:
                     reg_lig_count += 1
                 if het.type in solvents:
                     solvents_count += 1
+
+print(f'all_lig_count: {all_lig_count}')
+print(f'reg_lig_count: {reg_lig_count}')
+print(f'solvents_count: {solvents_count}')
