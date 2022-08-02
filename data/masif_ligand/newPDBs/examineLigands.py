@@ -17,9 +17,11 @@ solvents_count = 0
 bad_pdbs = []
 
 pdb_list = np.loadtxt('filtered_pdbs.txt', dtype=str)
-#pdb_files = os.listdir('/data02/daniel/masif/masif_ligand/data_preparation/00b-pdbs_assembly')
+n_pdbs = len(pdb_list)
 
-n_pdbs = len(pdb_files)
+#pdb_files = os.listdir('/data02/daniel/masif/masif_ligand/data_preparation/00b-pdbs_assembly')
+#n_pdbs = len(pdb_files)
+
 #for k, fi in enumerate(pdb_files):
 for k, pdb_id in enumerate(pdb_list):
     if k == 10:
