@@ -1,4 +1,3 @@
-
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
@@ -12,7 +11,7 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from get_data import get_data
+from tf2.ligand_site_one.get_data import get_data
 
 from skimage.segmentation import clear_border
 from skimage.morphology import closing
@@ -44,8 +43,7 @@ def predict(model, pdb, threshold=0.5, min_size=50, make_y=True):
     probs = tf.sigmoid(model.predict(X)).numpy()
 
     resolution = 1. / params['scale']
-    density = tfbio.data.make_grid(xyz_coords, np.squeeze(probs), max_dist=params['max_dist'], grid_resolution=resolution)
-
+    density = tfbio.data.make_grid(xyz_coords, probs[0], max_dist=params['max_dist'], grid_resolution=resolution)
 
     #origin = (centroid - params['max_dist'])
     step = np.array([1.0 / params['scale']] * 3)
@@ -69,7 +67,7 @@ def predict(model, pdb, threshold=0.5, min_size=50, make_y=True):
     for pocket_label in pocket_label_arr[pocket_label_arr > 0]:
         indices = np.argwhere(pockets == pocket_label).astype('float32')
         indices *= step
-        indices += origin
+        #indices += origin
         ligand_coords_arr.append(indices)
 
     return ligand_coords_arr
