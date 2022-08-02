@@ -17,8 +17,8 @@ params = masif_opts["ligand"]
 
 lr = 1e-2
 
-n_train_batches = 32
-batch_sz = 5
+n_train_batches = 10
+batch_sz = 32
 n_val = 50
 
 reg_val = 1e-4
