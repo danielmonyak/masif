@@ -16,8 +16,6 @@ from tf2.ligand_site_one.get_data import get_data
 from skimage.segmentation import clear_border
 from skimage.morphology import closing
 from skimage.measure import label
-import openbabel
-import pybel
 
 params = masif_opts["LSResNet"]
 ligand_coord_dir = params["ligand_coords_dir"]
