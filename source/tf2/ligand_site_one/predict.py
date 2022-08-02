@@ -44,7 +44,7 @@ def predict(model, pdb, threshold=0.5, min_size=50, make_y=True):
     probs = tf.sigmoid(model.predict(X)).numpy()
 
     resolution = 1. / params['scale']
-    density = tfbio.data.make_grid(xyz_coords, probs, max_dist=params['max_dist'], grid_resolution=resolution)
+    density = tfbio.data.make_grid(xyz_coords, np.squeeze(probs), max_dist=params['max_dist'], grid_resolution=resolution)
 
 
     #origin = (centroid - params['max_dist'])
