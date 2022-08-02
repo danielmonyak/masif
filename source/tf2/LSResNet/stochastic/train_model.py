@@ -60,6 +60,7 @@ model = LSResNet(
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
+print()
 
 from_logits = True
 optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
@@ -178,5 +179,5 @@ while iterations < num_iterations:
     train_F1_lower_metric.reset_states()
     train_F1_metric.reset_states()
     
-    print(f'Saving model weights to {ckpPath}')
+    print(f'Saving model weights to {ckpPath}\n')
     model.save_weights(ckpPath)
