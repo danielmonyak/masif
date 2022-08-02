@@ -18,7 +18,7 @@ params = masif_opts["ligand"]
 lr = 1e-2
 
 n_train_batches = 10
-batch_sz = 32
+batch_sz = 5
 n_val = 50
 
 reg_val = 1e-4
@@ -116,7 +116,7 @@ while iterations < num_iterations:
             if i == 0:
                 grads_sum = grads
             else:
-                grads_sum += grads
+                grads_sum = [grads_sum[grad_i]+grads[grad_i] for grad_i in range(len(grads))]
             
             i += 1
             iterations += 1
@@ -124,7 +124,7 @@ while iterations < num_iterations:
         
         if i >= batch_sz:
             print(f'Training batch {j} - {i} pockets')
-            grads = grads_sum/i
+            grads = [tsr/i for tsr in grads_sum]
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
             train_acc_metric.update_state(y, logits)
             i = 0
