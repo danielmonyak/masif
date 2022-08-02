@@ -20,7 +20,7 @@ lr = 1e-2
 n_train = 300
 n_val = 50
 
-reg_val = 0.0
+reg_val = 1e-4
 reg_type = 'l2'
 
 dev = '/GPU:3'

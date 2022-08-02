@@ -17,7 +17,7 @@ masif_root=$(git rev-parse --show-toplevel)
 masif_source=$masif_root/source
 export PYTHONPATH=$PYTHONPATH:$masif_source
 
-python $masif_source/data_preparation/04-masif_precompute.py ligand_site $1
+python $masif_source/data_preparation/04-masif_precompute.py ligand_site $1 2>/dev/null
 
 conda deactivate
 
