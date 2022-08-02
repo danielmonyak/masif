@@ -1,84 +1,166 @@
-# Header variables and parameters.
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
-
 import sys
 import numpy as np
 import tensorflow as tf
+
+phys_gpus = tf.config.list_physical_devices('GPU')
+for phys_g in phys_gpus:
+    tf.config.experimental.set_memory_growth(phys_g, True)
+
 import default_config.util as util
 from default_config.masif_opts import masif_opts
-from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
-
-#lr = 1e-3
-# Try this learning rate after
-
-reg_val = 0.00001
-reg_type = 'l2'
-
-continue_training = False
-dev = '/GPU:3'
-cpu = '/CPU:0'
+from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
+from tf2.masif_ligand.stochastic.get_data import get_data
 
 params = masif_opts["ligand"]
-defaultCode = params['defaultCode']
 
-datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
-genPath = os.path.join(datadir, '{}_{}.npy')
+lr = 1e-2
 
-train_X = np.load(genPath.format('train', 'X'))
-train_y = np.load(genPath.format('train', 'y'))
-val_X = np.load(genPath.format('val', 'X'))
-val_y = np.load(genPath.format('val', 'y'))
+n_train = 300
+n_val = 50
 
-with tf.device(cpu):
-  train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
-  val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
+reg_val = 1e-4
+reg_type = 'l2'
 
+dev = '/GPU:3'
+
+minPockets = params['minPockets']
+
+train_list = np.load('lists/train_pdbs.npy')
+val_list = np.load('lists/val_pdbs.npy')
+
+np.random.shuffle(train_list)
+train_iter = iter(train_list)
+val_iter = iter(val_list)
 
 modelDir = 'kerasModel'
-ckpPath = os.path.join(modelDir, 'ckp')
 modelPath = os.path.join(modelDir, 'savedModel')
 
-gpus = tf.config.experimental.list_logical_devices('GPU')
-gpus_str = [g.name for g in gpus]
-strategy = tf.distribute.MirroredStrategy([gpus_str[1],gpus_str[3]])
+##########################################
+##########################################
+from train_vars import train_vars
 
-num_epochs = 200
-#with tf.device(dev):
-with strategy.scope():
-  model = MaSIF_ligand(
+continue_training = train_vars['continue_training']
+ckpPath = train_vars['ckpPath']
+num_iterations = train_vars['num_iterations']
+starting_iteration = train_vars['starting_iteration']
+
+print(f'Training for {num_iterations} iterations')
+if continue_training:
+    print(f'Resuming training from checkpoint at {ckpPath}, starting at iteration {starting_iteration}')
+
+##########################################
+##########################################
+
+model = MaSIF_ligand(
     params["max_distance"],
-    params["n_classes"],
+    len(masif_opts['all_ligands']),
     feat_mask=params["feat_mask"],
-    reg_val = reg_val, reg_type = reg_type
-  )
-  model.compile(optimizer = model.opt,
-    loss = model.loss_fn,
-    metrics = ['categorical_accuracy']
-  )  
-  if continue_training:
+    reg_val = reg_val, reg_type = reg_type,
+    keep_prob=1.0
+)
+if continue_training:
     model.load_weights(ckpPath)
-    last_epoch = 18
-    initValThresh = 0.71429
-  else:
-    last_epoch = 0
-    initValThresh = 0
+    print(f'Loaded model from {ckpPath}')
 
-  saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
-    ckpPath,
-    monitor = 'val_categorical_accuracy',
-    save_best_only = True,
-    verbose = 1,
-    initial_value_threshold = initValThresh
-  )
+optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
+loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+
+train_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
+val_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
+
+@tf.function
+def train_step(x, y):
+    with tf.GradientTape() as tape:
+        logits = model(x, training=True)
+        loss_value = loss_fn(y, logits)
+    grads = tape.gradient(loss_value, model.trainable_weights)
+    optimizer.apply_gradients(zip(grads, model.trainable_weights))
+    train_acc_metric.update_state(y, logits)
+    return loss_value
+
+@tf.function
+def test_step(x, y):
+    val_logits = model(x, training=False)
+    val_acc_metric.update_state(y, val_logits)
+
+iterations = starting_iteration
+while iterations < num_iterations:
+    i = 0
+    pdb_count = 0
+    loss_list = []
+    while i < n_train:
+        try:
+            pdb_id = next(train_iter)
+        except:
+            np.random.shuffle(train_list)
+            train_iter = iter(train_list)
+            print('\nReshuffling training set...')
+            continue
+        
+        data = get_data(pdb_id)
+        if data is None:
+            continue
+            
+        X, pocket_points, y = data
+        for k, pp in enumerate(pocket_points):
+            pp_rand = np.random.choice(pp, minPockets, replace=False)
+            X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
+            y_temp = tf.constant(y[k])
+            loss_value = train_step(X_temp, y_temp)
+            loss_list.append(loss_value)
+            
+            i += 1
+            iterations += 1
+        pdb_count += 1
     
-  history = model.fit(x = train_X, y = train_y,
-    epochs = num_epochs,
-    initial_epoch = last_epoch,
-    validation_data = (val_X, val_y),
-    callbacks = [saveCheckpoints],
-    verbose = 2,
-    use_multiprocessing = True
-  )
-
+    mean_loss = np.mean(loss_list)
+    train_acc = train_acc_metric.result()
+    
+    print(f'\nTRAINING results over {i} pockets from {pdb_count} PDBs') 
+    print("Loss --------------------- %.4f" % (mean_loss,))
+    print("Accuracy ----------------- %.4f" % (float(train_acc),))
+    
+    print(f'{iterations} iterations completed')
+    
+    train_acc_metric.reset_states()
+    
+    #####################################
+    #####################################
+    i = 0
+    pdb_count = 0
+    while i < n_val:
+        try:
+            pdb_id = next(val_iter)
+        except:
+            val_iter = iter(val_list)
+            continue
+        
+        data = get_data(pdb_id)
+        if data is None:
+            continue
+            
+        X, pocket_points, y = data
+        for k, pp in enumerate(pocket_points):
+            pp_rand = np.random.choice(pp, minPockets, replace=False)
+            X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
+            y_temp = tf.constant(y[k])
+            test_step(X_temp, y_temp)
+            
+            i += 1
+        pdb_count += 1
+    
+    train_acc = val_acc_metric.result()
+    
+    print(f'\nVALIDATION results over {i} pockets from {pdb_count} PDBs') 
+    print('Accuracy ----------------- %.4f' % (float(train_acc),))
+    
+    loss_list = []
+    val_acc_metric.reset_states()
+    
+    print(f'Saving model weights to {ckpPath}')
+    model.save_weights(ckpPath)
+        
+        
 model.save(modelPath)
