@@ -60,7 +60,7 @@ def predict(model, pdb, threshold=0.5, min_size=50, make_y=True):
 
     pockets = label_image'''
     
-    pockets = density[0]
+    pockets = density[0] > threshold
 
     pocket_label_arr = np.unique(pockets)
     ligand_coords_arr = []
