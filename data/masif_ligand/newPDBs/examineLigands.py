@@ -8,7 +8,7 @@ from default_config.masif_opts import masif_opts
 params = masif_opts["ligand"]
 all_ligands = masif_opts['all_ligands']
 reg_ligands = masif_opts['ligand_site']
-solvents =  = masif_opts['solvents']
+solvents = masif_opts['solvents']
 
 all_lig_count = 0
 reg_lig_count = 0
