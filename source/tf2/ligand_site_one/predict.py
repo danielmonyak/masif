@@ -48,7 +48,7 @@ def predict(model, pdb, threshold=0.5, min_size=50, make_y=True):
 
     origin = (centroid - params['max_dist'])
     step = np.array([1.0 / params['scale']] * 3)
-    '''
+    
     voxel_size = (1 / params['scale']) ** 3
     bw = closing((density[0] > threshold).any(axis=-1))
     cleared = clear_border(bw)
@@ -60,9 +60,9 @@ def predict(model, pdb, threshold=0.5, min_size=50, make_y=True):
         if pocket_size < min_size:
             label_image[np.where(pocket_idx)] = 0
 
-    pockets = label_image'''
+    pockets = label_image
     
-    pockets = np.squeeze(density) > threshold
+    #pockets = np.squeeze(density) > threshold
 
     pocket_label_arr = np.unique(pockets)
     ligand_coords_arr = []
