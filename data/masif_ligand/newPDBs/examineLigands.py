@@ -34,9 +34,9 @@ for k, fi in enumerate(pdb_files):
         continue
     
     
-    all_lig_pres = True
-    reg_lig_pres = True
-    solvents_pres = True
+    all_lig_pres = False
+    reg_lig_pres = False
+    solvents_pres = False
     for chain in structure.chains:
         for het in chain.heteroatoms:
             if het.type in all_ligands:
@@ -53,6 +53,6 @@ for k, fi in enumerate(pdb_files):
     if solvents_pres:
         solvents_count += 1
 
-print('all_lig_count:', all_lig_count)
-print('reg_lig_count:', reg_lig_count)
-print('solvents_count:', solvents_count)
+print('all_lig_count: {}'.format(all_lig_count))
+print('reg_lig_count: {}'.format(reg_lig_count))
+print('solvents_count: {}'.format(solvents_count))
