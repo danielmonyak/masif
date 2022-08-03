@@ -16,7 +16,7 @@ if mode == 'reg':
     using_clusters = df['cluster'][np.isin(df.index, cut(using_pdbs))].tolist()
 elif mode == 'solvents':
     using_pdbs = np.loadtxt('reg_filtered_pdbs.txt', dtype=str).tolist()
-    using_clusters = np.loadtxt('used_clusters.txt', dtype=str).tolist()
+    using_clusters = np.loadtxt('reg_used_clusters.txt', dtype=str).tolist()
 else:
     sys.exit('Enter either "reg" or "solvents"...')
 
@@ -24,7 +24,14 @@ uniq_ids = all_pdbs[~np.isin(all_pdbs, cut(using_pdbs))]
 np.random.shuffle(uniq_ids)
 
 n_pdbs = len(uniq_ids)
+
+pdb_count = len(using_pdbs)
+pdb_limit = 2 * pdb_count
+
 for i, pdb_id in enumerate(uniq_ids):
+    if (mode == 'solvents') and (pdb_count >= pdb_limit):
+        break
+
     if i % 1000 == 0:
         print(f'{i} of {n_pdbs} done')
     cur_clusters = df.loc[pdb_id, 'cluster']
@@ -33,8 +40,13 @@ for i, pdb_id in enumerate(uniq_ids):
     if len(np.intersect1d(cur_clusters, using_clusters)) == 0:
         using_clusters.extend(cur_clusters)
         using_pdbs.append(pdb_id + f'_{df.loc[pdb_id, "chains"][0]}_')
+        pdb_count += 1
 
-np.savetxt('filtered_pdbs.txt', using_pdbs, fmt='%s')
-np.savetxt('used_clusters.txt', using_clusters, fmt='%s')
+prefix = ''
+if mode == 'reg':
+    prefix += mode + '_'
+
+np.savetxt(f'{prefix}filtered_pdbs.txt', using_pdbs, fmt='%s')
+np.savetxt(f'{prefix}used_clusters.txt', using_clusters, fmt='%s')
 
 print('Finished!')
