@@ -4,7 +4,7 @@ from default_config.masif_opts import masif_opts
 
 params = masif_opts['ligand']
 
-all_pdbs = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/filtered_pdbs.txt', dtype=str)
+all_pdbs = np.loadtxt('filtered_pdbs.txt', dtype=str)
 listdir = 'lists'
 if not os.path.exists(listdir):
     os.mkdir(listdir)
