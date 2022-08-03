@@ -146,7 +146,7 @@ while iterations < num_iterations:
             train_acc = float(train_acc_metric.result())
             loss_metric.reset_states()
             train_acc_metric.reset_states()
-            print("Loss -------- %.4f, Accuracy-------- %.4f" % (mean_loss, train_acc))
+            print("Loss -------- %.4f, Accuracy -------- %.4f" % (mean_loss, train_acc))
 
             grads = [tsr/i for tsr in grads_sum]
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
