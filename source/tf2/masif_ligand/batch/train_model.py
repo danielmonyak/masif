@@ -80,6 +80,7 @@ train_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
 val_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
 
 grads = None
+y_true_idx_used = np.zeros(len(ligand_list))
 
 @tf.function
 def train_step(x, y):
@@ -122,6 +123,8 @@ while iterations < num_iterations:
             loss_value, grads = train_step(X_temp, y_temp)
             loss_list.append(loss_value)
             
+            y_true_idx_used[y[k]] = 1
+            
             if i == 0:
                 grads_sum = grads
             else:
@@ -131,11 +134,12 @@ while iterations < num_iterations:
             iterations += 1
         pdb_count += 1
         
-        if i >= batch_sz:
+        if i >= batch_sz and np.all(y_true_idx_used):
             print(f'Training batch {j} - {i} pockets')
             grads = [tsr/i for tsr in grads_sum]
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
             i = 0
+            y_true_idx_used.fill(0)
             j += 1
     
     
