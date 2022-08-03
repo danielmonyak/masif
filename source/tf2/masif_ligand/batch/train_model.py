@@ -21,7 +21,7 @@ n_train_batches = 10
 batch_sz = 32
 n_val = 50
 
-reg_val = 1e-4
+reg_val = 1e-3
 reg_type = 'l2'
 
 dev = '/GPU:3'
@@ -75,6 +75,7 @@ print()
 
 optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+loss_metric = tf.keras.metrics.Mean()
 
 train_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
 val_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
@@ -87,8 +88,11 @@ def train_step(x, y):
     with tf.GradientTape() as tape:
         logits = model(x, training=True)
         loss_value = loss_fn(y, logits)
+    loss_metric.update_state(loss_value)
+    
     train_acc_metric.update_state(y, logits)
-    return loss_value, tape.gradient(loss_value, model.trainable_weights)
+    return tape.gradient(loss_value, model.trainable_weights)
+    #return loss_value, tape.gradient(loss_value, model.trainable_weights)
     #return loss_value
 
 @tf.function
@@ -101,7 +105,7 @@ while iterations < num_iterations:
     i = 0
     j = 0
     pdb_count = 0
-    loss_list = []
+    #loss_list = []
     while j < n_train_batches:
         try:
             pdb_id = next(train_iter)
@@ -120,8 +124,9 @@ while iterations < num_iterations:
             pp_rand = np.random.choice(pp, minPockets, replace=False)
             X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
             y_temp = tf.constant(y[k])
-            loss_value, grads = train_step(X_temp, y_temp)
-            loss_list.append(loss_value)
+            grads = train_step(X_temp, y_temp)
+            #loss_value, grads = train_step(X_temp, y_temp)
+            #loss_list.append(loss_value)
             
             y_true_idx_used[y[k]] = 1
             
@@ -136,23 +141,33 @@ while iterations < num_iterations:
         
         if i >= batch_sz and np.all(y_true_idx_used):
             print(f'Training batch {j} - {i} pockets')
+            
+            mean_loss = float(loss_metric.result())
+            train_acc = float(train_acc_metric.result())
+            loss_metric.reset_states()
+            train_acc_metric.reset_states()
+            print("Loss -------- %.4f, Accuracy-------- %.4f" % (mean_loss, train_acc))
+
             grads = [tsr/i for tsr in grads_sum]
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
             i = 0
             y_true_idx_used.fill(0)
             j += 1
     
-    
-    mean_loss = np.mean(loss_list)
+    '''
+    #mean_loss = np.mean(loss_list)
+    mean_loss = float(loss_metric.result())
     train_acc = train_acc_metric.result()
+    
+    loss_metric.reset_states()
+    train_acc_metric.reset_states()
     
     print(f'\nTRAINING results over {j} batches, {pdb_count} total PDBs') 
     print("Loss --------------------- %.4f" % (mean_loss,))
-    print("Accuracy ----------------- %.4f" % (float(train_acc),))
+    print("Accuracy ----------------- %.4f" % (float(train_acc),))'''
     
     print(f'{iterations} iterations completed')
     
-    train_acc_metric.reset_states()
     
     #####################################
     #####################################
