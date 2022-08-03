@@ -28,8 +28,8 @@ dev = '/GPU:3'
 
 minPockets = params['minPockets']
 
-train_list = np.load('../stochastic/lists/train_pdbs.npy')
-val_list = np.load('../stochastic/lists/val_pdbs.npy')
+train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_pdbs.npy')
+val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_pdbs.npy')
 
 np.random.shuffle(train_list)
 train_iter = iter(train_list)
