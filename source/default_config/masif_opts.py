@@ -8,7 +8,8 @@ masif_opts = {}
 masif_opts["raw_pdb_dir"] = os.path.join(basedir, "data_preparation/00-raw_pdbs/")
 masif_opts["pdb_chain_dir"] = os.path.join(basedir, "data_preparation/01-benchmark_pdbs/")
 masif_opts["ply_chain_dir"] = os.path.join(basedir, "data_preparation/01-benchmark_surfaces/")
-masif_opts["tmp_dir"] = tempfile.gettempdir()
+#masif_opts["tmp_dir"] = tempfile.gettempdir()
+masif_opts["tmp_dir"] = '/data02/tmp'
 masif_opts["ply_file_template"] = masif_opts["ply_chain_dir"] + "/{}_{}.ply"
 
 # Surface features
