@@ -73,7 +73,7 @@ if continue_training:
     print(f'Loaded model from {ckpPath}')
 print()
 
-optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
+optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 loss_metric = tf.keras.metrics.Mean()
 
