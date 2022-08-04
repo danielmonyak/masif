@@ -49,11 +49,11 @@ if min_size_key != '':
     except:
         sys.exit('Must be a number greater than 0...')
 
-make_y_key = input(f'Collect true values? ([y]/n): ')
-if (make_y_key == '') or (make_y_key == 'y'):
-    make_y = True
-elif make_y_key == 'n':
+make_y_key = input(f'Collect true values (y/[n])? ')
+if (make_y_key == '') or (make_y_key == 'n'):
     make_y = False
+elif make_y_key == 'y':
+    make_y = True
 else:
     sys.exit('Please enter a valid response...')
 ########################
