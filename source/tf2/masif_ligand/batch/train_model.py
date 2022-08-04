@@ -13,7 +13,7 @@ from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
 from tf2.masif_ligand.stochastic.get_data import get_data
 
-from time import process_time
+from time import time
 
 params = masif_opts["ligand"]
 
@@ -118,11 +118,11 @@ with tf.device(dev):
 
         get_data_time = 0
         train_time = 0
-        batch_time = -process_time()
+        batch_time = -time()
 
         while j < n_train_batches:
 
-            get_data_time -= process_time()
+            get_data_time -= time()
 
             try:
                 pdb_id = next(train_iter)
@@ -135,12 +135,12 @@ with tf.device(dev):
             data = get_data(pdb_id, include_solvents)
 
 
-            get_data_time += process_time()
+            get_data_time += time()
 
             if data is None:
                 continue
 
-            train_time -= process_time()
+            train_time -= time()
 
             X, pocket_points, y = data
             for k, pp in enumerate(pocket_points):
@@ -164,7 +164,7 @@ with tf.device(dev):
                 iterations += 1
             pdb_count += 1
 
-            train_time += process_time()
+            train_time += time()
 
             if i >= batch_sz and np.all(y_true_idx_used):
                 print(f'Training batch {j} - {i} pockets')
@@ -175,20 +175,20 @@ with tf.device(dev):
                 train_acc_metric.reset_states()
                 print("Loss -------- %.4f, Accuracy -------- %.4f, %d total PDBs" % (mean_loss, train_acc, pdb_count))
 
-                before = process_time()
+                before = time()
                 grads = [tsr/i for tsr in grads_sum]
-                after = process_time()
+                after = time()
                 print(f'Mean grads: %.4f' % (after-before))
 
-                before = process_time()
+                before = time()
                 prep = zip(grads, model.trainable_weights)
-                after = process_time()
+                after = time()
                 print(f'prep: %.4f' % (after-before))
 
-                before = process_time()
+                before = time()
                 optimizer.apply_gradients(zip(grads, model.trainable_weights))
                 #apply_gradient(grads)
-                after = process_time()
+                after = time()
                 print('Apply gradients: %.3f' % (after-before))
 
                 print('get_data_time: %.4f' % get_data_time)
@@ -202,9 +202,9 @@ with tf.device(dev):
                 y_true_idx_used.fill(0)
                 j += 1
 
-                batch_time += process_time()
+                batch_time += time()
                 print('batch_time: %.4f' % batch_time)
-                batch_time = -process_time()
+                batch_time = -time()
 
         '''
         #mean_loss = np.mean(loss_list)
