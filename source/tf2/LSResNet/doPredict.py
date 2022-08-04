@@ -25,9 +25,22 @@ pos_list = {'test' : possible_test_pdbs, 'train' : possible_train_pdbs}
 '''
 
 ########################
-pdb = input(f'Enter pdb: ')
-if pdb == '':
-    sys.exit('Must enter a valid pdb...')
+default_mode = 'pdb_id'
+mode_dict = {'' : default_mode, 'pdb_id' : 'pdb_id', 'path' : 'path'}
+mode_key = input(f'Input mode ([pdb_id]/path): ')
+try:
+    mode = mode_dict[mode]
+except:
+    sys.exit('Please enter a valid response...')
+
+if mode == 'pdb_id':
+    pdb = input(f'Enter pdb: ')
+    if pdb == '':
+        sys.exit('Must enter a valid pdb...')
+else:
+    pdb_path = input(f'Enter path to precomputation directory of PDB: ')
+    if not os.path.exists(pdb_path):
+        sys.exit('Must enter a valid path...')
 
 modelDir = '/home/daniel.monyak/software/masif/source/tf2/usage_new/combine_preds/kerasModel'
 modelDir_key = input(f'Enter directory with model checkpoint [{modelDir}]: ')
@@ -55,12 +68,11 @@ if min_size_key != '':
     except:
         sys.exit('Must be a number greater than 0...')
 
+make_y_dict = {'' : False, 'n' : False, 'y' : True}
 make_y_key = input(f'Collect true values (y/[n])? ')
-if (make_y_key == '') or (make_y_key == 'y'):
-    make_y = True
-elif make_y_key == 'n':
-    make_y = False
-else:
+try:
+    make_y = make_y_dict[make_y_key]
+except:
     sys.exit('Please enter a valid response...')
 ########################
 
