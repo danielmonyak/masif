@@ -102,9 +102,6 @@ def test_step(x, y):
     val_logits = model(x, training=False)
     val_acc_metric.update_state(y, val_logits)
 
-get_data_time = 0
-train_time = 0
-batch_time = 0
 
 iterations = starting_iteration
 while iterations < num_iterations:
@@ -112,9 +109,12 @@ while iterations < num_iterations:
     j = 0
     pdb_count = 0
     #loss_list = []
+    
+    get_data_time = 0
+    train_time = 0
+    batch_time = -process_time()
+    
     while j < n_train_batches:
-        if i == 0:
-            batch_time -= process_time()
         
         get_data_time -= process_time()
         
@@ -197,7 +197,7 @@ while iterations < num_iterations:
             
             batch_time += process_time()
             print('batch_time: %.4f' % batch_time)
-            batch_time = 0
+            batch_time = -process_time()
     
     '''
     #mean_loss = np.mean(loss_list)
