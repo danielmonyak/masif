@@ -16,44 +16,27 @@ solvents_count = 0
 
 bad_pdbs = []
 
-pdb_list = np.loadtxt('filtered_pdbs.txt', dtype=str)
+#pdb_list = np.loadtxt('filtered_pdbs.txt', dtype=str)
+pdb_list = np.loadtxt('using_pdbs_final_reg.txt', dtype=str)
+
 n_pdbs = len(pdb_list)
 
-#pdb_files = os.listdir('/data02/daniel/masif/masif_ligand/data_preparation/00b-pdbs_assembly')
-#n_pdbs = len(pdb_files)
-
-#for k, fi in enumerate(pdb_files):
 for k, pdb_id in enumerate(pdb_list):
-    #if k == 10:
-    #    break
     if k % 50 == 0:
         print('Working on {} of {} proteins...'.format(k, n_pdbs))
     try:
-        '''structure = PDB(
-            os.path.join(params["assembly_dir"], fi)
-        )'''
         all_ligand_types = np.load(
             os.path.join(
                 params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
             )
         ).astype(str)
     except:
-        #bad_pdbs.append(fi)
+        bad_pdbs.append(fi)
         continue
-    
     
     all_lig_pres = False
     reg_lig_pres = False
     solvents_pres = False
-    '''
-    for chain in structure.chains:
-        for het in chain.heteroatoms:
-            if het.type in all_ligands:
-                all_lig_pres = True
-                if het.type in reg_ligands:
-                    reg_lig_pres = True
-                if het.type in solvents:
-                    solvents_pres = True'''
     
     for structure_ligand in all_ligand_types:
         if structure_ligand in all_ligands:
