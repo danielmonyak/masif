@@ -23,7 +23,7 @@ default_mode = 'pdb_id'
 mode_dict = {'' : default_mode, 'pdb_id' : 'pdb_id', 'path' : 'path'}
 mode_key = input(f'Input mode ([pdb_id]/path): ')
 try:
-    mode = mode_dict[mode]
+    mode = mode_dict[mode_key]
 except:
     sys.exit('Please enter a valid response...')
 
