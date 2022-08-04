@@ -7,8 +7,14 @@ import tfbio.data
 
 params = masif_opts["LSResNet"]
 
-def get_data(pdb_id, training = True, make_y = True):
-    mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
+def get_data(func_input, training = True, make_y = True, mode='pdb_id'):
+    if mode == 'pdb_id':
+        pdb_id = func_input
+        mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
+    elif mode == 'path':
+        mydir = func_input
+    else:
+        sys.exit('Must provide a valid mode argument...')
 
     mask = np.load(os.path.join(mydir, "p1_mask.npy"))
     n_samples = mask.shape[0]
