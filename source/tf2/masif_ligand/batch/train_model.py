@@ -102,6 +102,7 @@ def test_step(x, y):
     val_logits = model(x, training=False)
     val_acc_metric.update_state(y, val_logits)
 
+get_data_time = 0
 iterations = starting_iteration
 while iterations < num_iterations:
     i = 0
@@ -109,6 +110,8 @@ while iterations < num_iterations:
     pdb_count = 0
     #loss_list = []
     while j < n_train_batches:
+        get_data_time -= process_time()
+        
         try:
             pdb_id = next(train_iter)
         except:
@@ -118,6 +121,10 @@ while iterations < num_iterations:
             continue
         
         data = get_data(pdb_id, include_solvents)
+        
+        
+        get_data_time += process_time()
+        
         if data is None:
             continue
             
@@ -158,17 +165,20 @@ while iterations < num_iterations:
             before = process_time()
             grads = [tsr/i for tsr in grads_sum]
             after = process_time()
-            print(f'Mean grads: %.1f' % (after-before))
+            print(f'Mean grads: %.3f' % (after-before))
             
             before = process_time()
             prep = zip(grads, model.trainable_weights)
             after = process_time()
-            print(f'prep: %.1f' % (after-before))
+            print(f'prep: %.3f' % (after-before))
             
             before = process_time()
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
             after = process_time()
-            print(f'Apply gradients: %.1f' % (after-before))
+            print('Apply gradients: %.3f' % (after-before))
+            
+            print('get_data_time: %.3f' % get_data_time)
+            get_data_time = 0
             
             i = 0
             pdb_count = 0
