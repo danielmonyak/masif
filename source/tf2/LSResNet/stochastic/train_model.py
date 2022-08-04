@@ -17,7 +17,7 @@ from get_data import get_data
 params = masif_opts["LSResNet"]
 
 #lr = 1e-3
-lr = 1e-4
+lr = 1e-3
 
 n_train = 300
 n_val = 50
@@ -65,7 +65,7 @@ if continue_training:
 print()
 
 from_logits = True
-optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
+optimizer = tf.keras.optimizers.SGD(learning_rate=lr, momentum=0.9)
 loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits=from_logits)
 
 
