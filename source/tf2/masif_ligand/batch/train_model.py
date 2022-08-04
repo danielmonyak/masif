@@ -126,7 +126,12 @@ while iterations < num_iterations:
             pp_rand = np.random.choice(pp, minPockets, replace=False)
             X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
             y_temp = tf.constant(y[k])
+            
+            before = process_time()
             grads = train_step(X_temp, y_temp)
+            after = process_time()
+            print(f'Train step: %.1f' % (after-before))
+            
             #loss_value, grads = train_step(X_temp, y_temp)
             #loss_list.append(loss_value)
             
@@ -150,9 +155,21 @@ while iterations < num_iterations:
             train_acc_metric.reset_states()
             print("Loss -------- %.4f, Accuracy -------- %.4f, %d total PDBs" % (mean_loss, train_acc, pdb_count))
 
+            before = process_time()
             grads = [tsr/i for tsr in grads_sum]
+            after = process_time()
+            print(f'Mean grads: %.1f' % (after-before))
+            
+            before = process_time()
             prep = zip(grads, model.trainable_weights)
+            after = process_time()
+            print(f'prep: %.1f' % (after-before))
+            
+            before = process_time()
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
+            after = process_time()
+            print(f'Apply gradients: %.1f' % (after-before))
+            
             i = 0
             pdb_count = 0
             y_true_idx_used.fill(0)
