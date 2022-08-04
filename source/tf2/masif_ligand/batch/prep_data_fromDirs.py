@@ -24,8 +24,8 @@ if not os.path.exists(outdir):
 
 genOutPath = os.path.join(outdir, '{}_{}.npy')
 
-def helper(X_dict):
-    flat_list = list(map(lambda tsr_key : X_dict[tsr_key].flatten(), data_order))
+def helper(X_temp):
+    flat_list = [arr.flatten() for arr in X_temp]
     return np.concatenate(flat_list, axis = 0)
 
 def compile_and_save(X_list, y_list, dataset, len_list):
@@ -43,7 +43,8 @@ def compile_and_save(X_list, y_list, dataset, len_list):
 
 dataset_list = {'train' : train_pdbs, 'val' : val_pdbs, 'test' : test_pdbs}
 
-for dataset in dataset_list.keys():
+#for dataset in dataset_list.keys():
+for dataset in ['train']:
     X_list = []
     y_list = []
     len_list = []
@@ -51,6 +52,9 @@ for dataset in dataset_list.keys():
     temp_data = dataset_list[dataset]
     n_pdbs = len(temp_data)
     for i, pdb_id in enumerate(temp_data):
+        if i == 10:
+            break
+
         print(f'{dataset} record {i+1} of {n_pdbs}, {pdb_id}')
         data = get_data(pdb_id, include_solvents)
         if data is None:
@@ -59,17 +63,12 @@ for dataset in dataset_list.keys():
         X, pocket_points, y = data
         for k, pp in enumerate(pocket_points):
             y_temp = y[k]
-            X_dict = {
-                'input_feat' : X[0][:, pp],
-                'rho_coords' : X[1][:, pp],
-                'theta_coords' : X[2][:, pp],
-                'mask' : X[3][:, pp]
-            }
+            X_temp = [arr[:, pp] for arr in X]
             
-            X_list.append(X_dict)
+            X_list.append(X_temp)
             y_list.append(y_temp)
-            len_list.append(X_dict['input_feat'].size + X_dict['rho_coords'].size + X_dict['theta_coords'].size + X_dict['mask'].size)
-        
+            len_list.append(sum([arr.size for arr in X_temp]))
+
     compile_and_save(X_list, y_list, dataset, len_list)
 
 print('Finished!')
