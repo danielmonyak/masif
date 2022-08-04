@@ -2,7 +2,6 @@ import os
 import numpy as np
 import sys
 
-from SBI.structure import PDB
 from default_config.masif_opts import masif_opts
 
 params = masif_opts["ligand"]
@@ -16,13 +15,13 @@ solvents_count = 0
 
 bad_pdbs = []
 
-#pdb_list = np.loadtxt('filtered_pdbs.txt', dtype=str)
-pdb_list = np.loadtxt('using_pdbs_final_reg.txt', dtype=str)
+pdb_list = np.loadtxt('filtered_pdbs.txt', dtype=str)
+#pdb_list = np.loadtxt('using_pdbs_final_reg.txt', dtype=str)
 
 n_pdbs = len(pdb_list)
 
 for k, pdb_id in enumerate(pdb_list):
-    if k % 50 == 0:
+    if k % 1000 == 0:
         print('Working on {} of {} proteins...'.format(k, n_pdbs))
     try:
         all_ligand_types = np.load(

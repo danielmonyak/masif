@@ -5,15 +5,15 @@ from default_config.masif_opts import masif_opts
 import pickle
 
 params = masif_opts["ligand"]
-#ligand_list = masif_opts['all_ligands']
-ligand_list = masif_opts['ligand_list']
+ligand_list = masif_opts['all_ligands']
+#ligand_list = masif_opts['ligand_list']
 
 pos_dists = [3.0, 5.0, 7.0, 9.0]
 
 freq_dict = dict(zip(ligand_list, [dict(zip(pos_dists, [[] for j in range(len(pos_dists))])) for i in range(len(ligand_list))]))
 
-#pdb_list = os.listdir(params["masif_precomputation_dir"])
-pdb_list = np.loadtxt('newPDBs/using_pdbs_final_reg.txt', dtype=str)
+#pdb_list = np.loadtxt('newPDBs/using_pdbs_final_reg.txt', dtype=str)
+pdb_list = np.loadtxt('newPDBs/filtered_pdbs.txt', dtype=str)
 
 pdbs_normal_ligands = 0
 
@@ -25,7 +25,7 @@ n_pdbs = len(pdb_list)
 for k, pdb_id in enumerate(pdb_list):
     #if k == 500:
     #    break
-    if k % 50 == 0:
+    if k % 500 == 0:
         print(f'Working on {k} of {n_pdbs} proteins...')
 
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
@@ -89,7 +89,7 @@ with open('freq_dict.pickle', 'rb') as handle:
 bad_coords = np.load('bad_coords.npy')
 wrong_ligands = np.load('wrong_ligands.npy')
 no_precomp = np.load('no_precomp.npy')
-
+'''
 for lig in ligand_list:
     print(lig)
     for dist in pos_dists:
@@ -97,6 +97,6 @@ for lig in ligand_list:
         mean_npoints = round(np.mean(npoints_list))
         frac_zero = round(np.mean(npoints_list == 0), 2)
         print(f'{dist}: {mean_npoints}, fraction with zero pp: {frac_zero}')
-'''
+
 print(f'Proteins with normal ligands: {pdbs_normal_ligands}')
 print(f'All proteins: {n_pdbs}')
