@@ -195,7 +195,7 @@ while iterations < num_iterations:
             y_true_idx_used.fill(0)
             j += 1
             
-            batch_time += process_time
+            batch_time += process_time()
             print('batch_time: %.4f' % batch_time)
             batch_time = 0
     
