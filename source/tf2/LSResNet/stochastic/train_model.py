@@ -116,7 +116,7 @@ while iterations < num_iterations:
             print('\nReshuffling training set...')
             continue
         
-        data = get_data(pdb_id, include_solvents)
+        data = get_data(pdb_id, training=False, include_solvents=include_solvents)
         if data is None:
             continue
             
@@ -157,7 +157,7 @@ while iterations < num_iterations:
             val_iter = iter(val_list)
             continue
             
-        data = get_data(pdb_id, include_solvents)
+        data = get_data(pdb_id, training=False, include_solvents=include_solvents)
         if data is None:
             continue
         
