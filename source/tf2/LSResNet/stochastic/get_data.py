@@ -7,9 +7,13 @@ import tfbio.data
 import tensorflow as tf
 
 params = masif_opts["LSResNet"]
-ligand_list = masif_opts['all_ligands']
 
-def get_data(pdb_id, training = True):
+def get_data(pdb_id, training=True, include_solvents=True):
+    if include_solvents:
+        ligand_list = masif_opts['all_ligands']
+    else:
+        ligand_list = masif_opts['ligand_list']
+    
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
 
     try:
