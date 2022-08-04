@@ -31,7 +31,7 @@ for k, pdb_id in enumerate(pdb_list):
             )
         ).astype(str)
     except:
-        bad_pdbs.append(fi)
+        bad_pdbs.append(pdb_id)
         continue
     
     all_lig_pres = False
