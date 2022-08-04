@@ -23,8 +23,8 @@ ligand_coord_dir = params["ligand_coords_dir"]
 #possible_train_pdbs = ['4X7G_A_', '4RLR_A_', '3OWC_A_', '3SC6_A_', '1TU9_A_']
 
 
-def predict(model, pdb, threshold=0.5, min_size=50, make_y=False):
-    data = get_data(pdb.rstrip('_'), training=False, make_y=make_y)
+def predict(model, pdb, threshold=0.5, min_size=50, make_y=False, mode='pdb_id'):
+    data = get_data(pdb.rstrip('_'), training=False, make_y=make_y, mode=mode)
     if data is None:
         print('Data couldn\'t be retrieved')
         return None
