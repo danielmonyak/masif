@@ -60,9 +60,9 @@ for dataset in dataset_list.keys():
         for k, pp in enumerate(pocket_points):
             y_temp = y[k]
             X_dict = {
-                'input_feat' : X[0][pp],
-                'rho_coords' : X[1][pp],
-                'theta_coords' : X[2][pp],
+                'input_feat' : X[0][:, pp],
+                'rho_coords' : X[1][:, pp],
+                'theta_coords' : X[2][:, pp],
                 'mask' : X[3][pp]
             }
             
