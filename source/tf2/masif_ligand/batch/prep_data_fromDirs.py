@@ -11,28 +11,17 @@ import tensorflow as tf
 
 params = masif_opts["ligand"]
 
+include_solvents = 
+
 ####
 #ligand_list = masif_opts['ligand_list']
 ligand_list = masif_opts['all_ligands']
 n_classes = len(ligand_list)
 ####
 
-angstrom_dist = 7.0
 
-
-all_pdbs = os.listdir(params["masif_precomputation_dir"])
-
-# Structures are randomly assigned to train, validation and test sets
-shuffle(all_pdbs)
-train = int(len(all_pdbs) * params["train_fract"])
-val = int(len(all_pdbs) * params["val_fract"])
-test = int(len(all_pdbs) * params["test_fract"])
-print("Train", train)
-print("Validation", val)
-print("Test", test)
-train_pdbs = all_pdbs[:train]
-val_pdbs = all_pdbs[train : train + val]
-test_pdbs = all_pdbs[train + val : train + val + test]
+train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_pdbs.npy')
+val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_pdbs.npy')
 
 
 # Edited by Daniel Monyak
