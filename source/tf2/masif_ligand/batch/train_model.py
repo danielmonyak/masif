@@ -103,6 +103,8 @@ def test_step(x, y):
     val_acc_metric.update_state(y, val_logits)
 
 get_data_time = 0
+train_time = 0
+
 iterations = starting_iteration
 while iterations < num_iterations:
     i = 0
@@ -125,6 +127,8 @@ while iterations < num_iterations:
         
         get_data_time += process_time()
         
+        train_time -= process_time()
+        
         if data is None:
             continue
             
@@ -134,10 +138,7 @@ while iterations < num_iterations:
             X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
             y_temp = tf.constant(y[k])
             
-            before = process_time()
             grads = train_step(X_temp, y_temp)
-            after = process_time()
-            print(f'Train step: %.1f' % (after-before))
             
             #loss_value, grads = train_step(X_temp, y_temp)
             #loss_list.append(loss_value)
@@ -153,6 +154,8 @@ while iterations < num_iterations:
             iterations += 1
         pdb_count += 1
         
+        train_time += process_time()
+        
         if i >= batch_sz and np.all(y_true_idx_used):
             print(f'Training batch {j} - {i} pockets')
             
@@ -165,20 +168,23 @@ while iterations < num_iterations:
             before = process_time()
             grads = [tsr/i for tsr in grads_sum]
             after = process_time()
-            print(f'Mean grads: %.3f' % (after-before))
+            print(f'Mean grads: %.4f' % (after-before))
             
             before = process_time()
             prep = zip(grads, model.trainable_weights)
             after = process_time()
-            print(f'prep: %.3f' % (after-before))
+            print(f'prep: %.4f' % (after-before))
             
             before = process_time()
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
             after = process_time()
             print('Apply gradients: %.3f' % (after-before))
             
-            print('get_data_time: %.3f' % get_data_time)
+            print('get_data_time: %.4f' % get_data_time)
             get_data_time = 0
+            
+            print('train_time: %.4f' % train_time)
+            train_time = 0
             
             i = 0
             pdb_count = 0
