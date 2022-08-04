@@ -63,7 +63,7 @@ for dataset in dataset_list.keys():
                 'input_feat' : X[0][:, pp],
                 'rho_coords' : X[1][:, pp],
                 'theta_coords' : X[2][:, pp],
-                'mask' : X[3][pp]
+                'mask' : X[3][:, pp]
             }
             
             X_list.append(X_dict)
