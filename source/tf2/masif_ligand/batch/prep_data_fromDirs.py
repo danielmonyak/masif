@@ -43,8 +43,7 @@ def compile_and_save(X_list, y_list, dataset, len_list):
 
 dataset_list = {'train' : train_pdbs, 'val' : val_pdbs, 'test' : test_pdbs}
 
-#for dataset in dataset_list.keys():
-for dataset in ['train']:
+for dataset in dataset_list.keys():
     X_list = []
     y_list = []
     len_list = []
@@ -52,9 +51,6 @@ for dataset in ['train']:
     temp_data = dataset_list[dataset]
     n_pdbs = len(temp_data)
     for i, pdb_id in enumerate(temp_data):
-        if i == 10:
-            break
-
         print(f'{dataset} record {i+1} of {n_pdbs}, {pdb_id}')
         data = get_data(pdb_id, include_solvents)
         if data is None:
