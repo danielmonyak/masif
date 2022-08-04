@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from scipy import spatial
-from default_config.util import *
+from default_config.masif_opts import masif_opts
 import pickle
 
 params = masif_opts["ligand"]
