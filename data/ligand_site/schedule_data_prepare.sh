@@ -4,7 +4,7 @@ if [ ! -d $out ]; then mkdir $out; fi
 if [ ! -d $err ]; then mkdir $err; fi
 
 batchSize=20
-sleep_time=10
+sleep_time=20
 
 i=0
 unset running
@@ -25,6 +25,8 @@ while read p; do
 	disown -h $!
 	running+=($!)
 	i=$((i+1))
-done < ../masif_ligand/lists/sequence_split_list_UNIQUE.txt
+#done < ../masif_ligand/lists/sequence_split_list_UNIQUE.txt
+#done < ../masif_ligand/newPDBs/shared_old.txt
+done < todo.txt
 
 echo Finished!

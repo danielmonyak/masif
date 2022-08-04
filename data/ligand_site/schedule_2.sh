@@ -3,8 +3,8 @@ err=error_files
 if [ ! -d $out ]; then mkdir $out; fi
 if [ ! -d $err ]; then mkdir $err; fi
 
-batchSize=15
-sleep_time=180
+batchSize=20
+sleep_time=350
 
 i=0
 unset running
