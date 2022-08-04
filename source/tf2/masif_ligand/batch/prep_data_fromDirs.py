@@ -51,7 +51,7 @@ for dataset in dataset_list.keys():
     temp_data = dataset_list[dataset]
     n_pdbs = len(temp_data)
     for i, pdb_id in enumerate(temp_data):
-        print(f'{dataset} record {i+1} of {n_pdbs}, {pdb}')
+        print(f'{dataset} record {i+1} of {n_pdbs}, {pdb_id}')
         data = get_data(pdb_id, include_solvents)
         if data is None:
             continue
