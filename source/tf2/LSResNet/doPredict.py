@@ -34,12 +34,12 @@ except:
     sys.exit('Please enter a valid response...')
 
 if mode == 'pdb_id':
-    pdb = input(f'Enter pdb: ')
-    if pdb == '':
+    func_input = input(f'Enter pdb: ')
+    if func_input == '':
         sys.exit('Must enter a valid pdb...')
 else:
-    pdb_path = input(f'Enter path to precomputation directory of PDB: ')
-    if not os.path.exists(pdb_path):
+    func_input = input(f'Enter path to precomputation directory of PDB: ')
+    if not os.path.exists(func_input):
         sys.exit('Must enter a valid path...')
 
 modelDir = '/home/daniel.monyak/software/masif/source/tf2/usage_new/combine_preds/kerasModel'
@@ -94,7 +94,7 @@ if os.path.exists(outdir):
     _ = os.system(f'rm -r {outdir}')
 os.mkdir(outdir)
 
-ligand_coords_arr = predict(model, pdb, threshold, min_size, make_y, mode)
+ligand_coords_arr = predict(model, func_input, threshold, min_size, make_y, mode)
 for i, indices in enumerate(ligand_coords_arr):
     mol=openbabel.OBMol()
     for idx in indices:
