@@ -1,10 +1,14 @@
 # Header variables and parameters.
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
-
 import sys
 import numpy as np
 import tensorflow as tf
+
+phys_gpus = tf.config.list_physical_devices('GPU')
+for phys_g in phys_gpus:
+    tf.config.experimental.set_memory_growth(phys_g, True)
+
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
@@ -22,7 +26,8 @@ cpu = '/CPU:0'
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
-datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
+#datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
+datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand/allReg'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
 train_X = np.load(genPath.format('train', 'X'))
@@ -44,8 +49,8 @@ gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy([gpus_str[1],gpus_str[3]])
 
 num_epochs = 200
-#with tf.device(dev):
-with strategy.scope():
+with tf.device(dev):
+#with strategy.scope():
   model = MaSIF_ligand(
     params["max_distance"],
     params["n_classes"],
@@ -53,8 +58,8 @@ with strategy.scope():
     reg_val = reg_val, reg_type = reg_type
   )
   model.compile(optimizer = model.opt,
-    loss = model.loss_fn,
-    metrics = ['categorical_accuracy']
+    loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics = ['sparse_categorical_accuracy']
   )  
   if continue_training:
     model.load_weights(ckpPath)
@@ -66,12 +71,12 @@ with strategy.scope():
 
   saveCheckpoints = tf.keras.callbacks.ModelCheckpoint(
     ckpPath,
-    monitor = 'val_categorical_accuracy',
+    monitor = 'val_sparse_categorical_accuracy',
     save_best_only = True,
     verbose = 1,
     initial_value_threshold = initValThresh
   )
-    
+
   history = model.fit(x = train_X, y = train_y,
     epochs = num_epochs,
     initial_epoch = last_epoch,
