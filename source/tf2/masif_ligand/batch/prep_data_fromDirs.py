@@ -1,11 +1,5 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import numpy as np
-
-phys_gpus = tf.config.list_physical_devices('GPU')
-for phys_g in phys_gpus:
-    tf.config.experimental.set_memory_growth(phys_g, True)
-
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.stochastic.get_data import get_data
