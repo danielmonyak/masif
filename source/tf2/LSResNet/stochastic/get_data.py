@@ -57,6 +57,9 @@ def get_data(pdb_id, training=True, include_solvents=True):
     
     pocket_points = []
     for j, structure_ligand in enumerate(all_ligand_types):
+        if not structure_ligand in ligand_list:
+            continue
+
         ligIdx = ligand_list.index(structure_ligand)
         if ligIdx < 7:
             dist = 3.0
