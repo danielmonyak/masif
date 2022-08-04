@@ -39,7 +39,6 @@ def predict(model, func_input, threshold=0.5, min_size=50, make_y=False, mode='p
 
     X, y, _ = data
     
-    mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
     X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
     Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
     Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
