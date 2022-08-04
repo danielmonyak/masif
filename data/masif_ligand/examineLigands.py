@@ -37,8 +37,8 @@ for k, pdb_id in enumerate(pdb_list):
         no_precomp.append(pdb_id)
         continue
 
-    #xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
-    #tree = spatial.KDTree(xyz_coords)
+    xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
+    tree = spatial.KDTree(xyz_coords)
     coordsPath = os.path.join(
         params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
     )
