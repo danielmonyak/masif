@@ -23,15 +23,23 @@ ligand_coord_dir = params["ligand_coords_dir"]
 #possible_train_pdbs = ['4X7G_A_', '4RLR_A_', '3OWC_A_', '3SC6_A_', '1TU9_A_']
 
 
-def predict(model, pdb, threshold=0.5, min_size=50, make_y=False, mode='pdb_id'):
-    data = get_data(pdb.rstrip('_'), training=False, make_y=make_y, mode=mode)
+def predict(model, func_input, threshold=0.5, min_size=50, make_y=False, mode='pdb_id'):
+    if mode == 'pdb_id':
+        pdb_id = func_input
+        mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
+    elif mode == 'path':
+        mydir = func_input
+    else:
+        sys.exit('Must provide a valid mode argument...')
+
+    data = get_data(func_input, training=False, make_y=make_y, mode=mode)
     if data is None:
         print('Data couldn\'t be retrieved')
         return None
 
     X, y, _ = data
     
-    mydir = os.path.join(params["masif_precomputation_dir"], pdb.rstrip('_') + '_')
+    mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
     X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
     Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
     Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
