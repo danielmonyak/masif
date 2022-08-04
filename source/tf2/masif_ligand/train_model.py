@@ -48,8 +48,8 @@ gpus_str = [g.name for g in gpus]
 strategy = tf.distribute.MirroredStrategy([gpus_str[1],gpus_str[3]])
 
 num_epochs = 200
-with tf.device(dev):
-#with strategy.scope():
+#with tf.device(dev):
+with strategy.scope():
   model = MaSIF_ligand(
     params["max_distance"],
     params["n_classes"],
