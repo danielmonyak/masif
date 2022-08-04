@@ -13,7 +13,7 @@ pos_dists = [3.0, 5.0, 7.0, 9.0]
 freq_dict = dict(zip(ligand_list, [dict(zip(pos_dists, [[] for j in range(len(pos_dists))])) for i in range(len(ligand_list))]))
 
 #pdb_list = os.listdir(params["masif_precomputation_dir"])
-pdb_list = np.loadtxt('using_pdbs_final_reg.txt', dtype=str)
+pdb_list = np.loadtxt('newPDBs/using_pdbs_final_reg.txt', dtype=str)
 
 pdbs_normal_ligands = 0
 
