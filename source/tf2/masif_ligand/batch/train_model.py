@@ -97,157 +97,164 @@ def train_step(x, y):
     #return loss_value, tape.gradient(loss_value, model.trainable_weights)
     #return loss_value
 
+
+@tf.function
+def apply_gradient(grads):
+    optimizer.apply_gradients(zip(grads, model.trainable_weights))
+    
 @tf.function
 def test_step(x, y):
     val_logits = model(x, training=False)
     val_acc_metric.update_state(y, val_logits)
 
+with tf.device(dev):
 
-iterations = starting_iteration
-while iterations < num_iterations:
-    i = 0
-    j = 0
-    pdb_count = 0
-    #loss_list = []
-    
-    get_data_time = 0
-    train_time = 0
-    batch_time = -process_time()
-    
-    while j < n_train_batches:
-        
-        get_data_time -= process_time()
-        
-        try:
-            pdb_id = next(train_iter)
-        except:
-            np.random.shuffle(train_list)
-            train_iter = iter(train_list)
-            print('\nReshuffling training set...')
-            continue
-        
-        data = get_data(pdb_id, include_solvents)
-        
-        
-        get_data_time += process_time()
-        
-        if data is None:
-            continue
-        
-        train_time -= process_time()
-        
-        X, pocket_points, y = data
-        for k, pp in enumerate(pocket_points):
-            pp_rand = np.random.choice(pp, minPockets, replace=False)
-            X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
-            y_temp = tf.constant(y[k])
-            
-            grads = train_step(X_temp, y_temp)
-            
-            #loss_value, grads = train_step(X_temp, y_temp)
-            #loss_list.append(loss_value)
-            
-            y_true_idx_used[y[k]] = 1
-            
-            if i == 0:
-                grads_sum = grads
-            else:
-                grads_sum = [grads_sum[grad_i]+grads[grad_i] for grad_i in range(len(grads))]
-            
-            i += 1
-            iterations += 1
-        pdb_count += 1
-        
-        train_time += process_time()
-        
-        if i >= batch_sz and np.all(y_true_idx_used):
-            print(f'Training batch {j} - {i} pockets')
-            
-            mean_loss = float(loss_metric.result())
-            train_acc = float(train_acc_metric.result())
-            loss_metric.reset_states()
-            train_acc_metric.reset_states()
-            print("Loss -------- %.4f, Accuracy -------- %.4f, %d total PDBs" % (mean_loss, train_acc, pdb_count))
+    iterations = starting_iteration
+    while iterations < num_iterations:
+        i = 0
+        j = 0
+        pdb_count = 0
+        #loss_list = []
 
-            before = process_time()
-            grads = [tsr/i for tsr in grads_sum]
-            after = process_time()
-            print(f'Mean grads: %.4f' % (after-before))
-            
-            before = process_time()
-            prep = zip(grads, model.trainable_weights)
-            after = process_time()
-            print(f'prep: %.4f' % (after-before))
-            
-            before = process_time()
-            optimizer.apply_gradients(zip(grads, model.trainable_weights))
-            after = process_time()
-            print('Apply gradients: %.3f' % (after-before))
-            
-            print('get_data_time: %.4f' % get_data_time)
-            get_data_time = 0
-            
-            print('train_time: %.4f' % train_time)
-            train_time = 0
-            
-            i = 0
-            pdb_count = 0
-            y_true_idx_used.fill(0)
-            j += 1
-            
-            batch_time += process_time()
-            print('batch_time: %.4f' % batch_time)
-            batch_time = -process_time()
-    
-    '''
-    #mean_loss = np.mean(loss_list)
-    #loss_list = []
-    mean_loss = float(loss_metric.result())
-    train_acc = train_acc_metric.result()
-    
-    loss_metric.reset_states()
-    train_acc_metric.reset_states()
-    
-    print(f'\nTRAINING results over {j} batches, {pdb_count} total PDBs') 
-    print("Loss --------------------- %.4f" % (mean_loss,))
-    print("Accuracy ----------------- %.4f" % (float(train_acc),))'''
-    
-    print(f'{iterations} iterations completed')
-    
-    
-    #####################################
-    #####################################
-    i = 0
-    pdb_count = 0
-    while i < n_val:
-        try:
-            pdb_id = next(val_iter)
-        except:
-            val_iter = iter(val_list)
-            continue
-        
-        data = get_data(pdb_id, include_solvents)
-        if data is None:
-            continue
-            
-        X, pocket_points, y = data
-        for k, pp in enumerate(pocket_points):
-            pp_rand = np.random.choice(pp, minPockets, replace=False)
-            X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
-            y_temp = tf.constant(y[k])
-            test_step(X_temp, y_temp)
-            
-            i += 1
-        pdb_count += 1
-    
-    val_acc = val_acc_metric.result()
-    
-    print(f'\nVALIDATION results over {i} pockets from {pdb_count} PDBs') 
-    print('Accuracy ----------------- %.4f' % (float(val_acc),))
-    
-    val_acc_metric.reset_states()
-    
-    print(f'Saving model weights to {ckpPath}\n')
-    model.save_weights(ckpPath)
+        get_data_time = 0
+        train_time = 0
+        batch_time = -process_time()
+
+        while j < n_train_batches:
+
+            get_data_time -= process_time()
+
+            try:
+                pdb_id = next(train_iter)
+            except:
+                np.random.shuffle(train_list)
+                train_iter = iter(train_list)
+                print('\nReshuffling training set...')
+                continue
+
+            data = get_data(pdb_id, include_solvents)
+
+
+            get_data_time += process_time()
+
+            if data is None:
+                continue
+
+            train_time -= process_time()
+
+            X, pocket_points, y = data
+            for k, pp in enumerate(pocket_points):
+                pp_rand = np.random.choice(pp, minPockets, replace=False)
+                X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
+                y_temp = tf.constant(y[k])
+
+                grads = train_step(X_temp, y_temp)
+
+                #loss_value, grads = train_step(X_temp, y_temp)
+                #loss_list.append(loss_value)
+
+                y_true_idx_used[y[k]] = 1
+
+                if i == 0:
+                    grads_sum = grads
+                else:
+                    grads_sum = [grads_sum[grad_i]+grads[grad_i] for grad_i in range(len(grads))]
+
+                i += 1
+                iterations += 1
+            pdb_count += 1
+
+            train_time += process_time()
+
+            if i >= batch_sz and np.all(y_true_idx_used):
+                print(f'Training batch {j} - {i} pockets')
+
+                mean_loss = float(loss_metric.result())
+                train_acc = float(train_acc_metric.result())
+                loss_metric.reset_states()
+                train_acc_metric.reset_states()
+                print("Loss -------- %.4f, Accuracy -------- %.4f, %d total PDBs" % (mean_loss, train_acc, pdb_count))
+
+                before = process_time()
+                grads = [tsr/i for tsr in grads_sum]
+                after = process_time()
+                print(f'Mean grads: %.4f' % (after-before))
+
+                before = process_time()
+                prep = zip(grads, model.trainable_weights)
+                after = process_time()
+                print(f'prep: %.4f' % (after-before))
+
+                before = process_time()
+                optimizer.apply_gradients(zip(grads, model.trainable_weights))
+                #apply_gradient(grads)
+                after = process_time()
+                print('Apply gradients: %.3f' % (after-before))
+
+                print('get_data_time: %.4f' % get_data_time)
+                get_data_time = 0
+
+                print('train_time: %.4f' % train_time)
+                train_time = 0
+
+                i = 0
+                pdb_count = 0
+                y_true_idx_used.fill(0)
+                j += 1
+
+                batch_time += process_time()
+                print('batch_time: %.4f' % batch_time)
+                batch_time = -process_time()
+
+        '''
+        #mean_loss = np.mean(loss_list)
+        #loss_list = []
+        mean_loss = float(loss_metric.result())
+        train_acc = train_acc_metric.result()
+
+        loss_metric.reset_states()
+        train_acc_metric.reset_states()
+
+        print(f'\nTRAINING results over {j} batches, {pdb_count} total PDBs') 
+        print("Loss --------------------- %.4f" % (mean_loss,))
+        print("Accuracy ----------------- %.4f" % (float(train_acc),))'''
+
+        print(f'{iterations} iterations completed')
+
+
+        #####################################
+        #####################################
+        i = 0
+        pdb_count = 0
+        while i < n_val:
+            try:
+                pdb_id = next(val_iter)
+            except:
+                val_iter = iter(val_list)
+                continue
+
+            data = get_data(pdb_id, include_solvents)
+            if data is None:
+                continue
+
+            X, pocket_points, y = data
+            for k, pp in enumerate(pocket_points):
+                pp_rand = np.random.choice(pp, minPockets, replace=False)
+                X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
+                y_temp = tf.constant(y[k])
+                test_step(X_temp, y_temp)
+
+                i += 1
+            pdb_count += 1
+
+        val_acc = val_acc_metric.result()
+
+        print(f'\nVALIDATION results over {i} pockets from {pdb_count} PDBs') 
+        print('Accuracy ----------------- %.4f' % (float(val_acc),))
+
+        val_acc_metric.reset_states()
+
+        print(f'Saving model weights to {ckpPath}\n')
+        model.save_weights(ckpPath)
 
 model.save(modelPath)
