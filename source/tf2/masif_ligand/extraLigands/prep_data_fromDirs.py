@@ -6,11 +6,11 @@ from tf2.masif_ligand.stochastic.get_data import get_data
 
 params = masif_opts["ligand"]
 
-include_solvents = False
+include_solvents = True
 
-train_pdbs = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
-val_pdbs = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_reg.npy')
-test_pdbs = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/test_reg.npy')
+train_pdbs = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_solv.npy')
+val_pdbs = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_solv.npy')
+test_pdbs = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/test_solv.npy')
 
 precom_dir = params["masif_precomputation_dir"]
 ligand_coord_dir = params["ligand_coords_dir"]
@@ -18,7 +18,7 @@ ligand_coord_dir = params["ligand_coords_dir"]
 defaultCode = params['defaultCode']
 minPockets = params['minPockets']
 
-outdir = '/data02/daniel/masif/datasets/tf2/masif_ligand/allReg'
+outdir = '/data02/daniel/masif/datasets/tf2/masif_ligand/solvents'
 if not os.path.exists(outdir):
     os.mkdir(outdir)
 
