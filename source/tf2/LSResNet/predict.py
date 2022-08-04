@@ -4,22 +4,22 @@ import sys
 import numpy as np
 import tensorflow as tf
 
-from skimage.segmentation import clear_border
-from skimage.morphology import closing
-from skimage.measure import label
-
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
-import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.LSResNet.get_data import get_data
+
+from skimage.segmentation import clear_border
+from skimage.morphology import closing
+from skimage.measure import label
 
 params = masif_opts["LSResNet"]
 ligand_coord_dir = params["ligand_coords_dir"]
 
-def predict(model, pdb, threshold=0.5, min_size=50, make_y=True):
+def predict(model, pdb, threshold=0.5, min_size=50, make_y=False):
+    if type(pdb
     data = get_data(pdb.rstrip('_'), training=False, make_y=make_y)
     if data is None:
         print('Data couldn\'t be retrieved')
