@@ -127,11 +127,11 @@ while iterations < num_iterations:
         
         get_data_time += process_time()
         
-        train_time -= process_time()
-        
         if data is None:
             continue
-            
+        
+        train_time -= process_time()
+        
         X, pocket_points, y = data
         for k, pp in enumerate(pocket_points):
             pp_rand = np.random.choice(pp, minPockets, replace=False)
