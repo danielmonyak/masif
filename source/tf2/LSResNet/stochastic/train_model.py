@@ -23,8 +23,8 @@ n_train = 300
 n_val = 50
 
 
-train_list = np.load('/home/daniel.monyak/software/masif/source/tf2/masif_ligand/stochastic/lists/train_pdbs.npy')
-val_list = np.load('/home/daniel.monyak/software/masif/source/tf2/masif_ligand/stochastic/lists/val_pdbs.npy')
+train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
+val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_reg.npy')
 
 np.random.shuffle(train_list)
 train_iter = iter(train_list)
@@ -45,6 +45,8 @@ if continue_training:
 
 ##########################################
 ##########################################
+
+include_solvents = False
 
 #with tf.device('/GPU:1'):
 model = LSResNet(
@@ -114,7 +116,7 @@ while iterations < num_iterations:
             print('\nReshuffling training set...')
             continue
         
-        data = get_data(pdb_id)
+        data = get_data(pdb_id, include_solvents)
         if data is None:
             continue
             
@@ -155,7 +157,7 @@ while iterations < num_iterations:
             val_iter = iter(val_list)
             continue
             
-        data = get_data(pdb_id)
+        data = get_data(pdb_id, include_solvents)
         if data is None:
             continue
         
