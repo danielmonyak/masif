@@ -18,8 +18,8 @@ from skimage.measure import label
 params = masif_opts["LSResNet"]
 ligand_coord_dir = params["ligand_coords_dir"]
 
-def predict(model, pdb, threshold=0.5, min_size=50, make_y=False, mode='pdb_id'):
-    data = get_data(pdb.rstrip('_'), training=False, make_y=make_y, mode=mode)
+def predict(model, func_input, threshold=0.5, min_size=50, make_y=False, mode='pdb_id'):
+    data = get_data(func_input, training=False, make_y=make_y, mode=mode)
     if data is None:
         print('Data couldn\'t be retrieved')
         return None
@@ -55,12 +55,3 @@ def predict(model, pdb, threshold=0.5, min_size=50, make_y=False, mode='pdb_id')
         ligand_coords_arr.append(indices)
 
     return ligand_coords_arr
-        
-'''y_pred = density > threshold
-mask = y_pred & y.astype(bool)
-overlap = np.sum(mask)
-recall = overlap/np.sum(y)
-precision = overlap/np.sum(y_pred)
-
-print(f'Recall: {recall}')
-print(f'Precision: {precision}')'''
