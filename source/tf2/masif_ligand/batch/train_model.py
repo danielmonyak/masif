@@ -146,11 +146,12 @@ while iterations < num_iterations:
             train_acc = float(train_acc_metric.result())
             loss_metric.reset_states()
             train_acc_metric.reset_states()
-            print("Loss -------- %.4f, Accuracy -------- %.4f" % (mean_loss, train_acc))
+            print("Loss -------- %.4f, Accuracy -------- %.4f, %d total PDBs" % (mean_loss, train_acc, pdb_count))
 
             grads = [tsr/i for tsr in grads_sum]
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
             i = 0
+            pdb_count = 0
             y_true_idx_used.fill(0)
             j += 1
     
