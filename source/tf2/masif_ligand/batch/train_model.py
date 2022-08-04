@@ -182,7 +182,7 @@ while iterations < num_iterations:
             val_iter = iter(val_list)
             continue
         
-        data = get_data(pdb_id)
+        data = get_data(pdb_id, include_solvents)
         if data is None:
             continue
             
