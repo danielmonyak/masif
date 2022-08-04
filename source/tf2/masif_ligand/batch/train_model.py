@@ -13,6 +13,8 @@ from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
 from tf2.masif_ligand.stochastic.get_data import get_data
 
+from time import process_time
+
 params = masif_opts["ligand"]
 
 lr = 1e-3
@@ -21,7 +23,7 @@ n_train_batches = 10
 batch_sz = 32
 n_val = 50
 
-reg_val = 1e-2
+reg_val = 0
 reg_type = 'l2'
 
 dev = '/GPU:3'
@@ -66,7 +68,7 @@ model = MaSIF_ligand(
     len(ligand_list),
     feat_mask=params["feat_mask"],
     reg_val = reg_val, reg_type = reg_type,
-    keep_prob=0.9
+    keep_prob=1.0
 )
 if continue_training:
     model.load_weights(ckpPath)
@@ -149,6 +151,7 @@ while iterations < num_iterations:
             print("Loss -------- %.4f, Accuracy -------- %.4f, %d total PDBs" % (mean_loss, train_acc, pdb_count))
 
             grads = [tsr/i for tsr in grads_sum]
+            prep = zip(grads, model.trainable_weights)
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
             i = 0
             pdb_count = 0
