@@ -139,7 +139,7 @@ while iterations < num_iterations:
         i += 1
         iterations += 1
         
-        if (i >= batch_sz) and (np.mean(y_true_idx_used) > 0.8):
+        if i >= batch_sz:
             print(f'Training batch {j} - {i} proteins')
     
             mean_loss = float(loss_metric.result())
