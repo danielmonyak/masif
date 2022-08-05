@@ -21,15 +21,18 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
     else:
         sys.exit('Must provide a valid mode argument...')
 
-    mask = np.load(os.path.join(mydir, "p1_mask.npy"))
-    n_samples = mask.shape[0]
+    try:
+        input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
+        rho_coords = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
+        theta_coords = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
+        mask = np.load(os.path.join(mydir, "p1_mask.npy"))
+        n_samples = mask.shape[0]
 
-    if training and n_samples > 8000:
+        if training and n_samples > 8000:
+            return None
+    except:
         return None
-
-    input_feat = np.load(os.path.join(mydir, "p1_input_feat.npy"))
-    rho_coords = np.load(os.path.join(mydir, "p1_rho_wrt_center.npy"))
-    theta_coords = np.load(os.path.join(mydir, "p1_theta_wrt_center.npy"))
+    
     mask = np.expand_dims(mask, 2)
 
     data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [input_feat, rho_coords, theta_coords, mask])
@@ -58,7 +61,7 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
                 )
             ).astype(str)
         except:
-            print(f'Problem opening {coordsPath}')
+            #print(f'Problem opening {coordsPath}')
             return None
 
         pocket_points = []
