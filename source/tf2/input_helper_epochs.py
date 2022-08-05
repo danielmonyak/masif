@@ -11,7 +11,7 @@ else:
     sys.exit('Please enter a valid choice...')
 
 ckpPath = os.path.join('kerasModel', 'ckp')
-starting_iteration = 0
+starting_epoch = 0
 if continue_training:
     if os.path.exists(ckpPath + '.index'):
         ckpKey = input(f'Use checkpoint at "{ckpPath}"? ([y]/n): ')
@@ -23,28 +23,28 @@ if continue_training:
     else:
         ckpPath = input('Enter checkpoint path: ')
     
-    starting_iteration_key = input(f'Starting iteration [{starting_iteration}]: ')
-    if starting_iteration_key != '':
+    starting_epoch_key = input(f'Starting epoch [{starting_epoch}]: ')
+    if starting_epoch_key != '':
         try:
-            starting_iteration = int(starting_iteration_key)
+            starting_epoch = int(starting_epoch_key)
         except:
             sys.exit('Please enter a valid number 0 or greater...')
-        if starting_iteration < 0:
+        if starting_epoch < 0:
             sys.exit('Please enter a valid number 0 or greater...')
     
 
-num_iterations = 10**7
-num_iterations_key = input(f'Enter the number of iterations to train for [{num_iterations}]: ')
-if num_iterations_key != '':
+num_epochs = 10**7
+num_epochs_key = input(f'Enter the number of epochs to train for [{num_epochs}]: ')
+if num_epochs_key != '':
     try:
-        num_iterations = int(num_iterations_key)
+        num_epochs = int(num_epochs_key)
     except:
-        sys.exit(f'Please enter a valid number greater than {starting_iteration}...')
-    if num_iterations <= starting_iteration:
-        sys.exit(f'Please enter a valid number greater than {starting_iteration}...')
+        sys.exit(f'Please enter a valid number greater than {starting_epoch}...')
+    if num_epochs <= starting_epoch:
+        sys.exit(f'Please enter a valid number greater than {starting_epoch}...')
 
         
-var_names = ['continue_training', 'ckpPath', 'starting_iteration', 'num_iterations']
+var_names = ['continue_training', 'ckpPath', 'starting_epoch', 'num_epochs']
 train_vars = dict(zip(var_names, [eval(v) for v in var_names]))
 with open('train_vars.pickle', 'wb') as handle:
     pickle.dump(train_vars, handle, protocol=pickle.HIGHEST_PROTOCOL)
