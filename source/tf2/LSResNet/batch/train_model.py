@@ -185,21 +185,21 @@ while iterations < num_iterations:
         test_step(X, y)
         i += 1
     
-    val_acc = val_acc_metric.result()
-    val_auc = val_auc_metric.result()
-    val_F1_lower = val_F1_lower_metric.result()
-    val_F1 = val_F1_metric.result()
-    
-    print(f'\nVALIDATION results over {i} PDBs') 
-    print("Accuracy ----------------- %.4f" % (float(val_acc),))
-    print("AUC      ----------------- %.4f" % (float(val_auc),))
-    print("F1 Lower ----------------- %.4f" % (float(val_F1_lower),))
-    print("F1       ----------------- %.4f" % (float(val_F1),))
+    val_acc = float(val_acc_metric.result())
+    val_auc = float(val_auc_metric.result())
+    val_F1_lower = float(val_F1_lower_metric.result())
+    val_F1 = float(val_F1_metric.result())
     
     train_acc_metric.reset_states()
     train_auc_metric.reset_states()
     train_F1_lower_metric.reset_states()
     train_F1_metric.reset_states()
+    
+    print(f'\nVALIDATION results over {i} PDBs') 
+    print("Accuracy ----------------- %.4f" % val_acc)
+    print("AUC      ----------------- %.4f" % val_auc)
+    print("F1 Lower ----------------- %.4f" % val_F1_lower)
+    print("F1       ----------------- %.4f" % val_F1)
     
     print(f'Saving model weights to {ckpPath}\n')
     model.save_weights(ckpPath)
