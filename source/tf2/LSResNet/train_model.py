@@ -2,7 +2,6 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
 import numpy as np
-from scipy import spatial
 import tensorflow as tf
 
 phys_gpus = tf.config.list_physical_devices('GPU')
@@ -99,7 +98,7 @@ with tf.device('/GPU:1'):
         F1_list = []
         F1_06_list = []
         for pdb_id in training_list:
-            data = get_data(pdb_id)
+            data = get_data(pdb_id, training=True)
             if data is None:
                 continue
 
@@ -154,7 +153,7 @@ with tf.device('/GPU:1'):
         F1_list = []
         F1_06_list = []
         for pdb_id in val_list:
-            data = get_data(pdb_id)
+            data = get_data(pdb_id, training=False)
             if data is None:
                 continue
 
