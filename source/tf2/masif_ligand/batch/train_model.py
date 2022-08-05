@@ -20,7 +20,7 @@ params = masif_opts["ligand"]
 lr = 1e-3
 
 n_train_batches = 10
-batch_sz = 32
+batch_sz = 64
 n_val = 50
 
 reg_val = 0
@@ -114,7 +114,6 @@ with tf.device(dev):
         i = 0
         j = 0
         pdb_count = 0
-        #loss_list = []
 
 #        get_data_time = 0
 #        train_time = 0
@@ -166,7 +165,7 @@ with tf.device(dev):
 
 #            train_time += time()
 
-            if i >= batch_sz and np.all(y_true_idx_used):
+            if (i >= batch_sz) and (np.mean(y_true_idx_used) > 0.8):
                 print(f'Training batch {j} - {i} pockets')
 
                 mean_loss = float(loss_metric.result())
