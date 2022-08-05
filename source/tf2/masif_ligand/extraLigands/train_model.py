@@ -132,7 +132,7 @@ with tf.device(dev):
                 continue
 
             try:
-                X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'))
+                X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'), allow_pickle=True)
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
             except:
                 continue
@@ -235,7 +235,7 @@ with tf.device(dev):
                 continue
 
             try:
-                X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'))
+                X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'), allow_pickle=True)
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
             except:
                 continue
