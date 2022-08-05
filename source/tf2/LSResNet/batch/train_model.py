@@ -119,12 +119,15 @@ while iterations < num_iterations:
             epoch += 1
             continue
         
-        data = get_data(pdb_id, training=True, include_solvents=include_solvents)
+        data = get_data(pdb_id, training=True, include_solvents=include_solvents, make_y = False)
         if data is None:
             continue
 
-        X, y = data
+        X, _ = data
         X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
+        
+        y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
+        
         y_tf = tf.constant(y)
         
         grads = train_step(X_tf, y_tf)
