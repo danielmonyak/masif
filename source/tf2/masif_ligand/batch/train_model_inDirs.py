@@ -11,7 +11,6 @@ for phys_g in phys_gpus:
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
-from tf2.masif_ligand.stochastic.get_data import get_data
 
 #from time import time
 
@@ -23,7 +22,7 @@ n_train_batches = 10
 batch_sz = 32
 n_val = 50
 
-reg_val = 0
+reg_val = 1e-4
 reg_type = 'l2'
 
 dev = '/GPU:3'
@@ -56,7 +55,7 @@ if continue_training:
 ##########################################
 ##########################################
 
-include_solvents = False
+include_solvents = True
 
 if include_solvents:
     ligand_list = masif_opts['all_ligands']
@@ -132,19 +131,21 @@ with tf.device(dev):
                 print('\nReshuffling training set...')
                 continue
 
-            data = get_data(pdb_id, include_solvents)
-
+            try:
+                X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'))
+                y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
+            except:
+                continue
 
 #            get_data_time += time()
 
-            if data is None:
-                continue
-
 #            train_time -= time()
-
-            X, pocket_points, y = data
-            for k, pp in enumerate(pocket_points):
-                pp_rand = np.random.choice(pp, minPockets, replace=False)
+            
+            for k, X_temp in enumerate(X):
+                X_temp[0] = np.expand_dims(X_temp[0], axis=0)
+                X_temp[3] = np.expand_dims(X_temp[3], axis=0)
+                npoints = X_temp[0].shape[1]
+                pp_rand = np.random.choice(range(npoints), minPockets, replace=False)
                 X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
                 y_temp = tf.constant(y[k])
 
@@ -233,13 +234,17 @@ with tf.device(dev):
                 val_iter = iter(val_list)
                 continue
 
-            data = get_data(pdb_id, include_solvents)
-            if data is None:
+            try:
+                X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'))
+                y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
+            except:
                 continue
 
-            X, pocket_points, y = data
-            for k, pp in enumerate(pocket_points):
-                pp_rand = np.random.choice(pp, minPockets, replace=False)
+            for k, X_temp in enumerate(X):
+                X_temp[0] = np.expand_dims(X_temp[0], axis=0)
+                X_temp[3] = np.expand_dims(X_temp[3], axis=0)
+                npoints = X_temp[0].shape[1]
+                pp_rand = np.random.choice(range(npoints), minPockets, replace=False)
                 X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
                 y_temp = tf.constant(y[k])
                 test_step(X_temp, y_temp)
