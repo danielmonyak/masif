@@ -1,45 +1,63 @@
 import os
 import numpy as np
+from scipy import spatial
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.stochastic.get_data import get_data
 
-params = masif_opts["ligand"]
-precom_dir = params["masif_precomputation_dir"]
+params = masif_opts['LSResNet']
+ligand_list = masif_opts['ligand_list']
 
-include_solvents = True
+include_solvents = False
+
+if include_solvents:
+    ligand_list = masif_opts['all_ligands']
+else:
+    ligand_list = masif_opts['ligand_list']
 
 all_pdbs = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/filtered_pdbs.txt', dtype=str)
+all_pdbs = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/using_pdbs_final_reg.txt', dtype=str)
+
 n_pdbs = len(all_pdbs)
 for i, pdb_id in enumerate(all_pdbs):
     print(f'{i+1} of {n_pdbs} PDBs, {pdb_id}')
-    data = get_data(pdb_id, include_solvents)
-    if data is None:
-        continue
+    
+    mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
+    X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
+    Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
+    Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
+    xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
+    tree = spatial.KDTree(xyz_coords)
+    
+    coordsPath = os.path.join(
+        params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
+    )
+    all_ligand_coords = np.load(coordsPath, allow_pickle=True, encoding='latin1')
+    all_ligand_types = np.load(
+        os.path.join(
+            params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
+        )
+    ).astype(str)
+    
+    pocket_points = []
+    for j, structure_ligand in enumerate(all_ligand_types):
+        if not structure_ligand in ligand_list:
+            continue
 
-    mydir = os.path.join(precom_dir, pdb_id)
-    X, pocket_points, y = data
+        ligand_coords = all_ligand_coords[j]
+        temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
+        temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
+        pocket_points.extend(temp_pocket_points)
     
-    ###
-    X_list = []
-    y_list = []
-    ###
-    for k, pp in enumerate(pocket_points):
-        y_temp = y[k]
-        X_temp = [arr[:, pp] for arr in X]
-        
-        X_temp[0] = np.squeeze(X_temp[0], 0)
-        X_temp[3] = np.squeeze(X_temp[3], 0)
-        
-        ###
-        X_list.append(X_temp)
-        y_list.append(y_temp)
-        ###
-        
-        #np.save(os.path.join(mydir, f'X_{k}.npy'), X_temp)
-        #np.save(os.path.join(mydir, f'y_{k}.npy'), y_temp)
+    labels = np.zeros([n_samples, 1], dtype=np.int32)
+    labels[pocket_points, 0] = 1
+    if (np.mean(labels) > 0.75) or (np.sum(labels) < 30):
+        continue
     
-    np.save(os.path.join(mydir, f'X.npy'), X_list)
-    np.save(os.path.join(mydir, f'y.npy'), y_list)
+    resolution = 1. / params['scale']
+    y = tfbio.data.make_grid(xyz_coords, labels, max_dist=params['max_dist'], grid_resolution=resolution)
+    y[y > 0] = 1
+
+    np.save(os.path.join(mydir, f'LSRN_y.npy'), y_list)
 
 print('Finished!')
