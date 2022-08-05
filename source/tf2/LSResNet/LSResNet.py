@@ -85,7 +85,7 @@ class LSResNet(Model):
         strides = (1,1,1)
         
         self.RNConvBlock=[
-            [layers.Conv3D(filters1, kernel_size=1, strides=strides, data_format=K.image_data_format()),
+            [layers.Conv3D(filters1, kernel_size=1, strides=strides),
             layers.BatchNormalization(axis=bn_axis),
             layers.ReLU(),
              
@@ -103,15 +103,15 @@ class LSResNet(Model):
         ###
         if extra_conv_layers:
             self.extraConvLayers = [
-                layers.Conv3D(1, kernel_size=1, activation=None),
+                layers.Conv3D(1, kernel_size=1),
                 layers.BatchNormalization(axis=bn_axis),
                 layers.ReLU(),
-                layers.Conv3D(1, kernel_size=1, activation=None),
+                layers.Conv3D(1, kernel_size=1),
                 layers.BatchNormalization(axis=bn_axis),
                 layers.ReLU(),
-                layers.Conv3D(1, kernel_size=1, activation=None),
-                layers.BatchNormalization(axis=bn_axis),
-                layers.ReLU()
+                #layers.Conv3D(1, kernel_size=1, activation=None),
+                #layers.BatchNormalization(axis=bn_axis),
+                #layers.ReLU()
             ]
         else:
             self.extraConvLayers = None
