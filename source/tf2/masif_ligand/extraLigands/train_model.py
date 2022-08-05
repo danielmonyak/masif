@@ -30,9 +30,16 @@ dev = '/GPU:3'
 minPockets = params['minPockets']
 
 train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
+train_solv = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_solv.npy')
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_reg.npy')
+val_solv = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_solv.npy')
+
+train_list = np.concatenate([train_list, train_solv])
+val_list = np.concatenate([val_list, val_solv])
 
 np.random.shuffle(train_list)
+np.random.shuffle(val_list)
+
 train_iter = iter(train_list)
 val_iter = iter(val_list)
 
