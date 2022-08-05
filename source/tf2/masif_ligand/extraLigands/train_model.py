@@ -139,6 +139,7 @@ with tf.device(dev):
                 continue
 
             print(f'pdb_id: {pdb_id}')
+            print(y_true_idx_used)
             try:
                 X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'), allow_pickle=True)
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
