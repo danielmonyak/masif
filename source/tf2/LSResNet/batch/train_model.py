@@ -18,14 +18,9 @@ params = masif_opts["LSResNet"]
 
 lr = 1e-3
 
-
 n_train_batches = 10
 batch_sz = 32
 n_val = 50
-
-#n_train = 300
-#n_val = 50
-
 
 train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_reg.npy')
