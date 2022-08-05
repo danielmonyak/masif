@@ -146,7 +146,7 @@ with tf.device(dev):
                 X_temp[3] = np.expand_dims(X_temp[3], axis=0)
                 npoints = X_temp[0].shape[1]
                 pp_rand = np.random.choice(range(npoints), minPockets, replace=False)
-                X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
+                X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X_temp)
                 y_temp = tf.constant(y[k])
 
                 grads = train_step(X_temp, y_temp)
