@@ -178,18 +178,18 @@ with tf.device(dev):
 #                before = time()
                 grads = [tsr/i for tsr in grads_sum]
 #                after = time()
-                print(f'Mean grads: %.4f' % (after-before))
+#                print(f'Mean grads: %.4f' % (after-before))
 
 #                before = time()
                 prep = zip(grads, model.trainable_weights)
 #                after = time()
-                print(f'prep: %.4f' % (after-before))
+#                print(f'prep: %.4f' % (after-before))
 
 #                before = time()
                 optimizer.apply_gradients(zip(grads, model.trainable_weights))
                 #apply_gradient(grads)
 #                after = time()
-                print('Apply gradients: %.3f' % (after-before))
+#                print('Apply gradients: %.3f' % (after-before))
 
 #                print('get_data_time: %.4f' % get_data_time)
 #                get_data_time = 0
