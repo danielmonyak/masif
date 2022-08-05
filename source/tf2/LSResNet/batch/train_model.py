@@ -176,7 +176,7 @@ while iterations < num_iterations:
         if data is None:
             continue
         
-        X, y = data
+        X, y, _ = data
         test_step(X, y)
         i += 1
     
