@@ -123,9 +123,9 @@ while iterations < num_iterations:
             
         X, y = data
         X_tf = tuple(tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
-        y = tf.constant(y)
+        y_tf = tf.constant(y)
         
-        grads = train_step(X, y)
+        grads = train_step(X_tf, y_tf)
         
         if i == 0:
             grads_sum = grads
@@ -180,11 +180,10 @@ while iterations < num_iterations:
             continue
         
         X, y, _ = data
-        X[0] = [tf.constant(arr) for arr in X[0]]
-        X[1] = tf.constant(X[1])
-        y = tf.constant(y)
+        X_tf = tuple(tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
+        y_tf = tf.constant(y)
         
-        test_step(X, y)
+        test_step(X_tf, y_tf)
         i += 1
     
     val_acc = float(val_acc_metric.result())
