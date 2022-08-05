@@ -2,12 +2,11 @@ import sys
 import os
 import pickle
 
+continue_dict = {'' : False, 'n' : False, 'y' : True}
 continue_key = input('Continue training from checkpoint? (y/[n]): ')
-if (continue_key == '') or (continue_key == 'n'):
-    continue_training = False
-elif continue_key == 'y':
-    continue_training = True
-else:
+try:
+    continue_training = continue_dict[continue_key]
+except:
     sys.exit('Please enter a valid choice...')
 
 ckpPath = os.path.join('kerasModel', 'ckp')
