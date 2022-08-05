@@ -1,5 +1,5 @@
-#source ~/.bashrc
-#conda activate venv_tf_new
+source /home/daniel.monyak/miniconda3/etc/profile.d/conda.sh
+conda activate venv_tf_new
 
 masif_root=$(git rev-parse --show-toplevel)
 masif_source=$masif_root/source
