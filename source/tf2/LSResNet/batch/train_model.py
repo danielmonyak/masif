@@ -136,8 +136,6 @@ while iterations < num_iterations:
         iterations += 1
         
         if i >= batch_sz:
-            print(f'Training batch {j} - {i} proteins')
-    
             mean_loss = float(loss_metric.result())
             train_acc = float(train_acc_metric.result())
             train_auc = float(train_auc_metric.result())
@@ -150,7 +148,7 @@ while iterations < num_iterations:
             train_F1_lower_metric.reset_states()
             train_F1_metric.reset_states()
             
-            print(f'\nTRAINING results over {i} PDBs') 
+            print(f'\nTraining batch {j} - {i} proteins')
             print("Loss --------------------- %.4f" % mean_loss)
             print("Accuracy ----------------- %.4f" % train_acc)
             print("AUC      ----------------- %.4f" % train_auc)
@@ -163,7 +161,7 @@ while iterations < num_iterations:
             i = 0
             j += 1
             
-    print(f'{iterations} iterations completed')
+    print(f'\n{iterations} iterations completed')
     
     #####################################
     #####################################
@@ -202,5 +200,5 @@ while iterations < num_iterations:
     print("F1 Lower ----------------- %.4f" % val_F1_lower)
     print("F1       ----------------- %.4f" % val_F1)
     
-    print(f'Saving model weights to {ckpPath}\n')
+    print(f'\nSaving model weights to {ckpPath}\n')
     model.save_weights(ckpPath)
