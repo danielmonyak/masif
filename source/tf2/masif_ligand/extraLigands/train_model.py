@@ -192,7 +192,7 @@ with tf.device(dev):
 #                print(f'Mean grads: %.4f' % (after-before))
 
 #                before = time()
-                prep = zip(grads, model.trainable_weights)
+#                prep = zip(grads, model.trainable_weights)
 #                after = time()
 #                print(f'prep: %.4f' % (after-before))
 
