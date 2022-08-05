@@ -126,8 +126,11 @@ while iterations < num_iterations:
         X, _ = data
         X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
         
-        y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
-        
+        try:
+            y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
+        except:
+            continue
+
         y_tf = tf.constant(y)
         
         grads = train_step(X_tf, y_tf)
