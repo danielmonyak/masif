@@ -105,6 +105,7 @@ def test_step(x, y):
     val_F1_metric.update_state(y, y_pred)
 
 iterations = starting_iteration
+epoch = 0
 while iterations < num_iterations:
     i = 0
     j = 0
@@ -115,6 +116,7 @@ while iterations < num_iterations:
             np.random.shuffle(train_list)
             train_iter = iter(train_list)
             print('\nReshuffling training set...')
+            epoch += 1
             continue
         
         data = get_data(pdb_id, training=True, include_solvents=include_solvents)
@@ -161,7 +163,7 @@ while iterations < num_iterations:
             i = 0
             j += 1
             
-    print(f'\n{iterations} iterations completed')
+    print(f'\n{iterations} iterations, {epoch} epochs completed')
     
     #####################################
     #####################################
