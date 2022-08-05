@@ -43,10 +43,6 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
     Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
     Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
     xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
-    ###
-    centroid = xyz_coords.mean(axis=0)
-    xyz_coords -= centroid
-    ###
     
     if make_y:
         tree = spatial.KDTree(xyz_coords)
@@ -87,6 +83,10 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
     else:
         y = None
 
+    ###
+    centroid = xyz_coords.mean(axis=0)
+    xyz_coords -= centroid
+    ###
     X = (data_tsrs, np.expand_dims(xyz_coords, axis=0))
 
     if training:
