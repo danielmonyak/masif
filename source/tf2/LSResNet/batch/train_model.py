@@ -80,7 +80,7 @@ val_F1_metric = util.F1_Metric(threshold = 0.5)
 
 grads = None
 
-@tf.function
+@tf.function(experimental_relax_shapes=True)
 def train_step(x, y):
     with tf.GradientTape() as tape:
         logits = model(x, training=True)
@@ -95,7 +95,7 @@ def train_step(x, y):
     
     return tape.gradient(loss_value, model.trainable_weights)
 
-@tf.function
+@tf.function(experimental_relax_shapes=True)
 def test_step(x, y):
     logits = model(x, training=False)
     y_pred = tf.sigmoid(logits)
