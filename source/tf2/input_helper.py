@@ -43,13 +43,8 @@ if num_iterations_key != '':
     if num_iterations <= starting_iteration:
         sys.exit(f'Please enter a valid number greater than {starting_iteration}...')
 
-train_vars = {'continue_
+        
+var_names = ['continue_training', 'ckpPath', 'starting_iteration', 'num_iterations']
+train_vars = dict(zip(var_names, [eval(v) for v in var_names]))
 with open('train_vars.pickle', 'wb') as handle:
-    pickle.dump(a, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-with open('train_vars.py', 'w') as f:
-    f.write('train_vars = {}\n')
-    f.write(f'train_vars["continue_training"] = {continue_training}\n')
-    f.write(f'train_vars["ckpPath"] = "{ckpPath}"\n')
-    f.write(f'train_vars["starting_iteration"] = {starting_iteration}\n')
-    f.write(f'train_vars["num_iterations"] = {num_iterations}\n')
+    pickle.dump(train_vars, handle, protocol=pickle.HIGHEST_PROTOCOL)
