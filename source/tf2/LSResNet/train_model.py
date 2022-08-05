@@ -99,7 +99,7 @@ with tf.device('/GPU:1'):
         F1_list = []
         F1_06_list = []
         for pdb_id in training_list:
-            data = get_data(pdb_id, training=True)
+            data = get_data(pdb_id, training=True, allow_pickle=False)
             if data is None:
                 continue
 
@@ -154,7 +154,7 @@ with tf.device('/GPU:1'):
         F1_list = []
         F1_06_list = []
         for pdb_id in val_list:
-            data = get_data(pdb_id, training=False)
+            data = get_data(pdb_id, training=False, allow_pickle=False)
             if data is None:
                 continue
 
