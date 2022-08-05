@@ -3,7 +3,7 @@ import numpy as np
 from scipy import spatial
 import default_config.util as util
 from default_config.masif_opts import masif_opts
-from tf2.masif_ligand.stochastic.get_data import get_data
+import tfbio.data
 
 params = masif_opts['LSResNet']
 ligand_list = masif_opts['ligand_list']
@@ -12,32 +12,36 @@ include_solvents = False
 
 if include_solvents:
     ligand_list = masif_opts['all_ligands']
+    all_pdbs = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/filtered_pdbs.txt', dtype=str)
 else:
     ligand_list = masif_opts['ligand_list']
-
-all_pdbs = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/filtered_pdbs.txt', dtype=str)
-all_pdbs = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/using_pdbs_final_reg.txt', dtype=str)
+    all_pdbs = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/using_pdbs_final_reg.txt', dtype=str)
 
 n_pdbs = len(all_pdbs)
 for i, pdb_id in enumerate(all_pdbs):
     print(f'{i+1} of {n_pdbs} PDBs, {pdb_id}')
     
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
-    X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
-    Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
-    Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
-    xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
-    tree = spatial.KDTree(xyz_coords)
-    
-    coordsPath = os.path.join(
-        params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
-    )
-    all_ligand_coords = np.load(coordsPath, allow_pickle=True, encoding='latin1')
-    all_ligand_types = np.load(
-        os.path.join(
-            params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
+    try:
+        X_coords = np.load(os.path.join(mydir, "p1_X.npy"))
+        Y_coords = np.load(os.path.join(mydir, "p1_Y.npy"))
+        Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
+        xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
+
+        coordsPath = os.path.join(
+            params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
         )
-    ).astype(str)
+        all_ligand_coords = np.load(coordsPath, allow_pickle=True, encoding='latin1')
+        all_ligand_types = np.load(
+            os.path.join(
+                params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
+            )
+        ).astype(str)
+    except:
+        continue
+    
+    tree = spatial.KDTree(xyz_coords)
+    n_samples = len(X_coords)
     
     pocket_points = []
     for j, structure_ligand in enumerate(all_ligand_types):
@@ -58,6 +62,6 @@ for i, pdb_id in enumerate(all_pdbs):
     y = tfbio.data.make_grid(xyz_coords, labels, max_dist=params['max_dist'], grid_resolution=resolution)
     y[y > 0] = 1
 
-    np.save(os.path.join(mydir, f'LSRN_y.npy'), y_list)
+    np.save(os.path.join(mydir, f'LSRN_y.npy'), y)
 
 print('Finished!')
