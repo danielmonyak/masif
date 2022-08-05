@@ -131,10 +131,12 @@ with tf.device(dev):
                 print('\nReshuffling training set...')
                 continue
 
+            print(f'pdb_id: {pdb_id}')
             try:
                 X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'), allow_pickle=True)
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
             except:
+                print('FAILED')
                 continue
 
 #            get_data_time += time()
