@@ -56,7 +56,7 @@ model = LSResNet(
     learning_rate = lr,
     n_rotations=4,
     reg_val = 0,
-    extra_conv_layers = True
+    extra_conv_layers = False
 )
 if continue_training:
     model.load_weights(ckpPath)
