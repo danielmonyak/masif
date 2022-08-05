@@ -16,7 +16,7 @@ from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
 
 params = masif_opts["ligand"]
 
-lr = 1e-3
+lr = 1e-2
 
 n_train_batches = 10
 batch_sz = 32
