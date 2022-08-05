@@ -19,14 +19,27 @@ for i, pdb_id in enumerate(all_pdbs):
 
     mydir = os.path.join(precom_dir, pdb_id)
     X, pocket_points, y = data
+    
+    ###
+    X_list = []
+    y_list = []
+    ###
     for k, pp in enumerate(pocket_points):
         y_temp = y[k]
         X_temp = [arr[:, pp] for arr in X]
         
         X_temp[0] = np.squeeze(X_temp[0], 0)
         X_temp[3] = np.squeeze(X_temp[3], 0)
-
-        np.save(os.path.join(mydir, f'X_{k}.npy'), X_temp)
-        np.save(os.path.join(mydir, f'y_{k}.npy'), y_temp)
+        
+        ###
+        X_list.append(X_temp)
+        y_list.append(y_temp)
+        ###
+        
+        #np.save(os.path.join(mydir, f'X_{k}.npy'), X_temp)
+        #np.save(os.path.join(mydir, f'y_{k}.npy'), y_temp)
+    
+    np.save(os.path.join(mydir, f'X.npy'), X_list)
+    np.save(os.path.join(mydir, f'y.npy'), y_list)
 
 print('Finished!')
