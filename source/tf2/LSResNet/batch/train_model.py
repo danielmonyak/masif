@@ -122,7 +122,7 @@ while iterations < num_iterations:
             continue
             
         X, y = data
-        X_tf = tuple(tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
+        X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
         y_tf = tf.constant(y)
         
         grads = train_step(X_tf, y_tf)
@@ -180,7 +180,7 @@ while iterations < num_iterations:
             continue
         
         X, y, _ = data
-        X_tf = tuple(tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
+        X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
         y_tf = tf.constant(y)
         
         test_step(X_tf, y_tf)
