@@ -12,15 +12,19 @@ for phys_g in phys_gpus:
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.LSResNet.LSResNet import LSResNet
-from get_data import get_data
+from tf2.LSResNet.get_data import get_data
 
 params = masif_opts["LSResNet"]
 
-#lr = 1e-3
 lr = 1e-3
 
-n_train = 300
+
+n_train_batches = 10
+batch_sz = 32
 n_val = 50
+
+#n_train = 300
+#n_val = 50
 
 
 train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
@@ -57,17 +61,17 @@ model = LSResNet(
     learning_rate = lr,
     n_rotations=4,
     reg_val = 0,
-    extra_conv_layers = False
+    extra_conv_layers = True
 )
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
 print()
 
-from_logits = True
-optimizer = tf.keras.optimizers.SGD(learning_rate=lr, momentum=0.9)
-loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits=from_logits)
-
+#optimizer = tf.keras.optimizers.SGD(learning_rate=lr, momentum=0.9)
+optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
+loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+loss_metric = tf.keras.metrics.Mean()
 
 train_acc_metric = tf.keras.metrics.BinaryAccuracy()
 train_auc_metric = tf.keras.metrics.AUC()
@@ -79,20 +83,22 @@ val_auc_metric = tf.keras.metrics.AUC()
 val_F1_lower_metric = util.F1_Metric(threshold = 0.3)
 val_F1_metric = util.F1_Metric(threshold = 0.5)
 
+grads = None
+
 @tf.function
 def train_step(x, y):
     with tf.GradientTape() as tape:
         logits = model(x, training=True)
         loss_value = loss_fn(y, logits)
-    grads = tape.gradient(loss_value, model.trainable_weights)
-    optimizer.apply_gradients(zip(grads, model.trainable_weights))
+    loss_metric.update_state(loss_value)
     
     y_pred = tf.sigmoid(logits)
     train_acc_metric.update_state(y, y_pred)
     train_auc_metric.update_state(y, y_pred)
     train_F1_lower_metric.update_state(y, y_pred)
     train_F1_metric.update_state(y, y_pred)
-    return loss_value
+    
+    return tape.gradient(loss_value, model.trainable_weights)
 
 @tf.function
 def test_step(x, y):
@@ -106,8 +112,8 @@ def test_step(x, y):
 iterations = starting_iteration
 while iterations < num_iterations:
     i = 0
-    loss_list = []
-    while i < n_train:
+    j = 0
+    while j < n_train_batches:
         try:
             pdb_id = next(train_iter)
         except:
@@ -116,39 +122,53 @@ while iterations < num_iterations:
             print('\nReshuffling training set...')
             continue
         
-        data = get_data(pdb_id, training=False, include_solvents=include_solvents)
+        data = get_data(pdb_id, training=True, include_solvents=include_solvents)
         if data is None:
             continue
             
         X, y = data
-        loss_value = train_step(X, y)
-        loss_list.append(loss_value)
+        grads = train_step(X, y)
+        
+        if i == 0:
+            grads_sum = grads
+        else:
+            grads_sum = [grads_sum[grad_i]+grads[grad_i] for grad_i in range(len(grads))]
+
         i += 1
         iterations += 1
+        
+        if (i >= batch_sz) and (np.mean(y_true_idx_used) > 0.8):
+            print(f'Training batch {j} - {i} proteins')
     
-    mean_loss = np.mean(loss_list)
-    train_acc = train_acc_metric.result()
-    train_auc = train_auc_metric.result()
-    train_F1_lower = train_F1_lower_metric.result()
-    train_F1 = train_F1_metric.result()
-    
-    print(f'\nTRAINING results over {i} PDBs') 
-    print("Loss --------------------- %.4f" % (mean_loss,))
-    print("Accuracy ----------------- %.4f" % (float(train_acc),))
-    print("AUC      ----------------- %.4f" % (float(train_auc),))
-    print("F1 Lower ----------------- %.4f" % (float(train_F1_lower),))
-    print("F1       ----------------- %.4f" % (float(train_F1),))
-    
+            mean_loss = float(loss_metric.result())
+            train_acc = float(train_acc_metric.result())
+            train_auc = float(train_auc_metric.result())
+            train_F1_lower = float(train_F1_lower_metric.result())
+            train_F1 = float(train_F1_metric.result())
+            
+            loss_metric.reset_states()
+            train_acc_metric.reset_states()
+            train_auc_metric.reset_states()
+            train_F1_lower_metric.reset_states()
+            train_F1_metric.reset_states()
+            
+            print(f'\nTRAINING results over {i} PDBs') 
+            print("Loss --------------------- %.4f" % mean_loss)
+            print("Accuracy ----------------- %.4f" % train_acc)
+            print("AUC      ----------------- %.4f" % train_auc)
+            print("F1 Lower ----------------- %.4f" % train_F1_lower)
+            print("F1       ----------------- %.4f" % train_F1)
+            
+            grads = [tsr/i for tsr in grads_sum]
+            optimizer.apply_gradients(zip(grads, model.trainable_weights))
+            
+            i = 0
+            j += 1
+            
     print(f'{iterations} iterations completed')
     
-    train_acc_metric.reset_states()
-    train_auc_metric.reset_states()
-    train_F1_lower_metric.reset_states()
-    train_F1_metric.reset_states()
-    
     #####################################
     #####################################
-    
     i = 0
     while i < n_val:
         try:
