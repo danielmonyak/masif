@@ -138,13 +138,13 @@ with tf.device(dev):
                 print('\nReshuffling training set...')
                 continue
 
-            print(f'pdb_id: {pdb_id}')
-            print(y_true_idx_used)
+            #print(f'pdb_id: {pdb_id}')
+            #print(y_true_idx_used)
             try:
                 X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'), allow_pickle=True)
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
             except:
-                print('FAILED')
+                #print('FAILED')
                 continue
 
 #            get_data_time += time()
@@ -177,7 +177,7 @@ with tf.device(dev):
 
 #            train_time += time()
 
-            if i >= batch_sz and np.all(y_true_idx_used):
+            if (i >= batch_sz) and (np.mean(y_true_idx_used) > 0.8):
                 print(f'Training batch {j} - {i} pockets')
 
                 mean_loss = float(loss_metric.result())
