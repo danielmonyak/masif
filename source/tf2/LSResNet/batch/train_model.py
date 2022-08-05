@@ -109,8 +109,6 @@ while iterations < num_iterations:
     i = 0
     j = 0
     while j < n_train_batches:
-        print(i)
-        
         try:
             pdb_id = next(train_iter)
         except:
@@ -126,8 +124,6 @@ while iterations < num_iterations:
         X, y = data
         X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
         y_tf = tf.constant(y)
-        
-        print('Training...')
         
         grads = train_step(X_tf, y_tf)
         
