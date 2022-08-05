@@ -158,7 +158,7 @@ with tf.device('/GPU:1'):
             if data is None:
                 continue
 
-            X, y = data
+            X, y, _ = data
             loss, acc, auc, F1_04_, F1_, F1_06_ = model.evaluate(X, y, verbose=0)[:6]
             loss_list.append(loss)
             acc_list.append(acc)
