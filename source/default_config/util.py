@@ -105,7 +105,7 @@ class F1_Metric(metrics.Metric):
         precision = overlap/n_pred
         f1 = 2*precision*recall / (precision + recall)
         f1 = tf.where(tf.math.is_nan(f1), tf.zeros_like(f1), f1)
-        self.total += tf.cast(f1, self.dtype)
-        self.count += tf.cast(1, self.dtype)
+        self.total.assign_add(tf.cast(f1, self.dtype))
+        self.count.assign_add(tf.cast(1, self.dtype))
     def result(self):
         return self.total/self.count
