@@ -43,11 +43,14 @@ training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/li
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/val_pdbs_sequence.npy')
 
 def F1_04(y_true, y_pred): return util.F1(y_true, y_pred, threshold=0.4)
+
 def F1_06(y_true, y_pred): return util.F1(y_true, y_pred, threshold=0.6)
 
+'''
 code32 = tf.cast(params['defaultCode'], dtype=tf.float32)
 code64 = tf.cast(params['defaultCode'], dtype=tf.float64)
 dataset_padding = (((code64, code64, code64, code64), code64), code32)
+'''
 
 with tf.device('/GPU:1'):
     model = LSResNet(
