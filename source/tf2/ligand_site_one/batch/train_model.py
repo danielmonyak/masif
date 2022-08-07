@@ -2,7 +2,6 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import sys
 import numpy as np
-from scipy import spatial
 import pickle
 import tensorflow as tf
 
@@ -12,16 +11,22 @@ for phys_g in phys_gpus:
 
 import default_config.util as util
 from default_config.masif_opts import masif_opts
-from tf2.LSResNet.LSResNet import LSResNet
-from tf2.LSResNet.get_data import get_data
+from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
+from tf2.ligand_site_one.get_data import get_data
 
-params = masif_opts["LSResNet"]
+params = masif_opts["ligand_site"]
 
+#############################################
+#############################################
 lr = 1e-2
+use_sample_weight = False
 
 n_train_batches = 10
 batch_sz = 32
 n_val = 50
+#############################################
+#############################################
+
 
 train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_reg.npy')
@@ -32,7 +37,6 @@ val_iter = iter(val_list)
 
 ##########################################
 ##########################################
-#from train_vars import train_vars
 with open('train_vars.pickle', 'rb') as handle:
     train_vars = pickle.load(handle)
 
@@ -50,23 +54,20 @@ if continue_training:
 
 include_solvents = False
 
-#with tf.device('/GPU:1'):
-model = LSResNet(
+model = MaSIF_ligand_site(
     params["max_distance"],
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
     learning_rate = lr,
     n_rotations=4,
-    reg_val = 0,
-    extra_conv_layers = True
+    reg_val = 0
 )
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
 print()
 
-#optimizer = tf.keras.optimizers.SGD(learning_rate=lr, momentum=0.9)
 optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
 loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits=True)
 loss_metric = tf.keras.metrics.Mean()
@@ -123,14 +124,14 @@ while iterations < num_iterations:
             continue
         
         try:
-            y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
+            y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LS_y.npy'))
         except:
             continue
 
         data = get_data(pdb_id, training=True, include_solvents=include_solvents, make_y = False)
         if data is None:
             continue
-        X, _ = data
+        X, _, _ = data
         
         X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
         y_tf = tf.constant(y)
