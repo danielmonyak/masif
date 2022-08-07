@@ -44,6 +44,10 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
     Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
     xyz_coords = np.vstack([X_coords, Y_coords, Z_coords ]).T
     
+    # Normalize coordinates
+    centroid = xyz_coords.mean(axis=0)
+    xyz_coords_normalized = xyz_coords - centroid
+    
     if make_y:
         tree = spatial.KDTree(xyz_coords)
         
@@ -77,15 +81,12 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
             return None
     
         resolution = 1. / params['scale']
-        y = tfbio.data.make_grid(xyz_coords, labels, max_dist=params['max_dist'], grid_resolution=resolution)
+        y = tfbio.data.make_grid(xyz_coords_normalized, labels, max_dist=params['max_dist'], grid_resolution=resolution)
     
         y[y > 0] = 1
     else:
         y = None
         
-    # Normalize coordinates
-    centroid = xyz_coords.mean(axis=0)
-    xyz_coords_normalized -= centroid
     
     ###
     X = (data_tsrs, np.expand_dims(xyz_coords_normalized, axis=0))
