@@ -53,19 +53,12 @@ for i, pdb_id in enumerate(all_pdbs):
         temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
         pocket_points.extend(temp_pocket_points)
     
-    labels = np.zeros([n_samples, 1], dtype=np.int32)
-    labels[pocket_points, 0] = 1
+    labels = np.zeros([1, n_samples, 1], dtype=np.int32)
+    labels[0, pocket_points, 0] = 1
+    
     if (np.mean(labels) > 0.75) or (np.sum(labels) < 30):
         continue
     
-    # Normalize coordinates
-    centroid = xyz_coords.mean(axis=0)
-    xyz_coords_normalized = xyz_coords - centroid
-    
-    resolution = 1. / params['scale']
-    y = tfbio.data.make_grid(xyz_coords_normalized, labels, max_dist=params['max_dist'], grid_resolution=resolution)
-    y[y > 0] = 1
-
-    np.save(os.path.join(mydir, f'LSRN_y.npy'), y)
+    np.save(os.path.join(mydir, f'LS_y.npy'), labels)
 
 print('Finished!')
