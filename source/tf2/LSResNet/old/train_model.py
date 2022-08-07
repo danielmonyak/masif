@@ -79,7 +79,6 @@ with tf.device('/GPU:1'):
     #######################################
 
     cur_batch_sz = 0
-    print(f'Running training data, epoch {i}')
     for i in range(num_epochs):
         if i < starting_epoch:
             continue
