@@ -188,7 +188,7 @@ while iterations < num_iterations:
         data = get_data(pdb_id, training=False, include_solvents=include_solvents, make_y = False)
         if data is None:
             continue
-        X, _ = data
+        X, _, _ = data
         
         X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
         y_tf = tf.constant(y)
