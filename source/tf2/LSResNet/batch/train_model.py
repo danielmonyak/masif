@@ -56,7 +56,7 @@ model = LSResNet(
     learning_rate = lr,
     n_rotations=4,
     reg_val = 0,
-    extra_conv_layers = False
+    extra_conv_layers = True
 )
 if continue_training:
     model.load_weights(ckpPath)
@@ -127,15 +127,8 @@ while iterations < num_iterations:
         data = get_data(pdb_id, training=True, include_solvents=include_solvents, make_y = False)
         if data is None:
             continue
-
         X, _ = data
-        '''
-        data = get_data(pdb_id, training=True, include_solvents=include_solvents, make_y = True)
-        if data is None:
-            continue
-
-        X, y = data
-        '''
+        
         X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
         y_tf = tf.constant(y)
         
@@ -195,15 +188,8 @@ while iterations < num_iterations:
         data = get_data(pdb_id, training=False, include_solvents=include_solvents, make_y = False)
         if data is None:
             continue
-
         X, _ = data
-        '''
-        data = get_data(pdb_id, training=False, include_solvents=include_solvents)
-        if data is None:
-            continue
         
-        X, y, _ = data
-        '''
         X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
         y_tf = tf.constant(y)
         
