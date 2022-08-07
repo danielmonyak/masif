@@ -11,7 +11,7 @@ script=${job_name}.py
 
 #####
 if [[ -f train_vars.py ]]; then rm train_vars.py; fi
-python input_helper.py
+python $masif_source/tf2/input_helper_iters.py
 #####
 
 python -u $script > ${job_name}.out 2>${job_name}.err &
