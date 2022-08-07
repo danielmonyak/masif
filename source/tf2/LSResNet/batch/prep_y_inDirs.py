@@ -58,8 +58,12 @@ for i, pdb_id in enumerate(all_pdbs):
     if (np.mean(labels) > 0.75) or (np.sum(labels) < 30):
         continue
     
+    # Normalize coordinates
+    centroid = xyz_coords.mean(axis=0)
+    xyz_coords_normalized = xyz_coords - centroid
+    
     resolution = 1. / params['scale']
-    y = tfbio.data.make_grid(xyz_coords, labels, max_dist=params['max_dist'], grid_resolution=resolution)
+    y = tfbio.data.make_grid(xyz_coords_normalized, labels, max_dist=params['max_dist'], grid_resolution=resolution)
     y[y > 0] = 1
 
     np.save(os.path.join(mydir, f'LSRN_y.npy'), y)
