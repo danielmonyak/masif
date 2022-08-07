@@ -8,8 +8,12 @@ params = masif_opts["LSResNet"]
 
 def get_data(pdb_id, training = True):
     mydir = os.path.join(params["masif_precomputation_dir"], pdb_id + '_')
+    
+    try:
+        mask = np.load(os.path.join(mydir, "p1_mask.npy"))
+    except:
+        continue
 
-    mask = np.load(os.path.join(mydir, "p1_mask.npy"))
     n_samples = mask.shape[0]
 
     if training and n_samples > 8000:
