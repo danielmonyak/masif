@@ -12,7 +12,7 @@ def get_data(pdb_id, training = True):
     try:
         mask = np.load(os.path.join(mydir, "p1_mask.npy"))
     except:
-        continue
+        return None
 
     n_samples = mask.shape[0]
 
