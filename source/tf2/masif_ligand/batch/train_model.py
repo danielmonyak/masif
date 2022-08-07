@@ -23,7 +23,7 @@ n_train_batches = 10
 batch_sz = 64
 n_val = 50
 
-reg_val = 0
+reg_val = 1e-4
 reg_type = 'l2'
 
 dev = '/GPU:3'
@@ -68,7 +68,7 @@ model = MaSIF_ligand(
     len(ligand_list),
     feat_mask=params["feat_mask"],
     reg_val = reg_val, reg_type = reg_type,
-    keep_prob=1.0
+    keep_prob=0.9
 )
 if continue_training:
     model.load_weights(ckpPath)
