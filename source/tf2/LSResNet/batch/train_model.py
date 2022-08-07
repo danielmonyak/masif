@@ -16,7 +16,7 @@ from tf2.LSResNet.get_data import get_data
 
 params = masif_opts["LSResNet"]
 
-lr = 1e-2
+lr = 1e-3
 
 n_train_batches = 10
 batch_sz = 32
