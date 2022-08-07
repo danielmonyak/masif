@@ -46,6 +46,7 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
     
     if make_y:
         tree = spatial.KDTree(xyz_coords)
+        
         coordsPath = os.path.join(
             params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
         )
@@ -62,9 +63,8 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
 
         pocket_points = []
         for j, structure_ligand in enumerate(all_ligand_types):
-            if not structure_ligand in ligand_list:
-                continue
-
+            #if not structure_ligand in ligand_list:
+            #    continue
             ligand_coords = all_ligand_coords[j]
             temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
             temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
@@ -82,12 +82,13 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
         y[y > 0] = 1
     else:
         y = None
-
-    ###
+        
+    # Normalize coordinates
     centroid = xyz_coords.mean(axis=0)
-    xyz_coords -= centroid
+    xyz_coords_normalized -= centroid
+    
     ###
-    X = (data_tsrs, np.expand_dims(xyz_coords, axis=0))
+    X = (data_tsrs, np.expand_dims(xyz_coords_normalized, axis=0))
 
     if training:
         return X, y
