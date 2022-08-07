@@ -3,6 +3,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import sys
 import numpy as np
 from scipy import spatial
+import pickle
 import tensorflow as tf
 
 phys_gpus = tf.config.list_physical_devices('GPU')
@@ -31,7 +32,9 @@ val_iter = iter(val_list)
 
 ##########################################
 ##########################################
-from train_vars import train_vars
+#from train_vars import train_vars
+with open('train_vars.pickle', 'rb') as handle:
+    train_vars = pickle.load(handle)
 
 continue_training = train_vars['continue_training']
 ckpPath = train_vars['ckpPath']
