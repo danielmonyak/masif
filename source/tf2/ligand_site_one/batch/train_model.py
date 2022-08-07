@@ -52,8 +52,6 @@ if continue_training:
 ##########################################
 ##########################################
 
-include_solvents = False
-
 dev = '/GPU:1'
 
 model = MaSIF_ligand_site(
@@ -130,7 +128,7 @@ while iterations < num_iterations:
         except:
             continue
 
-        data = get_data(pdb_id, training=True, include_solvents=include_solvents, make_y = False)
+        data = get_data(pdb_id, training=True make_y = False)
         if data is None:
             continue
         X, _, _ = data
@@ -191,7 +189,7 @@ while iterations < num_iterations:
         except:
             continue
 
-        data = get_data(pdb_id, training=False, include_solvents=include_solvents, make_y = False)
+        data = get_data(pdb_id, training=False, make_y = False)
         if data is None:
             continue
         X, _, _ = data
