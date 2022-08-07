@@ -46,7 +46,7 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
     
     # Normalize coordinates
     centroid = xyz_coords.mean(axis=0)
-    xyz_coords_normalized -= centroid
+    xyz_coords_normalized = xyz_coords - centroid
     
     if make_y:
         tree = spatial.KDTree(xyz_coords)
