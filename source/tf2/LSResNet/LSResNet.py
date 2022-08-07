@@ -58,19 +58,18 @@ class LSResNet(Model):
                           [-1, self.n_feat, self.n_thetas * self.n_rhos],
                           [-1, self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos]]
 
-
         self.convBlock0 = [
             ConvLayer(5, self.conv_shapes[0], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
             layers.Reshape(self.reshape_shapes[0])
         ]
-        
+
         self.denseReduce = [
             layers.BatchNormalization(),
             layers.ReLU(),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Dense(self.n_feat, activation="relu"),
         ]
-        
+
         resolution = 1. / self.scale
         self.myMakeGrid = MakeGrid(max_dist=self.max_dist, grid_resolution=resolution)
         
@@ -85,7 +84,7 @@ class LSResNet(Model):
         strides = (1,1,1)
         
         self.RNConvBlock=[
-            [layers.Conv3D(filters1, kernel_size=1, strides=strides),
+            [layers.Conv3D(filters1, kernel_size=1, strides=strides, data_format=K.image_data_format()),
             layers.BatchNormalization(axis=bn_axis),
             layers.ReLU(),
              
