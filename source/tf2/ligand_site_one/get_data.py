@@ -6,7 +6,12 @@ from default_config.masif_opts import masif_opts
 
 params = masif_opts["ligand_site"]
 
-def get_data(func_input, training = True, make_y=True, mode='pdb_id'):
+def get_data(func_input, training = True, make_y=True, mode='pdb_id', include_solvents=False):
+    if include_solvents:
+        ligand_list = masif_opts['all_ligands']
+    else:
+        ligand_list = masif_opts['ligand_list']
+
     if mode == 'pdb_id':
         pdb_id = func_input
         mydir = os.path.join(params["masif_precomputation_dir"], pdb_id.rstrip('_') + '_')
@@ -52,6 +57,9 @@ def get_data(func_input, training = True, make_y=True, mode='pdb_id'):
 
         pocket_points = []
         for j, structure_ligand in enumerate(all_ligand_coords):
+            if not structure_ligand in ligand_list:
+                continue
+
             ligand_coords = all_ligand_coords[j]
             temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
             temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
