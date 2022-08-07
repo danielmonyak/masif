@@ -161,7 +161,9 @@ class LSResNet(Model):
         strides = (1,1,1)
         
         self.RNConvBlock=[
-            [layers.Conv3D(filters1, kernel_size=1, strides=strides, data_format=K.image_data_format()),
+            [
+            #layers.Conv3D(filters1, kernel_size=1, strides=strides, data_format=K.image_data_format()),
+            layers.Conv3D(filters1, kernel_size=1, strides=strides),
             layers.BatchNormalization(axis=bn_axis),
             layers.ReLU(),
              
