@@ -48,7 +48,6 @@ if continue_training:
 ##########################################
 ##########################################
 
-#with tf.device('/GPU:1'):
 model = LSResNet(
     params["max_distance"],
     feat_mask=params["feat_mask"],
@@ -105,113 +104,115 @@ def test_step(x, y):
     val_F1_lower_metric.update_state(y, y_pred)
     val_F1_metric.update_state(y, y_pred)
 
-iterations = starting_iteration
-epoch = 0
-while iterations < num_iterations:
-    i = 0
-    j = 0
-    while j < n_train_batches:
-        try:
-            pdb_id = next(train_iter)
-        except:
-            np.random.shuffle(train_list)
-            train_iter = iter(train_list)
-            print('\nReshuffling training set...')
-            epoch += 1
-            continue
-        
-        try:
-            y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
-        except:
-            continue
+    
+with tf.device('/GPU:3'):
+    iterations = starting_iteration
+    epoch = 0
+    while iterations < num_iterations:
+        i = 0
+        j = 0
+        while j < n_train_batches:
+            try:
+                pdb_id = next(train_iter)
+            except:
+                np.random.shuffle(train_list)
+                train_iter = iter(train_list)
+                print('\nReshuffling training set...')
+                epoch += 1
+                continue
 
-        data = get_data(pdb_id, training=True, make_y = False)
-        if data is None:
-            continue
-        X, _ = data
-        
-        X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
-        y_tf = tf.constant(y)
-        
-        grads = train_step(X_tf, y_tf)
-        
-        if i == 0:
-            grads_sum = grads
-        else:
-            grads_sum = [grads_sum[grad_i]+grads[grad_i] for grad_i in range(len(grads))]
+            try:
+                y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
+            except:
+                continue
 
-        i += 1
-        iterations += 1
-        
-        if i >= batch_sz:
-            mean_loss = float(loss_metric.result())
-            train_acc = float(train_acc_metric.result())
-            train_auc = float(train_auc_metric.result())
-            train_F1_lower = float(train_F1_lower_metric.result())
-            train_F1 = float(train_F1_metric.result())
-            
-            loss_metric.reset_states()
-            train_acc_metric.reset_states()
-            train_auc_metric.reset_states()
-            train_F1_lower_metric.reset_states()
-            train_F1_metric.reset_states()
-            
-            print(f'\nTraining batch {j} - {i} proteins')
-            print("Loss --------------------- %.4f" % mean_loss)
-            print("Accuracy ----------------- %.4f" % train_acc)
-            print("AUC      ----------------- %.4f" % train_auc)
-            print("F1 Lower ----------------- %.4f" % train_F1_lower)
-            print("F1       ----------------- %.4f" % train_F1)
-            
-            grads = [tsr/i for tsr in grads_sum]
-            optimizer.apply_gradients(zip(grads, model.trainable_weights))
-            
-            i = 0
-            j += 1
-            
-    print(f'\n{iterations} iterations, {epoch} epochs completed')
-    
-    #####################################
-    #####################################
-    i = 0
-    while i < n_val:
-        try:
-            pdb_id = next(val_iter)
-        except:
-            val_iter = iter(val_list)
-            continue
-        
-        try:
-            y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
-        except:
-            continue
-            
-        data = get_data(pdb_id, training=False, make_y = False)
-        if data is None:
-            continue
-        X, _, _ = data
-        
-        X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
-        y_tf = tf.constant(y)
-        
-        test_step(X_tf, y_tf)
-        i += 1
-    
-    val_acc = float(val_acc_metric.result())
-    val_auc = float(val_auc_metric.result())
-    val_F1_lower = float(val_F1_lower_metric.result())
-    val_F1 = float(val_F1_metric.result())
-    
-    train_acc_metric.reset_states()
-    train_auc_metric.reset_states()
-    train_F1_lower_metric.reset_states()
-    train_F1_metric.reset_states()
-    
-    print(f'\nVALIDATION results over {i} PDBs') 
-    print("Accuracy ----------------- %.4f" % val_acc)
-    print("AUC      ----------------- %.4f" % val_auc)
-    print("F1 Lower ----------------- %.4f" % val_F1_lower)
-    print("F1       ----------------- %.4f" % val_F1)
-    
-    print(f'\nSaving model weights to {ckpPath}\n')
-    model.save_weights(ckpPath)
+            data = get_data(pdb_id, training=True, make_y = False)
+            if data is None:
+                continue
+            X, _ = data
+
+            X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
+            y_tf = tf.constant(y)
+
+            grads = train_step(X_tf, y_tf)
+
+            if i == 0:
+                grads_sum = grads
+            else:
+                grads_sum = [grads_sum[grad_i]+grads[grad_i] for grad_i in range(len(grads))]
+
+            i += 1
+            iterations += 1
+
+            if i >= batch_sz:
+                mean_loss = float(loss_metric.result())
+                train_acc = float(train_acc_metric.result())
+                train_auc = float(train_auc_metric.result())
+                train_F1_lower = float(train_F1_lower_metric.result())
+                train_F1 = float(train_F1_metric.result())
+
+                loss_metric.reset_states()
+                train_acc_metric.reset_states()
+                train_auc_metric.reset_states()
+                train_F1_lower_metric.reset_states()
+                train_F1_metric.reset_states()
+
+                print(f'\nTraining batch {j} - {i} proteins')
+                print("Loss --------------------- %.4f" % mean_loss)
+                print("Accuracy ----------------- %.4f" % train_acc)
+                print("AUC      ----------------- %.4f" % train_auc)
+                print("F1 Lower ----------------- %.4f" % train_F1_lower)
+                print("F1       ----------------- %.4f" % train_F1)
+
+                grads = [tsr/i for tsr in grads_sum]
+                optimizer.apply_gradients(zip(grads, model.trainable_weights))
+
+                i = 0
+                j += 1
+
+        print(f'\n{iterations} iterations, {epoch} epochs completed')
+
+        #####################################
+        #####################################
+        i = 0
+        while i < n_val:
+            try:
+                pdb_id = next(val_iter)
+            except:
+                val_iter = iter(val_list)
+                continue
+
+            try:
+                y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
+            except:
+                continue
+
+            data = get_data(pdb_id, training=False, make_y = False)
+            if data is None:
+                continue
+            X, _, _ = data
+
+            X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
+            y_tf = tf.constant(y)
+
+            test_step(X_tf, y_tf)
+            i += 1
+
+        val_acc = float(val_acc_metric.result())
+        val_auc = float(val_auc_metric.result())
+        val_F1_lower = float(val_F1_lower_metric.result())
+        val_F1 = float(val_F1_metric.result())
+
+        train_acc_metric.reset_states()
+        train_auc_metric.reset_states()
+        train_F1_lower_metric.reset_states()
+        train_F1_metric.reset_states()
+
+        print(f'\nVALIDATION results over {i} PDBs') 
+        print("Accuracy ----------------- %.4f" % val_acc)
+        print("AUC      ----------------- %.4f" % val_auc)
+        print("F1 Lower ----------------- %.4f" % val_F1_lower)
+        print("F1       ----------------- %.4f" % val_F1)
+
+        print(f'\nSaving model weights to {ckpPath}\n')
+        model.save_weights(ckpPath)
