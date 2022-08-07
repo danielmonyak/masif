@@ -69,6 +69,7 @@ class F1_Metric_Hinge(metrics.Metric):
         self.total = self.add_weight(name='total', initializer='zeros')
         self.count = self.add_weight(name='count', initializer='zeros')
     def update_state(self, y_true, y_pred):
+        y_true = tf.cast(y_true, dtype=tf.float32)
         y_true = tf.reshape(y_true, [-1]) > 0.0
         y_pred = tf.reshape(y_pred, [-1]) > 0.0
         overlap = tf.reduce_sum(tf.cast(y_true & y_pred, dtype=tf.float32))
@@ -93,6 +94,7 @@ class F1_Metric(metrics.Metric):
         self.from_logits = from_logits
         self.threshold = threshold
     def update_state(self, y_true, y_pred):
+        y_true = tf.cast(y_true, dtype=tf.float32)
         if self.from_logits:
             y_pred = tf.sigmoid(y_pred)
         y_true = tf.reshape(y_true, [-1]) > self.threshold
