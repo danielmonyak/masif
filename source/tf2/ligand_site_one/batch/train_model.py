@@ -128,7 +128,7 @@ while iterations < num_iterations:
         except:
             continue
 
-        data = get_data(pdb_id, training=True make_y = False)
+        data = get_data(pdb_id, training=True, make_y = False)
         if data is None:
             continue
         X, _, _ = data
