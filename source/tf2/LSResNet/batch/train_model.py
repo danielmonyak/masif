@@ -122,16 +122,16 @@ while iterations < num_iterations:
             epoch += 1
             continue
         
-        
+        try:
+            y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
+        except:
+            continue
+
         data = get_data(pdb_id, training=True, include_solvents=include_solvents, make_y = False)
         if data is None:
             continue
 
         X, _ = data
-        try:
-            y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
-        except:
-            continue
         '''
         data = get_data(pdb_id, training=True, include_solvents=include_solvents, make_y = True)
         if data is None:
@@ -190,17 +190,16 @@ while iterations < num_iterations:
             val_iter = iter(val_list)
             continue
         
-        
-        
+        try:
+            y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
+        except:
+            continue
+            
         data = get_data(pdb_id, training=False, include_solvents=include_solvents, make_y = False)
         if data is None:
             continue
 
         X, _ = data
-        try:
-            y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
-        except:
-            continue
         '''
         data = get_data(pdb_id, training=False, include_solvents=include_solvents)
         if data is None:
