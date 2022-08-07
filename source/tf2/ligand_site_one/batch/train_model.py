@@ -54,8 +54,9 @@ if continue_training:
 
 include_solvents = False
 
+dev = '/GPU:1'
 
-with tf.device('/GPU:1'):
+with tf.device(dev):
     model = MaSIF_ligand_site(
         params["max_distance"],
         feat_mask=params["feat_mask"],
@@ -110,21 +111,22 @@ with tf.device('/GPU:1'):
         val_F1_lower_metric.update_state(y, y_pred)
         val_F1_metric.update_state(y, y_pred)
 
-    iterations = starting_iteration
-    epoch = 0
-    while iterations < num_iterations:
-        i = 0
-        j = 0
-        while j < n_train_batches:
-            try:
-                pdb_id = next(train_iter)
-            except:
-                np.random.shuffle(train_list)
-                train_iter = iter(train_list)
-                print('\nReshuffling training set...')
-                epoch += 1
-                continue
-
+iterations = starting_iteration
+epoch = 0
+while iterations < num_iterations:
+    i = 0
+    j = 0
+    while j < n_train_batches:
+        try:
+            pdb_id = next(train_iter)
+        except:
+            np.random.shuffle(train_list)
+            train_iter = iter(train_list)
+            print('\nReshuffling training set...')
+            epoch += 1
+            continue
+        
+        with tf.device(dev):
             try:
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LS_y.npy'))
             except:
@@ -174,12 +176,14 @@ with tf.device('/GPU:1'):
                 i = 0
                 j += 1
 
-        print(f'\n{iterations} iterations, {epoch} epochs completed')
+    print(f'\n{iterations} iterations, {epoch} epochs completed')
 
-        #####################################
-        #####################################
-        i = 0
-        while i < n_val:
+    #####################################
+    #####################################
+    i = 0
+    while i < n_val:
+        
+        with tf.device(dev):
             try:
                 pdb_id = next(val_iter)
             except:
