@@ -187,7 +187,7 @@ with tf.device(dev):
                 continue
 
             try:
-                y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
+                y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LS_y.npy'))
             except:
                 continue
 
