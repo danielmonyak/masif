@@ -2,6 +2,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
 import numpy as np
+from scipy import spatial
 import tensorflow as tf
 
 phys_gpus = tf.config.list_physical_devices('GPU')
@@ -43,14 +44,11 @@ training_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/li
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/lists/val_pdbs_sequence.npy')
 
 def F1_04(y_true, y_pred): return util.F1(y_true, y_pred, threshold=0.4)
-
 def F1_06(y_true, y_pred): return util.F1(y_true, y_pred, threshold=0.6)
 
-'''
 code32 = tf.cast(params['defaultCode'], dtype=tf.float32)
 code64 = tf.cast(params['defaultCode'], dtype=tf.float64)
 dataset_padding = (((code64, code64, code64, code64), code64), code32)
-'''
 
 with tf.device('/GPU:1'):
     model = LSResNet(
@@ -84,9 +82,7 @@ with tf.device('/GPU:1'):
     for i in range(num_epochs):
         if i < starting_epoch:
             continue
-
-        print(f'Running training data, epoch {i}')
-
+        
         train_j = 0
         batch_i = 0
         #############################################################
@@ -102,7 +98,7 @@ with tf.device('/GPU:1'):
         F1_list = []
         F1_06_list = []
         for pdb_id in training_list:
-            data = get_data(pdb_id, training=True)
+            data = get_data(pdb_id)
             if data is None:
                 continue
 
@@ -157,11 +153,11 @@ with tf.device('/GPU:1'):
         F1_list = []
         F1_06_list = []
         for pdb_id in val_list:
-            data = get_data(pdb_id, training=False, allow_pickle=False)
+            data = get_data(pdb_id)
             if data is None:
                 continue
 
-            X, y, _ = data
+            X, y = data
             loss, acc, auc, F1_04_, F1_, F1_06_ = model.evaluate(X, y, verbose=0)[:6]
             loss_list.append(loss)
             acc_list.append(acc)
