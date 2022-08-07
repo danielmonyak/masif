@@ -7,7 +7,7 @@ import tfbio.data
 
 params = masif_opts["LSResNet"]
 
-def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_solvents=False, allow_pickle=True):
+def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_solvents=False):
     if include_solvents:
         ligand_list = masif_opts['all_ligands']
     else:
@@ -55,7 +55,7 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
             params['ligand_coords_dir'], "{}_ligand_coords.npy".format(pdb_id.split("_")[0])
         )
         try:
-            all_ligand_coords = np.load(coordsPath, allow_pickle=allow_pickle, encoding='latin1')
+            all_ligand_coords = np.load(coordsPath, allow_pickle=True, encoding='latin1')
             all_ligand_types = np.load(
                 os.path.join(
                     params['ligand_coords_dir'], "{}_ligand_types.npy".format(pdb_id.split("_")[0])
