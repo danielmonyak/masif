@@ -17,13 +17,13 @@ from tf2.masif_ligand.stochastic.get_data import get_data
 
 params = masif_opts["ligand"]
 
-lr = 1e-3
+lr = 1e-1
 
 n_train_batches = 10
 batch_sz = 64
 n_val = 50
 
-reg_val = 1e-3
+reg_val = 1e-2
 reg_type = 'l2'
 
 dev = '/GPU:3'
@@ -68,7 +68,7 @@ model = MaSIF_ligand(
     len(ligand_list),
     feat_mask=params["feat_mask"],
     reg_val = reg_val, reg_type = reg_type,
-    keep_prob=0.9
+    keep_prob=0.75
 )
 if continue_training:
     model.load_weights(ckpPath)
