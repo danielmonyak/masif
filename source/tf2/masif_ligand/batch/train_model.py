@@ -17,13 +17,13 @@ from tf2.masif_ligand.stochastic.get_data import get_data
 
 params = masif_opts["ligand"]
 
-lr = 1e-1
+lr = 1e-2
 
 n_train_batches = 10
 batch_sz = 64
 n_val = 50
 
-reg_val = 1e-2
+reg_val = 1e-3
 reg_type = 'l2'
 
 dev = '/GPU:3'
