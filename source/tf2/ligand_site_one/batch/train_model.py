@@ -18,7 +18,7 @@ params = masif_opts["ligand_site"]
 
 #############################################
 #############################################
-lr = 1e-4
+lr = 1e-5
 use_sample_weight = False
 
 n_train_batches = 10
