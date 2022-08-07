@@ -102,7 +102,7 @@ with tf.device('/GPU:1'):
         F1_list = []
         F1_06_list = []
         for pdb_id in training_list:
-            data = get_data(pdb_id, training=True, allow_pickle=False)
+            data = get_data(pdb_id, training=True)
             if data is None:
                 continue
 
