@@ -67,8 +67,9 @@ def get_data(func_input, training = True, make_y = True, mode='pdb_id', include_
 
         pocket_points = []
         for j, structure_ligand in enumerate(all_ligand_types):
-            #if not structure_ligand in ligand_list:
-            #    continue
+            if not structure_ligand in ligand_list:
+                continue
+
             ligand_coords = all_ligand_coords[j]
             temp_pocket_points = tree.query_ball_point(ligand_coords, 3.0)
             temp_pocket_points = list(set([pp for p in temp_pocket_points for pp in p]))
