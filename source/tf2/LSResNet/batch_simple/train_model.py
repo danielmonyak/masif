@@ -48,8 +48,6 @@ if continue_training:
 ##########################################
 ##########################################
 
-include_solvents = False
-
 #with tf.device('/GPU:1'):
 model = LSResNet(
     params["max_distance"],
@@ -127,7 +125,7 @@ while iterations < num_iterations:
         except:
             continue
 
-        data = get_data(pdb_id, training=True, include_solvents=include_solvents, make_y = False)
+        data = get_data(pdb_id, training=True, make_y = False)
         if data is None:
             continue
         X, _ = data
@@ -188,7 +186,7 @@ while iterations < num_iterations:
         except:
             continue
             
-        data = get_data(pdb_id, training=False, include_solvents=include_solvents, make_y = False)
+        data = get_data(pdb_id, training=False, make_y = False)
         if data is None:
             continue
         X, _, _ = data
