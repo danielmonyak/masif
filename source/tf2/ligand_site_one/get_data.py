@@ -32,7 +32,7 @@ def get_data(func_input, training = True, make_y=True, mode='pdb_id', include_so
     mask = np.expand_dims(mask, 2)
     indices = np.load(os.path.join(mydir, "p1_list_indices.npy"), encoding="latin1", allow_pickle = True)
     # indices is (n_verts x <30), it should be
-    indices = pad_indices(indices, mask.shape[1]).astype(np.int32)
+    indices = util.pad_indices(indices, mask.shape[1]).astype(np.int32)
 
     data_tsrs = tuple(np.expand_dims(tsr, axis=0) for tsr in [input_feat, rho_coords, theta_coords, mask])
     indices = np.expand_dims(indices, axis=0)
