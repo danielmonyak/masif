@@ -26,3 +26,13 @@ for tup in [('all', results.index, BIG_results.index), ('test', results['dataset
     print('Precision of pocket predictions: ', round(temp_BIG_results['precision'].mean(), 2), '\n\n')
 
 test = results.loc[results['dataset'] == 'test']
+
+
+
+
+print('Accuracy from predicted points: ', round((results['pred_pts_ligandIdx_pred'] == results['ligandIdx_true']).mean(), 2))
+print('Accuracy from true points: ', round((results['true_pts_ligandIdx_pred'] == results['ligandIdx_true']).mean(), 2))
+print('Matching accuracy between predicted and true points: ', round((results['true_pts_ligandIdx_pred'] == results['pred_pts_ligandIdx_pred']).mean(), 2))
+
+
+

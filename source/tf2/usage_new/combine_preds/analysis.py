@@ -26,3 +26,4 @@ for tup in [('all', results.index, BIG_results.index), ('test', results['dataset
     print('Precision of pocket predictions: ', round(temp_BIG_results['precision'].mean(), 2), '\n\n')
 
 test = results.loc[results['dataset'] == 'test']
+testBIG = BIG_results.loc[BIG_results['dataset'] == 'test']
