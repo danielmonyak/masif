@@ -210,7 +210,6 @@ with tf.device('/GPU:1'):
                 ligandIdx_true = ligand_list.index(ligand_true)
 
                 ###############
-                print(f'Predicted pocket: {pocket}')
                 print(f'True pocket: {ppt_idx_best}')
                 print(f'Recall: {recall}')
                 print(f'Precision: {precision}')
