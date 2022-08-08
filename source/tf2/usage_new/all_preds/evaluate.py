@@ -132,6 +132,7 @@ for dataset in ['test']:
                 continue
 
             pp_true_list.append(pocket_points_true)
+            lig_true_list.append(structure_ligand)
         
         if len(pp_true_list) == 0:
             print('Zero true pockets...')
@@ -231,7 +232,7 @@ for dataset in ['test']:
                 print('Something went wrong with ligand prediction...')
                 continue
             
-            ligand_true = all_ligand_types[ppt_idx_best]
+            ligand_true = lig_true_list[ppt_idx_best]
             ligandIdx_true = ligand_list.index(ligand_true)
             
             ###############
