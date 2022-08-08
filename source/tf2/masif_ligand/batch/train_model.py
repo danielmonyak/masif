@@ -96,14 +96,7 @@ def train_step(x, y):
     
     train_acc_metric.update_state(y, logits)
     return tape.gradient(loss_value, model.trainable_weights)
-    #return loss_value, tape.gradient(loss_value, model.trainable_weights)
-    #return loss_value
 
-
-@tf.function
-def apply_gradient(grads):
-    optimizer.apply_gradients(zip(grads, model.trainable_weights))
-    
 @tf.function
 def test_step(x, y):
     val_logits = model(x, training=False)
@@ -122,9 +115,6 @@ with tf.device(dev):
 #        batch_time = -time()
 
         while j < n_train_batches:
-
-#            get_data_time -= time()
-
             try:
                 pdb_id = next(train_iter)
             except:
@@ -132,80 +122,38 @@ with tf.device(dev):
                 train_iter = iter(train_list)
                 print('\nReshuffling training set...')
                 continue
-
+            
             data = get_data(pdb_id, include_solvents)
-
-
-#            get_data_time += time()
-
             if data is None:
                 continue
-
-#            train_time -= time()
-
             X, pocket_points, y = data
             for k, pp in enumerate(pocket_points):
                 pp_rand = np.random.choice(pp, minPockets, replace=False)
                 X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
                 y_temp = tf.constant(y[k])
-
                 grads = train_step(X_temp, y_temp)
-
-                #loss_value, grads = train_step(X_temp, y_temp)
-                #loss_list.append(loss_value)
-
                 y_true_idx_used[y[k]] = 1
-
                 if i == 0:
                     grads_sum = grads
                 else:
                     grads_sum = [grads_sum[grad_i]+grads[grad_i] for grad_i in range(len(grads))]
-
                 i += 1
                 iterations += 1
             pdb_count += 1
-
-#            train_time += time()
-
             if (i >= batch_sz) and (np.mean(y_true_idx_used) > 0.8):
                 print(f'Training batch {j} - {i} pockets')
-
                 mean_loss = float(loss_metric.result())
                 train_acc = float(train_acc_metric.result())
                 loss_metric.reset_states()
                 train_acc_metric.reset_states()
                 print("Loss -------- %.4f, Accuracy -------- %.4f, %d total PDBs" % (mean_loss, train_acc, pdb_count))
-
-#                before = time()
                 grads = [tsr/i for tsr in grads_sum]
-#                after = time()
-#                print(f'Mean grads: %.4f' % (after-before))
-
-#                before = time()
                 prep = zip(grads, model.trainable_weights)
-#                after = time()
-#                print(f'prep: %.4f' % (after-before))
-
-#                before = time()
                 optimizer.apply_gradients(zip(grads, model.trainable_weights))
-                #apply_gradient(grads)
-#                after = time()
-#                print('Apply gradients: %.3f' % (after-before))
-
-#                print('get_data_time: %.4f' % get_data_time)
-#                get_data_time = 0
-
-#                print('train_time: %.4f' % train_time)
-#                train_time = 0
-
                 i = 0
                 pdb_count = 0
                 y_true_idx_used.fill(0)
                 j += 1
-
-#                batch_time += time()
-#                print('batch_time: %.4f' % batch_time)
-#                batch_time = -time()
 
         '''
         #mean_loss = np.mean(loss_list)
