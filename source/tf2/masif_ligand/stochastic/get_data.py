@@ -9,7 +9,7 @@ minPockets = params['minPockets']
 
 #from time import time
 
-def get_data(pdb_id, include_solvents=True):
+def get_data(pdb_id, include_solvents=False):
     if include_solvents:
         ligand_list = masif_opts['all_ligands']
     else:
