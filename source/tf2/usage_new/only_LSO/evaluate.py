@@ -146,7 +146,7 @@ with tf.device('/GPU:1'):
             X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
             y_pred = np.squeeze(tf.sigmoid(LSO_model.predict(X_tf)) > LSO_threshold)
             
-            if y_pred.sum() == 0:
+            if y_pred.sum() < 32:
                 n_pockets_pred = 0
             else:
                 pocket_points_pred = y_pred.nonzero()[0]
