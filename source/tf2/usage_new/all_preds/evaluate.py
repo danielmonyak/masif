@@ -91,7 +91,7 @@ for dataset in ['test']:
             all_ligand_coords = np.load(
                 os.path.join(
                     ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
-                )
+                ), allow_pickle=True, encoding='latin1')
             )
             all_ligand_types = np.load(
                 os.path.join(
@@ -99,6 +99,7 @@ for dataset in ['test']:
                 )
             ).astype(str)
         except:
+            print('Cannot open ligand coords...')
             continue
         
         ####################
