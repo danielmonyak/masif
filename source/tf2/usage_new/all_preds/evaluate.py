@@ -116,6 +116,7 @@ for dataset in ['test']:
         pred.loadData(pdb_dir)
         
         pp_true_list = []
+        lig_true_list = []
         for lig_i in range(n_pockets_true):
             structure_ligand = all_ligand_types[lig_i]
             if not structure_ligand in ligand_list:
