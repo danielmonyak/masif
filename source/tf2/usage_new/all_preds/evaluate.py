@@ -117,6 +117,10 @@ for dataset in ['test']:
         
         pp_true_list = []
         for lig_i in range(n_pockets_true):
+            structure_ligand = all_ligand_types[lig_i]
+            if not structure_ligand in ligand_list:
+                continue
+            
             print(f'Pocket {lig_i}')
             
             ligand_coords = all_ligand_coords[lig_i]
