@@ -33,7 +33,6 @@ data/masif_ligand/schedule_data_prepare_pid.txt
 data/masif_ligand/train_model_pid.txt
 data/masif_ligand/train_model.out
 data/masif_ligand/train_model.err
-data/masif_ligand/lists/
 data/masif_ligand/nn_models*
 source/tf2/*/kerasModel*
 source/tf2/ligand_site_one/modelBackup*
