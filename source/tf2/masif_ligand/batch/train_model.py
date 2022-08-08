@@ -2,6 +2,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
 import numpy as np
+import pickle
 import tensorflow as tf
 
 phys_gpus = tf.config.list_physical_devices('GPU')
