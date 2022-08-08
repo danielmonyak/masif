@@ -39,7 +39,7 @@ LSRN_model = LSResNet(
     n_rotations=4,
     extra_conv_layers = False
 )
-ckpPath = 'kerasModel/ckp'
+ckpPath = '../combine_preds/kerasModel/ckp'
 load_status = LSRN_model.load_weights(ckpPath)
 load_status.expect_partial()
 
@@ -79,7 +79,7 @@ if not os.path.exists(outdir):
 dataset_dict = {'train' : train_list, 'test' : test_list, 'val' : val_list}
 
 #for dataset in dataset_dict.keys():
-for dataset in ['test', 'val', 'train']:
+for dataset in ['test']:
     data = dataset_dict[dataset]
     n_data = len(data)
     
