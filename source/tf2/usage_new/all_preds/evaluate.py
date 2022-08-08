@@ -105,7 +105,7 @@ for dataset in ['test']:
         ####################
         n_pockets_true = len(all_ligand_types)
         
-        pdb_dir = os.path.join(precom_dir, pdb)
+        pdb_dir = os.path.join(masif_opts['ligand']['masif_precomputation_dir'], pdb)
         try:
             xyz_coords = Predictor.getXYZCoords(pdb_dir)
         except:
@@ -117,21 +117,16 @@ for dataset in ['test']:
         
         pp_true_list = []
         lig_true_list = []
-        for lig_i in range(n_pockets_true):
-            structure_ligand = all_ligand_types[lig_i]
+        for lig_i, structure_ligand in enumerate(all_ligand_types):
             if not structure_ligand in ligand_list:
                 continue
-            
             print(f'Pocket {lig_i}')
-            
             ligand_coords = all_ligand_coords[lig_i]
             pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
             pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
-            
             if len(pocket_points_true) == 0:
                 print(f'\tLigand has no pocket points...')
                 continue
-
             pp_true_list.append(pocket_points_true)
             lig_true_list.append(structure_ligand)
         
