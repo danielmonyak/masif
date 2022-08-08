@@ -37,7 +37,8 @@ git submodule update --init
 Follow build instructions in PyMesh Readme, including the **Install** section.
 
 #### Reduce
-Clone from repository and follow build instructions while **venv_latest** is activated:
+Clone repository: https://github.com/rlabduke <br>
+Follow build instructions while **venv_latest** is activated:
 ```
 git clone https://github.com/rlabduke/reduce.git
 ```
