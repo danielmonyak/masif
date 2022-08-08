@@ -42,7 +42,8 @@ modelPath = os.path.join(modelDir, 'savedModel')
 
 ##########################################
 ##########################################
-from train_vars import train_vars
+with open('train_vars.pickle', 'rb') as handle:
+    train_vars = pickle.load(handle)
 
 continue_training = train_vars['continue_training']
 ckpPath = train_vars['ckpPath']
