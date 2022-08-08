@@ -23,7 +23,7 @@ n_train_batches = 10
 batch_sz = 64
 n_val = 50
 
-reg_val = 1e-3
+reg_val = 1e-4
 reg_type = 'l2'
 
 dev = '/GPU:3'
