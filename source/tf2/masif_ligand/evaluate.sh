@@ -7,4 +7,4 @@ export PYTHONPATH=$PYTHONPATH:$masif_source
 
 python -u evaluate.py $1 $2 > $1/${2}_evaluate.out 2>evaluate.err &
 disown -h $!
-echo $! > evaluate.pid
+echo $! > evaluate_pid.txt

@@ -15,8 +15,9 @@ import sys
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
-from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score
+from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score, confusion_matrix, ConfusionMatrixDisplay
 from scipy.stats import mode
+import matplotlib.pyplot as plt
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -44,7 +45,7 @@ X = np.load(genPath.format(dataset, 'X'))
 y = np.load(genPath.format(dataset, 'y'))
 
 defaultCode = params['defaultCode']
-gpu = '/GPU:3'
+gpu = '/GPU:2'
 cpu = '/CPU:0'
 
 n_pred = 100
@@ -74,7 +75,7 @@ y_pred_probs = tf.reduce_mean(probs_tsr, axis=-1)
 y_pred = tf.argmax(y_pred_probs, axis = 1)
 
 
-y_true = val_y.argmax(axis = 1)
+y_true = y.argmax(axis = 1)
 
 balanced_acc = balanced_accuracy_score(y_true, y_pred)
 acc = accuracy_score(y_true, y_pred)
@@ -83,3 +84,8 @@ roc_auc = roc_auc_score(y_true, y_pred_probs, multi_class = 'ovr', labels = np.a
 print('Balanced accuracy:', balanced_acc)
 print('Accuracy: ', acc)
 print('ROC AUC:', roc_auc)
+
+conf_mat = confusion_matrix(y_true, y_pred, normalize = 'true')
+disp = ConfusionMatrixDisplay(conf_mat, display_labels = masif_opts['ligand_list'])
+disp.plot()
+plt.savefig('confusion_matrix.png')
