@@ -17,7 +17,7 @@ from tf2.LSResNet.predict import predict
 
 
 
-LSRN_threshold = 0.3
+LSRN_threshold = 0.5
 
 
 
@@ -29,7 +29,7 @@ ligand_coord_dir = params["ligand_coords_dir"]
 precom_dir = params['masif_precomputation_dir']
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
-pred = Predictor()
+pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/l2/kerasModel/savedModel')
 
 LSRN_model = LSResNet(
     params["max_distance"],
@@ -214,16 +214,32 @@ for dataset in ['test', 'val', 'train']:
             recall = len(overlap)/npoints_true
             precision = len(overlap)/npoints_pred
             
+            try:
+                true_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_true)).numpy()
+                pred_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_pred)).numpy()
+            except:
+                print('Something went wrong with ligand prediction...')
+                continue
+            
+            ligand_true = all_ligand_types[ppt_idx_best]
+            ligandIdx_true = ligand_list.index(ligand_true)
+            
             ###############
             print(f'Predicted pocket: {pocket}')
             print(f'True pocket: {ppt_idx_best}')
             print(f'Recall: {recall}')
             print(f'Precision: {precision}')
+            print(f'True ligand: {ligandIdx_true}')
+            print(f'Prediction from true pocket points: {true_pts_ligandIdx_pred}')
+            print(f'Prediction from predicted pocket points: {pred_pts_ligandIdx_pred}\n')
             
             pdb_list.append(pdb)
             dataset_list.append(dataset)
             recall_list.append(recall)
             precision_list.append(precision)
+            ligandIdx_true_list.append(ligandIdx_true)
+            true_pts_ligandIdx_pred_list.append(true_pts_ligandIdx_pred)
+            pred_pts_ligandIdx_pred_list.append(pred_pts_ligandIdx_pred)
             npoints_true_list.append(npoints_true)
             npoints_pred_list.append(npoints_pred)
             
