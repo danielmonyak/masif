@@ -4,12 +4,12 @@ from sklearn.cluster import KMeans
 from scipy import spatial
 from default_config.util import *
 from tf2.usage.predictor import Predictor
-
+'''
 precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
 ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
 ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
 pred = Predictor(ligand_model_path, ligand_site_ckp_path)
-
+'''
 # Calculate the Within-Cluster-Sum of Squared Errors (WSS) for different values of k
 def calculate_WSS(points, kmax):
   sse = []
@@ -35,7 +35,7 @@ def findBestK(coord_list, kmax=10):
   sse_dif_difs = np.array(getDifs(getDifs(sse)))
   best_k = np.argmax(sse_dif_difs) + 2
   return best_k
-
+'''
 # Run predictor on pdb, find best k, cluster coordinates
 def predictRaw(pdb):
   pdb_dir = os.path.join(precom_dir, pdb)
@@ -50,3 +50,4 @@ def predictRaw(pdb):
 def predict(pdb = '1C75_A_'):
   ligand_pred, binding_loc = predictRaw(pdb)
   print('{} binds {} at \n{}'.format(pdb.split('_')[0], ligand_pred, binding_loc))
+'''
