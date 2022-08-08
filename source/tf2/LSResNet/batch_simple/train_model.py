@@ -61,6 +61,9 @@ model = LSResNet(
 if continue_training:
     model.load_weights(ckpPath)
     print(f'Loaded model from {ckpPath}')
+else:
+    with open('loss.txt', 'w') as f:
+        pass
 print()
 
 #optimizer = tf.keras.optimizers.SGD(learning_rate=lr, momentum=0.9)
@@ -164,6 +167,9 @@ with tf.device('/GPU:3'):
                 print("F1 Lower ----------------- %.4f" % train_F1_lower)
                 print("F1       ----------------- %.4f" % train_F1)
 
+                with open('loss.txt', 'a') as f:
+                    f.write(str(mean_loss))
+                
                 grads = [tsr/i for tsr in grads_sum]
                 optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
