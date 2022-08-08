@@ -3,7 +3,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import sys
 import numpy as np
 import pandas as pd
-from scipy import spatial
+from scipy import spatialnp
+from sklearn.cluster import KMeans
 import tensorflow as tf
 
 phys_gpus = tf.config.list_physical_devices('GPU')
@@ -12,12 +13,12 @@ for phys_g in phys_gpus:
 
 from default_config.util import *
 from tf2.usage.predictor import Predictor
-from tf2.LSResNet.LSResNet import LSResNet
-from tf2.LSResNet.predict import predict
+from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
+from tf2.ligand_site_one.get_data import get_data
+import usage.binding
 
 
-
-LSRN_threshold = 0.5
+LSO_threshold = 0.5
 
 
 
@@ -31,15 +32,14 @@ binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
 pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/l2/kerasModel/savedModel')
 
-LSRN_model = LSResNet(
+LSO_model = MaSIF_ligand_site(
     params["max_distance"],
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
-    n_rotations=4,
-    extra_conv_layers = False
+    n_rotations=4
 )
-ckpPath = '../combine_preds/kerasModel/ckp'
+ckpPath = 'LSO_kerasModel'
 load_status = LSRN_model.load_weights(ckpPath)
 load_status.expect_partial()
 
@@ -103,7 +103,6 @@ for dataset in ['test']:
             continue
         
         ####################
-        n_pockets_true = len(all_ligand_types)
         
         pdb_dir = os.path.join(masif_opts['ligand']['masif_precomputation_dir'], pdb)
         try:
@@ -130,22 +129,23 @@ for dataset in ['test']:
             pp_true_list.append(pocket_points_true)
             lig_true_list.append(structure_ligand)
         
-        if len(pp_true_list) == 0:
+        n_pockets_true = len(pp_true_list)
+        
+        if n_pockets_true == 0:
             print('Zero true pockets...')
         
         ####################
-        pdb_pnet_dir = os.path.join(binding_dir, pdb.rstrip("_"))
-        files = os.listdir(pdb_pnet_dir)
-        PU_RN_pp_pred = []
-        if len(files) > 0:
-            for pocket in range(np.sum(np.char.endswith(files, '.txt'))):
-                coords = np.loadtxt(os.path.join(pdb_pnet_dir, f'pocket{pocket}.txt'), dtype=float)
-                pocket_points_pred = tree.query_ball_point(coords, 3.0)
-                pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
-                if len(pocket_points_pred) > 0:
-                    PU_RN_pp_pred.append(pocket_points_pred)
+        data = get_data(pdb_id, training=True, make_y = False)
+        if data is None:
+            print('Can\'t get data...')
+            continue
+        X, _, _ = data
+        X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
+        y_pred = np.asarrray(tf.sigmoid(LSO_model.predict(X_tf)) > LSO_threshold)
+        pocket_points_coords = xyz_coords[y_pred]
+        best_k = binding.findBestK(pocket_points_coords)
+        kmeans = KMeans(n_clusters = best_k).fit(coord_list)
         
-        ####################
         LS_RN_pocket_coords = predict(LSRN_model, pdb, threshold=LSRN_threshold)
         if LS_RN_pocket_coords is None:
             n_pockets_pred = 0
