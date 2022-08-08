@@ -106,7 +106,12 @@ for dataset in ['test']:
         n_pockets_true = len(all_ligand_types)
         
         pdb_dir = os.path.join(precom_dir, pdb)
-        xyz_coords = Predictor.getXYZCoords(pdb_dir)
+        try:
+            xyz_coords = Predictor.getXYZCoords(pdb_dir)
+        except:
+            print('No precomputation...')
+            continue
+            
         tree = spatial.KDTree(xyz_coords)
         pred.loadData(pdb_dir)
         
