@@ -44,20 +44,20 @@ def predict(model, func_input, threshold=0.5, min_size=50, make_y=False, mode='p
     Z_coords = np.load(os.path.join(mydir, "p1_Z.npy"))
     xyz_coords = np.vstack([X_coords, Y_coords, Z_coords]).T
 
+    resolution = 1. / params['scale']
+    density = tfbio.data.make_grid(xyz_coords, y_pred[0], max_dist=params['max_dist'], grid_resolution=resolution)[0]
+    
     centroid = xyz_coords.mean(axis=0)
     xyz_coords -= centroid
     
     probs = tf.sigmoid(model.predict(X)).numpy()
     y_pred = (probs > threshold).astype(int)
 
-    resolution = 1. / params['scale']
-    density = tfbio.data.make_grid(xyz_coords, y_pred[0], max_dist=params['max_dist'], grid_resolution=resolution)
-
     origin = (centroid - params['max_dist'])
     step = np.array([1.0 / params['scale']] * 3)
     
     voxel_size = (1 / params['scale']) ** 3
-    bw = closing((density[0] > 0).any(axis=-1))
+    bw = closing((density > 0).any(axis=-1))
     cleared = clear_border(bw)
 
     label_image, num_labels = label(cleared, return_num=True)
