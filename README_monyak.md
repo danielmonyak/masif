@@ -54,7 +54,7 @@ make tests
 Follow build instructions in PyMesh Readme, including the **Install** section.
 
 #### Reduce
-Clone repository: https://github.com/rlabduke <br>
+Clone repository: https://github.com/rlabduke/reduce <br>
 Follow build instructions while **venv_tf** is activated:
 ```
 git clone https://github.com/rlabduke/reduce.git
