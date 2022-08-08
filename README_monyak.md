@@ -28,17 +28,34 @@ conda install -c conda-forge networkx
 
 #### PyMesh
 Build from source: https://github.com/PyMesh/PyMesh, do not install with anaconda <br>
-Don't clone each third party repository separately, use their instructions:
+Don't clone each third party repository separately, use their instructions while **venv_tf** is activated:
 ```
 git clone https://github.com/PyMesh/PyMesh.git
 cd PyMesh
 git submodule update --init
 ```
+```
+cd third_party
+python build.py all
+```
+```
+cd ..
+mkdir build
+cd build
+cmake ..
+```
+```
+make
+make tests
+```
+```
+./setup.py install
+```
 Follow build instructions in PyMesh Readme, including the **Install** section.
 
 #### Reduce
 Clone repository: https://github.com/rlabduke <br>
-Follow build instructions while **venv_latest** is activated:
+Follow build instructions while **venv_tf** is activated:
 ```
 git clone https://github.com/rlabduke/reduce.git
 ```
