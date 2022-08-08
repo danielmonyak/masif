@@ -145,17 +145,20 @@ with tf.device('/GPU:1'):
             X, _, _ = data
             X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
             y_pred = np.squeeze(tf.sigmoid(LSO_model.predict(X_tf)) > LSO_threshold)
+            
+            if y_pred.sum() == 0:
+                n_pockets_pred = 0
+            else:
+                pocket_points_pred = y_pred.nonzero()[0]
+                pocket_points_coords = xyz_coords[pocket_points_pred]
+                best_k = binding.findBestK(pocket_points_coords)
+                cluster_labels = KMeans(n_clusters = best_k).fit_predict(pocket_points_coords)
 
-            pocket_points_pred = y_pred.nonzero()[0]
-            pocket_points_coords = xyz_coords[pocket_points_pred]
-            best_k = binding.findBestK(pocket_points_coords)
-            cluster_labels = KMeans(n_clusters = best_k).fit_predict(pocket_points_coords)
-
-            LSO_pp_pred = []
-            for lab in range(best_k):
-                pp_temp = pocket_points_pred[cluster_labels == lab]
-                if len(pp_temp) >= 32:
-                    LSO_pp_pred.append(pp_temp)
+                LSO_pp_pred = []
+                for lab in range(best_k):
+                    pp_temp = pocket_points_pred[cluster_labels == lab]
+                    if len(pp_temp) >= 32:
+                        LSO_pp_pred.append(pp_temp)
 
             n_pockets_pred = len(LSO_pp_pred)
             if n_pockets_pred == 0:
