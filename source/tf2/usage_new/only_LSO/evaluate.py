@@ -3,7 +3,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import sys
 import numpy as np
 import pandas as pd
-from scipy import spatialnp
+from scipy import spatial
 from sklearn.cluster import KMeans
 import tensorflow as tf
 
@@ -15,7 +15,7 @@ from default_config.util import *
 from tf2.usage.predictor import Predictor
 from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
 from tf2.ligand_site_one.get_data import get_data
-import usage.binding
+import tf2.usage.binding as binding
 
 
 LSO_threshold = 0.5
@@ -37,10 +37,12 @@ LSO_model = MaSIF_ligand_site(
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
-    n_rotations=4
+    learning_rate = 0,
+    n_rotations=4,
+    reg_val = 0
 )
-ckpPath = 'LSO_kerasModel'
-load_status = LSRN_model.load_weights(ckpPath)
+ckpPath = 'LSO_kerasModel/ckp'
+load_status = LSO_model.load_weights(ckpPath)
 load_status.expect_partial()
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
@@ -135,24 +137,26 @@ for dataset in ['test']:
             print('Zero true pockets...')
         
         ####################
-        data = get_data(pdb_id, training=True, make_y = False)
+        data = get_data(pdb, training=False, make_y = False)
         if data is None:
             print('Can\'t get data...')
             continue
         X, _, _ = data
         X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
-        y_pred = np.asarrray(tf.sigmoid(LSO_model.predict(X_tf)) > LSO_threshold)
-        pocket_points_coords = xyz_coords[y_pred]
+        y_pred = np.squeeze(tf.sigmoid(LSO_model.predict(X_tf)) > LSO_threshold)
+
+        pocket_points_pred = y_pred.nonzero()[0]
+        pocket_points_coords = xyz_coords[pocket_points_pred]
         best_k = binding.findBestK(pocket_points_coords)
-        kmeans = KMeans(n_clusters = best_k).fit(coord_list)
+        cluster_labels = KMeans(n_clusters = best_k).fit_predict(pocket_points_coords)
         
-        LS_RN_pocket_coords = predict(LSRN_model, pdb, threshold=LSRN_threshold)
-        if LS_RN_pocket_coords is None:
-            n_pockets_pred = 0
-        else:
-            n_pockets_pred = len(LS_RN_pocket_coords)
+        LSO_pp_pred = []
+        for lab in range(best_k):
+            pp_temp = pocket_points_pred[cluster_labels == lab]
+            if len(pp_temp) >= 32:
+                LSO_pp_pred.append(pp_temp)
         
-        ##########
+        n_pockets_pred = len(LSO_pp_pred)
         if n_pockets_pred == 0:
             print('Zero pockets were predicted...')
             BIG_pdb_list.append(pdb)
@@ -161,36 +165,10 @@ for dataset in ['test']:
             BIG_n_pockets_pred.append(0)
             BIG_matched.append(0)
             continue
-        
-        ##########
-        LS_RN_pp_pred = []
-        for coords in LS_RN_pocket_coords:
-            pocket_points_pred = tree.query_ball_point(coords, 3.0)
-            pocket_points_pred = list(set([pp for p in pocket_points_pred for pp in p]))
-            if len(pocket_points_pred) > 0:
-                LS_RN_pp_pred.append(pocket_points_pred)
-        
-        ###########################################
-        final_pp_pred_list = []
-        for LS_pp in LS_RN_pp_pred:
-            matched_pred_pocket = -1
-            for i, PU_pp in enumerate(PU_RN_pp_pred):
-                print(i)
-                overlap = np.intersect1d(PU_pp, LS_pp)
-                recall_1 = len(overlap)/len(PU_pp)
-                recall_2 = len(overlap)/len(LS_pp)
-                if (recall_1 > 0.25) or (recall_2 > 0.25):
-                    matched_pred_pocket = i
-                    final_pp_pred_list.append(overlap)
-                    break
-            if matched_pred_pocket == -1:
-                final_pp_pred_list.append(LS_pp)
-            else:
-                del PU_RN_pp_pred[matched_pred_pocket]
-        
+
         ###########################################
         matched = 0
-        for pocket_points_pred in final_pp_pred_list:
+        for pocket_points_pred in LSO_pp_pred:
             npoints_pred = len(pocket_points_pred)
             
             f1_highest = 0
@@ -198,7 +176,6 @@ for dataset in ['test']:
                 overlap = np.intersect1d(pocket_points_true, pocket_points_pred)
                 if len(overlap) == 0:
                     continue
-                    
                 npoints_true = len(pocket_points_true)
                 recall = len(overlap)/npoints_true
                 precision = len(overlap)/npoints_pred
