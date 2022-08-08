@@ -168,7 +168,7 @@ with tf.device('/GPU:3'):
                 print("F1       ----------------- %.4f" % train_F1)
 
                 with open('loss.txt', 'a') as f:
-                    f.write(str(mean_loss))
+                    f.write(str(mean_loss) + '\n')
                 
                 grads = [tsr/i for tsr in grads_sum]
                 optimizer.apply_gradients(zip(grads, model.trainable_weights))
