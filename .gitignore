@@ -34,7 +34,6 @@ data/masif_ligand/train_model_pid.txt
 data/masif_ligand/train_model.out
 data/masif_ligand/train_model.err
 data/masif_ligand/nn_models*
-source/tf2/*/kerasModel*
 source/tf2/ligand_site_one/modelBackup*
 source/tf2/*/*pid*
 source/tf2/usage/results*
@@ -55,15 +54,12 @@ source/tf2/masif_ligand/10
 source/tf2/masif_ligand/25
 source/tf2/masif_ligand/l2
 source/tf2/ligand_site_one/batched/auc.txt
-source/tf2/ligand_site_one/batched/kerasModel
 source/tf2/ligand_site_one/batched/loss.txt
 source/tf2/ligand_site_one/batched/make*
 source/tf2/*/*.txt
 source/tf2/*/*/*.txt
 source/tf2/*/l2*
 source/tf2/*/*/l2*
-source/tf2/*/kerasModel*
-source/tf2/*/*/kerasModel*
 source/tf2/*/*.tar.gz
 source/tf2/*/*/*.tar.gz
 source/tf2/*/outdir
