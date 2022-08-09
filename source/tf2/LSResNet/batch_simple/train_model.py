@@ -17,7 +17,7 @@ from tf2.LSResNet.get_data import get_data
 
 params = masif_opts["LSResNet"]
 
-lr = 1e-5
+#lr = 1e-5
 
 n_train_batches = 10
 batch_sz = 32
@@ -40,10 +40,11 @@ continue_training = train_vars['continue_training']
 ckpPath = train_vars['ckpPath']
 num_iterations = train_vars['num_iterations']
 starting_iteration = train_vars['starting_iteration']
+lr = train_vars['lr']
 
 print(f'Training for {num_iterations} iterations')
 if continue_training:
-    print(f'Resuming training from checkpoint at {ckpPath}, starting at iteration {starting_iteration}')
+    print(f'Resuming training from checkpoint at {ckpPath}, starting at iteration {starting_iteration}, using learning rate {lr:.1e}')
 
 ##########################################
 ##########################################
