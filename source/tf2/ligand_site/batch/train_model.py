@@ -11,14 +11,14 @@ for phys_g in phys_gpus:
 
 import default_config.util as util
 from default_config.masif_opts import masif_opts
-from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
-from tf2.ligand_site_one.get_data import get_data
+from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
+from tf2.ligand_site.get_data import get_data
 
 params = masif_opts["ligand_site"]
 
 #############################################
 #############################################
-lr = 1e-10
+#lr = 1e-10
 use_sample_weight = False
 
 n_train_batches = 10
@@ -44,72 +44,76 @@ continue_training = train_vars['continue_training']
 ckpPath = train_vars['ckpPath']
 num_iterations = train_vars['num_iterations']
 starting_iteration = train_vars['starting_iteration']
+lr = train_vars['lr']
 
 print(f'Training for {num_iterations} iterations')
 if continue_training:
-    print(f'Resuming training from checkpoint at {ckpPath}, starting at iteration {starting_iteration}')
+    print(f'Resuming training from checkpoint at {ckpPath}, starting at iteration {starting_iteration}, using learning rate {lr:.1e}')
 
 ##########################################
 ##########################################
 
 dev = '/GPU:1'
 
-with tf.device(dev):
+#with tf.device(dev):
     
-    model = MaSIF_ligand_site(
-        params["max_distance"],
-        feat_mask=params["feat_mask"],
-        n_thetas=4,
-        n_rhos=3,
-        learning_rate = lr,
-        n_rotations=4,
-        reg_val = 0
-    )
-    if continue_training:
-        model.load_weights(ckpPath)
-        print(f'Loaded model from {ckpPath}')
-    print()
+model = MaSIF_ligand_site(
+    params["max_distance"],
+    feat_mask=params["feat_mask"],
+    n_thetas=4,
+    n_rhos=3,
+    n_rotations=4,
+    reg_val = 0
+)
+if continue_training:
+    model.load_weights(ckpPath)
+    print(f'Loaded model from {ckpPath}')
+else:
+    with open('loss.txt', 'w') as f:
+        pass
+print()
 
-    optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
-    loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits=True)
-    loss_metric = tf.keras.metrics.Mean()
+optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
+loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+loss_metric = tf.keras.metrics.Mean()
 
-    train_acc_metric = tf.keras.metrics.BinaryAccuracy()
-    train_auc_metric = tf.keras.metrics.AUC()
-    train_F1_lower_metric = util.F1_Metric(threshold = 0.3)
-    train_F1_metric = util.F1_Metric(threshold = 0.5)
+train_acc_metric = tf.keras.metrics.BinaryAccuracy()
+train_auc_metric = tf.keras.metrics.AUC()
+train_F1_lower_metric = util.F1_Metric(threshold = 0.3)
+train_F1_metric = util.F1_Metric(threshold = 0.5)
 
-    val_acc_metric = tf.keras.metrics.BinaryAccuracy()
-    val_auc_metric = tf.keras.metrics.AUC()
-    val_F1_lower_metric = util.F1_Metric(threshold = 0.3)
-    val_F1_metric = util.F1_Metric(threshold = 0.5)
+val_acc_metric = tf.keras.metrics.BinaryAccuracy()
+val_auc_metric = tf.keras.metrics.AUC()
+val_F1_lower_metric = util.F1_Metric(threshold = 0.3)
+val_F1_metric = util.F1_Metric(threshold = 0.5)
 
-    grads = None
+grads = None
 
-    @tf.function(experimental_relax_shapes=True)
-    def train_step(x, y):
-        with tf.GradientTape() as tape:
-            logits = model(x, training=True)
-            loss_value = loss_fn(y, logits)
-        loss_metric.update_state(loss_value)
+@tf.function(experimental_relax_shapes=True)
+def train_step(x, y):
+    with tf.GradientTape() as tape:
+        logits = model(x, training=True)
+        loss_value = loss_fn(y, logits)
+    loss_metric.update_state(loss_value)
 
-        y_pred = tf.sigmoid(logits)
-        train_acc_metric.update_state(y, y_pred)
-        train_auc_metric.update_state(y, y_pred)
-        train_F1_lower_metric.update_state(y, y_pred)
-        train_F1_metric.update_state(y, y_pred)
+    y_pred = tf.sigmoid(logits)
+    train_acc_metric.update_state(y, y_pred)
+    train_auc_metric.update_state(y, y_pred)
+    train_F1_lower_metric.update_state(y, y_pred)
+    train_F1_metric.update_state(y, y_pred)
 
-        return tape.gradient(loss_value, model.trainable_weights)
+    return tape.gradient(loss_value, model.trainable_weights)
 
-    @tf.function(experimental_relax_shapes=True)
-    def test_step(x, y):
-        logits = model(x, training=False)
-        y_pred = tf.sigmoid(logits)
-        val_acc_metric.update_state(y, y_pred)
-        val_auc_metric.update_state(y, y_pred)
-        val_F1_lower_metric.update_state(y, y_pred)
-        val_F1_metric.update_state(y, y_pred)
+@tf.function(experimental_relax_shapes=True)
+def test_step(x, y):
+    logits = model(x, training=False)
+    y_pred = tf.sigmoid(logits)
+    val_acc_metric.update_state(y, y_pred)
+    val_auc_metric.update_state(y, y_pred)
+    val_F1_lower_metric.update_state(y, y_pred)
+    val_F1_metric.update_state(y, y_pred)
 
+with tf.device(dev):
     iterations = starting_iteration
     epoch = 0
     while iterations < num_iterations:
@@ -167,6 +171,9 @@ with tf.device(dev):
                 print("AUC      ----------------- %.4f" % train_auc)
                 print("F1 Lower ----------------- %.4f" % train_F1_lower)
                 print("F1       ----------------- %.4f" % train_F1)
+
+                with open('loss.txt', 'a') as f:
+                    f.write(str(mean_loss) + '\n')
 
                 grads = [tsr/i for tsr in grads_sum]
                 optimizer.apply_gradients(zip(grads, model.trainable_weights))
