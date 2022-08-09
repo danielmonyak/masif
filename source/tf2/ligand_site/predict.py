@@ -10,7 +10,7 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.masif_opts import masif_opts
-from tf2.ligand_site_one.get_data import get_data
+from tf2.ligand_site.get_data import get_data
 
 from skimage.segmentation import clear_border
 from skimage.morphology import closing
