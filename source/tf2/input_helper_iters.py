@@ -42,8 +42,17 @@ if num_iterations_key != '':
     if num_iterations <= starting_iteration:
         sys.exit(f'Please enter a valid number greater than {starting_iteration}...')
 
-        
-var_names = ['continue_training', 'ckpPath', 'starting_iteration', 'num_iterations']
+lr_default_str = '1e-3'
+lr_key = input(f'Learning rate [{lr_default_str}]: ')
+if lr_key == '':
+    lr = float(lr_default_str)
+else:
+    try:
+        lr = float(lr_key)
+    except:
+        sys.exit(f'Please enter a valid number...')
+
+var_names = ['continue_training', 'ckpPath', 'starting_iteration', 'num_iterations', 'lr']
 train_vars = dict(zip(var_names, [eval(v) for v in var_names]))
 with open('train_vars.pickle', 'wb') as handle:
     pickle.dump(train_vars, handle, protocol=pickle.HIGHEST_PROTOCOL)
