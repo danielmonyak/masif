@@ -1,8 +1,8 @@
 import os
 import numpy as np
-from default_config.util import *
-from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
-from time import process_time
+import default_config.util as util
+from default_config.masif_opts import masif_opts
+from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 
 params = masif_opts['ligand']
 ligand_site_params = masif_opts['ligand_site']
@@ -20,12 +20,13 @@ class Predictor:
         n_rhos=3,
         n_rotations=4
     )
+    '''
     from_logits = model.loss_fn.get_config()['from_logits']
     binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
     model.compile(optimizer = model.opt,
       loss = model.loss_fn,
       metrics=[binAcc]
-    )
+    )'''
     load_status = model.load_weights(ligand_site_ckp_path)
     load_status.expect_partial()
     return model
@@ -106,7 +107,7 @@ class Predictor:
     ligand_prob_list = []
     for i in range(self.n_predictions):
       temp_prob = tf.sigmoid(tf.squeeze(self.ligand_model(X)))
-      if tf.reduce_max(temp_prob) > self.ligand_threshold:
+      if tf.reduce_max(temp_prob) > threshold:
         ligand_prob_list.append(temp_prob)
     
     ligand_probs = tf.stack(ligand_prob_list, axis=0)
