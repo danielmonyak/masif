@@ -11,17 +11,20 @@ phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
-from default_config.util import *
+import default_config.util as util
+from default_config.masif_opts import masif_opts
 from tf2.usage.predictor import Predictor
-from tf2.ligand_site_one.MaSIF_ligand_site_one import MaSIF_ligand_site
-from tf2.ligand_site_one.get_data import get_data
-import tf2.usage.binding as binding
+from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
+from tf2.ligand_site.get_data import get_data
+from tf2.usage.PPClustering import getPPClusters
 
+################################################
+################################################
 
-LSO_threshold = 0.5
+LS_threshold = 0.5
 
-
-
+################################################
+################################################
 
 params = masif_opts['LSResNet']
 ligand_list = params['ligand_list']
@@ -30,19 +33,17 @@ ligand_coord_dir = params["ligand_coords_dir"]
 precom_dir = params['masif_precomputation_dir']
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
-pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/l2/kerasModel/savedModel')
+pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel')
 
-LSO_model = MaSIF_ligand_site(
+LS_model = MaSIF_ligand_site(
     params["max_distance"],
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
-    learning_rate = 0,
-    n_rotations=4,
-    reg_val = 0
+    n_rotations=4
 )
-ckpPath = 'LSO_kerasModel/ckp'
-load_status = LSO_model.load_weights(ckpPath)
+ckpPath = 'LS_kerasModel/ckp'
+load_status = LS_model.load_weights(ckpPath)
 load_status.expect_partial()
 
 listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
@@ -53,7 +54,6 @@ test_file = 'test_pdbs_sequence.npy'
 train_list = np.char.add(np.load(os.path.join(listDir, train_file)).astype(str), '_')
 val_list = np.char.add(np.load(os.path.join(listDir, val_file)).astype(str), '_')
 test_list = np.char.add(np.load(os.path.join(listDir, test_file)).astype(str), '_')
-
 
 pdb_list = []
 dataset_list = []
@@ -144,23 +144,15 @@ with tf.device('/GPU:1'):
                 continue
             X, _, _ = data
             X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
-            y_pred = np.squeeze(tf.sigmoid(LSO_model.predict(X_tf)) > LSO_threshold)
+            y_pred = np.squeeze(tf.sigmoid(LS_model.predict(X_tf)) > LS_threshold)
             
             if y_pred.sum() < 32:
                 n_pockets_pred = 0
             else:
                 pocket_points_pred = y_pred.nonzero()[0]
-                pocket_points_coords = xyz_coords[pocket_points_pred]
-                best_k = binding.findBestK(pocket_points_coords)
-                cluster_labels = KMeans(n_clusters = best_k).fit_predict(pocket_points_coords)
+                LS_pp_pred = getPPClusters(pocket_points_pred, xyz_coords)        
+                n_pockets_pred = len(LS_pp_pred)
 
-                LSO_pp_pred = []
-                for lab in range(best_k):
-                    pp_temp = pocket_points_pred[cluster_labels == lab]
-                    if len(pp_temp) >= 32:
-                        LSO_pp_pred.append(pp_temp)
-
-            n_pockets_pred = len(LSO_pp_pred)
             if n_pockets_pred == 0:
                 print('Zero pockets were predicted...')
                 BIG_pdb_list.append(pdb)
@@ -172,7 +164,7 @@ with tf.device('/GPU:1'):
 
             ###########################################
             matched = 0
-            for pocket_points_pred in LSO_pp_pred:
+            for pocket_points_pred in LS_pp_pred:
                 npoints_pred = len(pocket_points_pred)
 
                 f1_highest = 0
