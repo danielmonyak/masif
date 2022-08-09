@@ -2,7 +2,6 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
 import numpy as np
-from scipy import spatial
 import tensorflow as tf
 
 phys_gpus = tf.config.list_physical_devices('GPU')
@@ -18,7 +17,7 @@ params = masif_opts["ligand_site"]
 
 #############################################
 #############################################
-lr = 1e-4
+#lr = 1e-4
 
 use_sample_weight = False        #############
 #############################################
