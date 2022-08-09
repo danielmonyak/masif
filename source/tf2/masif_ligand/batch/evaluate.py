@@ -90,7 +90,6 @@ with tf.device(gpu):
       X_temp = (tf.expand_dims(X_temp[0], axis=0), tf.constant(X_temp[1]), tf.constant(X_temp[2]), tf.expand_dims(X_temp[3], axis=0))
       temp_probs_list = []
       for j in range(n_pred):
-        print(f'j: {j}')
         temp_probs_list.append(test_step(X_temp))
       probs_list.append(np.stack(temp_probs_list))
 
