@@ -10,61 +10,62 @@ for phys_g in phys_gpus:
 
 import default_config.util as util
 from default_config.masif_opts import masif_opts
-from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
+from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
+from tf2.masif_ligand.stochastic.get_data import get_data
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score, confusion_matrix, ConfusionMatrixDisplay
 from scipy.stats import mode
 import matplotlib.pyplot as plt
 
 params = masif_opts["ligand"]
-defaultCode = params['defaultCode']
+minPockets = params['minPockets']
 
-modelDir = 'kerasModel'
-if len(sys.argv) > 1:
-    basedir = sys.argv[1]
-    modelDir = os.path.join(basedir, modelDir)
-modelPath = os.path.join(modelDir, 'savedModel')
-model = tf.keras.models.load_model(modelPath)
+ckpPath = 'kerasModel/ckp'
+include_solvents = False
 
-print(f'Loaded model from {modelPath}')
-
-datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand/allReg'
-genPath = os.path.join(datadir, '{}_{}.npy')
-
-if len(sys.argv) > 2:
-    dataset = sys.argv[2]
+if include_solvents:
+    ligand_list = masif_opts['all_ligands']
 else:
-    dataset = 'test'
+    ligand_list = masif_opts['ligand_list']
 
+model = MaSIF_ligand(
+    params["max_distance"],
+    len(ligand_list),
+    feat_mask=params["feat_mask"],
+    reg_val = reg_val, reg_type = reg_type,
+    keep_prob=1.0
+)
+model.load_weights(ckpPath)
 
-X = np.load(genPath.format(dataset, 'X'))
-y = np.load(genPath.format(dataset, 'y'))
-
-defaultCode = params['defaultCode']
+test_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/test_reg.npy')
 gpu = '/GPU:2'
-cpu = '/CPU:0'
 
 n_pred = 100
 
-with tf.device(cpu):
-  X = tf.RaggedTensor.from_tensor(X, padding=defaultCode)
-
+y_true = []
+probs_list = []
 with tf.device(gpu):
   print(f'Making {n_pred} predictions for each {dataset} protein...')
   probs_list = []
-  for i in range(n_pred):
+  for i, pdb_id in test_list:
     if i % 10 == 0:
       print(i)
-    probs_list.append(tf.nn.softmax(model.predict(X)))
+      
+    data = get_data(pdb_id, include_solvents)
+    if data is None:
+      continue
+      
+    X, pocket_points, y = data
+    for k, pp in enumerate(pocket_points):
+      pp_rand = np.random.choice(pp, minPockets, replace=False)
+      X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
+      y_true.append(y[k])
+      
+      temp_probs_list = []
+      for j in range(n_pred):
+        temp_probs_list.append(tf.nn.softmax(model.predict(X)))
+      probs_list.append(np.stack(temp_probs_list))
 
 probs_tsr = tf.stack(probs_list, axis=-1)
-
-'''
-preds_tsr = tf.argmax(probs_tsr, axis=1)
-y_pred = []
-for i in range(len(preds_tsr)):
-  y_pred.append(mode(preds_tsr[i].numpy()).mode)
-
-'''
 
 y_pred_probs = tf.reduce_mean(probs_tsr, axis=-1)
 y_pred = tf.argmax(y_pred_probs, axis = 1)
