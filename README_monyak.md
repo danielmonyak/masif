@@ -126,7 +126,7 @@ TF2 - Tensorflow 2 (also involving the use of Keras)
 
 **source/tf2**: MOST IMPORTANT - Scripts, work, and saved models for TF2 models<br>
 **source/tf2/masif_ligand**:<br>
-**source/tf2/ligand_site_one**:<br>
+**source/tf2/ligand_site**:<br>
 **source/tf2/LSResNet**:<br>
 
 ### Data Preparation
