@@ -1,15 +1,9 @@
 import os
 import numpy as np
 from sklearn.cluster import KMeans
-from scipy import spatial
-from default_config.util import *
-from tf2.usage.predictor import Predictor
-'''
-precom_dir = '/data02/daniel/masif/data_preparation/04a-precomputation_12A/precomputation'
-ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel'
-ligand_site_ckp_path = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/kerasModel/ckp'
-pred = Predictor(ligand_model_path, ligand_site_ckp_path)
-'''
+import default_config.util as util
+from default_config.masif_opts import masif_opts
+
 # Calculate the Within-Cluster-Sum of Squared Errors (WSS) for different values of k
 def calculate_WSS(points, kmax):
   sse = []
@@ -35,19 +29,15 @@ def findBestK(coord_list, kmax=10):
   sse_dif_difs = np.array(getDifs(getDifs(sse)))
   best_k = np.argmax(sse_dif_difs) + 2
   return best_k
-'''
-# Run predictor on pdb, find best k, cluster coordinates
-def predictRaw(pdb):
-  pdb_dir = os.path.join(precom_dir, pdb)
-  ligand_pred, coord_list = pred.predict(pdb_dir)
-  
-  best_k = findBestK(coord_list)
-  kmeans = KMeans(n_clusters = best_k).fit(coord_list)
-  binding_loc = kmeans.cluster_centers_
 
-  return (ligand_pred, binding_loc)
+def getPPClusters(pocket_points, xyz_coords):
+  pocket_points_coords = xyz_coords[pocket_points]
+  best_k = findBestK(pocket_points_coords)
+  cluster_labels = KMeans(n_clusters = best_k).fit_predict(pocket_points_coords)
 
-def predict(pdb = '1C75_A_'):
-  ligand_pred, binding_loc = predictRaw(pdb)
-  print('{} binds {} at \n{}'.format(pdb.split('_')[0], ligand_pred, binding_loc))
-'''
+  pp_list = []
+  for label in range(best_k):
+      pp_temp = pocket_points_pred[cluster_labels == label]
+      if len(pp_temp) >= masif_opts['ligand']['minPockets']:
+          pp_list.append(pp_temp)
+  return pp_list
