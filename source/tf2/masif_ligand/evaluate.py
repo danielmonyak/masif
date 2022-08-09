@@ -1,16 +1,12 @@
-# Header variables and parameters.
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+import sys
+import numpy as np
 import tensorflow as tf
 
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
-
-import numpy as np
-from IPython.core.debugger import set_trace
-import importlib
-import sys
 
 import default_config.util as util
 from default_config.masif_opts import masif_opts
@@ -22,7 +18,6 @@ import matplotlib.pyplot as plt
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
 
-
 modelDir = 'kerasModel'
 if len(sys.argv) > 1:
     basedir = sys.argv[1]
@@ -32,7 +27,7 @@ model = tf.keras.models.load_model(modelPath)
 
 print(f'Loaded model from {modelPath}')
 
-datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand'
+datadir = '/data02/daniel/masif/datasets/tf2/masif_ligand/allReg'
 genPath = os.path.join(datadir, '{}_{}.npy')
 
 if len(sys.argv) > 2:
@@ -53,17 +48,16 @@ n_pred = 100
 with tf.device(cpu):
   X = tf.RaggedTensor.from_tensor(X, padding=defaultCode)
 
-
 with tf.device(gpu):
   print(f'Making {n_pred} predictions for each {dataset} protein...')
   probs_list = []
   for i in range(n_pred):
     if i % 10 == 0:
       print(i)
-    y_pred_probs_temp = tf.nn.softmax(model.predict(X))
-    probs_list.append(y_pred_probs_temp)
+    probs_list.append(tf.nn.softmax(model.predict(X)))
 
 probs_tsr = tf.stack(probs_list, axis=-1)
+
 '''
 preds_tsr = tf.argmax(probs_tsr, axis=1)
 y_pred = []
@@ -71,11 +65,12 @@ for i in range(len(preds_tsr)):
   y_pred.append(mode(preds_tsr[i].numpy()).mode)
 
 '''
+
 y_pred_probs = tf.reduce_mean(probs_tsr, axis=-1)
 y_pred = tf.argmax(y_pred_probs, axis = 1)
 
-
-y_true = y.argmax(axis = 1)
+#y_true = y.argmax(axis = 1)
+y_true = y
 
 balanced_acc = balanced_accuracy_score(y_true, y_pred)
 acc = accuracy_score(y_true, y_pred)
