@@ -2,7 +2,6 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import sys
 import numpy as np
-from scipy import spatial
 import pickle
 import tensorflow as tf
 
