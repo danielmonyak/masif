@@ -18,7 +18,7 @@ from tf2.masif_ligand.stochastic.get_data import get_data
 
 params = masif_opts["ligand"]
 
-lr = 1e-4
+#lr = 1e-4
 
 n_train_batches = 10
 batch_sz = 64
@@ -50,6 +50,7 @@ continue_training = train_vars['continue_training']
 ckpPath = train_vars['ckpPath']
 num_iterations = train_vars['num_iterations']
 starting_iteration = train_vars['starting_iteration']
+lr = train_vars['lr']
 
 print(f'Training for {num_iterations} iterations')
 if continue_training:
