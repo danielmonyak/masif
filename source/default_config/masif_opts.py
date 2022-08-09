@@ -8,9 +8,13 @@ masif_opts = {}
 masif_opts["raw_pdb_dir"] = os.path.join(basedir, "data_preparation/00-raw_pdbs/")
 masif_opts["pdb_chain_dir"] = os.path.join(basedir, "data_preparation/01-benchmark_pdbs/")
 masif_opts["ply_chain_dir"] = os.path.join(basedir, "data_preparation/01-benchmark_surfaces/")
+masif_opts["ply_file_template"] = masif_opts["ply_chain_dir"] + "/{}_{}.ply"
+
+# Change this to a directory that can store at least 10 GB
+# Should delete contents after data preparation is done
 #masif_opts["tmp_dir"] = tempfile.gettempdir()
 masif_opts["tmp_dir"] = '/data02/daniel/tmp'
-masif_opts["ply_file_template"] = masif_opts["ply_chain_dir"] + "/{}_{}.ply"
+
 
 # Surface features
 masif_opts["use_hbond"] = True
@@ -24,7 +28,6 @@ masif_opts["feature_interpolation"] = True
 ####
 masif_opts['ligand_list'] = ["ADP", "COA", "FAD", "HEM", "NAD", "NAP", "SAM"]
 masif_opts['solvents'] = ['IMP', 'EPE', 'FMN', 'TRS', 'PGE', 'ACT', 'NAG', 'EDO', 'GOL', 'SO4', 'PO4']
-#masif_opts['solvents'] = ['EPE', 'FMN', 'TRS', 'PGE', 'NAG', 'ACT', 'EDO']
 masif_opts['all_ligands'] = masif_opts['ligand_list'] + masif_opts['solvents']
 ####
 
@@ -37,9 +40,7 @@ masif_opts["ppi_search"]["training_list"] = "lists/training.txt"
 masif_opts["ppi_search"]["testing_list"] = "lists/testing.txt"
 masif_opts["ppi_search"]["max_shape_size"] = 200
 masif_opts["ppi_search"]["max_distance"] = 12.0  # Radius for the neural network.
-masif_opts["ppi_search"][
-    "masif_precomputation_dir"
-] = "/data02/daniel/masif/search/data_preparation/04b-precomputation_12A/precomputation/"
+masif_opts["ppi_search"]["masif_precomputation_dir"] = "/data02/daniel/masif/search/data_preparation/04b-precomputation_12A/precomputation/"
 masif_opts["ppi_search"]["feat_mask"] = [1.0] * 5
 masif_opts["ppi_search"]["max_sc_filt"] = 1.0
 masif_opts["ppi_search"]["min_sc_filt"] = 0.5
@@ -85,7 +86,7 @@ masif_opts["ligand"]["feat_mask"] = [1.0] * 5
 masif_opts["ligand"]["train_fract"] = 0.9 * 0.8
 masif_opts["ligand"]["val_fract"] = 0.1 * 0.8
 masif_opts["ligand"]["test_fract"] = 0.2
-masif_opts["ligand"]["tfrecords_dir"] = os.path.join(basedir, "data_preparation/tfrecords")
+masif_opts["ligand"]["tfrecords_dir"] = "/data02/daniel/masif/masif_ligand/data_preparation/tfrecords"
 masif_opts["ligand"]["max_distance"] = 12.0
 masif_opts["ligand"]["n_classes"] = 7
 masif_opts["ligand"]["feat_mask"] = [1.0, 1.0, 1.0, 1.0, 1.0]
