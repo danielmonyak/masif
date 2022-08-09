@@ -54,7 +54,7 @@ lr = train_vars['lr']
 
 print(f'Training for {num_iterations} iterations')
 if continue_training:
-    print(f'Resuming training from checkpoint at {ckpPath}, starting at iteration {starting_iteration}')
+    print(f'Resuming training from checkpoint at {ckpPath}, starting at iteration {starting_iteration}, using learning rate {lr:.1e}')
 
 ##########################################
 ##########################################
