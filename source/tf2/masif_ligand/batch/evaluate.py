@@ -13,7 +13,6 @@ from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
 from tf2.masif_ligand.stochastic.get_data import get_data
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score, confusion_matrix, ConfusionMatrixDisplay
-from scipy.stats import mode
 import matplotlib.pyplot as plt
 
 params = masif_opts["ligand"]
@@ -31,7 +30,6 @@ model = MaSIF_ligand(
     params["max_distance"],
     len(ligand_list),
     feat_mask=params["feat_mask"],
-    reg_val = reg_val, reg_type = reg_type,
     keep_prob=1.0
 )
 model.load_weights(ckpPath)
@@ -41,37 +39,66 @@ gpu = '/GPU:2'
 
 n_pred = 100
 
+'''
+@tf.function(experimental_relax_shapes=True)
+def test_step(X, pp):
+  pp_rand = tf.random.shuffle(pp)[:minPockets]
+  X_temp = tuple(tf.gather(tsr, pp_rand, axis=1) for tsr in X)
+  return tf.squeeze(tf.nn.softmax(model(X_temp)))
+'''
+@tf.function(experimental_relax_shapes=True)
+def test_step(X):
+  n_samples = tf.shape(X[0])[1]
+  samp = tf.random.shuffle(tf.range(n_samples))[:minPockets]
+  X_temp = tuple(tf.gather(tsr, samp, axis=1) for tsr in X)
+  return tf.squeeze(tf.nn.softmax(model(X_temp)))
+
 y_true = []
 probs_list = []
 with tf.device(gpu):
-  print(f'Making {n_pred} predictions for each {dataset} protein...')
-  probs_list = []
-  for i, pdb_id in test_list:
+  print(f'Making {n_pred} predictions for each protein...')
+  for i, pdb_id in enumerate(test_list):
     if i % 10 == 0:
       print(i)
-      
+    
+    '''
     data = get_data(pdb_id, include_solvents)
     if data is None:
       continue
-      
     X, pocket_points, y = data
+    X = tuple(tf.constant(arr) for arr in X)
     for k, pp in enumerate(pocket_points):
-      pp_rand = np.random.choice(pp, minPockets, replace=False)
-      X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
+      pp = tf.constant(pp)
       y_true.append(y[k])
-      
       temp_probs_list = []
       for j in range(n_pred):
-        temp_probs_list.append(tf.nn.softmax(model.predict(X)))
+        print(f'j: {j}')
+        temp_probs_list.append(test_step(X, pp))
+      probs_list.append(np.stack(temp_probs_list))'''
+    
+    try:
+      X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'), allow_pickle=True)
+      y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
+    except:
+      continue
+    
+    for k, y_temp in enumerate(y):
+      if y_temp >= 7:
+        continue
+      y_true.append(y_temp)
+      X_temp = X[k]
+      X_temp = (tf.expand_dims(X_temp[0], axis=0), tf.constant(X_temp[1]), tf.constant(X_temp[2]), tf.expand_dims(X_temp[3], axis=0))
+      temp_probs_list = []
+      for j in range(n_pred):
+        print(f'j: {j}')
+        temp_probs_list.append(test_step(X_temp))
       probs_list.append(np.stack(temp_probs_list))
 
-probs_tsr = tf.stack(probs_list, axis=-1)
+probs_tsr = np.stack(probs_list)
 
-y_pred_probs = tf.reduce_mean(probs_tsr, axis=-1)
-y_pred = tf.argmax(y_pred_probs, axis = 1)
+y_pred_probs = np.mean(probs_tsr, axis=1)
+y_pred = np.argmax(y_pred_probs, axis=1)
 
-#y_true = y.argmax(axis = 1)
-y_true = y
 
 balanced_acc = balanced_accuracy_score(y_true, y_pred)
 acc = accuracy_score(y_true, y_pred)
