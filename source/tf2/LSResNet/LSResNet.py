@@ -103,9 +103,9 @@ class LSResNet(Model):
                 layers.Conv3D(1, kernel_size=1),
                 layers.BatchNormalization(axis=bn_axis),
                 layers.ReLU(),
-                #layers.Conv3D(1, kernel_size=1, activation=None),
-                #layers.BatchNormalization(axis=bn_axis),
-                #layers.ReLU()
+                layers.Conv3D(1, kernel_size=1, activation=None),
+                layers.BatchNormalization(axis=bn_axis),
+                layers.ReLU()
             ]
         else:
             self.extraConvLayers = None
