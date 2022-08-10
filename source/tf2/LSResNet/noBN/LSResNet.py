@@ -64,7 +64,6 @@ class LSResNet(Model):
         ]
 
         self.denseReduce = [
-            layers.BatchNormalization(),
             layers.ReLU(),
             layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
             layers.Dense(self.n_feat, activation="relu"),
@@ -85,36 +84,16 @@ class LSResNet(Model):
         
         self.RNConvBlock=[
             [layers.Conv3D(filters1, kernel_size=1, strides=strides),
-            layers.BatchNormalization(axis=bn_axis),
             layers.ReLU(),
              
             layers.Conv3D(filters2, kernel_size=3, padding='same'),
-            layers.BatchNormalization(axis=bn_axis),
             layers.ReLU(),
              
-            layers.Conv3D(filters3, kernel_size=1),
-            layers.BatchNormalization(axis=bn_axis)],
-            
-            [layers.Conv3D(filters3, kernel_size=1, strides=strides),
-            layers.BatchNormalization(axis=bn_axis)]
-        ]
-        
-        ###
-        if extra_conv_layers:
-            self.extraConvLayers = [
-                layers.Conv3D(1, kernel_size=1),
-                layers.BatchNormalization(axis=bn_axis),
-                layers.ReLU(),
-                layers.Conv3D(1, kernel_size=1),
-                layers.BatchNormalization(axis=bn_axis),
-                layers.ReLU(),
-                #layers.Conv3D(1, kernel_size=1, activation=None),
-                #layers.BatchNormalization(axis=bn_axis),
-                #layers.ReLU()
+            layers.Conv3D(filters3, kernel_size=1)
             ]
-        else:
-            self.extraConvLayers = None
-        ###
+            [layers.Conv3D(filters3, kernel_size=1, strides=strides)
+            ]
+        ]
         
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1)
         
@@ -131,11 +110,6 @@ class LSResNet(Model):
         ret = tf.add(ret1, residue)
         
         ret = tf.nn.relu(ret)
-        
-        ### Extra Layers
-        if not self.extraConvLayers is None:
-            ret = runLayers(self.extraConvLayers, ret)
-        ###
         
         ret = self.lastConvLayer(ret)
         
