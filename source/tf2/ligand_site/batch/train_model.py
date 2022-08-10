@@ -139,6 +139,10 @@ with tf.device(dev):
                 continue
             X, _, _ = data
 
+            # Skip PDB if there are NaN values in input_feat - messes up training
+            if np.sum(np.isnan(X[0][0])) > 0:
+                continue
+
             X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
             y_tf = tf.constant(y)
 
