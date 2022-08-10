@@ -222,10 +222,10 @@ with tf.device(dev):
         val_F1_lower = float(val_F1_lower_metric.result())
         val_F1 = float(val_F1_metric.result())
 
-        train_acc_metric.reset_states()
-        train_auc_metric.reset_states()
-        train_F1_lower_metric.reset_states()
-        train_F1_metric.reset_states()
+        val_acc_metric.reset_states()
+        val_auc_metric.reset_states()
+        val_F1_lower_metric.reset_states()
+        val_F1_metric.reset_states()
 
         print(f'\nVALIDATION results over {i} PDBs') 
         print("Accuracy ----------------- %.4f" % val_acc)
