@@ -138,6 +138,12 @@ with tf.device('/GPU:3'):
             y_tf = tf.constant(y)
 
             grads = train_step(X_tf, y_tf)
+            for g in grads:
+                if np.any(np.isnan(g)):
+                    print('NAN grads!')
+                    print(i)
+                    print(iterations)
+                    print(pdb)
 
             if i == 0:
                 grads_sum = grads
@@ -171,6 +177,13 @@ with tf.device('/GPU:3'):
                     f.write(str(mean_loss) + '\n')
                 
                 grads = [tsr/i for tsr in grads_sum]
+                
+                for g in grads:
+                    if np.any(np.isnan(g)):
+                        print('NAN grads on batch!')
+                        print(j)
+                        print(iterations)
+                    
                 optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
                 i = 0
