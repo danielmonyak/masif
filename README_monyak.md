@@ -149,7 +149,12 @@ kill $(cat train_model_pid.txt)
 Alter the "source/default_config/masif_opts.py" file to change the directory where the output files are generated. Up to 400 GB of disk space will be needed.
 <br>
 
-data_prepare_one.sh had to be run for each protein, so manual scheduling with a script was used, as Slurm is not available. Jobs were run such that a maximum of 8 were running at any one time.
+In **data/masif_ligand**:<br>
+data_prepare_one.sh has to be run for each protein, so manual scheduling with one of these script should be used if slurm is not available:<br>
+schedule_wait.sh (RECOMMENDED) - runs a batch of 10 jobs (or as many as you want) at a time, and then waits till they all finish to schedule the next batch, checking every 20 seconds <br>
+schedule_no_wait.sh - runs a batch of 15 jobs (or as many as you want) every 5 minutes. <br>
+
+Jobs were run such that a maximum of 8 were running at any one time.
 ```
 ./run_data_prepare.sh
 ```
