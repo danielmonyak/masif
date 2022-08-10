@@ -2,17 +2,10 @@ import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model, regularizers
 import tensorflow as tf
 from tensorflow.keras import backend as K
-import functools
-from operator import add
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 
 params = masif_opts['LSResNet']
-
-def runLayers(layers, x):
-    for l in layers:
-        x = l(x)
-    return x
 
 class LSResNet(Model):
     def __init__(
@@ -46,9 +39,6 @@ class LSResNet(Model):
         
         self.scale = params['scale']
         self.max_dist = params['max_dist']
-        
-        self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-        self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
 
         self.convBlock0 = [
             ConvLayer(5, [self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
@@ -107,8 +97,8 @@ class LSResNet(Model):
     def call(self, X_packed, training=False):
         X, xyz_coords = X_packed
         
-        ret = runLayers(self.convBlock0, X)
-        ret = runLayers(self.denseReduce, ret)
+        ret = util.runLayers(self.convBlock0, X)
+        ret = util.runLayers(self.denseReduce, ret)
         
         ret = self.myMakeGrid(xyz_coords, ret)
         
@@ -416,8 +406,8 @@ class ConvBlock:
         ]
         
     def __call__(self, x):
-        ret = runLayers(self.mainBlock, x)
-        residue = runLayers(self.resBlock, x)
+        ret = util.runLayers(self.mainBlock, x)
+        residue = util.runLayers(self.resBlock, x)
         ret = tf.add(ret, residue)
         ret = tf.nn.relu(ret)
         return ret
@@ -449,7 +439,7 @@ class IdentityBlock:
         
         
     def __call__(self, x):
-        ret = runLayers(self.mainBlock, x)
+        ret = util.runLayers(self.mainBlock, x)
         ret = tf.add(ret, x)
         ret = tf.nn.relu(ret)
         return ret
@@ -487,8 +477,8 @@ class UpConvBlock:
             self.resBlock.append(layers.BatchNormalization(axis=bn_axis))
     
     def __call__(self, x):
-        ret = runLayers(self.mainBlock, x)
-        residue = runLayers(self.resBlock, x)
+        ret = util.runLayers(self.mainBlock, x)
+        residue = util.runLayers(self.resBlock, x)
         ret = tf.add(ret, residue)
         ret = tf.nn.relu(ret)
         return ret
