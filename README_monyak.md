@@ -101,7 +101,7 @@ pip install scipy==1.2.1
 
 ### Important Notes/Terms
 
-TF1 - Tensorflow 1
+TF1 - Tensorflow 1 <br>
 TF2 - Tensorflow 2 (also involving the use of Keras)
 
 #### Scripts
