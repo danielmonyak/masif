@@ -125,9 +125,11 @@ TF2 - Tensorflow 2 (also involving the use of Keras)
 **source/masif_ligand**: Scripts for training and predicting with the TF1 model<br>
 
 **source/tf2**: MOST IMPORTANT - Scripts, work, and saved models for TF2 models<br>
-**source/tf2/masif_ligand**:<br>
-**source/tf2/ligand_site**:<br>
-**source/tf2/LSResNet**:<br>
+**source/tf2/masif_ligand**<br>
+**source/tf2/ligand_site**<br>
+**source/tf2/LSResNet**<br>
+**source/tf2/usage**<br>
+**source/tf2/usage_new**<br>
 
 ### Data Preparation
 
@@ -138,4 +140,5 @@ data_prepare_one.sh had to be run for each protein, so manual scheduling with a 
 ```
 ./run_data_prepare.sh
 ```
-Runs the scheduling script in the background and stores the pid of the job in "schedule_data_prepare_pid.txt". Examine the current jobs with "ps aux". Proteins that have been started and then finished are listed in "started_proteins.txt" and "finished_proteins.txt". Be aware that there are a few duplicates in "sequence_split_list.txt", so there will be less output folders than proteins in the list.
+Runs the schedule_data_prepare.sh in the background and stores the pid of the job in "schedule_data_prepare_pid.txt". Examine the current jobs with "ps aux". Proteins that have been started and then finished are listed in "started_proteins.txt" and "finished_proteins.txt".
+
