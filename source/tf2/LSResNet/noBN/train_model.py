@@ -53,10 +53,8 @@ model = LSResNet(
     feat_mask=params["feat_mask"],
     n_thetas=4,
     n_rhos=3,
-    learning_rate = lr,
     n_rotations=4,
     reg_val = 0,
-    extra_conv_layers = False
 )
 if continue_training:
     model.load_weights(ckpPath)
