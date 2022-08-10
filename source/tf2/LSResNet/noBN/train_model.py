@@ -66,8 +66,9 @@ else:
         pass
 print()
 
-#optimizer = tf.keras.optimizers.SGD(learning_rate=lr, momentum=0.9)
-optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
+#optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
+optimizer = tf.keras.optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True, clipvalue=0.5)
+
 loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits=True)
 loss_metric = tf.keras.metrics.Mean()
 
