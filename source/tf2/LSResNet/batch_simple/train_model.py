@@ -143,7 +143,7 @@ with tf.device('/GPU:3'):
                     print('NAN grads!')
                     print(i)
                     print(iterations)
-                    print(pdb)
+                    print(pdb_id)
 
             if i == 0:
                 grads_sum = grads
