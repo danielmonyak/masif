@@ -37,6 +37,12 @@ def pad_indices(indices, max_verts):
         )
     return np.stack(ret_list)
 
+  
+def runLayers(layers, x):
+    for l in layers:
+        x = l(x)
+    return x
+
 '''
 def F1(y_true, y_pred, threshold=0.5):
     y_true = tf.cast(y_true, dtype=tf.bool)
