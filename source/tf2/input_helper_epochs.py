@@ -32,7 +32,7 @@ if continue_training:
             sys.exit('Please enter a valid number 0 or greater...')
     
 
-num_epochs = 10**7
+num_epochs = 100
 num_epochs_key = input(f'Enter the number of epochs to train for [{num_epochs}]: ')
 if num_epochs_key != '':
     try:
