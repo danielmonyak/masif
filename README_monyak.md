@@ -99,8 +99,21 @@ pip install scipy==1.2.1
 
 ## Use of Masif
 
+### Important Notes/Terms
+
 TF1 - Tensorflow 1
 TF2 - Tensorflow 2 (also involving the use of Keras)
+
+#### Scripts
+Almost all scripts (basename.py) are written in Python but should be run using the corresponding shell script (basename.sh) that activates the right virtual environment and runs the Python script in the background, and is usally in the same directory. The shell script redirects the error and output streams to files with the same base name as the script (basename.err and basename.out) in the same directory, but occasionally the error stream is just fed into the output file as well. It also creates a file that contains the PID of the Python job that is running in the background (basename_pid.txt), so that it can be terminated.<br><br>
+EXAMPLE: All the of the scripts to train a model are "train_model.py" but should be run by doing:
+```
+./train_model.sh
+```
+This will create "train_model.out" and "train_model.err", as well as "train_model_pid.txt". If you need to terminate the Python process, run:
+```
+kill $(cat train_model_pid.txt)
+```
 
 ### Important Directories
 
