@@ -100,6 +100,10 @@ pip install scipy==1.2.1
 ## Use of Masif
 
 ### Important Notes/Terms
+To see the current running jobs:
+```
+ps -u $username -o pid,%mem,%cpu,user,cmd
+```
 
 TF1 - Tensorflow 1 <br>
 TF2 - Tensorflow 2 (also involving the use of Keras)
@@ -161,9 +165,4 @@ Use one of them by running either:
 or
 ```
 ./run_schedule_no_wait.sh
-```
-
-While running, see the current jobs by running:
-```
-ps -u $username -o pid,%mem,%cpu,user,cmd
 ```
