@@ -29,8 +29,7 @@ while read p; do
 	disown -h $!
 	running+=($!)
 	i=$((i+1))
-#done < lists/sequence_split_list_UNIQUE.txt
 #done < newPDBs/filtered_pdbs.txt
-done < newPDBs/todo.txt
+done < todo.txt
 
 echo Finished!

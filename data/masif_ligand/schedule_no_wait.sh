@@ -17,8 +17,7 @@ while read p; do
 		sleep $sleep_time
 		i=0
 	fi
-#done < lists/sequence_split_list_UNIQUE.txt
 #done < newPDBs/filtered_pdbs.txt
-done < newPDBs/todo.txt
+done < todo.txt
 
 echo Finished!
