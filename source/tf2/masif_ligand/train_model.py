@@ -53,14 +53,14 @@ valid_train_mask = ~np.isnan(train_X).any(axis=1)
 valid_val_mask = ~np.isnan(val_X).any(axis=1)
 
 train_X = train_X[valid_train_mask]
+train_y = train_y[valid_train_mask]
+
 val_X = val_X[valid_val_mask]
+val_y = val_y[valid_val_mask]
 
 with tf.device(cpu):
   train_X = tf.RaggedTensor.from_tensor(train_X, padding=defaultCode)
   val_X = tf.RaggedTensor.from_tensor(val_X, padding=defaultCode)
-
-train_nan_idx = np.isnan(train_X).nonzero()
-val_nan_idx = np.isnan(val_X).nonzero()
 
 modelDir = 'kerasModel'
 modelPath = os.path.join(modelDir, 'savedModel')
