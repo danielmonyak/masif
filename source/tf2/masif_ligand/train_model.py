@@ -3,6 +3,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import sys
 import numpy as np
 import tensorflow as tf
+import pickle
 
 phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
@@ -67,7 +68,7 @@ with strategy.scope():
     params["n_classes"],
     feat_mask=params["feat_mask"],
     reg_val = reg_val, reg_type = reg_type,
-    lr = lr
+    learning_rate = lr
   )
   model.compile(optimizer = model.opt,
     loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
