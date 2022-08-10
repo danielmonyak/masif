@@ -81,8 +81,8 @@ else:
         pass
 print()
 
-#optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
-optimizer = tf.keras.optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True, clipvalue=0.5)
+optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
+#optimizer = tf.keras.optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True, clipvalue=0.5)
 
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 loss_metric = tf.keras.metrics.Mean()
@@ -139,6 +139,20 @@ with tf.device(dev):
                 y_temp = tf.constant(y[k])
                 grads = train_step(X_temp, y_temp)
                 y_true_idx_used[y[k]] = 1
+                
+                skip = False
+                for g in grads:
+                    if np.any(np.isnan(g)):
+                        print('NAN grads!')
+                        print(i)
+                        print(iterations)
+                        print(pdb_id)
+                        skip = True
+                        break
+
+                if skip:
+                    continue
+
                 if i == 0:
                     grads_sum = grads
                 else:
@@ -158,7 +172,13 @@ with tf.device(dev):
                     f.write(str(mean_loss) + '\n')
                 
                 grads = [tsr/i for tsr in grads_sum]
-                prep = zip(grads, model.trainable_weights)
+                
+                for g in grads:
+                    if np.any(np.isnan(g)):
+                        print('NAN grads on batch!')
+                        print(j)
+                        print(iterations)
+                
                 optimizer.apply_gradients(zip(grads, model.trainable_weights))
                 i = 0
                 pdb_count = 0
