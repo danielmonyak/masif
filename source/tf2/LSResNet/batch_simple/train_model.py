@@ -138,13 +138,20 @@ with tf.device('/GPU:3'):
             y_tf = tf.constant(y)
 
             grads = train_step(X_tf, y_tf)
+            
+            skip = False
             for g in grads:
                 if np.any(np.isnan(g)):
                     print('NAN grads!')
                     print(i)
                     print(iterations)
                     print(pdb_id)
-
+                    skip = True
+                    break
+            
+            if skip:
+                continue
+            
             if i == 0:
                 grads_sum = grads
             else:
