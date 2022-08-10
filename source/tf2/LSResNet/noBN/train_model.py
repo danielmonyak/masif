@@ -11,7 +11,7 @@ for phys_g in phys_gpus:
 
 import default_config.util as util
 from default_config.masif_opts import masif_opts
-from tf2.LSResNet.LSResNet import LSResNet
+from LSResNet import LSResNet
 from tf2.LSResNet.get_data import get_data
 
 params = masif_opts["LSResNet"]
