@@ -72,11 +72,13 @@ loss_metric = tf.keras.metrics.Mean()
 
 train_acc_metric = tf.keras.metrics.BinaryAccuracy()
 train_auc_metric = tf.keras.metrics.AUC()
+train_F1_lowest_metric = util.F1_Metric(threshold = 0.1)
 train_F1_lower_metric = util.F1_Metric(threshold = 0.3)
 train_F1_metric = util.F1_Metric(threshold = 0.5)
 
 val_acc_metric = tf.keras.metrics.BinaryAccuracy()
 val_auc_metric = tf.keras.metrics.AUC()
+val_F1_lowest_metric = util.F1_Metric(threshold = 0.1)
 val_F1_lower_metric = util.F1_Metric(threshold = 0.3)
 val_F1_metric = util.F1_Metric(threshold = 0.5)
 
@@ -92,6 +94,7 @@ def train_step(x, y):
     y_pred = tf.sigmoid(logits)
     train_acc_metric.update_state(y, y_pred)
     train_auc_metric.update_state(y, y_pred)
+    train_F1_lowest_metric.update_state(y, y_pred)
     train_F1_lower_metric.update_state(y, y_pred)
     train_F1_metric.update_state(y, y_pred)
     
@@ -103,10 +106,11 @@ def test_step(x, y):
     y_pred = tf.sigmoid(logits)
     val_acc_metric.update_state(y, y_pred)
     val_auc_metric.update_state(y, y_pred)
+    val_F1_lowest_metric.update_state(y, y_pred)
     val_F1_lower_metric.update_state(y, y_pred)
     val_F1_metric.update_state(y, y_pred)
 
-    
+
 with tf.device('/GPU:3'):
     iterations = starting_iteration
     epoch = 0
@@ -163,12 +167,14 @@ with tf.device('/GPU:3'):
                 mean_loss = float(loss_metric.result())
                 train_acc = float(train_acc_metric.result())
                 train_auc = float(train_auc_metric.result())
+                train_F1_lowest = float(train_F1_lowest_metric.result())
                 train_F1_lower = float(train_F1_lower_metric.result())
                 train_F1 = float(train_F1_metric.result())
 
                 loss_metric.reset_states()
                 train_acc_metric.reset_states()
                 train_auc_metric.reset_states()
+                train_F1_lowest_metric.reset_states()
                 train_F1_lower_metric.reset_states()
                 train_F1_metric.reset_states()
 
@@ -176,6 +182,7 @@ with tf.device('/GPU:3'):
                 print("Loss --------------------- %.4f" % mean_loss)
                 print("Accuracy ----------------- %.4f" % train_acc)
                 print("AUC      ----------------- %.4f" % train_auc)
+                print("F1 Lowest ----------------- %.4f" % train_F1_lowest)
                 print("F1 Lower ----------------- %.4f" % train_F1_lower)
                 print("F1       ----------------- %.4f" % train_F1)
 
@@ -225,17 +232,20 @@ with tf.device('/GPU:3'):
 
         val_acc = float(val_acc_metric.result())
         val_auc = float(val_auc_metric.result())
+        val_F1_lowest = float(val_F1_lowest_metric.result())
         val_F1_lower = float(val_F1_lower_metric.result())
         val_F1 = float(val_F1_metric.result())
 
-        train_acc_metric.reset_states()
-        train_auc_metric.reset_states()
-        train_F1_lower_metric.reset_states()
-        train_F1_metric.reset_states()
+        val_acc_metric.reset_states()
+        val_auc_metric.reset_states()
+        val_F1_lowest_metric.reset_states()
+        val_F1_lower_metric.reset_states()
+        val_F1_metric.reset_states()
 
         print(f'\nVALIDATION results over {i} PDBs') 
         print("Accuracy ----------------- %.4f" % val_acc)
         print("AUC      ----------------- %.4f" % val_auc)
+        print("F1 Lowest ----------------- %.4f" % val_F1_lowest)
         print("F1 Lower ----------------- %.4f" % val_F1_lower)
         print("F1       ----------------- %.4f" % val_F1)
 
