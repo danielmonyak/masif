@@ -111,7 +111,7 @@ def test_step(x, y):
     val_F1_metric.update_state(y, y_pred)
 
 
-with tf.device('/GPU:3'):
+with tf.device('/GPU:1'):
     iterations = starting_iteration
     epoch = 0
     while iterations < num_iterations:
