@@ -150,13 +150,20 @@ Alter the "source/default_config/masif_opts.py" file to change the directory whe
 <br>
 
 In **data/masif_ligand**:<br>
-data_prepare_one.sh has to be run for each protein, so manual scheduling with one of these script should be used if slurm is not available:<br>
+data_prepare_one.sh has to be run for each protein, so manual scheduling with one of these script should be used if slurm is not available: <br><br>
 schedule_wait.sh (RECOMMENDED) - runs a batch of 10 jobs (or as many as you want) at a time, and then waits till they all finish to schedule the next batch, checking every 20 seconds <br>
 schedule_no_wait.sh - runs a batch of 15 jobs (or as many as you want) every 5 minutes. <br>
 
-Jobs were run such that a maximum of 8 were running at any one time.
+Use one of them by running either:
 ```
-./run_data_prepare.sh
+./run_schedule_wait.sh
 ```
-Runs the schedule_data_prepare.sh in the background and stores the pid of the job in "schedule_data_prepare_pid.txt". Examine the current jobs with "ps aux". Proteins that have been started and then finished are listed in "started_proteins.txt" and "finished_proteins.txt".
+or
+```
+./run_schedule_no_wait.sh
+```
 
+While running, see the current jobs by running:
+```
+ps -u $username -o pid,%mem,%cpu,user,cmd
+```
