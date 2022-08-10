@@ -129,6 +129,7 @@ with tf.device(dev):
                 print('\nReshuffling training set...')
                 continue
             
+            '''
             data = get_data(pdb_id, include_solvents)
             if data is None:
                 continue
@@ -137,6 +138,28 @@ with tf.device(dev):
                 pp_rand = np.random.choice(pp, minPockets, replace=False)
                 X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
                 y_temp = tf.constant(y[k])
+                '''
+            try:
+                X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'), allow_pickle=True)
+                y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
+            except:
+                continue
+            
+            for k, X_temp in enumerate(X):
+                if y[k] >= len(ligand_list):
+                    continue
+                X_temp[0] = np.expand_dims(X_temp[0], axis=0)
+                
+                # Skip PDB if there are NaN values in input_feat - messes up training
+                if np.sum(np.isnan(X_temp[0])) > 0:
+                    continue
+                
+                X_temp[3] = np.expand_dims(X_temp[3], axis=0)
+                n_samples = X_temp[0].shape[1]
+                pp_rand = np.random.choice(range(n_samples), minPockets, replace=False)
+                X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X_temp)
+                y_temp = tf.constant(y[k])
+                
                 grads = train_step(X_temp, y_temp)
                 y_true_idx_used[y[k]] = 1
                 
@@ -185,21 +208,7 @@ with tf.device(dev):
                 y_true_idx_used.fill(0)
                 j += 1
 
-        '''
-        #mean_loss = np.mean(loss_list)
-        #loss_list = []
-        mean_loss = float(loss_metric.result())
-        train_acc = train_acc_metric.result()
-
-        loss_metric.reset_states()
-        train_acc_metric.reset_states()
-
-        print(f'\nTRAINING results over {j} batches, {pdb_count} total PDBs') 
-        print("Loss --------------------- %.4f" % (mean_loss,))
-        print("Accuracy ----------------- %.4f" % (float(train_acc),))'''
-
         print(f'{iterations} iterations completed')
-
 
         #####################################
         #####################################
@@ -212,15 +221,37 @@ with tf.device(dev):
                 val_iter = iter(val_list)
                 continue
 
+            '''
             data = get_data(pdb_id, include_solvents)
             if data is None:
                 continue
-
             X, pocket_points, y = data
             for k, pp in enumerate(pocket_points):
                 pp_rand = np.random.choice(pp, minPockets, replace=False)
                 X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
+                y_temp = tf.constant(y[k])'''
+            
+            try:
+                X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'), allow_pickle=True)
+                y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
+            except:
+                continue
+            
+            for k, X_temp in enumerate(X):
+                if y[k] >= len(ligand_list):
+                    continue
+                X_temp[0] = np.expand_dims(X_temp[0], axis=0)
+                
+                # Skip PDB if there are NaN values in input_feat - messes up training
+                if np.sum(np.isnan(X_temp[0])) > 0:
+                    continue
+                
+                X_temp[3] = np.expand_dims(X_temp[3], axis=0)
+                n_samples = X_temp[0].shape[1]
+                pp_rand = np.random.choice(range(n_samples), minPockets, replace=False)
+                X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X_temp)
                 y_temp = tf.constant(y[k])
+            
                 test_step(X_temp, y_temp)
 
                 i += 1
