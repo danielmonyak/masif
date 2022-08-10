@@ -23,8 +23,7 @@ class LSResNet(Model):
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
         reg_val = 1e-4,
-        reg_type = 'l2',
-        extra_conv_layers = True
+        reg_type = 'l2'
     ):
         ## Call super - model initializer
         super(LSResNet, self).__init__()
@@ -83,16 +82,10 @@ class LSResNet(Model):
         strides = (1,1,1)
         
         self.RNConvBlock=[
-            [layers.Conv3D(filters1, kernel_size=1, strides=strides),
-            layers.ReLU(),
-             
-            layers.Conv3D(filters2, kernel_size=3, padding='same'),
-            layers.ReLU(),
-             
-            layers.Conv3D(filters3, kernel_size=1)
-            ]
-            [layers.Conv3D(filters3, kernel_size=1, strides=strides)
-            ]
+            [layers.Conv3D(filters1, kernel_size=1, strides=strides, activation='relu'),
+            layers.Conv3D(filters2, kernel_size=3, padding='same', activation='relu'),
+            layers.Conv3D(filters3, kernel_size=1)],
+            [layers.Conv3D(filters3, kernel_size=1, strides=strides)]
         ]
         
         self.lastConvLayer = layers.Conv3D(1, kernel_size=1)
