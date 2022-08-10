@@ -123,6 +123,10 @@ kill $(cat train_model_pid.txt)
 
 **data**: Scripts for data prepartion<br>
 **data/masif_ligand**: Scripts to do data preparation for MaSIF-Ligand<br>
+- data_prepare_one.sh - Run all data preparation steps for a single protein structure <br>
+- schedule_wait.sh, run_schedule_wait.sh, schedule_no_wait.sh, run_schedule_no_wait.sh - see section below on "Data Preparation" <br>
+- 
+**data/ligand_site**: Scripts to do precomputation with 9A radius (for LSResNet and ligand-site) <br>
 
 **source**: Most python source files<br>
 **source/default_config**:<br>
