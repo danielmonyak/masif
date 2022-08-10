@@ -103,7 +103,6 @@ class LSResNet(Model):
         ret = tf.add(ret1, residue)
         
         ret = tf.nn.relu(ret)
-        
         ret = self.lastConvLayer(ret)
         
         return ret
