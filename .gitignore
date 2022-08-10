@@ -59,7 +59,5 @@ source/tf2/*/*.txt
 source/tf2/*/*/*.txt
 source/tf2/*/l2*
 source/tf2/*/*/l2*
-source/tf2/*/*.tar.gz
-source/tf2/*/*/*.tar.gz
 source/tf2/*/outdir
 source/tf2/*/*/outdir
