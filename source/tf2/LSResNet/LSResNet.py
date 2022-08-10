@@ -7,11 +7,6 @@ from operator import add
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 
-def runLayers(layers, x):
-    for l in layers:
-        x = l(x)
-    return x
-
 class LSResNet(Model):
     def __init__(
         self,
@@ -121,20 +116,20 @@ class LSResNet(Model):
     def call(self, X_packed, training=False):
         X, xyz_coords = X_packed
         
-        ret = runLayers(self.convBlock0, X)
-        ret = runLayers(self.denseReduce, ret)
+        ret = util.runLayers(self.convBlock0, X)
+        ret = util.runLayers(self.denseReduce, ret)
         
         ret = self.myMakeGrid(xyz_coords, ret)
         
-        ret1 = runLayers(self.RNConvBlock[0], ret)
-        residue = runLayers(self.RNConvBlock[1], ret)
+        ret1 = util.runLayers(self.RNConvBlock[0], ret)
+        residue = util.runLayers(self.RNConvBlock[1], ret)
         ret = tf.add(ret1, residue)
         
         ret = tf.nn.relu(ret)
         
         ### Extra Layers
         if not self.extraConvLayers is None:
-            ret = runLayers(self.extraConvLayers, ret)
+            ret = util.runLayers(self.extraConvLayers, ret)
         ###
         
         ret = self.lastConvLayer(ret)
