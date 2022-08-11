@@ -1,5 +1,7 @@
-tf_env=venv_tf
-env_path=/apps01/anaconda3/envs/$tf_env
+#tf_env=venv_tf
+#env_path=/apps01/anaconda3/envs/$tf_env
+tf_env=venv_tf_new
+env_path=$HOME/miniconda3/envs/$tf_env
 
 # Set environmental variables
 export APBS_BIN=$HOME/software/APBS-3.4.1.Linux/bin/apbs
@@ -11,7 +13,8 @@ export PYMESH_PATH=$HOME/software/PyMesh
 export MSMS_BIN=$env_path/bin/msms
 export PDB2XYZRN=$env_path/bin/pdb_to_xyzrn
 
-source /apps01/anaconda3/etc/profile.d/conda.sh
+#source /apps01/anaconda3/etc/profile.d/conda.sh
+source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate $tf_env
 
 masif_root=$(git rev-parse --show-toplevel)
