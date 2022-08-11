@@ -14,11 +14,7 @@ from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.batch.MaSIF_ligand import MaSIF_ligand
 from tf2.masif_ligand.batch.get_data import get_data
 
-#from time import time
-
 params = masif_opts["ligand"]
-
-#lr = 1e-4
 
 n_train_batches = 10
 batch_sz = 64
@@ -115,10 +111,6 @@ with tf.device(dev):
         i = 0
         j = 0
         pdb_count = 0
-
-#        get_data_time = 0
-#        train_time = 0
-#        batch_time = -time()
 
         while j < n_train_batches:
             try:
