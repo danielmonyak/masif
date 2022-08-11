@@ -55,8 +55,6 @@ if continue_training:
 
 dev = '/GPU:2'
 
-#with tf.device(dev):
-    
 model = MaSIF_ligand_site(
     params["max_distance"],
     feat_mask=params["feat_mask"],
