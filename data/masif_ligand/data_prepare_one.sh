@@ -1,6 +1,7 @@
 tf_env=venv_tf
 env_path=/apps01/anaconda3/envs/$tf_env
 
+# Set environmental variables
 export APBS_BIN=$HOME/software/APBS-3.4.1.Linux/bin/apbs
 export MULTIVALUE_BIN=$HOME/software/APBS-3.4.1.Linux/share/apbs/tools/bin/multivalue
 export PDB2PQR_BIN=$env_path/bin/pdb2pqr
