@@ -17,6 +17,7 @@ while read p; do
 		sleep $sleep_time
 		i=0
 	fi
-done < todo.txt
+done < ../masif_ligand/newPDBs/using_pdbs_final_reg.txt
+#done < todo.txt
 
 echo Finished!

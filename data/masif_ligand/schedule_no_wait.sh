@@ -17,7 +17,7 @@ while read p; do
 		sleep $sleep_time
 		i=0
 	fi
-#done < newPDBs/filtered_pdbs.txt
-done < todo.txt
+done < newPDBs/filtered_pdbs.txt
+#done < todo.txt
 
 echo Finished!

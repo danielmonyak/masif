@@ -29,7 +29,7 @@ while read p; do
 	disown -h $!
 	running+=($!)
 	i=$((i+1))
-#done < newPDBs/filtered_pdbs.txt
-done < todo.txt
+done < newPDBs/filtered_pdbs.txt
+#done < todo.txt
 
 echo Finished!

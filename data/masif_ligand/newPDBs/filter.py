@@ -11,7 +11,7 @@ all_pdbs = np.loadtxt('all_pdbs.txt', dtype=str)
 cut = lambda x : np.char.partition(x, '_')[:,0]
 
 if mode == 'reg':
-    old_pdbs = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/lists/sequence_split_list_UNIQUE.txt', dtype=str)
+    old_pdbs = np.unique(np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/F1/lists/sequence_split_list.txt', dtype=str))
     using_pdbs = old_pdbs[np.isin(cut(old_pdbs), all_pdbs)].tolist()
     using_clusters = df['cluster'][np.isin(df.index, cut(using_pdbs))].tolist()
 elif mode == 'solvents':

@@ -25,8 +25,7 @@ while read p; do
 	disown -h $!
 	running+=($!)
 	i=$((i+1))
-#done < ../masif_ligand/lists/sequence_split_list_UNIQUE.txt
-#done < ../masif_ligand/newPDBs/shared_old.txt
-done < todo.txt
+done < ../masif_ligand/newPDBs/using_pdbs_final_reg.txt
+#done < todo.txt
 
 echo Finished!
