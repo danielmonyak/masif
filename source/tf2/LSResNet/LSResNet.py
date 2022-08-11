@@ -8,19 +8,6 @@ import default_config.util as util
 from default_config.masif_opts import masif_opts
 
 class LSResNet(Model):
-    def train_step(self, data):
-        x, y = data
-
-        with tf.GradientTape() as tape:
-            y_pred = self(x, training=True)
-            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
-
-        trainable_vars = self.trainable_variables
-        gradients = tape.gradient(loss, trainable_vars)
-        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
-        self.compiled_metrics.update_state(y, y_pred)
-        return {m.name: m.result() for m in self.metrics}
-    
     def __init__(
         self,
         max_rho,
