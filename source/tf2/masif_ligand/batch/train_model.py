@@ -71,8 +71,7 @@ model = MaSIF_ligand(
     len(ligand_list),
     feat_mask=params["feat_mask"],
     reg_val = reg_val, reg_type = reg_type,
-    keep_prob=1.0,
-    use_bn = False
+    keep_prob=1.0
 )
 if continue_training:
     model.load_weights(ckpPath)
