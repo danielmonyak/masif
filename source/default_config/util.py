@@ -65,7 +65,7 @@ class F1_Metric(metrics.Metric):
         self.count = self.add_weight(name='count', initializer='zeros')
         self.from_logits = from_logits
         self.threshold = threshold
-    def update_state(self, y_true, y_pred):
+    def update_state(self, y_true, y_pred, **kwargs):
         y_true = tf.cast(y_true, dtype=tf.float32)
         if self.from_logits:
             y_pred = tf.sigmoid(y_pred)
