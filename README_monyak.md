@@ -183,6 +183,23 @@ kill $(cat train_model_pid.txt)
 **source/tf2/usage**<br>
 **source/tf2/usage_new**<br>
 
+### PDB Collection/Filtering
+The current list of PDBs being used is "data/masif_ligand/newPDBs/using_pdbs_final_reg.txt," and "data/masif_ligand/newPDBs/filtered_pdbs.txt" is the same list plus the ~3000 PDBs that contained solvents, were filtered, and added to the list.<br>
+
+These steps do not need to be completed again.<br><br>
+
+Collecting PDB IDs and cluster IDs from CSV files and filter PDBs by 30% sequence identity, so that no two PDBs in final set are in the same cluster. Also, start off with the original list of PDBs that was used for MaSIF-Ligand.
+```
+cd data/masif_ligand/newPDBs
+python makeDF.py CSVs
+python filter.py reg > filter.out 2>&1 &
+```
+Collect solvent PDBs and add to "reg" set for final set of PDBs:
+```
+python makeDF.py solvent_CSVs
+python filter.py solvents > filter.out 2>&1 &
+```
+
 ### Data Preparation
 
 Alter the "source/default_config/masif_opts.py" file to change the directory where the output files are generated. Up to 400 GB of disk space will be needed.
@@ -201,3 +218,5 @@ or
 ```
 ./run_schedule_no_wait.sh
 ```
+
+The program might fail d
