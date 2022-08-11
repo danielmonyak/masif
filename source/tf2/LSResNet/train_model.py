@@ -60,11 +60,11 @@ print()
 
 #optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
 
-acc_metric = tf.keras.metrics.BinaryAccuracy(threshold = 0)
-auc_metric = tf.keras.metrics.AUC(from_logits = True)
-F1_lowest_metric = util.F1_Metric(from_logits = True, threshold = 0.1)
-F1_lower_metric = util.F1_Metric(from_logits = True, threshold = 0.3)
-F1_metric = util.F1_Metric(from_logits = True, threshold = 0.5)
+acc_metric = tf.keras.metrics.BinaryAccuracy(threshold = 0, name = 'acc')
+auc_metric = tf.keras.metrics.AUC(from_logits = True, name = 'auc')
+F1_lowest_metric = util.F1_Metric(from_logits = True, threshold = 0.3, name = 'F1_lowest')
+F1_lower_metric = util.F1_Metric(from_logits = True, threshold = 0.4, name = 'F1_lower')
+F1_metric = util.F1_Metric(from_logits = True, threshold = 0.5, name = 'F1')
 
 model.compile(
     optimizer = tf.keras.optimizers.SGD(learning_rate=lr, momentum=0.9),
@@ -75,10 +75,18 @@ model.compile(
 with tf.device('/GPU:0'):
     iterations = starting_iteration
     while iterations < num_iterations:
+        loss_list = []
+        acc_list = []
+        auc_list = []
+        F1_lowest_list = []
+        F1_lower_list = []
+        F1_list = []
+        
         np.random.shuffle(train_list)
         train_iter = iter(train_list)
         i = 0
         while True:
+            if i==10: break
             try:
                 pdb_id = next(train_iter)
             except:
@@ -100,15 +108,28 @@ with tf.device('/GPU:0'):
             X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
             y_tf = tf.constant(y)
 
-            history = model.fit(X_tf, y_tf, verbose=2, epochs=1)
+            history = model.fit(X_tf, y_tf, verbose=0, epochs=1)
             i += 1
             iterations += 1
             
-            loss_value = history.history['loss'][0]
+            loss_list.extend(history.history['loss'])
+            acc_list.extend(history.history['acc'])
+            auc_list.extend(history.history['auc'])
+            F1_lowest_list.extend(history.history['F1_lowest'])
+            F1_lower_list.extend(history.history['F1_lower'])
+            F1_list.extend(history.history['F1'])
+            
             with open('loss.txt', 'a') as f:
-                f.write(str(loss_value) + '\n')
+                f.write(str(history.history['loss']) + '\n')
         
-        print(f'{i} training samples run')
+        print(f'Results from {i} training samples')
+        print("Loss -------------------- %.4f" % np.mean(loss_list))
+        print("Accuracy ----------------- %.4f" % np.mean(acc_list))
+        print("AUC      ----------------- %.4f" % np.mean(auc_list))
+        print("F1 Lowest ----------------- %.4f" % np.mean(F1_lowest_list))
+        print("F1 Lower ----------------- %.4f" % np.mean(F1_lower_list))
+        print("F1       ----------------- %.4f" % np.mean(F1_list))
+        
         print(f'\n{iterations} iterations completed')
 
         #####################################
@@ -122,6 +143,7 @@ with tf.device('/GPU:0'):
         val_iter = iter(val_list)
         i = 0
         while True:
+            if i==10: break
             try:
                 pdb_id = next(val_iter)
             except:
