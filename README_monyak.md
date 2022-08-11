@@ -120,7 +120,7 @@ See masif_opts for the LOI and solvent lists <br>
 None of the currently trained models were trained for dealing with solvents or protein sites with solvents, but about 3000 extra PDBs were downloaded and prepared, and exist in masif_opts["ligand"]["masif_precomputation_dir"] <br>
 
 #### Scripts
-Almost all scripts (basename.py) are written in Python but should be run using the corresponding shell script (basename.sh) that activates the right virtual environment and runs the Python script in the background, and is usally in the same directory. The shell script redirects the error and output streams to files with the same base name as the script (basename.err and basename.out) in the same directory, but occasionally the error stream is just fed into the output file as well. It also creates a file that contains the PID of the Python job that is running in the background (basename_pid.txt), so that it can be terminated.<br><br>
+Almost all scripts (basename.py) are written in Python but many of them should be run using the corresponding shell script (basename.sh) that activates the right virtual environment and runs the Python script in the background, and is usally in the same directory. The shell script redirects the error and output streams to files with the same base name as the script (basename.err and basename.out) in the same directory, but occasionally the error stream is just fed into the output file as well. It also creates a file that contains the PID of the Python job that is running in the background (basename_pid.txt), so that it can be terminated.<br><br>
 EXAMPLE: All the of the scripts to train a model are "train_model.py" but should be run by doing:
 ```
 ./train_model.sh
@@ -151,10 +151,13 @@ kill $(cat train_model_pid.txt)
 - CSVs - csv files downloaded from the PDB, all structures that bind to the LOI <br>
 - CSVs - csv files downloaded from the PDB, structures with solvents <br>
 - makeDF.py - processes the csv files and combines them into a usable dataframe, that will be in the same directory, called df.csv, and creates all_pdbs.txt (unimportant), which contains all the structures listed in all of the csv files, but is not a filtered list <br>
-- 
+- filter.py - performs filtering steps on all protein structures <br>
+- using_pdbs_final_reg.txt - IMPORTANT - the new list of PDBs that bind LOIs <br>
+- filtered_pdbs.txt - all structures in using_pdbs_final_reg.txt, plus PDBs that contain solvents that were filtered and downloaded <br>
 - examineLigands.py - not important, used to examine how many PDbs in the the final list have a LOI vs. solvent <br><br>
 **data/ligand_site**: Scripts to do precomputation with 9A radius (for LSResNet and ligand-site) <br>
 - re_precompute.sh - Run just the precomputation step with 9A - creates new directory "04a-precomputation_9A" <br>
+- same scheduling scripts as in data/masif_ligand
 - findLeftover.py - (see above) <br>
 **source**: Most python source files<br>
 **source/default_config**:<br>
