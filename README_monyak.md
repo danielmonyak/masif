@@ -15,6 +15,7 @@ conda activate venv_tf_new
 ```
 Install third party dependencies:
 ```
+conda install -c conda-forge biopython
 conda install -c schrodinger pdb2pqr
 conda install -c bioconda msms
 conda install -c conda-forge scikit-learn
@@ -49,9 +50,8 @@ make
 make tests
 ```
 ```
-./setup.py install
+python setup.py install
 ```
-Follow build instructions in PyMesh Readme, including the **Install** section.
 
 #### Reduce
 Clone repository: https://github.com/rlabduke/reduce <br>
@@ -59,9 +59,16 @@ Follow build instructions while **venv_tf** is activated:
 ```
 git clone https://github.com/rlabduke/reduce.git
 ```
+Follow build instructions in Reduce README
+```
+mkdir -p build
+cd build
+cmake ..
+make
+```
 
 #### APBS
-Download pre-built binaries: https://github.com/Electrostatics/apbs/releases <br>
+Download pre-built binaries for APBS 1.5: https://github.com/Electrostatics/apbs/releases <br>
 Look under **Assets**
 
 ### venv_sbi
