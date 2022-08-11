@@ -83,6 +83,8 @@ with tf.device('/GPU:0'):
         train_iter = iter(train_list)
         i = 0
         while True:
+            if i == 10:
+                break
             try:
                 pdb_id = next(train_iter)
             except:
@@ -106,19 +108,28 @@ with tf.device('/GPU:0'):
 
             history = model.fit(X_tf, y_tf, verbose=2, epochs=1)
             i += 1
+            iterations += 1
             
             loss_value = history.history['loss'][0]
             with open('loss.txt', 'a') as f:
                 f.write(str(loss_value) + '\n')
         
-        print('f{i} training samples run')
+        print(f'{i} training samples run')
         print(f'\n{iterations} iterations completed')
 
         #####################################
         #####################################
+        acc_list = []
+        auc_list = []
+        F1_lowest_list = []
+        F1_lower_list = []
+        F1_list = []
+        
         val_iter = iter(val_list)
         i = 0
         while True:
+            if i == 10:
+                break
             try:
                 pdb_id = next(val_iter)
             except:
@@ -138,14 +149,19 @@ with tf.device('/GPU:0'):
             y_tf = tf.constant(y)
 
             _, acc, auc, F1_lowest, F1_lower, F1 = model.evaluate(X_tf, y_tf, verbose=0)
+            acc_list.append(acc)
+            auc_list.append(auc)
+            F1_lowest_list.append(F1_lowest)
+            F1_lower_list.append(F1_lower)
+            F1_list.append(F1)
             i += 1
 
         print(f'\nVALIDATION results over {i} PDBs') 
-        print("Accuracy ----------------- %.4f" % val_acc.numpy())
-        print("AUC      ----------------- %.4f" % val_auc.numpy())
-        print("F1 Lowest ----------------- %.4f" % val_F1_lowest.numpy())
-        print("F1 Lower ----------------- %.4f" % val_F1_lower.numpy())
-        print("F1       ----------------- %.4f" % val_F1.numpy())
+        print("Accuracy ----------------- %.4f" % np.mean(acc_list))
+        print("AUC      ----------------- %.4f" % np.mean(auc_list))
+        print("F1 Lowest ----------------- %.4f" % np.mean(F1_lowest_list))
+        print("F1 Lower ----------------- %.4f" % np.mean(F1_lower_list))
+        print("F1       ----------------- %.4f" % np.mean(F1_list))
 
         print(f'\nSaving model weights to {ckpPath}\n')
         model.save_weights(ckpPath)
