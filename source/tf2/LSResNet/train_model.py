@@ -119,7 +119,7 @@ with tf.device('/GPU:0'):
             F1_list.extend(history.history['F1'])
             
             with open('loss.txt', 'a') as f:
-                f.write(str(history.history['loss']) + '\n')
+                f.write(str(history.history['loss'][0]) + '\n')
         
         print(f'Results from {i} training samples')
         print("Loss -------------------- %.4f" % np.mean(loss_list))
