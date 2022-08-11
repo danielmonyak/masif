@@ -86,7 +86,6 @@ with tf.device('/GPU:0'):
         train_iter = iter(train_list)
         i = 0
         while True:
-            if i==10: break
             try:
                 pdb_id = next(train_iter)
             except:
@@ -143,7 +142,6 @@ with tf.device('/GPU:0'):
         val_iter = iter(val_list)
         i = 0
         while True:
-            if i==10: break
             try:
                 pdb_id = next(val_iter)
             except:
@@ -168,6 +166,7 @@ with tf.device('/GPU:0'):
             F1_lowest_list.append(F1_lowest)
             F1_lower_list.append(F1_lower)
             F1_list.append(F1)
+            
             i += 1
 
         print(f'\nVALIDATION results over {i} PDBs') 
