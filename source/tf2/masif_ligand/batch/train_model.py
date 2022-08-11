@@ -11,8 +11,8 @@ for phys_g in phys_gpus:
 
 import default_config.util as util
 from default_config.masif_opts import masif_opts
-from tf2.masif_ligand.stochastic.MaSIF_ligand import MaSIF_ligand
-from tf2.masif_ligand.stochastic.get_data import get_data
+from tf2.masif_ligand.batch.MaSIF_ligand import MaSIF_ligand
+from tf2.masif_ligand.batch.get_data import get_data
 
 #from time import time
 
