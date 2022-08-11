@@ -137,14 +137,24 @@ kill $(cat train_model_pid.txt)
 - data_prepare_one.sh - Run all data preparation steps for a single protein structure <br>
 - schedule_wait.sh, run_schedule_wait.sh, schedule_no_wait.sh, run_schedule_no_wait.sh - see section below on "Data Preparation" <br>
 - findLeftover.py - generate list of PDBs that still need to run through "data_prepare_one.sh" <br>
+- examineLigands.py - not important, used to examine difference in necessary distance generate pocket points, in LOI vs solvents <br><br>
+**data/masif_ligand/TF1**: Scripts used for TF1 Work - not important <br>
 - nn_models - TF1 saved model weights <br>
 - train_model.sh - shell script to train TF1 model <br>
 - old_slurm_scripts - scripts to use if Slurm is available - have not tried these <br>
 - make_tfrecord.sh - shell script to make the TFRecordDataset objects that were used in TF1 training <br>
-- examineLigands.py - not important, used to examine difference in necessary distance generate pocket points, in LOI vs solvents
+- lists/sequence_split_list.txt is old list of PDBS used for MaSIF-Ligand <br>
+- lists - all contains old training, validation, and testing PDB lists used for TF1 <br>
+- evaluate_test.sh - calls python script to generate preditions on the test dataset using the TF1 model <br> 
+- analysis - contains scripts for analyzing results of TF1 model <br><br>
+**data/masif_ligand/newPDBs**: **IMPORTANT** - Work that involved collection of new protein sctructures that resulted in the current, expanded train, val, and test sets <br>
+- CSVs - csv files downloaded from the PDB <br>
+- makeDF.py - processes the csv files and combines them into a usable dataframe, that will be in the same directory, called df.csv, and creates all_pdbs.txt (unimportant), which contains all the structures listed in all of the csv files, but is not a filtered list <br>
+- 
+- examineLigands.py - not important, used to examine how many PDbs in the the final list have a LOI vs. solvent <br><br>
 **data/ligand_site**: Scripts to do precomputation with 9A radius (for LSResNet and ligand-site) <br>
 - re_precompute.sh - Run just the precomputation step with 9A - creates new directory "04a-precomputation_9A" <br>
-- findLeftover.py - (see above)
+- findLeftover.py - (see above) <br>
 **source**: Most python source files<br>
 **source/default_config**:<br>
 - masif_opts.py - Contains a dictionary with useful paths and constants, which is imported in all Python scripts - Edited by me<br>
