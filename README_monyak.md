@@ -13,10 +13,6 @@ Activate environment:
 ```
 conda activate venv_tf_new
 ```
-Fix probelm with "gast" package (this is necessary for eing able to Autograph tensorflow tf.functions:
-```
-pip install gast==0.3.3
-```
 Install third party dependencies:
 ```
 conda install -c schrodinger pdb2pqr
@@ -24,6 +20,10 @@ conda install -c bioconda msms
 conda install -c conda-forge scikit-learn
 conda install -c conda-forge ipython
 conda install -c conda-forge networkx
+```
+When using Tensorflow, if it is giving error messages about not being able to convert a function to Autograph because of the "gast" package, then run this and disregard the messages about missing dependencies:
+```
+pip install gast==0.3.3
 ```
 
 #### PyMesh
