@@ -59,7 +59,7 @@ def F1(y_true, y_pred, threshold=0.5):
 # Custom Keras metric to calculate F1 score
 class F1_Metric(metrics.Metric):
     def __init__(self, name='F1', from_logits=False, threshold=0.5, **kwargs):
-        super(F1_Metric, self).__init__(name=name, **kwargs)
+        super(F1_Metric, self).__init__(name=f'{name}_{threshold}', **kwargs)
         self.f1_score = self.add_weight(name='f1_score', initializer='zeros')
         self.total = self.add_weight(name='total', initializer='zeros')
         self.count = self.add_weight(name='count', initializer='zeros')
