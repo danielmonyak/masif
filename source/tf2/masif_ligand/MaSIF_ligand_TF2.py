@@ -26,7 +26,8 @@ class MaSIF_ligand(Model):
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         keep_prob = 1.0,
         reg_val = 0.0001,
-        reg_type = 'l2'
+        reg_type = 'l2',
+        use_bn = True
     ):
         ## Call super - model initializer
         super(MaSIF_ligand, self).__init__()
@@ -58,30 +59,39 @@ class MaSIF_ligand(Model):
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
         
         self.myLayers=[
-            layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos]),
-            #
-            layers.BatchNormalization(),
-            #
+            layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos])
+        ]
+        
+        if use_bn:
+            self.myLayers.append(layers.BatchNormalization())
+        
+        self.myLayers.extend([
             layers.ReLU(),
             layers.Dense(self.n_thetas * self.n_rhos, kernel_regularizer=reg),
-            #
-            layers.BatchNormalization(),
+        ])
+        
+        if use_bn:
+            self.myLayers.append(layers.BatchNormalization())
+        
+        self.myLayers.extend([
             layers.ReLU(),
             #
             CovarLayer(),
             layers.Flatten(),
             layers.Dropout(1 - self.keep_prob),
-            #
             #layers.BatchNormalization(),
             #
-            layers.Dense(64, activation='relu', kernel_regularizer=reg),
-            layers.BatchNormalization(),
-            #layers.Dense(40, activation='relu', kernel_regularizer=reg),
-            #layers.Dense(25, activation='relu', kernel_regularizer=reg),
-            #layers.Dense(10, activation='relu', kernel_regularizer=reg),
+            layers.Dense(64, activation='relu', kernel_regularizer=reg)
+        ])
+        
+        if use_bn:
+            self.myLayers.append(layers.BatchNormalization())
 
-            layers.Dense(self.n_ligands, kernel_regularizer=reg)
-        ]
+        #layers.Dense(40, activation='relu', kernel_regularizer=reg),
+        #layers.Dense(25, activation='relu', kernel_regularizer=reg),
+        #layers.Dense(10, activation='relu', kernel_regularizer=reg),
+
+        self.myLayers.append(layers.Dense(self.n_ligands, kernel_regularizer=reg))
     
     def call(self, x):
         ret = self.myConvLayer(x)
