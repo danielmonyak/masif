@@ -105,8 +105,10 @@ To see the current running jobs:
 ps -u $username -o pid,%mem,%cpu,user,cmd
 ```
 
-TF1 - Tensorflow 1 <br>
-TF2 - Tensorflow 2 (also involving the use of Keras)
+TF1 - Tensorflow 1 - not important, do not use these <br>
+TF2 - Tensorflow 2 (also involving the use of Keras) <br>
+
+The original models for MaSIF were trained using TF1, but I transitioned everything over to TF2/Keras. 
 
 #### Scripts
 Almost all scripts (basename.py) are written in Python but should be run using the corresponding shell script (basename.sh) that activates the right virtual environment and runs the Python script in the background, and is usally in the same directory. The shell script redirects the error and output streams to files with the same base name as the script (basename.err and basename.out) in the same directory, but occasionally the error stream is just fed into the output file as well. It also creates a file that contains the PID of the Python job that is running in the background (basename_pid.txt), so that it can be terminated.<br><br>
@@ -119,15 +121,21 @@ This will create "train_model.out" and "train_model.err", as well as "train_mode
 kill $(cat train_model_pid.txt)
 ```
 
-### Important Directories
+### Directories
 
 **data**: Scripts for data prepartion<br>
 **data/masif_ligand**: Scripts to do data preparation for MaSIF-Ligand<br>
 - data_prepare_one.sh - Run all data preparation steps for a single protein structure <br>
 - schedule_wait.sh, run_schedule_wait.sh, schedule_no_wait.sh, run_schedule_no_wait.sh - see section below on "Data Preparation" <br>
+- findLeftover.py - generate list of PDBs that still need to run through "data_prepare_one.sh"
+- nn_models - TF1 model
+- train_model.sh - shell script to train TF1 model
+- old_slurm_scripts - scripts to use if Slurm is available - have not tried these
+- make_tfrecord.sh - shell script to make the TFRecordDataset objects that were used in TF1 training
 - 
 **data/ligand_site**: Scripts to do precomputation with 9A radius (for LSResNet and ligand-site) <br>
-
+- re_precompute.sh - Run just the precomputation step with 9A - creates new directory "04a-precomputation_9A" <br>
+- findLeftover.py - (see above)
 **source**: Most python source files<br>
 **source/default_config**:<br>
 - masif_opts.py - Contains a dictionary with useful paths and constants, which is imported in all Python scripts - Edited by me<br>
