@@ -219,4 +219,15 @@ or
 ./run_schedule_no_wait.sh
 ```
 
-The program might fail d
+It is possible that the scheduler will fail, or you may have to stop it manually if you are running schedule_no_wait.sh and too many jobs are running:
+```
+kill $(cat schedule_no_wait_pid.txt)
+```
+In this case, to start the scheduler again without repeating the process for the PDBs already done, run the "findLeftover.py" script, which generates a "todo.txt" file. Then, change the line in the scheduler shell script
+```
+done < filtered_pdbs.txt
+```
+to
+```
+done < todo.txt
+```
