@@ -17,7 +17,8 @@ from tf2.masif_ligand.batch.get_data import get_data
 params = masif_opts["ligand"]
 
 n_train_batches = 10
-batch_sz = 64
+#batch_sz = 64
+batch_sz = 32
 n_val = 50
 
 reg_val = 0.0
@@ -175,7 +176,8 @@ with tf.device(dev):
                 i += 1
                 iterations += 1
             pdb_count += 1
-            if (i >= batch_sz) and (np.mean(y_true_idx_used) > 0.8):
+            #if (i >= batch_sz) and (np.mean(y_true_idx_used) > 0.8):
+            if (i >= batch_sz):
                 print(f'Training batch {j} - {i} pockets')
                 mean_loss = float(loss_metric.result())
                 train_acc = float(train_acc_metric.result())
