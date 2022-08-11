@@ -29,8 +29,9 @@ python2.7 $masif_source/data_preparation/00c-save_ligand_coords.py $1 ligand all
 
 conda deactivate
 
+# Need to add "</dev/null" because this step may fail, and activate an interactivate python shell, which will cause the scheduler to fail
 python $masif_source/data_preparation/01-pdb_extract_and_triangulate.py $PDB_ID\_$CHAIN1 masif_ligand </dev/null
-python $masif_source/data_preparation/04-masif_precompute.py masif_ligand $1 2>/dev/null
+python $masif_source/data_preparation/04-masif_precompute.py masif_ligand $1
 
 conda deactivate
 
