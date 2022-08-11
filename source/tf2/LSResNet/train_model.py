@@ -25,10 +25,6 @@ n_val = 50
 train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_reg.npy')
 
-np.random.shuffle(train_list)
-train_iter = iter(train_list)
-val_iter = iter(val_list)
-
 ##########################################
 ##########################################
 #from train_vars import train_vars
@@ -63,6 +59,7 @@ if continue_training:
 else:
     with open('loss.txt', 'w') as f:
         pass
+
 print()
 
 #optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
@@ -84,6 +81,7 @@ with tf.device('/GPU:0'):
     while iterations < num_iterations:
         np.random.shuffle(train_list)
         train_iter = iter(train_list)
+        i = 0
         while True:
             try:
                 pdb_id = next(train_iter)
@@ -107,10 +105,13 @@ with tf.device('/GPU:0'):
             y_tf = tf.constant(y)
 
             history = model.fit(X_tf, y_tf, verbose=2, epochs=1)
+            i += 1
             
+            loss_value = history.history['loss'][0]
             with open('loss.txt', 'a') as f:
-                f.write(str(history['loss']) + '\n')
-
+                f.write(str(loss_value) + '\n')
+        
+        print('f{i} training samples run')
         print(f'\n{iterations} iterations completed')
 
         #####################################
@@ -136,7 +137,7 @@ with tf.device('/GPU:0'):
             X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
             y_tf = tf.constant(y)
 
-            acc, auc, F1_lowest, F1_lower, F1 = model.evaluate(X_tf, y_tf, verbose=0)
+            _, acc, auc, F1_lowest, F1_lower, F1 = model.evaluate(X_tf, y_tf, verbose=0)
             i += 1
 
         print(f'\nVALIDATION results over {i} PDBs') 
