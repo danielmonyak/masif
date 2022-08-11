@@ -102,8 +102,8 @@ with tf.device('/GPU:0'):
                 continue
             X, _ = data
             
-            if np.sum(np.isnan(X[0][0])) > 0:
-                continue
+            #if np.sum(np.isnan(X[0][0])) > 0:
+            #    continue
                 
             X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
             y_tf = tf.constant(y)
