@@ -130,6 +130,13 @@ This will create "train_model.out" and "train_model.err", as well as "train_mode
 kill $(cat train_model_pid.txt)
 ```
 
+It is a good idea to add this to your ~/.bashrc file:
+```
+masif_source=~/software/masif/source
+export PYTHONPATH=$PYTHONPATH:$masif_source
+```
+This way, you can access modules in the MaSIF repo using import statements.
+
 ### Directories
 
 **data**: Scripts for data prepartion<br>
@@ -146,7 +153,7 @@ kill $(cat train_model_pid.txt)
 - lists/sequence_split_list.txt is old list of PDBS used for MaSIF-Ligand <br>
 - lists - all contains old training, validation, and testing PDB lists used for TF1 <br>
 - evaluate_test.sh - calls python script to generate preditions on the test dataset using the TF1 model <br> 
-- analysis - contains scripts for analyzing results of TF1 model <br><br>
+- analysis - contains scripts for analyzing results of TF1 model <br>
 **data/masif_ligand/newPDBs**: **IMPORTANT** - Work that involved collection of new protein sctructures that resulted in the current, expanded train, val, and test sets <br>
 - CSVs - csv files downloaded from the PDB, all structures that bind to the LOI <br>
 - CSVs - csv files downloaded from the PDB, structures with solvents <br>
@@ -154,16 +161,16 @@ kill $(cat train_model_pid.txt)
 - filter.py - performs filtering steps on all protein structures <br>
 - using_pdbs_final_reg.txt - IMPORTANT - the new list of PDBs that bind LOIs <br>
 - filtered_pdbs.txt - all structures in using_pdbs_final_reg.txt, plus PDBs that contain solvents that were filtered and downloaded <br>
-- examineLigands.py - not important, used to examine how many PDbs in the the final list have a LOI vs. solvent <br><br>
+- examineLigands.py - not important, used to examine how many PDbs in the the final list have a LOI vs. solvent <br>
 **data/ligand_site**: Scripts to do precomputation with 9A radius (for LSResNet and ligand-site) <br>
 - re_precompute.sh - Run just the precomputation step with 9A - creates new directory "04a-precomputation_9A" <br>
 - same scheduling scripts as in data/masif_ligand
-- findLeftover.py - (see above) <br>
+- findLeftover.py - (see above) <br><br>
+- 
 **source**: Most python source files<br>
 **source/default_config**:<br>
 - masif_opts.py - Contains a dictionary with useful paths and constants, which is imported in all Python scripts - Edited by me<br>
 - util.py       - Contains several useful constants, functions, and classes - Created by me<br>
-
 **source/data_preparation**: Scripts to do all preprocessing of proteins<br>
 - 00-pdb_download.py - Retrieve raw PDB file<br>
 - 00b-generate_assembly.py - Reads and builds the biological assembly of a protein structure<br>
@@ -172,9 +179,8 @@ kill $(cat train_model_pid.txt)
 - 01b-helix_extract_and_triangulate.py - Not used in MaSIF-Ligand (preprocessing step for MaSIF-Site)<br>
 - 04-masif_precompute.py - Computes features, angular coordinates of all vertices of all patches, protein coordinates in 3-d space<br>
 - 04b-make_ligand_tfrecords.py - Compiles data of all proteins in TFRecordDataset objects - NOT necessary for TF2<br>
-
 **source/masif_modules**: TF1 models and useful functions - NOT necessary for TF2<br>
-**source/masif_ligand**: Scripts for training and predicting with the TF1 model<br>
+**source/masif_ligand**: Scripts for training and predicting with the TF1 model<br><br>
 
 **source/tf2**: MOST IMPORTANT - Scripts, work, and saved models for TF2 models<br>
 **source/tf2/masif_ligand**<br>
