@@ -148,7 +148,8 @@ kill $(cat train_model_pid.txt)
 - evaluate_test.sh - calls python script to generate preditions on the test dataset using the TF1 model <br> 
 - analysis - contains scripts for analyzing results of TF1 model <br><br>
 **data/masif_ligand/newPDBs**: **IMPORTANT** - Work that involved collection of new protein sctructures that resulted in the current, expanded train, val, and test sets <br>
-- CSVs - csv files downloaded from the PDB <br>
+- CSVs - csv files downloaded from the PDB, all structures that bind to the LOI <br>
+- CSVs - csv files downloaded from the PDB, structures with solvents <br>
 - makeDF.py - processes the csv files and combines them into a usable dataframe, that will be in the same directory, called df.csv, and creates all_pdbs.txt (unimportant), which contains all the structures listed in all of the csv files, but is not a filtered list <br>
 - 
 - examineLigands.py - not important, used to examine how many PDbs in the the final list have a LOI vs. solvent <br><br>
