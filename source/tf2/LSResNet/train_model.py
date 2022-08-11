@@ -74,6 +74,7 @@ model.compile(
 
 with tf.device('/GPU:0'):
     iterations = starting_iteration
+    epochs = 0
     while iterations < num_iterations:
         loss_list = []
         acc_list = []
@@ -129,8 +130,8 @@ with tf.device('/GPU:0'):
         print("F1 Lower ----------------- %.4f" % np.mean(F1_lower_list))
         print("F1       ----------------- %.4f" % np.mean(F1_list))
         
-        print(f'\n{iterations} iterations completed')
-
+        epochs += 1
+        print(f'\n{iterations} iterations, {epochs} epochs completed')
         #####################################
         #####################################
         acc_list = []
