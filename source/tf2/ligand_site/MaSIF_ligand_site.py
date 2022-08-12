@@ -20,21 +20,14 @@ class MaSIF_ligand_site(Model):
         else:
             sample_weight = None
             x, y = data
-
-        #print('input_feat:', x[0][0].shape)
-        #print('indices_tensor:', x[1].shape)
         
         with tf.GradientTape() as tape:
             y_pred = self(x, training=True)
-            
-            #y_pred = y_pred[0]
-            #y = y[0]
-            
             loss = self.compiled_loss(
                 y,
                 y_pred,
                 sample_weight=sample_weight,
-                regularization_losses=self.losses,
+                regularization_losses=self.losses
             )
 
         trainable_vars = self.trainable_variables
@@ -46,7 +39,7 @@ class MaSIF_ligand_site(Model):
 
     def makeConvBlock(self, weights_num, conv_shape, reshape_shape):
         return [
-            ConvLayer(weights_num, conv_shape, self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
+            ConvLayer(weights_num, conv_shape, max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg),
             layers.Reshape(reshape_shape),
             MeanAxis1(out_shp=[None, reshape_shape[1]]),
             #layers.BatchNormalization()
@@ -60,58 +53,47 @@ class MaSIF_ligand_site(Model):
         learning_rate=1e-4,
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
-        keep_prob = 1.0,
         reg_val = 1e-4,
         reg_type = 'l2'
     ):
         ## Call super - model initializer
         super(MaSIF_ligand_site, self).__init__()
-        
+      
+        n_feat = int(sum(feat_mask))
+      
+        ##
         regKwargs = {reg_type : reg_val}
-        self.reg = regularizers.L1L2(**regKwargs)
+        reg = regularizers.L1L2(**regKwargs)
+        ##
         
-        # order of the spectral filters
-        self.max_rho = max_rho
-        self.n_thetas = n_thetas
-        self.n_rhos = n_rhos
-        self.sigma_rho_init = (
-            max_rho / 8
-        )  # in MoNet was 0.005 with max radius=0.04 (i.e. 8 times smaller)
-        self.sigma_theta_init = 1.0  # 0.25
-        self.n_rotations = n_rotations
-        self.n_feat = int(sum(feat_mask))
-        
-        self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-        self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
-        
-        self.conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
-                       [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
-                       [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
-                       [self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos]] 
-        self.reshape_shapes = [[-1, self.n_thetas * self.n_rhos * self.n_feat],
-                          [-1, self.n_feat, self.n_thetas * self.n_rhos],
-                          [-1, self.n_feat, self.n_thetas * self.n_rhos],
-                          [-1, self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos]]
+        conv_shapes = [[n_thetas * n_rhos, n_thetas * n_rhos],
+                       [n_feat * n_thetas * n_rhos, n_feat * n_thetas * n_rhos],
+                       [n_feat * n_thetas * n_rhos, n_feat * n_thetas * n_rhos],
+                       [n_thetas * n_rhos * n_thetas * n_rhos, n_thetas * n_rhos * n_thetas * n_rhos]] 
+        reshape_shapes = [[-1, n_thetas * n_rhos * n_feat],
+                          [-1, n_feat, n_thetas * n_rhos],
+                          [-1, n_feat, n_thetas * n_rhos],
+                          [-1, n_thetas * n_rhos, n_thetas * n_rhos]]
 
 
         self.convBlock0 = [
-            ConvLayer(5, self.conv_shapes[0], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
-            layers.Reshape(self.reshape_shapes[0]),
+            ConvLayer(5, conv_shapes[0], max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg),
+            layers.Reshape(reshape_shapes[0]),
             #layers.BatchNormalization()
         ]
         
-        self.convBlock1 = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[1], reshape_shape = self.reshape_shapes[1])
-        self.convBlock2 = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[2], reshape_shape = self.reshape_shapes[2])
+        self.convBlock1 = self.makeConvBlock(weights_num = 1, conv_shape = conv_shapes[1], reshape_shape = reshape_shapes[1])
+        self.convBlock2 = self.makeConvBlock(weights_num = 1, conv_shape = conv_shapes[2], reshape_shape = reshape_shapes[2])
         
         ####
-        #self.convBlock_residue = self.makeConvBlock(weights_num = 1, conv_shape = self.conv_shapes[2], reshape_shape = self.reshape_shapes[2])
+        #self.convBlock_residue = self.makeConvBlock(weights_num = 1, conv_shape = conv_shapes[2], reshape_shape = reshape_shapes[2])
         ####
         
-        self.FC1 = layers.Dense(self.n_thetas * self.n_rhos, activation="relu", kernel_regularizer=self.reg)
-        self.FC2 = layers.Dense(self.n_feat, activation="relu", kernel_regularizer=self.reg)
+        self.FC1 = layers.Dense(n_thetas * n_rhos, activation="relu", kernel_regularizer=reg)
+        self.FC2 = layers.Dense(n_feat, activation="relu", kernel_regularizer=reg)
         
-        self.myDense = layers.Dense(self.n_thetas, activation="relu", kernel_regularizer=self.reg)
-        self.outLayer = layers.Dense(1, kernel_regularizer=self.reg)
+        self.myDense = layers.Dense(n_thetas, activation="relu", kernel_regularizer=reg)
+        self.outLayer = layers.Dense(1, kernel_regularizer=reg)
         
     def call(self, x, training=False):
         data_tsrs, indices_tensor = x
