@@ -13,8 +13,12 @@ import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 
-reg_val = 0.00001
-reg_type = 'l2'
+
+##########################################
+##########################################
+reg_val = 0.0
+dev = '/GPU:1'
+cpu = '/CPU:0'
 
 ##########################################
 ##########################################
@@ -34,8 +38,6 @@ if continue_training:
 ##########################################
 ##########################################
 
-dev = '/GPU:1'
-cpu = '/CPU:0'
 
 params = masif_opts["ligand"]
 defaultCode = params['defaultCode']
@@ -75,7 +77,7 @@ with strategy.scope():
     params["max_distance"],
     params["n_classes"],
     feat_mask=params["feat_mask"],
-    reg_val = reg_val, reg_type = reg_type,
+    reg_val = reg_val,
     use_bn = False
   )
   model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate=lr),
