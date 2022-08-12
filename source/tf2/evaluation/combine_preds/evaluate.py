@@ -87,6 +87,7 @@ for dataset in ['test']:
         print(f'\n{i} of {n_data} {dataset} pdbs running...')
         print(pdb, "\n")
         try:
+            print('no coords')
             all_ligand_coords = np.load(
                 os.path.join(
                     ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
