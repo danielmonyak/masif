@@ -1,4 +1,4 @@
-source /home/daniel.monyak/miniconda3/etc/profile.d/conda.sh
+source $miniconda_activate
 conda activate venv_tf_new
 
 masif_root=$(git rev-parse --show-toplevel)
