@@ -135,6 +135,8 @@ The original models for MaSIF were trained using TF1, but I transitioned everyth
 LOI - Ligands of interest - ADP, COA, FAD, HEM, NAD, NAP, SAM <br>
 Solvents - Solvent molecules often in crystallization process - IMP, EPE, FMN, TRS, PGE, ACT, NAG, EDO, GOL, SO4, PO4 <br>
 
+n_samples - number of patches
+
 See masif_opts for the LOI and solvent lists <br>
 
 None of the currently trained models were trained for dealing with solvents or protein sites with solvents, but about 3000 extra PDBs were downloaded and prepared, and exist in masif_opts["ligand"]["masif_precomputation_dir"] <br>
@@ -215,7 +217,7 @@ This approach does not work when you try to include the solvent PDBs, because it
 This training is also in batches of 32 pockets, but is done manually. Here, the data is not imported all at once. I designed this one to see if it could work, therefore opening the possiblity of including solvent pockets, because each training sample is loaded one at a time, so that the whole dataset does not have to be loaded at once.. This is very manual, under-the-hood Keras work, with a manually written training step and a summation and then averaging of gradients for each batch. I don't know why, but I cannot get it to perform as well as the the model in source/tf2/masif_ligand. As far as I know, it is the same general idea of that model, mini-batch gradient descent. <br>
 One possible reason for this underperformance is that the way the original Keras model computes the gradient is by computing the loss for all the samples in a batch at once and then calculating the gradient based on that loss. In this approach, we take the average of all the gradients in the batch. **IMPORTANT**: The reason we can't compute the loss for all samples in a batch at once is that because the number of patches in every protein (and in every pocket in every protein) is different, so there is not uniform size of input. Keras models cannot handle multiple samples at one that have different input sizes.
 **source/tf2/ligand_site/batch**<br>
-
+This is a implementation of the MaSIF-Site model, adapted to predict ligand biding sites instead of PPI sites. The input is mostly the same as MaSIF-ligand, except that the all the patches of a protein are used instead of just the pocket patches. Therefore, it designed for 9A radius precomputed data, rather than the 12A radius precomputed data used for MaSIF-ligand. Also, in addition to the four basic inputs, an additional "indices" tensor is passed. It contains the indices of every vertex in a patch, which is important in the convolutional layers. It consists of three convolutional layers, the first of which is just like the convolutional layer in MaSIF-ligand. The input to this layer is n_samples x 100 x 5 (100 vertices for 9A radius) and the output is n_samples x 5. Then, the indices tensor is used to rebuild each patch into a tensor that is n_samples x 100 x 5, where each sample (patch) now contains those 5 artificial features (outputed after the 1st convolutional layer) for each of its vertices.
 **source/tf2/LSResNet**<br>
 **source/tf2/LSResNet/batch**<br>
 **source/tf2/LSResNet/batch_unet**<br>
