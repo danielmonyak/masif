@@ -21,6 +21,8 @@ params = masif_opts["LSResNet"]
 train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_reg.npy')
 
+shared_old = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/shared_old.txt', dtype=str)
+
 ##########################################
 ##########################################
 #from train_vars import train_vars
@@ -92,6 +94,10 @@ with tf.device('/GPU:0'):
             except:
                 break
 
+            ##### Training the model just on the old data - delete this
+            if pdb_id not in shared_old:
+                continue
+                
             try:
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
             except:
