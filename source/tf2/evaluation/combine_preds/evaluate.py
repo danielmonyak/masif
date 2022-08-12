@@ -165,7 +165,6 @@ for dataset in ['test']:
         for LS_pp in LS_RN_pp_pred:
             matched_pred_pocket = -1
             for i, PU_pp in enumerate(PU_RN_pp_pred):
-                print(i)
                 overlap = np.intersect1d(PU_pp, LS_pp)
                 recall_1 = len(overlap)/len(PU_pp)
                 recall_2 = len(overlap)/len(LS_pp)
