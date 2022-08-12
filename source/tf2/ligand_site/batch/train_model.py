@@ -147,7 +147,16 @@ with tf.device(dev):
             y_tf = tf.constant(y)
 
             grads = train_step(X_tf, y_tf)
-
+            
+            # Make sure gradients don't get NaN values
+            skip = False
+            for g in grads:
+                if np.any(np.isnan(g)):
+                    skip = True
+                    break
+            if skip:
+                continue
+                
             # If first pocket of batch, set grads, otherwise add to existing grads
             if i == 0:
                 grads_sum = grads
