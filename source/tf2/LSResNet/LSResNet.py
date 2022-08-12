@@ -40,8 +40,8 @@ class LSResNet(Model):
         self.denseReduce = [
             layers.BatchNormalization(),
             layers.ReLU(),
-            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
-            layers.Dense(self.n_feat, activation="relu"),
+            layers.Dense(n_thetas * n_rhos, activation="relu"),
+            layers.Dense(n_feat, activation="relu"),
         ]
 
         resolution = 1. / params['scale']
