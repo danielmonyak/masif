@@ -125,7 +125,6 @@ To see the current running jobs:
 ```
 ps -u $username -o pid,%mem,%cpu,user,cmd
 ```
-
 masif_opts - dictionary in source/default_config/masif_opts.py with useful paths and constants, which is imported in all Python scripts <br>
 
 TF1 - Tensorflow 1 - not important, do not use these <br>
