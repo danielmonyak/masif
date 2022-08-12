@@ -79,9 +79,6 @@ for dataset in ['test']:
     n_data = len(data)
     
     for i, pdb in enumerate(data):
-        if i == 10:
-            break
-            
         print(f'\n{i} of {n_data} {dataset} pdbs running...')
         print(pdb, "\n")
         try:
@@ -111,14 +108,12 @@ for dataset in ['test']:
         for lig_i, structure_ligand in enumerate(all_ligand_types):
             if not structure_ligand in ligand_list:
                 continue
-            print(f'Pocket {lig_i}')
             
             ligand_coords = all_ligand_coords[lig_i]
             pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
             pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
             
             if len(pocket_points_true) == 0:
-                print(f'\tLigand has no pocket points...')
                 continue
 
             pp_true_list.append(pocket_points_true)
