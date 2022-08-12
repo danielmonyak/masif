@@ -16,12 +16,11 @@ from tf2.predictor import Predictor
 from tf2.LSResNet.LSResNet import LSResNet
 from tf2.LSResNet.predict import predict
 
-
-
+##############################################
+##############################################
 LSRN_threshold = 0.3
-
-
-
+##############################################
+##############################################
 
 params = masif_opts['LSResNet']
 ligand_list = params['ligand_list']
@@ -82,8 +81,10 @@ for dataset in ['test']:
     data = dataset_dict[dataset]
     n_data = len(data)
     
-    j = 0
     for i, pdb in enumerate(data):
+        if i == 10:
+            break
+            
         print(f'\n{i} of {n_data} {dataset} pdbs running...')
         print(pdb, "\n")
         try:
@@ -239,13 +240,6 @@ for dataset in ['test']:
         BIG_n_pockets_pred.append(n_pockets_pred)
         BIG_matched.append(matched)
         
-        if (i > 0) and (i % 50 == 0):
-            results = pd.DataFrame(dict(zip([col.partition('_list')[0] for col in columns], [eval(col) for col in columns])))
-            results.to_csv(os.path.join(outdir, 'results.csv'), index=False)
-
-            BIG_results = pd.DataFrame(dict(zip([col.partition('_list')[0].partition('BIG_')[-1] for col in BIG_columns], [eval(col) for col in BIG_columns])))
-            BIG_results.to_csv(os.path.join(outdir, 'BIG_results.csv'), index=False)
-
 
 results = pd.DataFrame(dict(zip([col.partition('_list')[0] for col in columns], [eval(col) for col in columns])))
 results.to_csv(os.path.join(outdir, 'results.csv'), index=False)
