@@ -11,7 +11,7 @@ for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
 from default_config.util import *
-from tf2.usage.predictor import Predictor
+from tf2.predictor import Predictor
 from tf2.LSResNet.LSResNet import LSResNet
 from tf2.LSResNet.predict import predict
 
@@ -28,8 +28,6 @@ ligand_list = params['ligand_list']
 ligand_coord_dir = params["ligand_coords_dir"]
 precom_dir = params['masif_precomputation_dir']
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
-
-pred = Predictor()
 
 LSRN_model = LSResNet(
     params["max_distance"],
@@ -107,7 +105,6 @@ for dataset in ['test', 'val', 'train']:
         pdb_dir = os.path.join(precom_dir, pdb)
         xyz_coords = Predictor.getXYZCoords(pdb_dir)
         tree = spatial.KDTree(xyz_coords)
-        pred.loadData(pdb_dir)
         
         pp_true_list = []
         for lig_i in range(n_pockets_true):
