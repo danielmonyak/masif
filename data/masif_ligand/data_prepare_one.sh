@@ -13,7 +13,7 @@ export PYMESH_PATH=$HOME/software/PyMesh
 export MSMS_BIN=$env_path/bin/msms
 export PDB2XYZRN=$env_path/bin/pdb_to_xyzrn
 
-source $HOME/miniconda3/etc/profile.d/conda.sh
+source $miniconda_activate
 conda activate $tf_env
 
 masif_root=$(git rev-parse --show-toplevel)
