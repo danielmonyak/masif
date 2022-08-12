@@ -10,7 +10,8 @@ phys_gpus = tf.config.list_physical_devices('GPU')
 for phys_g in phys_gpus:
     tf.config.experimental.set_memory_growth(phys_g, True)
 
-from default_config.util import *
+import default_config.util as util
+from default_config.masif_opts import masif_opts
 from tf2.usage.predictor import Predictor
 from tf2.LSResNet.LSResNet import LSResNet
 from tf2.LSResNet.predict import predict
@@ -103,7 +104,6 @@ for dataset in ['test']:
             continue
         
         ####################
-        n_pockets_true = len(all_ligand_types)
         
         pdb_dir = os.path.join(masif_opts['ligand']['masif_precomputation_dir'], pdb)
         try:
@@ -120,6 +120,7 @@ for dataset in ['test']:
         for lig_i, structure_ligand in enumerate(all_ligand_types):
             if not structure_ligand in ligand_list:
                 continue
+
             print(f'Pocket {lig_i}')
             ligand_coords = all_ligand_coords[lig_i]
             pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
@@ -130,7 +131,9 @@ for dataset in ['test']:
             pp_true_list.append(pocket_points_true)
             lig_true_list.append(structure_ligand)
         
-        if len(pp_true_list) == 0:
+        n_pockets_true = len(pp_true_list)
+        
+        if n_pockets_true == 0:
             print('Zero true pockets...')
         
         ####################
