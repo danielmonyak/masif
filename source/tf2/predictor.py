@@ -3,11 +3,13 @@ import numpy as np
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
+import tensorflow as tf
 
 params = masif_opts['ligand']
 ligand_site_params = masif_opts['ligand_site']
 ligand_list = params['ligand_list']
 minPockets = params['minPockets']
+
 with tf.device('/GPU:2'):
   gen_sample = tf.expand_dims(tf.range(minPockets), axis = 0)
 
