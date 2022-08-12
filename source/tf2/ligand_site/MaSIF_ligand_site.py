@@ -13,31 +13,7 @@ def runLayers(layers, x):
     return x
 
 class MaSIF_ligand_site(Model):
-    def train_step(self, data):
-        if len(data) == 3:
-            x, y, sample_weight = data
-            sample_weight = sample_weight[0]
-        else:
-            sample_weight = None
-            x, y = data
-        
-        with tf.GradientTape() as tape:
-            y_pred = self(x, training=True)
-            loss = self.compiled_loss(
-                y,
-                y_pred,
-                sample_weight=sample_weight,
-                regularization_losses=self.losses
-            )
-
-        trainable_vars = self.trainable_variables
-        gradients = tape.gradient(loss, trainable_vars)
-        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
-        self.compiled_metrics.update_state(y, y_pred, sample_weight=sample_weight)
-
-        return {m.name: m.result() for m in self.metrics}
-
-    def makeConvBlock(self, weights_num, conv_shape, reshape_shape):
+    def makeConvBlock(self, weights_num, conv_shape, reshape_shape, max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg):
         return [
             ConvLayer(weights_num, conv_shape, max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg),
             layers.Reshape(reshape_shape),
@@ -82,8 +58,8 @@ class MaSIF_ligand_site(Model):
             #layers.BatchNormalization()
         ]
         
-        self.convBlock1 = self.makeConvBlock(weights_num = 1, conv_shape = conv_shapes[1], reshape_shape = reshape_shapes[1])
-        self.convBlock2 = self.makeConvBlock(weights_num = 1, conv_shape = conv_shapes[2], reshape_shape = reshape_shapes[2])
+        self.convBlock1 = self.makeConvBlock(weights_num = 1, conv_shape = conv_shapes[1], reshape_shape = reshape_shapes[1], max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg)
+        self.convBlock2 = self.makeConvBlock(weights_num = 1, conv_shape = conv_shapes[2], reshape_shape = reshape_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg)
         
         ####
         #self.convBlock_residue = self.makeConvBlock(weights_num = 1, conv_shape = conv_shapes[2], reshape_shape = reshape_shapes[2])
