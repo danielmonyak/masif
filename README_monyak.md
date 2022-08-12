@@ -204,12 +204,23 @@ This way, you can access modules in the MaSIF repo using import statements.
 **source/masif_ligand**: Scripts for training and predicting with the TF1 model<br><br>
 
 **source/tf2**: MOST IMPORTANT - Scripts, work, and saved models for TF2 models<br>
+Each of these directories contains a training file called train_model.py, with its execution scripts train_model.sh. The saved models are in directories called kerasModel in each directory.
+
+<br><br>
 **source/tf2/masif_ligand**<br>
-**source/tf2/masif_ligand**<br>
-**source/tf2/ligand_site**<br>
+This is a traditional approach to training a Keras model for MaSIF-Ligand. The data is imported as Numpy Arrays (then converted to ragged tensors), with each row corresponding to true binding pocket in some protein. Each row is a flattened array containing the four inputs (input_feat, rho_coords, theta_coords, mask), which are then reshaped inside the model (see MaSIF_ligand_TF2.py). The training is performed in batches of 32 pockets, the default when calling model.fit.<br>
+
+This approach does not work when you try to include the solvent PDBs, because it is too much data to import all at once as a Numpy Array.
+**source/tf2/masif_ligand/batch**<br>
+This training is also in batches of 32 pockets, but is done manually. Here, the data is not imported all at once. I designed this one to see if it could work, therefore opening the possiblity of including solvent pockets, because each training sample is loaded one at a time, so that the whole dataset does not have to be loaded at once.. This is very manual, under-the-hood Keras work, with a manually written training step and a summation and then averaging of gradients for each batch. I don't know why, but I cannot get it to perform as well as the the model in source/tf2/masif_ligand. As far as I know, it is the same general idea of that model, mini-batch gradient descent. <br>
+One possible reason for this underperformance is that the way the original Keras model computes the gradient is by computing the loss for all the samples in a batch at once and then calculating the gradient based on that loss. In this approach, we take the average of all the gradients in the batch. **IMPORTANT**: The reason we can't compute the loss for all samples in a batch at once is that because the number of patches in every protein (and in every pocket in every protein) is different, so there is not uniform size of input. Keras models cannot handle multiple samples at one that have different input sizes.
+**source/tf2/ligand_site/batch**<br>
+
 **source/tf2/LSResNet**<br>
-**source/tf2/usage**<br>
-**source/tf2/usage_new**<br>
+**source/tf2/LSResNet/batch**<br>
+**source/tf2/LSResNet/batch_unet**<br>
+<br><br>
+**source/tf2/evaluation**<br>
 
 ### PDB Collection/Filtering
 The current list of PDBs being used is "data/masif_ligand/newPDBs/using_pdbs_final_reg.txt," and "data/masif_ligand/newPDBs/filtered_pdbs.txt" is the same list plus the ~3000 PDBs that contained solvents, were filtered, and added to the list.<br>
