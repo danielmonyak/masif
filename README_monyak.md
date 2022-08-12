@@ -29,7 +29,7 @@ pip install gast==0.3.3
 
 #### PyMesh
 Build from source: https://github.com/PyMesh/PyMesh, do not install with anaconda <br>
-Don't clone each third party repository separately, use their instructions while **venv_tf** is activated:
+Don't clone each third party repository separately, use their instructions while **venv_tf_new** is activated:
 ```
 git clone https://github.com/PyMesh/PyMesh.git
 cd PyMesh
@@ -55,21 +55,24 @@ python setup.py install
 
 #### Reduce
 Clone repository: https://github.com/rlabduke/reduce <br>
-Follow build instructions while **venv_tf** is activated:
+Follow build instructions while **venv_tf_new** is activated:
 ```
 git clone https://github.com/rlabduke/reduce.git
 ```
 Follow build instructions in Reduce README
 ```
-mkdir -p build
+cd reduce
+mkdir build
 cd build
 cmake ..
+```
+```
 make
 ```
 
-#### APBS
-Download pre-built binaries for APBS 1.5: https://github.com/Electrostatics/apbs/releases <br>
-Look under **Assets**
+### APBS
+Does not need to be installed in any environment, just need to download pre-built binaries for APBS 3.4.1: https://github.com/Electrostatics/apbs/releases <br>
+Look under **Assets**: APBS-3.4.1.Linux.zip
 
 ### venv_sbi
 Activate environment
