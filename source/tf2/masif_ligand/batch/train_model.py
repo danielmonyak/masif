@@ -16,15 +16,21 @@ from tf2.masif_ligand.batch.get_data import get_data
 
 params = masif_opts["ligand"]
 
+#############################################
+#############################################
+
+# Reularization coefficient
+reg_val = 0.0
+
 n_train_batches = 10
 #batch_sz = 64
 batch_sz = 32
 n_val = 50
 
-reg_val = 0.0
-reg_type = 'l2'
-
 dev = '/GPU:3'
+#############################################
+#############################################
+
 
 minPockets = params['minPockets']
 
@@ -67,7 +73,7 @@ model = MaSIF_ligand(
     params["max_distance"],
     len(ligand_list),
     feat_mask=params["feat_mask"],
-    reg_val = reg_val, reg_type = reg_type,
+    reg_val = reg_val,
     keep_prob=1.0
 )
 if continue_training:
