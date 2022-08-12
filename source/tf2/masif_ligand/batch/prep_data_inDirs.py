@@ -1,3 +1,11 @@
+# Prepare numpy arrays that hold the X and y_true values for all pockets for a protein
+# Stored in a file in each precomputation directory
+# Example: protein has two pockets, one with NAD, one with ADP
+# y.npy : 4
+#         0
+# X.npy will be an object array of length two - each of those two numpy arrays has the four input features
+# but only includes patches from the corresponding pockets (NAD and ADP, respectively)
+
 import os
 import numpy as np
 import default_config.util as util
