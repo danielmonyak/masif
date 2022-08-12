@@ -1,3 +1,6 @@
+# Prepare numpy arrays that hold all data at once for Masif-ligand
+# Each row is a flattened array, with the four inputs (input_feat, rho_coords, theta_coords, mask)
+
 import os
 import numpy as np
 import default_config.util as util
