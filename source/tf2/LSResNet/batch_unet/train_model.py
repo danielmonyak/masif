@@ -12,7 +12,7 @@ for phys_g in phys_gpus:
 import default_config.util as util
 from default_config.masif_opts import masif_opts
 #from tf2.LSResNet.LSResNet import LSResNet
-from tf2.LSResNet.LSResNet_deep import LSResNet
+from tf2.LSResNet.LSResNet_unet import LSResNet
 from tf2.LSResNet.get_data import get_data
 
 params = masif_opts["LSResNet"]
@@ -32,7 +32,6 @@ val_iter = iter(val_list)
 
 ##########################################
 ##########################################
-#from train_vars import train_vars
 with open('train_vars.pickle', 'rb') as handle:
     train_vars = pickle.load(handle)
 
