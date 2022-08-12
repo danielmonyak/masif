@@ -79,7 +79,7 @@ def get_data(func_input, training = True, make_y=True, mode='pdb_id', include_so
 
         n_pockets = np.sum(y)
         n_empty = n_samples - n_pockets
-
+        
         sample_weight = np.empty(shape=y.shape, dtype=np.float32)
         sample_weight.fill(n_samples/(2*n_empty))
         sample_weight[0, pocket_points, 0] = n_samples/(2*n_pockets)
