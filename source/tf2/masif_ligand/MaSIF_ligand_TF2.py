@@ -61,7 +61,7 @@ class MaSIF_ligand(Model):
             #
             CovarLayer(),
             layers.Flatten(),
-            layers.Dropout(1 - self.keep_prob),
+            layers.Dropout(1 - keep_prob),
             #layers.BatchNormalization(),
             #
             layers.Dense(64, activation='relu', kernel_regularizer=reg)
