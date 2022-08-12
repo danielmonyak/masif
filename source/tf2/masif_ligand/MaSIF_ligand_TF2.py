@@ -32,34 +32,23 @@ class MaSIF_ligand(Model):
         ## Call super - model initializer
         super(MaSIF_ligand, self).__init__()
         
+
+        n_feat = int(sum(feat_mask))
+        
         ##
         self.keep_prob = keep_prob
         ##
         
         regKwargs = {reg_type : reg_val}
         reg = regularizers.L1L2(**regKwargs)
-
-        # order of the spectral filters
-        self.max_rho = max_rho
-        self.n_thetas = n_thetas
-        self.n_rhos = n_rhos
-        self.n_ligands = n_ligands
-        self.sigma_rho_init = (
-            max_rho / 8
-        )  # in MoNet was 0.005 with max radius=0.04 (i.e. 8 times smaller)
-        self.sigma_theta_init = 1.0  # 0.25
-        self.n_rotations = n_rotations
-        self.n_feat = int(sum(feat_mask))
-        
         
         self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
  
-        
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
         
         self.myLayers=[
-            layers.Reshape([minPockets, self.n_feat * self.n_thetas * self.n_rhos])
+            layers.Reshape([minPockets, n_feat * n_thetas * n_rhos])
         ]
         
         if use_bn:
@@ -67,7 +56,7 @@ class MaSIF_ligand(Model):
         
         self.myLayers.extend([
             layers.ReLU(),
-            layers.Dense(self.n_thetas * self.n_rhos, kernel_regularizer=reg),
+            layers.Dense(n_thetas * n_rhos, kernel_regularizer=reg),
         ])
         
         if use_bn:
@@ -87,11 +76,12 @@ class MaSIF_ligand(Model):
         if use_bn:
             self.myLayers.append(layers.BatchNormalization())
 
+        # Extra dense layers - did not appear to improve performance
         #layers.Dense(40, activation='relu', kernel_regularizer=reg),
         #layers.Dense(25, activation='relu', kernel_regularizer=reg),
         #layers.Dense(10, activation='relu', kernel_regularizer=reg),
 
-        self.myLayers.append(layers.Dense(self.n_ligands, kernel_regularizer=reg))
+        self.myLayers.append(layers.Dense(n_ligands, kernel_regularizer=reg))
     
     def call(self, x):
         ret = self.myConvLayer(x)
