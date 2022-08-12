@@ -1,3 +1,8 @@
+# Predictor class contains useful tools, like
+##### loading ligand_site model with checkpoint
+##### using a saved masif_ligand model to make predictions
+##### return xyz coords of protein by importing data from precomputation directory
+
 import os
 import numpy as np
 import default_config.util as util
@@ -22,13 +27,6 @@ class Predictor:
         n_rhos=3,
         n_rotations=4
     )
-    '''
-    from_logits = model.loss_fn.get_config()['from_logits']
-    binAcc = tf.keras.metrics.BinaryAccuracy(threshold = (not from_logits) * 0.5)
-    model.compile(optimizer = model.opt,
-      loss = model.loss_fn,
-      metrics=[binAcc]
-    )'''
     load_status = model.load_weights(ligand_site_ckp_path)
     load_status.expect_partial()
     return model
