@@ -42,7 +42,7 @@ LS_model = MaSIF_ligand_site(
     n_rhos=3,
     n_rotations=4
 )
-ckpPath = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/batch/kerasModel'
+ckpPath = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/batch/kerasModel/ckp'
 load_status = LS_model.load_weights(ckpPath)
 load_status.expect_partial()
 
