@@ -16,7 +16,15 @@ from tf2.LSResNet.get_data import get_data
 
 params = masif_opts["LSResNet"]
 
+#############################################
+#############################################
+
+# Reularization coefficient
+reg_val = 0.0
 #lr = 1e-5
+
+#############################################
+#############################################
 
 train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_reg.npy')
@@ -48,7 +56,7 @@ model = LSResNet(
     n_thetas=4,
     n_rhos=3,
     n_rotations=4,
-    reg_val = 0,
+    reg_val = reg_val,
     extra_conv_layers = False
 )
 if continue_training:
