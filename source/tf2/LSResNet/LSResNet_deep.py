@@ -23,23 +23,13 @@ class LSResNet(Model):
         ## Call super - model initializer
         super(LSResNet, self).__init__()
         
-        regKwargs = {reg_type : reg_val}
-        self.reg = regularizers.L1L2(**regKwargs)
-        
-        # order of the spectral filters
-        self.max_rho = max_rho
-        self.n_thetas = n_thetas
-        self.n_rhos = n_rhos
-        self.sigma_rho_init = (
-            max_rho / 8
-        )  # in MoNet was 0.005 with max radius=0.04 (i.e. 8 times smaller)
-        self.sigma_theta_init = 1.0  # 0.25
-        self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
         
-        self.scale = params['scale']
-        self.max_dist = params['max_dist']
-
+        ##
+        regKwargs = {reg_type : reg_val}
+        self.reg = regularizers.L1L2(**regKwargs)
+        ##
+        
         self.convBlock0 = [
             ConvLayer(5, [self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
             layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat])
@@ -52,12 +42,12 @@ class LSResNet(Model):
             layers.Dense(self.n_feat, activation="relu"),
         ]
         
-        resolution = 1. / self.scale
-        self.myMakeGrid = MakeGrid(max_dist=self.max_dist, grid_resolution=resolution)
+        resolution = 1. / params['scale']
+        self.myMakeGrid = MakeGrid(max_dist=params['max_dist'], grid_resolution=resolution)
         
         #####################################
         #####################################
-        f=18
+        f=5
         
         self.CB_a2 = ConvBlock([f, f, f ], strides=(1,1,1))
         self.IB_b2 = IdentityBlock([f, f, f ])
