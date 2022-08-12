@@ -13,10 +13,8 @@ class LSResNet(Model):
         max_rho,
         n_thetas=16,
         n_rhos=5,
-        learning_rate=1e-4,
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
-        keep_prob = 1.0,
         reg_val = 1e-4,
         reg_type = 'l2'
     ):
@@ -30,16 +28,19 @@ class LSResNet(Model):
         self.reg = regularizers.L1L2(**regKwargs)
         ##
         
+        conv_shape = [n_thetas * n_rhos, n_thetas * n_rhos]
+        reshape_shape = [-1, n_thetas * n_rhos * n_feat]
+        
         self.convBlock0 = [
-            ConvLayer(5, [self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
-            layers.Reshape([-1, self.n_thetas * self.n_rhos * self.n_feat])
+            ConvLayer(5, conv_shape, max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg),
+            layers.Reshape(reshape_shape)
         ]
         
         self.denseReduce = [
             layers.BatchNormalization(),
             layers.ReLU(),
-            layers.Dense(self.n_thetas * self.n_rhos, activation="relu"),
-            layers.Dense(self.n_feat, activation="relu"),
+            layers.Dense(n_thetas * n_rhos, activation="relu"),
+            layers.Dense(n_feat, activation="relu"),
         ]
         
         resolution = 1. / params['scale']
