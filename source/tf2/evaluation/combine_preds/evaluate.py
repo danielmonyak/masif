@@ -1,3 +1,8 @@
+# Run LSResNet on all proteins in test dataset, use PUResNet predictions to validate
+
+## Whether or not to make predictions for every pocket with MaSIF-ligand - takes more time
+predict_ligand = False
+
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
 import sys
@@ -19,6 +24,7 @@ from tf2.LSResNet.predict import predict
 ##############################################
 ##############################################
 LSRN_threshold = 0.3
+
 ##############################################
 ##############################################
 
@@ -28,6 +34,9 @@ ligand_list = params['ligand_list']
 ligand_coord_dir = params["ligand_coords_dir"]
 precom_dir = params['masif_precomputation_dir']
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
+
+if predict_ligand:
+    pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/l2/kerasModel/savedModel')
 
 LSRN_model = LSResNet(
     params["max_distance"],
@@ -55,6 +64,9 @@ pdb_list = []
 dataset_list = []
 recall_list = []
 precision_list = []
+ligandIdx_true_list = []
+true_pts_ligandIdx_pred_list = []
+pred_pts_ligandIdx_pred_list = []
 npoints_true_list = []
 npoints_pred_list = []
 
@@ -64,7 +76,11 @@ BIG_n_pockets_true = []
 BIG_n_pockets_pred = []
 BIG_matched = []
 
-columns = ['pdb_list', 'dataset_list', 'recall_list', 'precision_list', 'npoints_true_list', 'npoints_pred_list']
+if predict_ligand:
+    columns = ['pdb_list', 'dataset_list', 'recall_list', 'precision_list', 'ligandIdx_true_list', 'true_pts_ligandIdx_pred_list', 'pred_pts_ligandIdx_pred_list', 'npoints_true_list', 'npoints_pred_list']
+else:
+    columns = ['pdb_list', 'dataset_list', 'recall_list', 'precision_list', 'npoints_true_list', 'npoints_pred_list']
+
 BIG_columns = ['BIG_pdb_list', 'BIG_dataset_list', 'BIG_n_pockets_true', 'BIG_n_pockets_pred', 'BIG_matched']
 
 outdir = 'results'
@@ -105,6 +121,7 @@ for dataset in ['test']:
             continue
             
         pp_true_list = []
+        lig_true_list = []
         for lig_i, structure_ligand in enumerate(all_ligand_types):
             if not structure_ligand in ligand_list:
                 continue
@@ -117,6 +134,7 @@ for dataset in ['test']:
                 continue
 
             pp_true_list.append(pocket_points_true)
+            lig_true_list.append(structure_ligand)
         
         n_pockets_true = len(pp_true_list)
         
@@ -210,6 +228,16 @@ for dataset in ['test']:
             recall = len(overlap)/npoints_true
             precision = len(overlap)/npoints_pred
             
+            if predict_ligand:
+                try:
+                    true_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_true)).numpy()
+                    pred_pts_ligandIdx_pred = pred.predictLigandIdx(pred.getLigandX(pocket_points_pred)).numpy()
+                except:
+                    print('Something went wrong with ligand prediction...')
+                    continue
+                ligand_true = lig_true_list[ppt_idx_best]
+                ligandIdx_true = ligand_list.index(ligand_true)
+            
             ###############
             print(f'Predicted pocket: {pocket}')
             print(f'True pocket: {ppt_idx_best}')
@@ -222,6 +250,14 @@ for dataset in ['test']:
             precision_list.append(precision)
             npoints_true_list.append(npoints_true)
             npoints_pred_list.append(npoints_pred)
+            
+            if predict_ligand:
+                print(f'True ligand: {ligandIdx_true}')
+                print(f'Prediction from true pocket points: {true_pts_ligandIdx_pred}')
+                print(f'Prediction from predicted pocket points: {pred_pts_ligandIdx_pred}\n')
+                ligandIdx_true_list.append(ligandIdx_true)
+                true_pts_ligandIdx_pred_list.append(true_pts_ligandIdx_pred)
+                pred_pts_ligandIdx_pred_list.append(pred_pts_ligandIdx_pred)
             
         print(f'{matched} matched pockets of {n_pockets_true} true and {n_pockets_pred} predicted')
         
