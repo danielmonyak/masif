@@ -39,18 +39,18 @@ LSRN_model = LSResNet(
     n_rotations=4,
     extra_conv_layers = False
 )
-ckpPath = 'kerasModel/ckp'
+ckpPath = '/home/daniel.monyak/software/masif/source/tf2/LSResNet/batch/kerasModel/ckp'
 load_status = LSRN_model.load_weights(ckpPath)
 load_status.expect_partial()
 
-listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
-train_file = 'train_pdbs_sequence.npy'
-val_file = 'val_pdbs_sequence.npy'
-test_file = 'test_pdbs_sequence.npy'
+listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists'
+train_file = 'train_reg.npy'
+val_file = 'val_reg.npy'
+test_file = 'test_reg.npy'
 
-train_list = np.char.add(np.load(os.path.join(listDir, train_file)).astype(str), '_')
-val_list = np.char.add(np.load(os.path.join(listDir, val_file)).astype(str), '_')
-test_list = np.char.add(np.load(os.path.join(listDir, test_file)).astype(str), '_')
+train_list = np.load(os.path.join(listDir, train_file)).astype(str)
+val_list = np.load(os.path.join(listDir, val_file)).astype(str)
+test_list = np.load(os.path.join(listDir, test_file)).astype(str)
 
 
 pdb_list = []
