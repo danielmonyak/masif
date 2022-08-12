@@ -18,7 +18,11 @@ params = masif_opts["ligand_site"]
 
 #############################################
 #############################################
-#lr = 1e-10
+
+# Reularization coefficient
+reg_val = 0.0
+
+#lr = 1e-4
 use_sample_weight = False
 
 n_train_batches = 10
@@ -61,7 +65,7 @@ model = MaSIF_ligand_site(
     n_thetas=4,
     n_rhos=3,
     n_rotations=4,
-    reg_val = 0
+    reg_val = reg_val
 )
 if continue_training:
     model.load_weights(ckpPath)
