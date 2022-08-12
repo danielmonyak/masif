@@ -1,3 +1,5 @@
+### Prepare y_true arrays in precomputation directories before training ligand_site
+
 import os
 import numpy as np
 from scipy import spatial
