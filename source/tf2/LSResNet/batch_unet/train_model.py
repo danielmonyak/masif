@@ -17,12 +17,21 @@ from tf2.LSResNet.get_data import get_data
 
 params = masif_opts["LSResNet"]
 
-#lr = 1e-5
+#############################################
+#############################################
+
+# Reularization coefficient
+reg_val = 0.0
+
+#lr = 1e-4
 
 n_train_batches = 10
 batch_sz = 32
 n_val = 50
 
+dev = '/GPU:1'
+##########################################
+##########################################
 train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_reg.npy')
 
@@ -54,7 +63,7 @@ model = LSResNet(
     n_thetas=4,
     n_rhos=3,
     n_rotations=4,
-    reg_val = 0
+    reg_val = reg_val
 )
 if continue_training:
     model.load_weights(ckpPath)
@@ -110,9 +119,8 @@ def test_step(x, y):
     val_F1_metric.update_state(y, y_pred)
 
 
-with tf.device('/GPU:1'):
+with tf.device(dev):
     iterations = starting_iteration
-    epoch = 0
     while iterations < num_iterations:
         i = 0
         j = 0
@@ -123,9 +131,9 @@ with tf.device('/GPU:1'):
                 np.random.shuffle(train_list)
                 train_iter = iter(train_list)
                 print('\nReshuffling training set...')
-                epoch += 1
                 continue
 
+            # Get y values from file
             try:
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
             except:
@@ -134,34 +142,37 @@ with tf.device('/GPU:1'):
             data = get_data(pdb_id, training=True, make_y = False)
             if data is None:
                 continue
+
+            # Only care about X
             X, _ = data
+            
+            # Skip PDB if there are NaN values in input_feat - messes up training
+            if np.sum(np.isnan(X[0][0])) > 0:
+                continue
 
             X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
             y_tf = tf.constant(y)
 
             grads = train_step(X_tf, y_tf)
             
+            # Make sure gradients don't get NaN values
             skip = False
             for g in grads:
                 if np.any(np.isnan(g)):
-                    print('NAN grads!')
-                    print(i)
-                    print(iterations)
-                    print(pdb_id)
                     skip = True
                     break
-            
             if skip:
                 continue
             
+            # If first pocket of batch, set grads, otherwise add to existing grads
             if i == 0:
                 grads_sum = grads
             else:
                 grads_sum = [grads_sum[grad_i]+grads[grad_i] for grad_i in range(len(grads))]
-
             i += 1
             iterations += 1
 
+            # Once number of proteins in batch is past "batch_sz"
             if i >= batch_sz:
                 mean_loss = float(loss_metric.result())
                 train_acc = float(train_acc_metric.result())
@@ -185,23 +196,18 @@ with tf.device('/GPU:1'):
                 print("F1 Lower ----------------- %.4f" % train_F1_lower)
                 print("F1       ----------------- %.4f" % train_F1)
 
+                # Save loss values to file
                 with open('loss.txt', 'a') as f:
                     f.write(str(mean_loss) + '\n')
                 
+                # Use average of all gradients
                 grads = [tsr/i for tsr in grads_sum]
-                
-                for g in grads:
-                    if np.any(np.isnan(g)):
-                        print('NAN grads on batch!')
-                        print(j)
-                        print(iterations)
-                    
                 optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
                 i = 0
                 j += 1
 
-        print(f'\n{iterations} iterations, {epoch} epochs completed')
+        print(f'\n{iterations} iterations completed')
 
         #####################################
         #####################################
