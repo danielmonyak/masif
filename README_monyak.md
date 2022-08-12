@@ -168,12 +168,13 @@ This way, you can access modules in the MaSIF repo using import statements.
 - filter.py - performs filtering steps on all protein structures <br>
 - using_pdbs_final_reg.txt - IMPORTANT - the new list of PDBs that bind LOIs <br>
 - filtered_pdbs.txt - all structures in using_pdbs_final_reg.txt, plus PDBs that contain solvents that were filtered and downloaded <br>
+- shared_old.txt - all structures that were shared between the original list of PDBs contained in data/masif_ligand/TF1/lists/sequence_split_list.txt and all of the PDBs collected and contained in data/masif_ligand/newPDBs/CSVs <br>
 - examineLigands.py - not important, used to examine how many PDbs in the the final list have a LOI vs. solvent <br>
 **data/ligand_site**: Scripts to do precomputation with 9A radius (for LSResNet and ligand-site) <br>
 - re_precompute.sh - Run just the precomputation step with 9A - creates new directory "04a-precomputation_9A" <br>
 - same scheduling scripts as in data/masif_ligand
 - findLeftover.py - (see above) <br><br>
-- 
+
 **source**: Most python source files<br>
 **source/default_config**:<br>
 - masif_opts.py - Contains a dictionary with useful paths and constants, which is imported in all Python scripts - Edited by me<br>
