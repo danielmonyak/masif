@@ -181,6 +181,7 @@ with tf.device(dev):
                 with open('loss.txt', 'a') as f:
                     f.write(str(mean_loss) + '\n')
 
+                # Use average of all gradients
                 grads = [tsr/i for tsr in grads_sum]
                 optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
