@@ -37,7 +37,7 @@ def getPPClusters(pocket_points, xyz_coords):
 
   pp_list = []
   for label in range(best_k):
-      pp_temp = pocket_points_pred[cluster_labels == label]
+      pp_temp = pocket_points[cluster_labels == label]
       if len(pp_temp) >= masif_opts['ligand']['minPockets']:
           pp_list.append(pp_temp)
   return pp_list
