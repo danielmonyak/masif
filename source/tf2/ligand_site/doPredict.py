@@ -36,7 +36,7 @@ else:
     if not os.path.exists(func_input):
         sys.exit('Must enter a valid path...')
 
-modelDir = 'kerasModel'
+modelDir = '/batch/kerasModel'
 modelDir_key = input(f'Enter directory with model checkpoint [{modelDir}]: ')
 if modelDir_key != '':
     modelDir = modelDir_key
