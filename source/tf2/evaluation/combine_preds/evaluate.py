@@ -103,9 +103,12 @@ for dataset in ['test']:
         ####################
         
         pdb_dir = os.path.join(precom_dir, pdb)
-        xyz_coords = Predictor.getXYZCoords(pdb_dir)
-        tree = spatial.KDTree(xyz_coords)
-        
+        try:
+            xyz_coords = Predictor.getXYZCoords(pdb_dir)
+            tree = spatial.KDTree(xyz_coords)
+        except:
+            continue
+            
         pp_true_list = []
         for lig_i, structure_ligand in enumerate(all_ligand_types):
             if not structure_ligand in ligand_list:
