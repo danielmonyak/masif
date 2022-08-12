@@ -11,7 +11,8 @@ for phys_g in phys_gpus:
 
 import default_config.util as util
 from default_config.masif_opts import masif_opts
-from tf2.LSResNet.LSResNet import LSResNet
+#from tf2.LSResNet.LSResNet import LSResNet
+from tf2.LSResNet.LSResNet_deep import LSResNet
 from tf2.LSResNet.get_data import get_data
 
 params = masif_opts["LSResNet"]
@@ -54,8 +55,7 @@ model = LSResNet(
     n_thetas=4,
     n_rhos=3,
     n_rotations=4,
-    reg_val = 0,
-    extra_conv_layers = False
+    reg_val = 0
 )
 if continue_training:
     model.load_weights(ckpPath)
@@ -111,7 +111,7 @@ def test_step(x, y):
     val_F1_metric.update_state(y, y_pred)
 
 
-with tf.device('/GPU:0'):
+with tf.device('/GPU:1'):
     iterations = starting_iteration
     epoch = 0
     while iterations < num_iterations:
