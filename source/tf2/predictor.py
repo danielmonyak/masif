@@ -64,7 +64,7 @@ class Predictor:
     self.n_samples = self.mask.shape[0]
     self.n_verts = self.mask.shape[1]
     
-    self.indices = pad_indices(np.load(os.path.join(pdb_dir, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True), self.n_verts).astype(np.int32)
+    self.indices = util.pad_indices(np.load(os.path.join(pdb_dir, 'p1_list_indices.npy'), encoding="latin1", allow_pickle = True), self.n_verts).astype(np.int32)
     
     self.data_dict = {'input_feat' : self.input_feat, 'rho_coords' : self.rho_coords,
                    'theta_coords' : self.theta_coords, 'mask' : self.mask}
