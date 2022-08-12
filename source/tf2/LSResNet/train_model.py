@@ -23,9 +23,9 @@ params = masif_opts["LSResNet"]
 reg_val = 0.0
 #lr = 1e-5
 
+dev = '/GPU:0'
 #############################################
 #############################################
-
 train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_reg.npy')
 
@@ -33,7 +33,6 @@ shared_old = np.loadtxt('/home/daniel.monyak/software/masif/data/masif_ligand/ne
 
 ##########################################
 ##########################################
-#from train_vars import train_vars
 with open('train_vars.pickle', 'rb') as handle:
     train_vars = pickle.load(handle)
 
@@ -49,7 +48,6 @@ if continue_training:
 
 ##########################################
 ##########################################
-
 model = LSResNet(
     params["max_distance"],
     feat_mask=params["feat_mask"],
@@ -82,7 +80,7 @@ model.compile(
     metrics = [acc_metric, auc_metric, F1_lowest_metric, F1_lower_metric, F1_metric]
 )
 
-with tf.device('/GPU:0'):
+with tf.device(dev):
     iterations = starting_iteration
     epochs = 0
     while iterations < num_iterations:
@@ -105,19 +103,24 @@ with tf.device('/GPU:0'):
             ##### Training the model just on the old data - delete this
             if pdb_id not in shared_old:
                 continue
-                
+
+            # Get y values from file
             try:
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
             except:
                 continue
 
+            # Get X values from get_data
             data = get_data(pdb_id, training=True, make_y = False)
             if data is None:
                 continue
+
+            # Only care about X
             X, _ = data
             
-            #if np.sum(np.isnan(X[0][0])) > 0:
-            #    continue
+            # Skip PDB if there are NaN values in input_feat - messes up training
+            if np.sum(np.isnan(X[0][0])) > 0:
+                continue
                 
             X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
             y_tf = tf.constant(y)
@@ -146,7 +149,8 @@ with tf.device('/GPU:0'):
         
         epochs += 1
         print(f'\n{iterations} iterations, {epochs} epochs completed')
-        #####################################
+        
+        ##################################### VALIDATION DATA
         #####################################
         acc_list = []
         auc_list = []
