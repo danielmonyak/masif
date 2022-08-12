@@ -191,7 +191,7 @@ with tf.device(dev):
         print(f'\n{iterations} iterations completed')
 
         #####################################
-        #####################################
+        ##################################### VALIDATION DATA
         i = 0
         while i < n_val:
             try:
