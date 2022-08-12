@@ -17,9 +17,13 @@ params = masif_opts["ligand_site"]
 
 #############################################
 #############################################
+
+# Reularization coefficient
+reg_val = 0.0
+
 #lr = 1e-4
 
-use_sample_weight = False        #############
+use_sample_weight = False
 #############################################
 #############################################
 
@@ -41,7 +45,7 @@ model = MaSIF_ligand_site(
     n_rhos=3,
     learning_rate = lr,
     n_rotations=4,
-    reg_val = 0
+    reg_val = reg_val
 )
 
 def F1_lower(y_true, y_pred): return util.F1(y_true, y_pred, threshold=0.4)
