@@ -64,7 +64,7 @@ BIG_n_pockets_true = []
 BIG_n_pockets_pred = []
 BIG_matched = []
 
-columns = ['pdb_list', 'dataset_list', 'recall_list', 'precision_list' 'npoints_true_list', 'npoints_pred_list']
+columns = ['pdb_list', 'dataset_list', 'recall_list', 'precision_list', 'npoints_true_list', 'npoints_pred_list']
 BIG_columns = ['BIG_pdb_list', 'BIG_dataset_list', 'BIG_n_pockets_true', 'BIG_n_pockets_pred', 'BIG_matched']
 
 outdir = 'results'
