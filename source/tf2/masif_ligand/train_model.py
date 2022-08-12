@@ -76,10 +76,9 @@ with strategy.scope():
     params["n_classes"],
     feat_mask=params["feat_mask"],
     reg_val = reg_val, reg_type = reg_type,
-    learning_rate = lr,
     use_bn = False
   )
-  model.compile(optimizer = model.opt,
+  model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate=lr),
     loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     metrics = ['sparse_categorical_accuracy']
   )  
