@@ -28,10 +28,11 @@ batch_sz = 32
 n_val = 50
 
 dev = '/GPU:3'
+
+# Whether or not to include the solvent PDBs
+include_solvents = False
 #############################################
 #############################################
-
-
 minPockets = params['minPockets']
 
 train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
@@ -45,7 +46,7 @@ modelDir = 'kerasModel'
 modelPath = os.path.join(modelDir, 'savedModel')
 
 ##########################################
-##########################################
+########################################## Gather input passed collected by input prompts
 with open('train_vars.pickle', 'rb') as handle:
     train_vars = pickle.load(handle)
 
@@ -61,9 +62,6 @@ if continue_training:
 
 ##########################################
 ##########################################
-
-include_solvents = False
-
 if include_solvents:
     ligand_list = masif_opts['all_ligands']
 else:
@@ -93,7 +91,7 @@ loss_metric = tf.keras.metrics.Mean()
 train_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
 val_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
 
-grads = None
+# Keeps track of if an example for each ligand class is currently in the training batch
 y_true_idx_used = np.zeros(len(ligand_list))
 
 @tf.function
@@ -128,16 +126,6 @@ with tf.device(dev):
                 print('\nReshuffling training set...')
                 continue
             
-            '''
-            data = get_data(pdb_id, include_solvents)
-            if data is None:
-                continue
-            X, pocket_points, y = data
-            for k, pp in enumerate(pocket_points):
-                pp_rand = np.random.choice(pp, minPockets, replace=False)
-                X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
-                y_temp = tf.constant(y[k])
-                '''
             try:
                 X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'), allow_pickle=True)
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
@@ -145,36 +133,40 @@ with tf.device(dev):
                 continue
             
             for k, X_temp in enumerate(X):
+                # Don't use pocket if it is a solvent pocket (assuming include_solvents=True)
                 if y[k] >= len(ligand_list):
                     continue
-                X_temp[0] = np.expand_dims(X_temp[0], axis=0)
                 
                 # Skip PDB if there are NaN values in input_feat - messes up training
                 if np.sum(np.isnan(X_temp[0])) > 0:
                     continue
                 
+                X_temp[0] = np.expand_dims(X_temp[0], axis=0)
                 X_temp[3] = np.expand_dims(X_temp[3], axis=0)
+                
+                # Number of patches in this pocket
                 n_samples = X_temp[0].shape[1]
+                
+                # Randomly sample 32 patches
                 pp_rand = np.random.choice(range(n_samples), minPockets, replace=False)
                 X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X_temp)
                 y_temp = tf.constant(y[k])
                 
                 grads = train_step(X_temp, y_temp)
+                
+                # Mark that a pocket with this ligand has been trained on
                 y_true_idx_used[y[k]] = 1
                 
+                # Make sure gradients don't get NaN values
                 skip = False
                 for g in grads:
                     if np.any(np.isnan(g)):
-                        print('NAN grads!')
-                        print(i)
-                        print(iterations)
-                        print(pdb_id)
                         skip = True
                         break
-
                 if skip:
                     continue
 
+                # If first pocket of batch, set grads, otherwise add to existing grads
                 if i == 0:
                     grads_sum = grads
                 else:
@@ -182,8 +174,10 @@ with tf.device(dev):
                 i += 1
                 iterations += 1
             pdb_count += 1
-            #if (i >= batch_sz) and (np.mean(y_true_idx_used) > 0.8):
-            if (i >= batch_sz):
+            
+            # Once number of pockets in batch is past "batch_sz" and 80% of ligand classes are accounted for 
+            if (i >= batch_sz) and (np.mean(y_true_idx_used) > 0.8):
+            #if (i >= batch_sz):
                 print(f'Training batch {j} - {i} pockets')
                 mean_loss = float(loss_metric.result())
                 train_acc = float(train_acc_metric.result())
@@ -191,18 +185,15 @@ with tf.device(dev):
                 train_acc_metric.reset_states()
                 
                 print("Loss -------- %.4f, Accuracy -------- %.4f, %d total PDBs" % (mean_loss, train_acc, pdb_count))
+                
+                # Save loss values to fle
                 with open('loss.txt', 'a') as f:
                     f.write(str(mean_loss) + '\n')
                 
+                # Use average of all gradients
                 grads = [tsr/i for tsr in grads_sum]
-                
-                for g in grads:
-                    if np.any(np.isnan(g)):
-                        print('NAN grads on batch!')
-                        print(j)
-                        print(iterations)
-                
                 optimizer.apply_gradients(zip(grads, model.trainable_weights))
+                
                 i = 0
                 pdb_count = 0
                 y_true_idx_used.fill(0)
@@ -221,16 +212,6 @@ with tf.device(dev):
                 val_iter = iter(val_list)
                 continue
 
-            '''
-            data = get_data(pdb_id, include_solvents)
-            if data is None:
-                continue
-            X, pocket_points, y = data
-            for k, pp in enumerate(pocket_points):
-                pp_rand = np.random.choice(pp, minPockets, replace=False)
-                X_temp = tuple(tf.constant(arr[:, pp_rand]) for arr in X)
-                y_temp = tf.constant(y[k])'''
-            
             try:
                 X = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'X.npy'), allow_pickle=True)
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'y.npy'))
