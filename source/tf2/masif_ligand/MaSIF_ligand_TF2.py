@@ -31,20 +31,15 @@ class MaSIF_ligand(Model):
     ):
         ## Call super - model initializer
         super(MaSIF_ligand, self).__init__()
-        
 
         n_feat = int(sum(feat_mask))
         
         ##
         self.keep_prob = keep_prob
-        ##
-        
         regKwargs = {reg_type : reg_val}
         reg = regularizers.L1L2(**regKwargs)
+        ##
         
-        self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-        self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
- 
         self.myConvLayer = ConvLayer(max_rho, n_ligands, n_thetas, n_rhos, n_rotations, feat_mask)
         
         self.myLayers=[
