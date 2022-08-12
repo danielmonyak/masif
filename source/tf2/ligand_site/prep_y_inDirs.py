@@ -1,4 +1,7 @@
-### Prepare y_true arrays in precomputation directories before training ligand_site
+# Prepare y_true arrays in precomputation directories before training ligand_site
+# Output: LS_y.npy - Example:
+#                               1, 0, 0, 0, 1, 1, 0, 0, ...
+# Truth values (whether or not they are pocket points)
 
 import os
 import numpy as np
