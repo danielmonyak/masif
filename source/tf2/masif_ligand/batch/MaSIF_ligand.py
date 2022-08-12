@@ -33,7 +33,6 @@ class MaSIF_ligand(Model):
         n_feat = int(sum(feat_mask))
         
         ##
-        self.keep_prob = keep_prob
         regKwargs = {reg_type : reg_val}
         reg = regularizers.L1L2(**regKwargs)
         ##
@@ -53,7 +52,7 @@ class MaSIF_ligand(Model):
             #
             CovarLayer(),
             layers.Flatten(),
-            layers.Dropout(1 - self.keep_prob),
+            layers.Dropout(1 - keep_prob),
 
             layers.Dense(64, activation='relu', kernel_regularizer=reg),
 
