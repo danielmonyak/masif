@@ -186,7 +186,7 @@ with tf.device(dev):
                 
                 print("Loss -------- %.4f, Accuracy -------- %.4f, %d total PDBs" % (mean_loss, train_acc, pdb_count))
                 
-                # Save loss values to fle
+                # Save loss values to file
                 with open('loss.txt', 'a') as f:
                     f.write(str(mean_loss) + '\n')
                 
