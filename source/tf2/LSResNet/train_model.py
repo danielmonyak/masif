@@ -153,6 +153,10 @@ with tf.device('/GPU:0'):
                 pdb_id = next(val_iter)
             except:
                 break
+            
+            ##### Evaluating the model just on the old data - delete this
+            if pdb_id not in shared_old:
+                continue
 
             try:
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LSRN_y.npy'))
