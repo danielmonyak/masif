@@ -13,7 +13,6 @@ class LSResNet(Model):
         max_rho,
         n_thetas=16,
         n_rhos=5,
-        learning_rate=1e-4,
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
         reg_val = 1e-4,
