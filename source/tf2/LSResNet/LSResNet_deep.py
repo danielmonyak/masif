@@ -21,11 +21,11 @@ class LSResNet(Model):
         ## Call super - model initializer
         super(LSResNet, self).__init__()
         
-        self.n_feat = int(sum(feat_mask))
+        n_feat = int(sum(feat_mask))
         
         ##
         regKwargs = {reg_type : reg_val}
-        self.reg = regularizers.L1L2(**regKwargs)
+        reg = regularizers.L1L2(**regKwargs)
         ##
         
         conv_shape = [n_thetas * n_rhos, n_thetas * n_rhos]
