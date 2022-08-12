@@ -53,23 +53,21 @@ class LSResNet(Model):
             bn_axis=1
             
         f=5
-        filters = [f, f, f]
-        filters1,filters2,filters3=filters
         strides = (1,1,1)
         
         self.RNConvBlock=[
-            [layers.Conv3D(filters1, kernel_size=1, strides=strides),
+            [layers.Conv3D(f, kernel_size=1, strides=strides),
             layers.BatchNormalization(axis=bn_axis),
             layers.ReLU(),
              
-            layers.Conv3D(filters2, kernel_size=3, padding='same'),
+            layers.Conv3D(f, kernel_size=3, padding='same'),
             layers.BatchNormalization(axis=bn_axis),
             layers.ReLU(),
              
-            layers.Conv3D(filters3, kernel_size=1),
+            layers.Conv3D(f, kernel_size=1),
             layers.BatchNormalization(axis=bn_axis)],
             
-            [layers.Conv3D(filters3, kernel_size=1, strides=strides),
+            [layers.Conv3D(f, kernel_size=1, strides=strides),
             layers.BatchNormalization(axis=bn_axis)]
         ]
         
