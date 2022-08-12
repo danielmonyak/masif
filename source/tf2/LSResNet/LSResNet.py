@@ -2,10 +2,10 @@ import numpy as np
 from tensorflow.keras import layers, Sequential, initializers, Model, regularizers
 import tensorflow as tf
 from tensorflow.keras import backend as K
-import functools
-from operator import add
 import default_config.util as util
 from default_config.masif_opts import masif_opts
+
+params = masif_opts['LSResNet']
 
 class LSResNet(Model):
     def __init__(
@@ -38,12 +38,6 @@ class LSResNet(Model):
         self.n_rotations = n_rotations
         self.n_feat = int(sum(feat_mask))
         
-        self.scale = 0.5
-        self.max_dist = 35
-        
-        self.opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-        self.loss_fn = tf.keras.losses.BinaryCrossentropy(from_logits = True)
-        
         self.conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
                        [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
                        [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
@@ -65,8 +59,8 @@ class LSResNet(Model):
             layers.Dense(self.n_feat, activation="relu"),
         ]
 
-        resolution = 1. / self.scale
-        self.myMakeGrid = MakeGrid(max_dist=self.max_dist, grid_resolution=resolution)
+        resolution = 1. / params['scale']
+        self.myMakeGrid = MakeGrid(max_dist=params['max_dist'], grid_resolution=resolution)
         
         if K.image_data_format()=='channels_last':
             bn_axis=4
