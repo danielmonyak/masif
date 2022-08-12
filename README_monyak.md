@@ -22,10 +22,6 @@ conda install -c conda-forge scikit-learn
 conda install -c conda-forge ipython
 conda install -c conda-forge networkx
 ```
-When using Tensorflow, if it is giving error messages about not being able to convert a function to Autograph because of the "gast" package, then run this and disregard the messages about missing dependencies:
-```
-pip install gast==0.3.3
-```
 
 #### PyMesh
 Build from source: https://github.com/PyMesh/PyMesh, do not install with anaconda <br>
@@ -70,9 +66,24 @@ cmake ..
 make
 ```
 
+#### Openbabel
+While **venv_tf_new** is activated:
+```
+conda install -c openbabel openbabel
+```
+
+#### Important Note
+When using Tensorflow, if it is giving error messages about not being able to convert a function to Autograph because of the "gast" package, then run this and disregard the messages about missing dependencies:
+```
+pip install gast==0.3.3
+```
+
 ### APBS
 Does not need to be installed in any environment, just need to download pre-built binaries for APBS 3.4.1: https://github.com/Electrostatics/apbs/releases <br>
 Look under **Assets**: APBS-3.4.1.Linux.zip
+<br><br><br>
+
+You may have to edit the paths of the enviornmental variables in "data/masif_ligand/data_prepare_one.sh" based you install everything.
 
 ### venv_sbi
 Activate environment
@@ -194,6 +205,7 @@ This way, you can access modules in the MaSIF repo using import statements.
 **source/masif_ligand**: Scripts for training and predicting with the TF1 model<br><br>
 
 **source/tf2**: MOST IMPORTANT - Scripts, work, and saved models for TF2 models<br>
+**source/tf2/masif_ligand**<br>
 **source/tf2/masif_ligand**<br>
 **source/tf2/ligand_site**<br>
 **source/tf2/LSResNet**<br>
