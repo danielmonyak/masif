@@ -13,10 +13,10 @@ for phys_g in phys_gpus:
 
 import default_config.util as util
 from default_config.masif_opts import masif_opts
-from tf2.usage.predictor import Predictor
 from tf2.ligand_site.MaSIF_ligand_site import MaSIF_ligand_site
 from tf2.ligand_site.get_data import get_data
-from tf2.usage.PPClustering import getPPClusters
+from tf2.PPClustering import getPPClusters
+from tf2.predictor import Predictor
 
 ################################################
 ################################################
@@ -33,7 +33,7 @@ ligand_coord_dir = params["ligand_coords_dir"]
 precom_dir = params['masif_precomputation_dir']
 binding_dir = '/data02/daniel/PUresNet/site_predictions'
 
-pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel/savedModel')
+pred = Predictor(ligand_model_path = '/home/daniel.monyak/software/masif/source/tf2/masif_ligand/kerasModel_bn/savedModel')
 
 LS_model = MaSIF_ligand_site(
     params["max_distance"],
@@ -42,18 +42,18 @@ LS_model = MaSIF_ligand_site(
     n_rhos=3,
     n_rotations=4
 )
-ckpPath = 'LS_kerasModel/ckp'
+ckpPath = '/home/daniel.monyak/software/masif/source/tf2/ligand_site/batch/kerasModel'
 load_status = LS_model.load_weights(ckpPath)
 load_status.expect_partial()
 
-listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/lists'
-train_file = 'train_pdbs_sequence.npy'
-val_file = 'val_pdbs_sequence.npy'
-test_file = 'test_pdbs_sequence.npy'
+listDir = '/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists'
+train_file = 'train_reg.npy'
+val_file = 'val_reg.npy'
+test_file = 'test_reg.npy'
 
-train_list = np.char.add(np.load(os.path.join(listDir, train_file)).astype(str), '_')
-val_list = np.char.add(np.load(os.path.join(listDir, val_file)).astype(str), '_')
-test_list = np.char.add(np.load(os.path.join(listDir, test_file)).astype(str), '_')
+train_list = np.load(os.path.join(listDir, train_file)).astype(str)
+val_list = np.load(os.path.join(listDir, val_file)).astype(str)
+test_list = np.load(os.path.join(listDir, test_file)).astype(str)
 
 pdb_list = []
 dataset_list = []
@@ -80,13 +80,13 @@ if not os.path.exists(outdir):
 
 dataset_dict = {'train' : train_list, 'test' : test_list, 'val' : val_list}
 
-#for dataset in dataset_dict.keys():
 with tf.device('/GPU:1'):
+    #for dataset in dataset_dict.keys():
     for dataset in ['test']:
         data = dataset_dict[dataset]
         n_data = len(data)
 
-        j = 0
+        #j = 0
         for i, pdb in enumerate(data):
             print(f'\n{i} of {n_data} {dataset} pdbs running...')
             print(pdb, "\n")
@@ -110,11 +110,10 @@ with tf.device('/GPU:1'):
             pdb_dir = os.path.join(masif_opts['ligand']['masif_precomputation_dir'], pdb)
             try:
                 xyz_coords = Predictor.getXYZCoords(pdb_dir)
+                tree = spatial.KDTree(xyz_coords)
             except:
-                print('No precomputation...')
                 continue
 
-            tree = spatial.KDTree(xyz_coords)
             pred.loadData(pdb_dir)
 
             pp_true_list = []
@@ -122,13 +121,14 @@ with tf.device('/GPU:1'):
             for lig_i, structure_ligand in enumerate(all_ligand_types):
                 if not structure_ligand in ligand_list:
                     continue
-                print(f'Pocket {lig_i}')
+
                 ligand_coords = all_ligand_coords[lig_i]
                 pocket_points_true = tree.query_ball_point(ligand_coords, 3.0)
                 pocket_points_true = list(set([pp for p in pocket_points_true for pp in p]))
+                
                 if len(pocket_points_true) == 0:
-                    print(f'\tLigand has no pocket points...')
                     continue
+
                 pp_true_list.append(pocket_points_true)
                 lig_true_list.append(structure_ligand)
 
@@ -140,7 +140,7 @@ with tf.device('/GPU:1'):
             ####################
             data = get_data(pdb, training=False, make_y = False)
             if data is None:
-                print('Can\'t get data...')
+                print("Can't get data...")
                 continue
             X, _, _ = data
             X_tf = (tuple(tf.constant(arr) for arr in X[0]), tf.constant(X[1]))
