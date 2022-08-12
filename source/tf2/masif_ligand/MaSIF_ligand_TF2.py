@@ -35,7 +35,6 @@ class MaSIF_ligand(Model):
         n_feat = int(sum(feat_mask))
         
         ##
-        self.keep_prob = keep_prob
         regKwargs = {reg_type : reg_val}
         reg = regularizers.L1L2(**regKwargs)
         ##
