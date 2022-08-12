@@ -23,15 +23,14 @@ params = masif_opts["ligand_site"]
 reg_val = 0.0
 
 #lr = 1e-4
-use_sample_weight = False
 
 n_train_batches = 10
 batch_sz = 32
 n_val = 50
+
+dev = '/GPU:2'
 #############################################
 #############################################
-
-
 train_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/train_reg.npy')
 val_list = np.load('/home/daniel.monyak/software/masif/data/masif_ligand/newPDBs/lists/val_reg.npy')
 
@@ -57,7 +56,6 @@ if continue_training:
 ##########################################
 ##########################################
 
-dev = '/GPU:2'
 
 model = MaSIF_ligand_site(
     params["max_distance"],
@@ -89,8 +87,6 @@ val_auc_metric = tf.keras.metrics.AUC()
 val_F1_lower_metric = util.F1_Metric(threshold = 0.3)
 val_F1_metric = util.F1_Metric(threshold = 0.5)
 
-grads = None
-
 @tf.function(experimental_relax_shapes=True)
 def train_step(x, y):
     with tf.GradientTape() as tape:
@@ -117,7 +113,6 @@ def test_step(x, y):
 
 with tf.device(dev):
     iterations = starting_iteration
-    epoch = 0
     while iterations < num_iterations:
         i = 0
         j = 0
@@ -128,17 +123,20 @@ with tf.device(dev):
                 np.random.shuffle(train_list)
                 train_iter = iter(train_list)
                 print('\nReshuffling training set...')
-                epoch += 1
                 continue
 
+            # Get y values from file
             try:
                 y = np.load(os.path.join(params['masif_precomputation_dir'], pdb_id, 'LS_y.npy'))
             except:
                 continue
 
+            # Get X values from get_data
             data = get_data(pdb_id, training=True, make_y = False)
             if data is None:
                 continue
+                
+            # Only care about X
             X, _, _ = data
 
             # Skip PDB if there are NaN values in input_feat - messes up training
@@ -150,14 +148,15 @@ with tf.device(dev):
 
             grads = train_step(X_tf, y_tf)
 
+            # If first pocket of batch, set grads, otherwise add to existing grads
             if i == 0:
                 grads_sum = grads
             else:
                 grads_sum = [grads_sum[grad_i]+grads[grad_i] for grad_i in range(len(grads))]
-
             i += 1
             iterations += 1
 
+            # Once number of proteins in batch is past "batch_sz"
             if i >= batch_sz:
                 mean_loss = float(loss_metric.result())
                 train_acc = float(train_acc_metric.result())
@@ -178,6 +177,7 @@ with tf.device(dev):
                 print("F1 Lower ----------------- %.4f" % train_F1_lower)
                 print("F1       ----------------- %.4f" % train_F1)
 
+                # Save loss values to file
                 with open('loss.txt', 'a') as f:
                     f.write(str(mean_loss) + '\n')
 
@@ -187,7 +187,7 @@ with tf.device(dev):
                 i = 0
                 j += 1
 
-        print(f'\n{iterations} iterations, {epoch} epochs completed')
+        print(f'\n{iterations} iterations completed')
 
         #####################################
         #####################################
