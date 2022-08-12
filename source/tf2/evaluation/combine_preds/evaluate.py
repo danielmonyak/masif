@@ -77,7 +77,7 @@ if not os.path.exists(outdir):
 dataset_dict = {'train' : train_list, 'test' : test_list, 'val' : val_list}
 
 #for dataset in dataset_dict.keys():
-for dataset in ['test', 'val', 'train']:
+for dataset in ['test']:
     data = dataset_dict[dataset]
     n_data = len(data)
     
@@ -88,7 +88,7 @@ for dataset in ['test', 'val', 'train']:
         try:
             all_ligand_coords = np.load(
                 os.path.join(
-                    ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0])
+                    ligand_coord_dir, "{}_ligand_coords.npy".format(pdb.split("_")[0], allow_pickle=True, encoidng='latin1')
                 )
             )
             all_ligand_types = np.load(
