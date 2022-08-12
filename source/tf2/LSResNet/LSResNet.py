@@ -16,7 +16,6 @@ class LSResNet(Model):
         learning_rate=1e-4,
         n_rotations=16,
         feat_mask=[1.0, 1.0, 1.0, 1.0],
-        keep_prob = 1.0,
         reg_val = 1e-4,
         reg_type = 'l2',
         extra_conv_layers = True
@@ -24,32 +23,19 @@ class LSResNet(Model):
         ## Call super - model initializer
         super(LSResNet, self).__init__()
         
+        n_feat = int(sum(feat_mask))
+        
+        ##
         regKwargs = {reg_type : reg_val}
         self.reg = regularizers.L1L2(**regKwargs)
-        
-        # order of the spectral filters
-        self.max_rho = max_rho
-        self.n_thetas = n_thetas
-        self.n_rhos = n_rhos
-        self.sigma_rho_init = (
-            max_rho / 8
-        )  # in MoNet was 0.005 with max radius=0.04 (i.e. 8 times smaller)
-        self.sigma_theta_init = 1.0  # 0.25
-        self.n_rotations = n_rotations
-        self.n_feat = int(sum(feat_mask))
-        
-        self.conv_shapes = [[self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos],
-                       [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
-                       [self.n_feat * self.n_thetas * self.n_rhos, self.n_feat * self.n_thetas * self.n_rhos],
-                       [self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos * self.n_thetas * self.n_rhos]] 
-        self.reshape_shapes = [[-1, self.n_thetas * self.n_rhos * self.n_feat],
-                          [-1, self.n_feat, self.n_thetas * self.n_rhos],
-                          [-1, self.n_feat, self.n_thetas * self.n_rhos],
-                          [-1, self.n_thetas * self.n_rhos, self.n_thetas * self.n_rhos]]
+        ##
+
+        conv_shape = [n_thetas * n_rhos, n_thetas * n_rhos]
+        reshape_shape = [-1, n_thetas * n_rhos * n_feat]
 
         self.convBlock0 = [
-            ConvLayer(5, self.conv_shapes[0], self.max_rho, self.n_thetas, self.n_rhos, self.n_rotations, self.n_feat, self.reg),
-            layers.Reshape(self.reshape_shapes[0])
+            ConvLayer(5, conv_shape, max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg),
+            layers.Reshape(reshape_shape)
         ]
 
         self.denseReduce = [
