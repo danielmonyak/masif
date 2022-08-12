@@ -12,7 +12,6 @@ import default_config.util as util
 from default_config.masif_opts import masif_opts
 from tf2.masif_ligand.MaSIF_ligand_TF2 import MaSIF_ligand
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score, confusion_matrix, ConfusionMatrixDisplay
-from scipy.stats import mode
 import matplotlib.pyplot as plt
 
 params = masif_opts["ligand"]
@@ -57,14 +56,6 @@ with tf.device(gpu):
     probs_list.append(tf.nn.softmax(model.predict(X)))
 
 probs_tsr = tf.stack(probs_list, axis=-1)
-
-'''
-preds_tsr = tf.argmax(probs_tsr, axis=1)
-y_pred = []
-for i in range(len(preds_tsr)):
-  y_pred.append(mode(preds_tsr[i].numpy()).mode)
-
-'''
 
 y_pred_probs = tf.reduce_mean(probs_tsr, axis=-1)
 y_pred = tf.argmax(y_pred_probs, axis = 1)
