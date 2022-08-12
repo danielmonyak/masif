@@ -1,3 +1,7 @@
+# Prepare y_true arrays in precomputation directories before training ligand_site
+# Output: LSRN_y.npy  is 36x36x36x1
+# Truth values projected onto grid
+
 import os
 import numpy as np
 from scipy import spatial
