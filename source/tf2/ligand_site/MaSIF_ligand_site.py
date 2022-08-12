@@ -58,8 +58,8 @@ class MaSIF_ligand_site(Model):
             #layers.BatchNormalization()
         ]
         
-        self.convBlock1 = self.makeConvBlock(weights_num = 1, conv_shape = conv_shapes[1], reshape_shape = reshape_shapes[1], max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg)
-        self.convBlock2 = self.makeConvBlock(weights_num = 1, conv_shape = conv_shapes[2], reshape_shape = reshape_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg)
+        self.convBlock1 = self.makeConvBlock(1, conv_shapes[1], reshape_shapes[1], max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg)
+        self.convBlock2 = self.makeConvBlock(1, conv_shapes[2], reshape_shapes[2], max_rho, n_thetas, n_rhos, n_rotations, n_feat, reg)
         
         ####
         #self.convBlock_residue = self.makeConvBlock(weights_num = 1, conv_shape = conv_shapes[2], reshape_shape = reshape_shapes[2])
